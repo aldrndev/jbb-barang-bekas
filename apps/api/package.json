@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "wrangler dev src/index.ts --port 8787",
     "deploy": "wrangler deploy src/index.ts",
+    "db:migrate:local": "wrangler d1 execute jbb-prod-db --local --file=../../packages/database/drizzle/migrations/0000_chief_nitro.sql",
+    "db:seed:local": "wrangler d1 execute jbb-prod-db --local --file=../../packages/database/drizzle/seed.sql",
     "typecheck": "tsc --noEmit",
     "build": "tsc --noEmit"
   },
