@@ -402,8 +402,8 @@ function NegoDashboardContent() {
                       </div>
 
                       <Link
-                        href={`/listing/${offer.listing?.slug || offer.listingId}?offerId=${offer.id}&checkout=true`}
-                        className="flex items-center gap-2 rounded-full bg-brand-600 px-4.5 py-2 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/20"
+                        href={`/checkout?listingId=${offer.listing?.slug || offer.listingId}&offerId=${offer.id}`}
+                        className="flex items-center gap-2 rounded-full bg-brand-600 px-4.5 py-2 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/20 cursor-pointer"
                       >
                         <ShoppingBag className="h-4 w-4" />
                         <span>Beli Sekarang ({formatIDR(offer.counterPrice || offer.offeredPrice)})</span>

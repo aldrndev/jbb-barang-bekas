@@ -45,18 +45,9 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [isNegoModalOpen, setIsNegoModalOpen] = useState(false);
-  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [favoriteCountOffset, setFavoriteCountOffset] = useState(0);
   const [shareToast, setShareToast] = useState(false);
-
-  const [deliveryMethod, setDeliveryMethod] = useState<'COD_KETEMUAN' | 'KURIR_REGULER'>('KURIR_REGULER');
-  const [recipientName, setRecipientName] = useState(user?.name || '');
-  const [recipientPhone, setRecipientPhone] = useState(user?.phone || '');
-  const [shippingAddress, setShippingAddress] = useState('');
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [checkoutSuccessOrder, setCheckoutSuccessOrder] = useState<any>(null);
-  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const { data: listingData, isLoading, refetch } = useQuery({
     queryKey: ['listing', idOrSlug],
@@ -83,19 +74,9 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
     ? acceptedOffer.counterPrice || acceptedOffer.offeredPrice
     : listing?.price || 0;
 
-  // Auto-open checkout modal if redirected from /nego with ?checkout=true
-  useEffect(() => {
-    if (queryCheckout === 'true' && listing && user) {
-      setIsCheckoutModalOpen(true);
-    }
-  }, [queryCheckout, listing, user]);
-
-  useEffect(() => {
-    if (user) {
-      if (!recipientName) setRecipientName(user.name);
-      if (!recipientPhone && user.phone) setRecipientPhone(user.phone);
-    }
-  }, [user, recipientName, recipientPhone]);
+  const checkoutUrl = listing
+    ? `/checkout?listingId=${listing.slug || listing.id}${acceptedOffer ? `&offerId=${acceptedOffer.id}` : ''}`
+    : '#';
 
   if (isLoading) {
     return (
@@ -161,65 +142,6 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
         setTimeout(() => setShareToast(false), 2500);
       }
     }
-  };
-
-  const handleCheckoutSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setCheckoutError(null);
-
-    if (!user) {
-      openAuthModal();
-      return;
-    }
-
-    const trimmedName = recipientName.trim();
-    const trimmedPhone = recipientPhone.trim();
-    const trimmedAddress = shippingAddress.trim();
-
-    if (!trimmedName || trimmedName.length < 2) {
-      setCheckoutError('Nama penerima minimal 2 karakter');
-      return;
-    }
-
-    if (!trimmedPhone) {
-      setCheckoutError('Nomor WhatsApp penerima wajib diisi');
-      return;
-    }
-
-    // WhatsApp phone validation (e.g. 081234567890 or 6281234567890)
-    const phoneRegex = /^(\+62|62|0)8[1-9][0-9]{6,10}$/;
-    if (!phoneRegex.test(trimmedPhone)) {
-      setCheckoutError('Format nomor WhatsApp tidak valid. Gunakan format seperti 081234567890');
-      return;
-    }
-
-    if (deliveryMethod === 'KURIR_REGULER' && trimmedAddress.length < 10) {
-      setCheckoutError('Alamat pengiriman lengkap wajib minimal 10 karakter (mohon sertakan jalan, kota, atau patokan)');
-      return;
-    }
-
-    if (deliveryMethod === 'COD_KETEMUAN' && trimmedAddress.length < 5) {
-      setCheckoutError('Titik temu COD minimal 5 karakter (contoh: Starbucks Gandaria City jam 3 sore)');
-      return;
-    }
-
-    setIsCheckingOut(true);
-    const res = await api.createOrder({
-      listingId: listing.id,
-      offerId: acceptedOffer?.id,
-      deliveryMethod,
-      recipientName: trimmedName,
-      recipientPhone: trimmedPhone,
-      shippingAddress: trimmedAddress || (deliveryMethod === 'COD_KETEMUAN' ? (listing.codMeetingPoint || listing.city) : 'Alamat Pengiriman')
-    });
-
-    if (res.success && res.data) {
-      setCheckoutSuccessOrder(res.data);
-      setCheckoutError(null);
-    } else {
-      setCheckoutError(res.error?.message || 'Gagal memproses pesanan Rekber. Silakan periksa kembali data Anda.');
-    }
-    setIsCheckingOut(false);
   };
 
   return (
@@ -536,9 +458,8 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
 
               {/* Action Buttons */}
               <div className="space-y-3 pt-1">
-                <button
-                  type="button"
-                  onClick={() => setIsCheckoutModalOpen(true)}
+                <Link
+                  href={checkoutUrl}
                   className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 py-3.5 text-sm font-bold text-white shadow-md shadow-brand-600/25 hover:bg-brand-700 hover:scale-101 transition-all cursor-pointer"
                 >
                   <ShoppingBag className="h-4.5 w-4.5" />
@@ -547,7 +468,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                       ? `Beli Sekarang via Rekber (${formatIDR(effectivePrice)})`
                       : 'Beli Langsung via Rekber'}
                   </span>
-                </button>
+                </Link>
 
                 {listing.isNegotiable && !acceptedOffer && (
                   <button
@@ -691,13 +612,12 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                 Nego
               </button>
             )}
-            <button
-              type="button"
-              onClick={() => setIsCheckoutModalOpen(true)}
+            <Link
+              href={checkoutUrl}
               className="rounded-full bg-brand-600 px-4.5 py-2 text-xs font-bold text-white shadow-md shadow-brand-600/30 cursor-pointer"
             >
               {acceptedOffer ? 'Beli Nego' : 'Beli Rekber'}
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -746,236 +666,6 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
           refetch();
         }}
       />
-
-      {/* Direct Checkout Modal */}
-      {isCheckoutModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-3 sm:p-4 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto">
-          <div className="relative w-full max-w-lg max-h-[90vh] flex flex-col rounded-3xl border border-slate-200 bg-white shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden my-auto">
-            {checkoutSuccessOrder ? (
-              <div className="text-center p-6 sm:p-8 overflow-y-auto">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 mb-4 shadow-xs border border-brand-200">
-                  <CheckCircle2 className="h-9 w-9" />
-                </div>
-                <h3 className="text-xl font-black text-slate-900">Pembayaran Rekber Sukses!</h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  Nomor Pesanan: <strong className="text-slate-900">{checkoutSuccessOrder.orderNumber}</strong>
-                </p>
-                <p className="text-xs text-slate-600 mt-2 max-w-sm mx-auto">
-                  Dana sebesar <strong>{formatIDR(checkoutSuccessOrder.totalAmount)}</strong> telah aman ditahan oleh sistem Rekber JBB. Penjual telah diberi notifikasi untuk menyiapkan pengiriman.
-                </p>
-                <div className="mt-6 flex flex-col gap-2">
-                  <Link
-                    href="/nego?tab=orders"
-                    className="w-full rounded-full bg-brand-600 py-3 text-xs font-bold text-white hover:bg-brand-700 transition-colors text-center shadow-md shadow-brand-600/20"
-                  >
-                    Lihat Status Pesanan di Dashboard
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsCheckoutModalOpen(false);
-                      setCheckoutSuccessOrder(null);
-                    }}
-                    className="w-full rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer"
-                  >
-                    Tutup
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={handleCheckoutSubmit} className="flex flex-col flex-1 overflow-hidden">
-                {/* Modal Fixed Header */}
-                <div className="shrink-0 px-5 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white">
-                  <div>
-                    <div className="flex items-center gap-1.5 text-xs font-black text-brand-700 mb-0.5">
-                      <ShieldCheck className="h-4 w-4" />
-                      <span>CHECKOUT REKBER JBB</span>
-                    </div>
-                    <h3 className="text-sm font-bold text-slate-900 line-clamp-1 max-w-xs sm:max-w-sm">{listing.title}</h3>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setIsCheckoutModalOpen(false)}
-                    className="rounded-full p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                </div>
-
-                {/* Modal Scrollable Body */}
-                <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-4 space-y-4">
-                  {checkoutError && (
-                    <div className="rounded-2xl bg-rose-50 p-3.5 border border-rose-200 text-xs text-rose-800 flex items-start gap-2.5 animate-in fade-in slide-in-from-top-2">
-                      <AlertCircle className="h-4 w-4 text-rose-600 shrink-0 mt-0.5" />
-                      <div>
-                        <strong className="block font-bold">Gagal Melanjutkan Checkout</strong>
-                        <span className="font-medium">{checkoutError}</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {acceptedOffer && (
-                    <div className="rounded-xl bg-emerald-50 p-2.5 border border-emerald-200 text-xs flex items-center gap-2">
-                      <Tag className="h-4 w-4 text-emerald-600 shrink-0" />
-                      <span className="text-emerald-900 font-medium">
-                        Tawaran Disetujui: Harga terkunci pada <strong>{formatIDR(effectivePrice)}</strong>
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Delivery Options */}
-                  <div>
-                    <label className="text-xs font-bold text-slate-700">Pilih Metode Transaksi</label>
-                    <div className="grid grid-cols-2 gap-2 mt-1.5">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setDeliveryMethod('KURIR_REGULER');
-                          setCheckoutError(null);
-                        }}
-                        className={`rounded-2xl border p-3 text-left transition-all cursor-pointer ${
-                          deliveryMethod === 'KURIR_REGULER'
-                            ? 'border-brand-600 bg-brand-50/60 text-brand-950 ring-2 ring-brand-500/20'
-                            : 'border-slate-200 bg-slate-50 text-slate-700'
-                        }`}
-                      >
-                        <Truck className="h-4 w-4 text-brand-600 mb-1" />
-                        <div className="text-xs font-bold">Kirim Kurir Kilat</div>
-                        <div className="text-[10px] text-slate-500 mt-0.5">Ongkir Rp 25.000 (Asuransi)</div>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setDeliveryMethod('COD_KETEMUAN');
-                          setCheckoutError(null);
-                        }}
-                        className={`rounded-2xl border p-3 text-left transition-all cursor-pointer ${
-                          deliveryMethod === 'COD_KETEMUAN'
-                            ? 'border-brand-600 bg-brand-50/60 text-brand-950 ring-2 ring-brand-500/20'
-                            : 'border-slate-200 bg-slate-50 text-slate-700'
-                        }`}
-                      >
-                        <Zap className="h-4 w-4 text-brand-600 mb-1" />
-                        <div className="text-xs font-bold">COD Ketemuan</div>
-                        <div className="text-[10px] text-slate-500 mt-0.5">Gratis Ongkir</div>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Address Form */}
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-[11px] font-bold text-slate-700">Nama Penerima</label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="Nama lengkap"
-                        value={recipientName}
-                        onChange={(e) => {
-                          setRecipientName(e.target.value);
-                          if (checkoutError) setCheckoutError(null);
-                        }}
-                        className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 mt-1 focus:border-brand-500 focus:outline-none"
-                      />
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <label className="text-[11px] font-bold text-slate-700">Nomor WhatsApp</label>
-                        <span className="text-[10px] text-slate-400">Contoh: 081234567890</span>
-                      </div>
-                      <input
-                        type="tel"
-                        required
-                        placeholder="081234567890"
-                        value={recipientPhone}
-                        onChange={(e) => {
-                          setRecipientPhone(e.target.value);
-                          if (checkoutError) setCheckoutError(null);
-                        }}
-                        className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 mt-1 focus:border-brand-500 focus:outline-none"
-                      />
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <label className="text-[11px] font-bold text-slate-700">
-                          {deliveryMethod === 'COD_KETEMUAN' ? 'Titik Temu COD yang Disepakati' : 'Alamat Pengiriman Lengkap'}
-                        </label>
-                        <span
-                          className={`text-[10px] font-bold ${
-                            shippingAddress.trim().length >= (deliveryMethod === 'COD_KETEMUAN' ? 5 : 10)
-                              ? 'text-emerald-600'
-                              : 'text-amber-600'
-                          }`}
-                        >
-                          {shippingAddress.trim().length} / {deliveryMethod === 'COD_KETEMUAN' ? '5 min' : '10 min karakter'}
-                        </span>
-                      </div>
-                      <textarea
-                        rows={2}
-                        required
-                        placeholder={deliveryMethod === 'COD_KETEMUAN' ? 'Contoh: Starbucks Gandaria City jam 3 sore' : 'Jl. Nama Jalan No. XX, RT/RW, Kelurahan, Kecamatan, Kota, Kode Pos'}
-                        value={shippingAddress}
-                        onChange={(e) => {
-                          setShippingAddress(e.target.value);
-                          if (checkoutError) setCheckoutError(null);
-                        }}
-                        className={`w-full rounded-xl border p-2.5 text-xs text-slate-800 mt-1 focus:outline-none ${
-                          checkoutError && shippingAddress.trim().length < (deliveryMethod === 'COD_KETEMUAN' ? 5 : 10)
-                            ? 'border-rose-400 focus:border-rose-500 bg-rose-50/30'
-                            : 'border-slate-200 focus:border-brand-500'
-                        }`}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Pricing Breakdown */}
-                  <div className="rounded-2xl bg-slate-50 p-3.5 border border-slate-100 space-y-1.5 text-xs">
-                    <div className="flex justify-between text-slate-600">
-                      <span>Harga Barang {acceptedOffer && '(Nego Disetujui)'}</span>
-                      <span className="font-bold">{formatIDR(effectivePrice)}</span>
-                    </div>
-                    <div className="flex justify-between text-slate-600">
-                      <span>Biaya Pengiriman</span>
-                      <span>{deliveryMethod === 'COD_KETEMUAN' ? 'Rp 0 (COD)' : 'Rp 25.000'}</span>
-                    </div>
-                    <div className="flex justify-between text-slate-600">
-                      <span>Biaya Jasa Perlindungan Rekber (1%)</span>
-                      <span>{formatIDR(Math.round(effectivePrice * 0.01))}</span>
-                    </div>
-                    <div className="border-t border-slate-200 pt-2 flex justify-between font-black text-slate-900 text-sm">
-                      <span>Total Pembayaran</span>
-                      <span className="text-brand-700">
-                        {formatIDR(effectivePrice + (deliveryMethod === 'COD_KETEMUAN' ? 0 : 25000) + Math.round(effectivePrice * 0.01))}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Modal Fixed Footer */}
-                <div className="shrink-0 px-5 sm:px-6 py-3.5 border-t border-slate-100 bg-slate-50/80 flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setIsCheckoutModalOpen(false)}
-                    className="flex-1 rounded-full border border-slate-200 bg-white py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer shadow-2xs"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isCheckingOut}
-                    className="flex-2 flex items-center justify-center gap-2 rounded-full bg-brand-600 py-2.5 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/20 disabled:opacity-50 cursor-pointer"
-                  >
-                    <span>{isCheckingOut ? 'Memproses...' : 'Bayar Aman ke Rekber'}</span>
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
