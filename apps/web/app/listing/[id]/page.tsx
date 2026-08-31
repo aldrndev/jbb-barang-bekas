@@ -191,55 +191,60 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Image Gallery, Condition Matrix, Description */}
           <div className="lg:col-span-7 space-y-6">
-            {/* Main Stage Image Box */}
-            <div className="relative aspect-4/3 w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xs group">
-              <div className="flex h-full w-full items-center justify-center p-4">
+            {/* Unified Product Image Gallery Card */}
+            <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs space-y-3.5">
+              {/* Main Stage Image Frame */}
+              <div className="relative aspect-4/3 sm:aspect-16/11 w-full overflow-hidden rounded-2xl sm:rounded-2.5xl bg-slate-50 border border-slate-100 flex items-center justify-center p-4 group">
                 <img
                   src={primaryImageUrl}
                   alt={listing.title}
                   className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-102 cursor-pointer"
                   onClick={() => setIsLightboxOpen(true)}
                 />
+
+                {/* Floating Top Badges */}
+                <div className="absolute top-3 left-3 flex items-center gap-2">
+                  <ConditionBadge condition={listing.condition} size="md" />
+                  <span className="rounded-full bg-white/90 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-slate-800 border border-slate-200/80 shadow-xs">
+                    📷 {activeImageIdx + 1} / {images.length || 1}
+                  </span>
+                </div>
+
+                {/* Maximize / Zoom Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsLightboxOpen(true)}
+                  className="absolute bottom-3 right-3 rounded-full bg-white/90 backdrop-blur-md p-2 text-slate-700 shadow-xs border border-slate-200 hover:bg-white hover:text-brand-600 transition-all cursor-pointer"
+                  title="Perbesar Foto"
+                >
+                  <Maximize2 className="h-4 w-4" />
+                </button>
               </div>
 
-              {/* Floating Top Left Badges */}
-              <div className="absolute top-4 left-4 flex items-center gap-2">
-                <ConditionBadge condition={listing.condition} size="md" />
-                <span className="rounded-full bg-white/95 backdrop-blur-md px-3 py-1 text-xs font-bold text-slate-800 border border-slate-200 shadow-xs">
-                  📷 {activeImageIdx + 1} / {images.length || 1}
-                </span>
-              </div>
-
-              {/* Maximize Icon */}
-              <button
-                type="button"
-                onClick={() => setIsLightboxOpen(true)}
-                className="absolute bottom-4 right-4 rounded-full bg-white/95 backdrop-blur-md p-2.5 text-slate-700 shadow-xs border border-slate-200 hover:bg-white hover:text-brand-600 transition-all cursor-pointer"
-                title="Perbesar Foto"
-              >
-                <Maximize2 className="h-4 w-4" />
-              </button>
+              {/* Integrated Bottom Thumbnails Strip */}
+              {images.length > 1 && (
+                <div className="flex items-center gap-2.5 overflow-x-auto pt-1 pb-1 hide-scrollbar">
+                  {images.map((img, idx) => (
+                    <button
+                      key={img.id}
+                      type="button"
+                      onClick={() => setActiveImageIdx(idx)}
+                      className={`relative h-16 w-16 sm:h-18 sm:w-18 shrink-0 overflow-hidden rounded-xl sm:rounded-2xl transition-all cursor-pointer ${
+                        activeImageIdx === idx
+                          ? 'ring-2 ring-brand-600 ring-offset-2 border-transparent scale-102 shadow-xs'
+                          : 'border border-slate-200 opacity-60 hover:opacity-100 hover:border-slate-300'
+                      }`}
+                    >
+                      <img
+                        src={img.url}
+                        alt={`Thumbnail ${idx + 1}`}
+                        className="h-full w-full object-cover rounded-lg sm:rounded-xl"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-
-            {/* Thumbnails Carousel */}
-            {images.length > 1 && (
-              <div className="flex items-center gap-3 overflow-x-auto p-1.5 hide-scrollbar">
-                {images.map((img, idx) => (
-                  <button
-                    key={img.id}
-                    type="button"
-                    onClick={() => setActiveImageIdx(idx)}
-                    className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl p-0.5 bg-white transition-all cursor-pointer ${
-                      activeImageIdx === idx
-                        ? 'border-2 border-brand-600 shadow-sm ring-2 ring-brand-500/20'
-                        : 'border-2 border-slate-200 hover:border-slate-300 opacity-75 hover:opacity-100'
-                    }`}
-                  >
-                    <img src={img.url} alt={`Thumbnail ${idx + 1}`} className="h-full w-full object-cover rounded-xl" />
-                  </button>
-                ))}
-              </div>
-            )}
 
             {/* Transparent Condition & Inspection Matrix Card */}
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xs space-y-5">
