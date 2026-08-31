@@ -1,0 +1,30 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "jbb-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-30",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "jbb-prod-db",
+      "database_id": "local-d1-placeholder"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "STORAGE",
+      "bucket_name": "jbb-images"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "CACHE",
+      "id": "local-kv-placeholder"
+    }
+  ],
+  "vars": {
+    "JWT_SECRET": "jbb_marketplace_super_secret_jwt_key_2026",
+    "APP_ENV": "development"
+  }
+}

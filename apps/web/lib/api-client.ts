@@ -1,0 +1,151 @@
+import type { ApiResponse, PaginatedList, Listing, Category, Offer, Order, Review, UserProfile, ListingFilterParams } from '@jbb/types';
+
+const API_BASE = typeof window !== 'undefined' 
+  ? (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787')
+  : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787');
+
+function getAuthToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('jbb_auth_token');
+}
+
+async function request<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
+  const token = getAuthToken();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(options.headers as Record<string, string>)
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      headers
+    });
+
+    const data: ApiResponse<T> = await res.json();
+    return data;
+  } catch (err: any) {
+    console.error(`API Error on [${endpoint}]:`, err);
+    return {
+      success: false,
+      error: {
+        code: 'NETWORK_ERROR',
+        message: err.message || 'Gagal terhubung ke server API'
+      }
+    };
+  }
+}
+
+export const api = {
+  // Auth
+  login: (email: string, password: string) =>
+    request<{ token: string; user: UserProfile }>('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    }),
+
+  register: (name: string, email: string, password: string, phone?: string) =>
+    request<{ token: string; user: UserProfile }>('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ name, email, password, phone })
+    }),
+
+  getMe: () => request<UserProfile>('/api/auth/me'),
+
+  // Categories
+  getCategories: () => request<Category[]>('/api/categories'),
+
+  // Listings
+  getListings: (params: ListingFilterParams = {}) => {
+    const searchParams = new URLSearchParams();
+    if (params.q) searchParams.set('q', params.q);
+    if (params.category) searchParams.set('category', params.category);
+    if (params.condition) {
+      if (Array.isArray(params.condition)) {
+        params.condition.forEach((c) => searchParams.append('condition', c));
+      } else {
+        searchParams.set('condition', params.condition);
+      }
+    }
+    if (params.minPrice !== undefined) searchParams.set('minPrice', params.minPrice.toString());
+    if (params.maxPrice !== undefined) searchParams.set('maxPrice', params.maxPrice.toString());
+    if (params.city) searchParams.set('city', params.city);
+    if (params.isCod !== undefined) searchParams.set('isCod', params.isCod.toString());
+    if (params.isNego !== undefined) searchParams.set('isNego', params.isNego.toString());
+    if (params.sortBy) searchParams.set('sortBy', params.sortBy);
+    if (params.page) searchParams.set('page', params.page.toString());
+    if (params.limit) searchParams.set('limit', params.limit.toString());
+
+    const qs = searchParams.toString();
+    return request<PaginatedList<Listing>>(`/api/listings${qs ? `?${qs}` : ''}`);
+  },
+
+  getFeaturedListings: () => request<Listing[]>('/api/listings/featured'),
+
+  getListingDetail: (idOrSlug: string) => request<Listing>(`/api/listings/${idOrSlug}`),
+
+  recordView: (idOrSlug: string) =>
+    request<{ viewCount: number }>(`/api/listings/${idOrSlug}/view`, { method: 'POST' }),
+
+  createListing: (payload: any) =>
+    request<Listing>('/api/listings', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    }),
+
+  // Offers
+  makeOffer: (listingId: string, offeredPrice: number, message?: string) =>
+    request<Offer>('/api/offers', {
+      method: 'POST',
+      body: JSON.stringify({ listingId, offeredPrice, message })
+    }),
+
+  getReceivedOffers: () => request<Offer[]>('/api/offers/received'),
+  getSentOffers: () => request<Offer[]>('/api/offers/sent'),
+
+  respondOffer: (offerId: string, action: 'ACCEPT' | 'REJECT' | 'COUNTER', counterPrice?: number, counterMessage?: string) =>
+    request<Offer>(`/api/offers/${offerId}/respond`, {
+      method: 'POST',
+      body: JSON.stringify({ offerId, action, counterPrice, counterMessage })
+    }),
+
+  // Orders / Escrow
+  createOrder: (payload: any) =>
+    request<Order>('/api/orders', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    }),
+
+  getOrders: () => request<Order[]>('/api/orders'),
+  getOrderDetail: (id: string) => request<Order>(`/api/orders/${id}`),
+
+  updateShipping: (orderId: string, courierName: string, trackingNumber: string) =>
+    request<Order>(`/api/orders/${orderId}/ship`, {
+      method: 'PUT',
+      body: JSON.stringify({ orderId, courierName, trackingNumber })
+    }),
+
+  completeOrder: (orderId: string) =>
+    request<Order>(`/api/orders/${orderId}/complete`, {
+      method: 'PUT'
+    }),
+
+  disputeOrder: (orderId: string, reason: string, evidenceUrls: string[]) =>
+    request<Order>(`/api/orders/${orderId}/dispute`, {
+      method: 'POST',
+      body: JSON.stringify({ orderId, reason, evidenceUrls })
+    }),
+
+  // Reviews
+  createReview: (payload: any) =>
+    request<Review>('/api/reviews', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    }),
+
+  getSellerReviews: (sellerId: string) => request<Review[]>(`/api/reviews/seller/${sellerId}`)
+};

@@ -1,0 +1,39 @@
+{
+  "name": "@jbb/web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "build:worker": "opennextjs-cloudflare build",
+    "preview:worker": "opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare deploy",
+    "clean": "rm -rf .next .open-next",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@jbb/types": "workspace:*",
+    "@jbb/validators": "workspace:*",
+    "@tanstack/react-query": "^5.102.8",
+    "clsx": "^2.1.1",
+    "hono": "^4.13.5",
+    "lucide-react": "^1.38.0",
+    "next": "^16.3.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.3",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260831.1",
+    "@opennextjs/cloudflare": "^1.20.4",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^22.13.5",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "postcss": "^8.5.26",
+    "typescript": "^5.8.2",
+    "wrangler": "^4.127.1"
+  }
+}

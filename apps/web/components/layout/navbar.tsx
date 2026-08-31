@@ -1,0 +1,204 @@
+'use client';
+
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import {
+  Search,
+  Plus,
+  ShieldCheck,
+  MessageSquareText,
+  User,
+  LogOut,
+  ChevronDown
+} from 'lucide-react';
+import { useAuth } from '../../context/auth-context';
+
+export function Navbar() {
+  const router = useRouter();
+  const { user, openAuthModal, logout } = useAuth();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/cari?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200/70 bg-white/90 backdrop-blur-md transition-all">
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
+        {/* Brand Logo - Sleek & Clean */}
+        <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600 text-white shadow-sm shadow-brand-600/20 group-hover:bg-brand-700 transition-all">
+            <ShieldCheck className="h-5.5 w-5.5" />
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-black text-2xl tracking-tight text-slate-900">
+              JBB
+            </span>
+            <span className="rounded-full bg-brand-50 border border-brand-200/80 px-2 py-0.5 text-[10px] font-bold text-brand-700 tracking-wide">
+              Rekber Aman
+            </span>
+          </div>
+        </Link>
+
+        {/* Spacious Clean Search Bar (Desktop / Tablet) */}
+        <form
+          onSubmit={handleSearchSubmit}
+          className="hidden md:flex flex-1 max-w-xl items-center relative group"
+        >
+          <Search className="absolute left-4 h-4.5 w-4.5 text-slate-400 group-focus-within:text-brand-600 transition-colors pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Cari iPhone, MacBook, Kamera, Sepatu thrift..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full h-11 pl-11 pr-12 rounded-full border border-slate-200 bg-slate-50/70 text-sm text-slate-900 placeholder-slate-400 font-medium focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 focus:outline-none transition-all shadow-2xs"
+          />
+          {searchQuery && (
+            <button
+              type="submit"
+              className="absolute right-2 px-3 py-1 bg-brand-600 text-white rounded-full text-xs font-bold hover:bg-brand-700 transition-colors cursor-pointer"
+            >
+              Cari
+            </button>
+          )}
+        </form>
+
+        {/* Right Actions - Clean, uncluttered, airy */}
+        <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+          {/* Nego & Pesanan */}
+          <Link
+            href="/nego"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 transition-all"
+            title="Nego & Pesanan"
+          >
+            <div className="relative">
+              <MessageSquareText className="h-5 w-5 text-slate-600" />
+              <span className="absolute -top-1 -right-1 flex h-2 w-2 rounded-full bg-brand-500 ring-2 ring-white animate-pulse"></span>
+            </div>
+            <span className="hidden lg:inline text-xs font-bold">Nego</span>
+          </Link>
+
+          {/* Jual Barang Primary Button - Protected by Auth */}
+          {user ? (
+            <Link
+              href="/jual"
+              className="flex items-center gap-1.5 rounded-full bg-brand-600 hover:bg-brand-700 px-4.5 py-2 text-xs font-bold text-white shadow-sm shadow-brand-600/25 transition-all hover:scale-102 cursor-pointer"
+            >
+              <Plus className="h-4 w-4 stroke-[3]" />
+              <span>Jual</span>
+            </Link>
+          ) : (
+            <button
+              onClick={openAuthModal}
+              className="flex items-center gap-1.5 rounded-full bg-brand-600 hover:bg-brand-700 px-4.5 py-2 text-xs font-bold text-white shadow-sm shadow-brand-600/25 transition-all hover:scale-102 cursor-pointer"
+              title="Masuk untuk Jual Barang"
+            >
+              <Plus className="h-4 w-4 stroke-[3]" />
+              <span>Jual</span>
+            </button>
+          )}
+
+          <div className="h-5 w-px bg-slate-200 hidden sm:block"></div>
+
+          {/* User Profile / Auth Button */}
+          {user ? (
+            <div className="relative">
+              <button
+                onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                className="flex items-center gap-2.5 rounded-full p-1 pr-2.5 hover:bg-slate-100/80 transition-colors cursor-pointer"
+              >
+                {user.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt={user.name}
+                    className="h-8 w-8 rounded-full object-cover ring-2 ring-slate-100"
+                  />
+                ) : (
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
+                    {user.name.charAt(0)}
+                  </div>
+                )}
+                <span className="text-xs font-bold text-slate-800 hidden sm:inline">
+                  {user.name.split(' ')[0]}
+                </span>
+                <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+              </button>
+
+              {/* Profile Dropdown Menu */}
+              {isProfileMenuOpen && (
+                <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-100 bg-white p-1.5 shadow-xl shadow-slate-200/50 z-50 animate-in fade-in">
+                  <div className="border-b border-slate-100 px-3 py-2.5">
+                    <p className="text-xs font-bold text-slate-900">{user.name}</p>
+                    <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
+                    <div className="mt-1.5 flex items-center gap-1.5">
+                      <span className="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">
+                        Trust Score {user.trustScore}%
+                      </span>
+                    </div>
+                  </div>
+                  <div className="py-1">
+                    <Link
+                      href="/nego"
+                      onClick={() => setIsProfileMenuOpen(false)}
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                    >
+                      <MessageSquareText className="h-4 w-4 text-slate-400" />
+                      Tawaran & Transaksi
+                    </Link>
+                    <Link
+                      href="/jual"
+                      onClick={() => setIsProfileMenuOpen(false)}
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                    >
+                      <Plus className="h-4 w-4 text-slate-400" />
+                      Pasang Iklan Baru
+                    </Link>
+                  </div>
+                  <div className="border-t border-slate-100 pt-1">
+                    <button
+                      onClick={() => {
+                        logout();
+                        setIsProfileMenuOpen(false);
+                      }}
+                      className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Keluar
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={openAuthModal}
+              className="flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-brand-600 px-3 py-2 rounded-lg hover:bg-slate-100/70 transition-all cursor-pointer"
+            >
+              <User className="h-4 w-4" />
+              <span>Masuk</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile Search Bar Row */}
+      <div className="px-4 pb-3 md:hidden">
+        <form onSubmit={handleSearchSubmit} className="relative">
+          <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Cari iPhone, MacBook, PS5..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full h-10 pl-10 pr-4 rounded-full border border-slate-200 bg-slate-50 text-xs text-slate-800 placeholder-slate-400 font-medium focus:bg-white focus:border-brand-500 focus:outline-none transition-all"
+          />
+        </form>
+      </div>
+    </header>
+  );
+}
