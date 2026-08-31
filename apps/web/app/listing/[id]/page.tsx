@@ -192,53 +192,56 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Image Gallery, Condition Matrix, Description */}
           <div className="lg:col-span-7 space-y-6">
-            {/* Unified Product Image Gallery Card */}
-            <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs space-y-3">
-              {/* Top Header Bar: Badges & Fullscreen Button */}
-              <div className="flex items-center justify-between pb-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <ConditionBadge condition={listing.condition} size="md" />
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700 border border-slate-200">
-                    📷 {activeImageIdx + 1} / {images.length || 1}
-                  </span>
+            {/* Unified Product Image Gallery Card (Option 2: Premium Docked Tray) */}
+            <div className="rounded-3xl border border-slate-200 bg-white shadow-xs overflow-hidden">
+              {/* Top Section: Header & Main Stage Canvas */}
+              <div className="p-5 sm:p-6 pb-4 space-y-3">
+                {/* Top Header Bar: Badges & Fullscreen Button */}
+                <div className="flex items-center justify-between pb-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <ConditionBadge condition={listing.condition} size="md" />
+                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700 border border-slate-200">
+                      📷 {activeImageIdx + 1} / {images.length || 1}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsLightboxOpen(true)}
+                    className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+                    title="Perbesar Layar Penuh"
+                  >
+                    <Maximize2 className="h-3.5 w-3.5 text-slate-500" />
+                    <span>Perbesar</span>
+                  </button>
                 </div>
 
-                <button
-                  type="button"
+                {/* Main Stage Image Frame */}
+                <div
+                  className="relative aspect-4/3 sm:aspect-16/11 w-full overflow-hidden rounded-2xl flex items-center justify-center p-2 group cursor-pointer"
                   onClick={() => setIsLightboxOpen(true)}
-                  className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
-                  title="Perbesar Layar Penuh"
                 >
-                  <Maximize2 className="h-3.5 w-3.5 text-slate-500" />
-                  <span>Perbesar</span>
-                </button>
+                  <img
+                    src={primaryImageUrl}
+                    alt={listing.title}
+                    className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-102"
+                  />
+                </div>
               </div>
 
-              {/* Main Stage Image Frame (Clean Canvas, No Gray Background) */}
-              <div
-                className="relative aspect-4/3 sm:aspect-16/11 w-full overflow-hidden rounded-2xl flex items-center justify-center p-2 group cursor-pointer"
-                onClick={() => setIsLightboxOpen(true)}
-              >
-                <img
-                  src={primaryImageUrl}
-                  alt={listing.title}
-                  className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-102"
-                />
-              </div>
-
-              {/* Integrated Bottom Thumbnails Strip with Crisp Divider */}
+              {/* Bottom Section: Premium Docked Thumbnail Tray */}
               {images.length > 1 && (
-                <div className="border-t border-slate-200 pt-3.5">
+                <div className="border-t border-slate-200/90 bg-slate-50/80 px-5 sm:px-6 py-3.5">
                   <div className="flex items-center gap-3 overflow-x-auto py-1 px-1 hide-scrollbar">
                     {images.map((img, idx) => (
                       <button
                         key={img.id}
                         type="button"
                         onClick={() => setActiveImageIdx(idx)}
-                        className={`relative h-16 w-16 sm:h-18 sm:w-18 shrink-0 overflow-hidden rounded-2xl transition-all cursor-pointer ${
+                        className={`relative h-16 w-16 sm:h-18 sm:w-18 shrink-0 overflow-hidden rounded-2xl transition-all cursor-pointer bg-white ${
                           activeImageIdx === idx
-                            ? 'ring-2 ring-brand-600 ring-offset-2 scale-102 shadow-xs'
-                            : 'border border-slate-200 opacity-60 hover:opacity-100 hover:border-slate-300'
+                            ? 'ring-2 ring-brand-600 ring-offset-2 ring-offset-slate-50 scale-103 shadow-sm'
+                            : 'border border-slate-200/90 opacity-60 hover:opacity-100 hover:border-slate-300'
                         }`}
                       >
                         <img
