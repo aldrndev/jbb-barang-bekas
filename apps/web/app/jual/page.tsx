@@ -359,8 +359,8 @@ export default function JualBarangPage() {
                 <label className="text-xs font-bold text-slate-700">Harga Jual (Rp)</label>
                 <input
                   type="number"
-                  min={10000}
-                  step={50000}
+                  min={1000}
+                  step="any"
                   required
                   placeholder="Contoh: 9850000"
                   value={price || ''}

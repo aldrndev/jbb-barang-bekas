@@ -241,8 +241,8 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
                   <span className="absolute left-3 top-2.5 text-sm font-bold text-slate-400">Rp</span>
                   <input
                     type="number"
-                    min="10000"
-                    step="50000"
+                    min="1000"
+                    step="any"
                     required
                     value={offerAmount}
                     onChange={(e) => setOfferAmount(Number(e.target.value))}

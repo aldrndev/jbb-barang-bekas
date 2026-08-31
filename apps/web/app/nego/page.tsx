@@ -300,6 +300,8 @@ function NegoDashboardContent() {
                     <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 p-3.5 flex flex-col sm:flex-row items-center gap-2">
                       <input
                         type="number"
+                        min="1000"
+                        step="any"
                         placeholder="Harga Tawar Balik (Rp)"
                         value={counterPriceInput}
                         onChange={(e) => setCounterPriceInput(Number(e.target.value))}

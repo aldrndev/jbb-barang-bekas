@@ -169,6 +169,7 @@ function CariContent() {
               <div className="space-y-2">
                 <input
                   type="number"
+                  step="any"
                   placeholder="Harga Minimum"
                   value={minPrice || ''}
                   onChange={(e) => setMinPrice(e.target.value ? Number(e.target.value) : undefined)}
@@ -176,6 +177,7 @@ function CariContent() {
                 />
                 <input
                   type="number"
+                  step="any"
                   placeholder="Harga Maksimum"
                   value={maxPrice || ''}
                   onChange={(e) => setMaxPrice(e.target.value ? Number(e.target.value) : undefined)}
