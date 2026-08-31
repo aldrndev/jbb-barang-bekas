@@ -89,7 +89,7 @@ export function Navbar() {
               href="/jual"
               className="flex items-center gap-1.5 rounded-full bg-brand-600 hover:bg-brand-700 px-4.5 py-2 text-xs font-bold text-white shadow-sm shadow-brand-600/25 transition-all hover:scale-102 cursor-pointer"
             >
-              <Plus className="h-4 w-4 stroke-[3]" />
+              <Plus className="h-4 w-4 stroke-3" />
               <span>Jual</span>
             </Link>
           ) : (
@@ -98,7 +98,7 @@ export function Navbar() {
               className="flex items-center gap-1.5 rounded-full bg-brand-600 hover:bg-brand-700 px-4.5 py-2 text-xs font-bold text-white shadow-sm shadow-brand-600/25 transition-all hover:scale-102 cursor-pointer"
               title="Masuk untuk Jual Barang"
             >
-              <Plus className="h-4 w-4 stroke-[3]" />
+              <Plus className="h-4 w-4 stroke-3" />
               <span>Jual</span>
             </button>
           )}

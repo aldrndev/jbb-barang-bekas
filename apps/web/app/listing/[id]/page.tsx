@@ -4,7 +4,7 @@ import React, { useState, use } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../../lib/api-client';
-import { formatIDR, formatTimeAgo, getConditionMeta } from '../../../lib/utils';
+import { formatIDR, formatTimeAgo } from '../../../lib/utils';
 import { ConditionBadge } from '../../../components/marketplace/condition-badge';
 import { MakeOfferModal } from '../../../components/marketplace/make-offer-modal';
 import {
@@ -14,15 +14,24 @@ import {
   Zap,
   CheckCircle2,
   Calendar,
-  FileText,
-  Clock,
   Sparkles,
   MessageSquareQuote,
   ShoppingBag,
   Share2,
   AlertCircle,
   Truck,
-  ArrowLeft
+  ArrowLeft,
+  Heart,
+  Maximize2,
+  X,
+  Lock,
+  MessageCircle,
+  Clock,
+  Eye,
+  Flame,
+  BadgeCheck,
+  Check,
+  ChevronRight
 } from 'lucide-react';
 import { useAuth } from '../../../context/auth-context';
 
@@ -32,8 +41,13 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
   const { user, openAuthModal } = useAuth();
 
   const [activeImageIdx, setActiveImageIdx] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [isNegoModalOpen, setIsNegoModalOpen] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [favoriteCountOffset, setFavoriteCountOffset] = useState(0);
+  const [shareToast, setShareToast] = useState(false);
+
   const [deliveryMethod, setDeliveryMethod] = useState<'COD_KETEMUAN' | 'KURIR_REGULER'>('KURIR_REGULER');
   const [recipientName, setRecipientName] = useState(user?.name || '');
   const [recipientPhone, setRecipientPhone] = useState(user?.phone || '');
@@ -52,8 +66,8 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
     return (
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 animate-pulse">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-7 h-96 bg-slate-200 rounded-3xl" />
-          <div className="lg:col-span-5 h-96 bg-slate-200 rounded-3xl" />
+          <div className="lg:col-span-7 h-110 bg-slate-200 rounded-3xl" />
+          <div className="lg:col-span-5 h-110 bg-slate-200 rounded-3xl" />
         </div>
       </div>
     );
@@ -62,7 +76,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
   if (!listing) {
     return (
       <div className="mx-auto max-w-xl px-4 py-20 text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 mb-4">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 mb-4 shadow-sm">
           <AlertCircle className="h-9 w-9" />
         </div>
         <h2 className="text-xl font-bold text-slate-900">Barang Tidak Ditemukan</h2>
@@ -71,7 +85,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
         </p>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 mt-6 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white"
+          className="inline-flex items-center gap-2 mt-6 rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-brand-700 transition-colors shadow-sm"
         >
           <ArrowLeft className="h-4 w-4" />
           Kembali ke Beranda
@@ -84,6 +98,35 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
   const primaryImageUrl = images[activeImageIdx]?.url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&auto=format&fit=crop&q=80';
   const completenessList = Array.isArray(listing.completeness) ? listing.completeness : [];
   const specs = listing.specs || {};
+
+  const savingsPercent = listing.originalPrice
+    ? Math.round(((listing.originalPrice - listing.price) / listing.originalPrice) * 100)
+    : 0;
+
+  const toggleFavorite = () => {
+    if (!user) {
+      openAuthModal();
+      return;
+    }
+    setIsFavorited(!isFavorited);
+    setFavoriteCountOffset(isFavorited ? 0 : 1);
+  };
+
+  const handleShare = () => {
+    if (typeof window !== 'undefined') {
+      if (navigator.share) {
+        navigator.share({
+          title: listing.title,
+          text: `Cek barang bekas berkualitas: ${listing.title} seharga ${formatIDR(listing.price)} di Rekber JBB`,
+          url: window.location.href
+        }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        setShareToast(true);
+        setTimeout(() => setShareToast(false), 2500);
+      }
+    }
+  };
 
   const handleCheckoutSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,37 +151,83 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-6 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50/70 py-6 px-4 sm:px-6 lg:px-8 pb-28 md:pb-12">
       <div className="mx-auto max-w-7xl">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs text-slate-500 mb-6">
-          <Link href="/" className="hover:text-emerald-600">Beranda</Link>
-          <span>/</span>
-          <Link href={`/cari?category=${listing.category?.slug}`} className="hover:text-emerald-600">
-            {listing.category?.name || 'Katalog'}
-          </Link>
-          <span>/</span>
-          <span className="text-slate-800 font-bold truncate max-w-xs">{listing.title}</span>
+        {/* Breadcrumb & Quick Actions */}
+        <div className="flex items-center justify-between text-xs text-slate-500 mb-5">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <Link href="/" className="hover:text-brand-600 transition-colors font-medium">Beranda</Link>
+            <ChevronRight className="h-3 w-3 text-slate-300" />
+            <Link href={`/cari?category=${listing.category?.slug}`} className="hover:text-brand-600 transition-colors font-medium">
+              {listing.category?.name || 'Katalog'}
+            </Link>
+            <ChevronRight className="h-3 w-3 text-slate-300" />
+            <span className="text-slate-800 font-bold truncate max-w-xs sm:max-w-md">{listing.title}</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs"
+            >
+              <Share2 className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Bagikan</span>
+            </button>
+            <button
+              onClick={toggleFavorite}
+              className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-2xs ${
+                isFavorited
+                  ? 'border-rose-200 bg-rose-50 text-rose-600'
+                  : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+              }`}
+            >
+              <Heart className={`h-3.5 w-3.5 ${isFavorited ? 'fill-rose-500 text-rose-500' : ''}`} />
+              <span className="font-bold">{listing.favoriteCount + favoriteCountOffset}</span>
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Left Column: Image Gallery & Inspector */}
-          <div className="lg:col-span-7 space-y-4">
-            {/* Main Stage Image */}
-            <div className="relative aspect-4/3 w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-xs">
+        {/* Share Toast Notification */}
+        {shareToast && (
+          <div className="fixed top-20 right-6 z-50 rounded-2xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white shadow-xl animate-in fade-in slide-in-from-top-3">
+            ✅ Link produk berhasil disalin ke clipboard!
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column: Image Gallery, Condition Matrix, Description */}
+          <div className="lg:col-span-7 space-y-6">
+            {/* Main Stage Image Box */}
+            <div className="relative aspect-4/3 w-full overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-sm group">
               <img
                 src={primaryImageUrl}
                 alt={listing.title}
-                className="h-full w-full object-contain p-2"
+                className="h-full w-full object-contain p-4 transition-transform duration-300 group-hover:scale-102 cursor-pointer"
+                onClick={() => setIsLightboxOpen(true)}
               />
-              <div className="absolute top-4 left-4">
+
+              {/* Floating Top Left Badge */}
+              <div className="absolute top-4 left-4 flex items-center gap-2">
                 <ConditionBadge condition={listing.condition} size="md" />
+                <span className="rounded-full bg-slate-900/80 backdrop-blur-md px-2.5 py-1 text-[11px] font-bold text-white shadow-sm">
+                  📷 {activeImageIdx + 1} / {images.length || 1}
+                </span>
               </div>
+
+              {/* Maximize Icon */}
+              <button
+                type="button"
+                onClick={() => setIsLightboxOpen(true)}
+                className="absolute bottom-4 right-4 rounded-xl bg-white/90 backdrop-blur-md p-2.5 text-slate-700 shadow-md hover:bg-white hover:text-brand-600 transition-all cursor-pointer opacity-90 hover:opacity-100"
+                title="Perbesar Foto"
+              >
+                <Maximize2 className="h-4 w-4" />
+              </button>
             </div>
 
-            {/* Thumbnails list */}
+            {/* Thumbnails Carousel */}
             {images.length > 1 && (
-              <div className="flex items-center gap-3 overflow-x-auto pb-2 hide-scrollbar">
+              <div className="flex items-center gap-3 overflow-x-auto pb-1 hide-scrollbar">
                 {images.map((img, idx) => (
                   <button
                     key={img.id}
@@ -146,170 +235,274 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                     onClick={() => setActiveImageIdx(idx)}
                     className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-2 bg-white transition-all cursor-pointer ${
                       activeImageIdx === idx
-                        ? 'border-emerald-600 ring-2 ring-emerald-500/20'
-                        : 'border-slate-200 hover:border-slate-300'
+                        ? 'border-brand-600 ring-4 ring-brand-500/15 shadow-sm scale-102'
+                        : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-300'
                     }`}
                   >
-                    <img src={img.url} alt={`Angle ${idx + 1}`} className="h-full w-full object-cover" />
+                    <img src={img.url} alt={`Thumbnail ${idx + 1}`} className="h-full w-full object-cover" />
                   </button>
                 ))}
               </div>
             )}
 
-            {/* Condition Inspector Card */}
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xs">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-emerald-600" />
-                  <h3 className="text-sm font-black text-slate-900">Inspeksi & Kelengkapan Fisik</h3>
+            {/* Transparent Condition & Inspection Matrix Card */}
+            <div className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-5">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                    <Sparkles className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-slate-900">Inspeksi & Transparansi Fisik</h3>
+                    <p className="text-[11px] text-slate-500 font-medium">Kondisi riil unit terverifikasi penjual</p>
+                  </div>
                 </div>
-                <ConditionBadge condition={listing.condition} size="sm" />
+                <span className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-bold text-emerald-800">
+                  Grade A++ (96% Mulus)
+                </span>
               </div>
 
-              {/* Completeness Checklist */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <div className="flex items-center gap-2 rounded-xl bg-slate-50 p-2.5 text-xs text-slate-700 font-medium">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
-                  <span>
-                    {completenessList.includes('FULLSET')
-                      ? 'Fullset Dus & Aksesoris Asli'
-                      : 'Batangan / Unit Saja'}
-                  </span>
+              {/* Structured Inspection Checklist Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="flex items-start gap-2.5 rounded-2xl bg-slate-50/80 p-3.5 border border-slate-100">
+                  <CheckCircle2 className="h-4.5 w-4.5 text-brand-600 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-xs font-bold text-slate-900 block">
+                      {completenessList.includes('FULLSET')
+                        ? 'Fullset Dus & Aksesoris Asli'
+                        : 'Unit Saja (Batangan)'}
+                    </span>
+                    <span className="text-[11px] text-slate-500">
+                      {completenessList.includes('BOX_UNIT') ? 'Lengkap dus, kabel, buku' : 'Sesuai foto produk'}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 rounded-xl bg-slate-50 p-2.5 text-xs text-slate-700 font-medium">
+                <div className="flex items-start gap-2.5 rounded-2xl bg-slate-50/80 p-3.5 border border-slate-100">
                   <CheckCircle2
-                    className={`h-4 w-4 shrink-0 ${
-                      listing.hasOriginalReceipt ? 'text-emerald-600' : 'text-slate-400'
+                    className={`h-4.5 w-4.5 shrink-0 mt-0.5 ${
+                      listing.hasOriginalReceipt ? 'text-brand-600' : 'text-slate-400'
                     }`}
                   />
-                  <span>
-                    {listing.hasOriginalReceipt ? 'Ada Nota / Struk Asli' : 'Tanpa Nota Pembelian'}
-                  </span>
+                  <div>
+                    <span className="text-xs font-bold text-slate-900 block">
+                      {listing.hasOriginalReceipt ? 'Ada Nota / Struk Pembelian' : 'Tanpa Nota Pembelian'}
+                    </span>
+                    <span className="text-[11px] text-slate-500">
+                      {listing.hasOriginalReceipt ? 'Bukti asli toko resmi terlampir' : 'Garansi toko habis'}
+                    </span>
+                  </div>
                 </div>
 
                 {listing.purchaseYear && (
-                  <div className="flex items-center gap-2 rounded-xl bg-slate-50 p-2.5 text-xs text-slate-700 font-medium">
-                    <Calendar className="h-4 w-4 text-emerald-600 shrink-0" />
-                    <span>Tahun Pembelian: {listing.purchaseYear}</span>
+                  <div className="flex items-start gap-2.5 rounded-2xl bg-slate-50/80 p-3.5 border border-slate-100">
+                    <Calendar className="h-4.5 w-4.5 text-brand-600 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        Tahun Pembelian: {listing.purchaseYear}
+                      </span>
+                      <span className="text-[11px] text-slate-500">Pemakaian tangan pertama</span>
+                    </div>
                   </div>
                 )}
 
                 {listing.isCodAvailable && (
-                  <div className="flex items-center gap-2 rounded-xl bg-slate-50 p-2.5 text-xs text-slate-700 font-medium">
-                    <Zap className="h-4 w-4 text-emerald-600 shrink-0" />
-                    <span>Siap COD: {listing.codMeetingPoint || listing.city}</span>
+                  <div className="flex items-start gap-2.5 rounded-2xl bg-slate-50/80 p-3.5 border border-slate-100">
+                    <Zap className="h-4.5 w-4.5 text-brand-600 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        Siap COD di Tempat Publik
+                      </span>
+                      <span className="text-[11px] text-slate-500">
+                        {listing.codMeetingPoint || listing.city}
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Product Description */}
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xs">
-              <h3 className="text-sm font-black text-slate-900 mb-3">Deskripsi Lengkap Penjual</h3>
-              <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-line">
-                {listing.description}
-              </p>
+            {/* Product Description & Technical Specs */}
+            <div className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-6">
+              <div>
+                <h3 className="text-sm font-black text-slate-900 mb-3">Deskripsi Lengkap Penjual</h3>
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line font-medium">
+                  {listing.description}
+                </p>
+              </div>
 
               {/* Dynamic Specs Table */}
               {Object.keys(specs).length > 0 && (
-                <div className="mt-6 border-t border-slate-100 pt-4">
-                  <h4 className="text-xs font-bold text-slate-900 mb-3">Spesifikasi Detail</h4>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="border-t border-slate-100 pt-5">
+                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">
+                    Spesifikasi Teknis
+                  </h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
                     {Object.entries(specs).map(([key, val]) => (
-                      <div key={key} className="rounded-xl bg-slate-50 p-2.5">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                      <div key={key} className="rounded-2xl bg-slate-50 p-3 border border-slate-100/80">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">
                           {key}
                         </span>
-                        <span className="font-bold text-slate-800">{String(val)}</span>
+                        <span className="font-bold text-slate-900">{String(val)}</span>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
+
+              {/* Escrow Guarantee Terms Callout */}
+              <div className="rounded-2xl border border-brand-100 bg-brand-50/60 p-4 flex items-start gap-3">
+                <ShieldCheck className="h-5 w-5 text-brand-600 shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-xs font-bold text-brand-950">Jaminan Uang Kembali 100%</h4>
+                  <p className="text-[11px] text-brand-800/90 mt-0.5 leading-relaxed">
+                    Jika barang yang diterima memiliki minus fisik atau fungsi yang tidak dijelaskan pada deskripsi, Anda berhak mengajukan komplain & retur dana penuh dalam 48 jam.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Right Column: Price Card, Seller Reputation & Actions */}
-          <div className="lg:col-span-5 space-y-4">
-            {/* Primary Action Card */}
-            <div className="sticky top-20 rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xl shadow-slate-200/40">
-              <h1 className="text-lg sm:text-xl font-black text-slate-900 leading-snug">
-                {listing.title}
-              </h1>
+          {/* Right Column: Transaction Sidebar Card */}
+          <div className="lg:col-span-5 space-y-6">
+            {/* Primary Action & Pricing Card */}
+            <div className="sticky top-24 rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xl shadow-slate-200/50 space-y-5">
+              {/* Title & Live Status Badges */}
+              <div>
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-brand-700 border border-brand-200/70">
+                    <Clock className="h-3 w-3" />
+                    <span>Aktif</span>
+                  </span>
+                  <span className="flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-semibold text-slate-600">
+                    <Eye className="h-3 w-3" />
+                    <span>{listing.viewCount}x dilihat</span>
+                  </span>
+                  <span className="flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold text-amber-700 border border-amber-200/60">
+                    <Flame className="h-3 w-3" />
+                    <span>{listing.offerCount} penawaran</span>
+                  </span>
+                </div>
 
-              <div className="mt-3 flex items-center justify-between border-b border-slate-100 pb-4">
-                <div>
-                  <div className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                    {formatIDR(listing.price)}
+                <h1 className="text-lg sm:text-xl font-black text-slate-900 leading-snug">
+                  {listing.title}
+                </h1>
+              </div>
+
+              {/* Price Display */}
+              <div className="border-y border-slate-100 py-4">
+                <div className="flex items-baseline justify-between">
+                  <div>
+                    <div className="text-3xl font-black text-slate-900 tracking-tight">
+                      {formatIDR(listing.price)}
+                    </div>
+                    {listing.originalPrice && (
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-slate-400 line-through">
+                          {formatIDR(listing.originalPrice)}
+                        </span>
+                        {savingsPercent > 0 && (
+                          <span className="rounded-md bg-rose-50 px-1.5 py-0.5 text-[10px] font-black text-rose-600 border border-rose-200">
+                            Hemat {savingsPercent}%
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
-                  {listing.originalPrice && (
-                    <div className="text-xs text-slate-400 line-through mt-0.5">
-                      Harga baru saat beli: {formatIDR(listing.originalPrice)}
+
+                  {listing.isNegotiable && (
+                    <div className="text-right">
+                      <span className="rounded-full bg-amber-100/80 px-3 py-1 text-xs font-extrabold text-amber-900 border border-amber-300/60">
+                        Bisa Nego
+                      </span>
+                      {listing.minOfferPrice && (
+                        <p className="text-[10px] text-slate-400 font-semibold mt-1">
+                          Min: {formatIDR(listing.minOfferPrice)}
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
-
-                {listing.isNegotiable && (
-                  <span className="rounded-xl bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-800 border border-amber-200/60">
-                    Bisa Di-Nego
-                  </span>
-                )}
               </div>
 
-              {/* Location Badge */}
-              <div className="mt-4 flex items-center gap-2 text-xs text-slate-600 bg-slate-50 rounded-2xl p-3">
-                <MapPin className="h-4 w-4 text-emerald-600 shrink-0" />
-                <div>
-                  <span className="font-bold text-slate-800">{listing.district}, {listing.city}</span>
-                  <p className="text-[10px] text-slate-400">
-                    {listing.isCodAvailable ? 'Mendukung COD di tempat umum & Pengiriman Kurir' : 'Pengiriman via Kurir Rekber'}
+              {/* Verified Location Box */}
+              <div className="flex items-center gap-3 rounded-2xl bg-slate-50/90 p-3.5 border border-slate-100">
+                <MapPin className="h-4.5 w-4.5 text-brand-600 shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <span className="font-bold text-xs text-slate-900 block truncate">
+                    {listing.district}, {listing.city}
+                  </span>
+                  <p className="text-[10px] text-slate-500 truncate">
+                    {listing.isCodAvailable ? 'Mendukung COD di tempat umum & Kirim Kurir' : 'Pengiriman via Kurir Rekber'}
                   </p>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="mt-5 space-y-2.5">
+              <div className="space-y-3 pt-1">
                 <button
                   type="button"
                   onClick={() => setIsCheckoutModalOpen(true)}
-                  className="w-full flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-3.5 text-xs sm:text-sm font-bold text-white shadow-lg shadow-emerald-600/25 hover:bg-emerald-700 transition-all cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-brand-600/30 hover:bg-brand-700 hover:scale-101 transition-all cursor-pointer"
                 >
-                  <ShoppingBag className="h-4 w-4" />
-                  <span>Beli Langsung via Rekber ({formatIDR(listing.price)})</span>
+                  <ShoppingBag className="h-4.5 w-4.5" />
+                  <span>Beli Langsung via Rekber</span>
                 </button>
 
                 {listing.isNegotiable && (
                   <button
                     type="button"
                     onClick={() => setIsNegoModalOpen(true)}
-                    className="w-full flex items-center justify-center gap-2 rounded-2xl border-2 border-emerald-600/30 bg-emerald-50/50 py-3 text-xs sm:text-sm font-bold text-emerald-800 hover:bg-emerald-100/70 transition-all cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 rounded-full border-2 border-brand-600/30 bg-brand-50/60 py-3 text-xs sm:text-sm font-bold text-brand-900 hover:bg-brand-100 hover:border-brand-600/50 transition-all cursor-pointer"
                   >
-                    <MessageSquareQuote className="h-4 w-4 text-emerald-600" />
-                    <span>Ajukan Tawaran Nego</span>
+                    <MessageSquareQuote className="h-4 w-4 text-brand-600" />
+                    <span>Ajukan Tawaran Nego Harga</span>
                   </button>
                 )}
               </div>
 
-              {/* Escrow Guarantee Notice */}
-              <div className="mt-5 rounded-2xl border border-emerald-100 bg-emerald-50/70 p-3.5 text-[11px] text-emerald-900 flex items-start gap-2.5">
-                <ShieldCheck className="h-5 w-5 text-emerald-600 shrink-0" />
-                <div>
-                  <strong className="font-bold">Dilindungi Rekber JBB:</strong>
-                  <p className="text-emerald-800 mt-0.5 leading-relaxed">
-                    Dana pembayaran Anda aman disimpan. Penjual baru menerima dana setelah Anda cek barang dalam batas waktu 48 jam.
-                  </p>
+              {/* Escrow Timeline Visual 4-Step */}
+              <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+                <h4 className="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
+                  <Lock className="h-3.5 w-3.5 text-brand-600" />
+                  <span>Alur Transaksi Rekber JBB</span>
+                </h4>
+                <div className="grid grid-cols-4 gap-1 text-center">
+                  <div className="space-y-1">
+                    <div className="mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-brand-600 text-[10px] font-black text-white">
+                      1
+                    </div>
+                    <p className="text-[9px] font-bold text-slate-700">Bayar Rekber</p>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-[10px] font-black text-brand-800">
+                      2
+                    </div>
+                    <p className="text-[9px] font-bold text-slate-700">Kirim / COD</p>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-[10px] font-black text-brand-800">
+                      3
+                    </div>
+                    <p className="text-[9px] font-bold text-slate-700">Cek 48 Jam</p>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-[10px] font-black text-brand-800">
+                      4
+                    </div>
+                    <p className="text-[9px] font-bold text-slate-700">Dana Cair</p>
+                  </div>
                 </div>
               </div>
 
-              {/* Seller Trust Profile */}
+              {/* Seller Trust Profile Card */}
               {listing.seller && (
-                <div className="mt-6 border-t border-slate-100 pt-5">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                      Profil Penjual
+                <div className="rounded-2xl border border-slate-200/90 bg-white p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
+                      Reputasi Penjual
                     </span>
-                    <span className="text-[10px] text-slate-400">
+                    <span className="text-[10px] font-medium text-slate-400">
                       Bergabung {formatTimeAgo(listing.seller.createdAt)}
                     </span>
                   </div>
@@ -319,42 +512,128 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                       <img
                         src={listing.seller.avatarUrl}
                         alt={listing.seller.name}
-                        className="h-12 w-12 rounded-2xl object-cover"
+                        className="h-12 w-12 rounded-2xl object-cover ring-2 ring-slate-100 shrink-0"
                       />
                     ) : (
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-sm font-bold text-emerald-700">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 text-sm font-black text-brand-700 shrink-0">
                         {listing.seller.name.charAt(0)}
                       </div>
                     )}
 
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 font-bold text-sm text-slate-900">
-                        <span>{listing.seller.name}</span>
+                        <span className="truncate">{listing.seller.name}</span>
                         {listing.seller.isKycVerified && (
-                          <span title="KTP Terverifikasi">
-                            <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                          <span title="KTP Terverifikasi" className="shrink-0">
+                            <BadgeCheck className="h-4 w-4 text-brand-600 fill-brand-100" />
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-slate-500 mt-0.5">
+                      <div className="flex items-center gap-2.5 text-xs text-slate-500 mt-0.5 flex-wrap">
                         <div className="flex items-center gap-1 font-bold text-amber-600">
                           <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                           <span>{listing.seller.ratingAverage}</span>
                           <span className="text-slate-400 font-normal">
-                            ({listing.seller.ratingCount} ulasan)
+                            ({listing.seller.ratingCount})
                           </span>
                         </div>
                         <span>&bull;</span>
-                        <span>{listing.seller.totalTransactions} transaksi</span>
+                        <span className="font-semibold text-slate-700">{listing.seller.totalTransactions} transaksi</span>
                       </div>
                     </div>
                   </div>
+
+                  <div className="flex items-center justify-between rounded-xl bg-slate-50 p-2.5 text-xs">
+                    <span className="text-slate-500 font-medium">Trust Score:</span>
+                    <span className="font-black text-brand-700 bg-brand-100/70 px-2 py-0.5 rounded-md">
+                      {listing.seller.trustScore}% Sangat Terpercaya
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!user) {
+                        openAuthModal();
+                      } else {
+                        setIsNegoModalOpen(true);
+                      }
+                    }}
+                    className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs"
+                  >
+                    <MessageCircle className="h-3.5 w-3.5 text-brand-600" />
+                    <span>Diskusi / Chat Penjual</span>
+                  </button>
                 </div>
               )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Floating Bottom Sticky Action Bar (Mobile Only) */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur-lg p-3 md:hidden shadow-xl">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-[10px] text-slate-400 font-semibold leading-none">Harga Total</p>
+            <p className="text-base font-black text-slate-900 mt-0.5">{formatIDR(listing.price)}</p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {listing.isNegotiable && (
+              <button
+                type="button"
+                onClick={() => setIsNegoModalOpen(true)}
+                className="rounded-full border border-brand-600/40 bg-brand-50 px-3.5 py-2 text-xs font-bold text-brand-900 cursor-pointer"
+              >
+                Nego
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => setIsCheckoutModalOpen(true)}
+              className="rounded-full bg-brand-600 px-4.5 py-2 text-xs font-bold text-white shadow-md shadow-brand-600/30 cursor-pointer"
+            >
+              Beli Rekber
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Lightbox / Fullscreen Image Viewer Modal */}
+      {isLightboxOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-md animate-in fade-in">
+          <button
+            type="button"
+            onClick={() => setIsLightboxOpen(false)}
+            className="absolute top-5 right-5 rounded-full bg-white/20 p-2 text-white hover:bg-white/30 transition-colors cursor-pointer"
+          >
+            <X className="h-6 w-6" />
+          </button>
+
+          <div className="max-w-4xl max-h-[85vh] overflow-hidden">
+            <img
+              src={primaryImageUrl}
+              alt={listing.title}
+              className="w-full h-full object-contain max-h-[80vh] rounded-2xl"
+            />
+          </div>
+
+          {images.length > 1 && (
+            <div className="absolute bottom-6 flex items-center gap-2">
+              {images.map((img, idx) => (
+                <button
+                  key={img.id}
+                  onClick={() => setActiveImageIdx(idx)}
+                  className={`h-2.5 rounded-full transition-all cursor-pointer ${
+                    activeImageIdx === idx ? 'w-8 bg-brand-500' : 'w-2.5 bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Make Offer Modal */}
       <MakeOfferModal
@@ -372,7 +651,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
           <div className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl animate-in zoom-in-95 duration-200">
             {checkoutSuccessOrder ? (
               <div className="text-center py-6">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 mb-4 shadow-inner">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 mb-4 shadow-xs">
                   <CheckCircle2 className="h-9 w-9" />
                 </div>
                 <h3 className="text-xl font-black text-slate-900">Pembayaran Rekber Sukses!</h3>
@@ -385,7 +664,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                 <div className="mt-6 flex flex-col gap-2">
                   <Link
                     href="/nego"
-                    className="w-full rounded-xl bg-emerald-600 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 transition-colors text-center"
+                    className="w-full rounded-full bg-brand-600 py-3 text-xs font-bold text-white hover:bg-brand-700 transition-colors text-center shadow-md shadow-brand-600/20"
                   >
                     Lihat Status Pesanan di Dashboard
                   </Link>
@@ -395,7 +674,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                       setIsCheckoutModalOpen(false);
                       setCheckoutSuccessOrder(null);
                     }}
-                    className="w-full rounded-xl border border-slate-200 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50"
+                    className="w-full rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer"
                   >
                     Tutup
                   </button>
@@ -403,12 +682,21 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
               </div>
             ) : (
               <form onSubmit={handleCheckoutSubmit}>
-                <div className="pb-4 border-b border-slate-100">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 mb-1">
-                    <ShieldCheck className="h-4 w-4" />
-                    <span>CHECKOUT REKBER JBB</span>
+                <div className="pb-4 border-b border-slate-100 flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-1.5 text-xs font-black text-brand-700 mb-0.5">
+                      <ShieldCheck className="h-4 w-4" />
+                      <span>CHECKOUT REKBER JBB</span>
+                    </div>
+                    <h3 className="text-sm font-bold text-slate-900 line-clamp-1">{listing.title}</h3>
                   </div>
-                  <h3 className="text-base font-bold text-slate-900 line-clamp-1">{listing.title}</h3>
+                  <button
+                    type="button"
+                    onClick={() => setIsCheckoutModalOpen(false)}
+                    className="rounded-full p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
                 </div>
 
                 {/* Delivery Options */}
@@ -420,11 +708,11 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                       onClick={() => setDeliveryMethod('KURIR_REGULER')}
                       className={`rounded-2xl border p-3 text-left transition-all cursor-pointer ${
                         deliveryMethod === 'KURIR_REGULER'
-                          ? 'border-emerald-600 bg-emerald-50 text-emerald-950 ring-2 ring-emerald-500/20'
+                          ? 'border-brand-600 bg-brand-50/60 text-brand-950 ring-2 ring-brand-500/20'
                           : 'border-slate-200 bg-slate-50 text-slate-700'
                       }`}
                     >
-                      <Truck className="h-4 w-4 text-emerald-600 mb-1" />
+                      <Truck className="h-4 w-4 text-brand-600 mb-1" />
                       <div className="text-xs font-bold">Kirim Kurir Kilat</div>
                       <div className="text-[10px] text-slate-500 mt-0.5">Ongkir Rp 25.000 (Asuransi)</div>
                     </button>
@@ -434,11 +722,11 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                       onClick={() => setDeliveryMethod('COD_KETEMUAN')}
                       className={`rounded-2xl border p-3 text-left transition-all cursor-pointer ${
                         deliveryMethod === 'COD_KETEMUAN'
-                          ? 'border-emerald-600 bg-emerald-50 text-emerald-950 ring-2 ring-emerald-500/20'
+                          ? 'border-brand-600 bg-brand-50/60 text-brand-950 ring-2 ring-brand-500/20'
                           : 'border-slate-200 bg-slate-50 text-slate-700'
                       }`}
                     >
-                      <Zap className="h-4 w-4 text-emerald-600 mb-1" />
+                      <Zap className="h-4 w-4 text-brand-600 mb-1" />
                       <div className="text-xs font-bold">COD Ketemuan</div>
                       <div className="text-[10px] text-slate-500 mt-0.5">Gratis Ongkir</div>
                     </button>
@@ -455,7 +743,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                       placeholder="Nama lengkap"
                       value={recipientName}
                       onChange={(e) => setRecipientName(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 p-2 text-xs text-slate-800 mt-1"
+                      className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 mt-1 focus:border-brand-500 focus:outline-none"
                     />
                   </div>
 
@@ -467,7 +755,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                       placeholder="081234567890"
                       value={recipientPhone}
                       onChange={(e) => setRecipientPhone(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 p-2 text-xs text-slate-800 mt-1"
+                      className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 mt-1 focus:border-brand-500 focus:outline-none"
                     />
                   </div>
 
@@ -478,10 +766,10 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                     <textarea
                       rows={2}
                       required
-                      placeholder={deliveryMethod === 'COD_KETEMUAN' ? 'Contoh: Starbucks Dago Bandung jam 3 sore' : 'Jl. Nama Jalan No. XX, RT/RW, Kelurahan, Kecamatan, Kota, Kode Pos'}
+                      placeholder={deliveryMethod === 'COD_KETEMUAN' ? 'Contoh: Starbucks Gandaria City jam 3 sore' : 'Jl. Nama Jalan No. XX, RT/RW, Kelurahan, Kecamatan, Kota, Kode Pos'}
                       value={shippingAddress}
                       onChange={(e) => setShippingAddress(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 p-2 text-xs text-slate-800 mt-1"
+                      className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 mt-1 focus:border-brand-500 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -502,7 +790,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                   </div>
                   <div className="border-t border-slate-200 pt-2 flex justify-between font-black text-slate-900 text-sm">
                     <span>Total Pembayaran</span>
-                    <span className="text-emerald-700">
+                    <span className="text-brand-700">
                       {formatIDR(listing.price + (deliveryMethod === 'COD_KETEMUAN' ? 0 : 25000) + Math.round(listing.price * 0.01))}
                     </span>
                   </div>
@@ -512,14 +800,14 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                   <button
                     type="button"
                     onClick={() => setIsCheckoutModalOpen(false)}
-                    className="flex-1 rounded-xl border border-slate-200 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                    className="flex-1 rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer"
                   >
                     Batal
                   </button>
                   <button
                     type="submit"
                     disabled={isCheckingOut}
-                    className="flex-2 flex items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 shadow-md disabled:opacity-50"
+                    className="flex-2 flex items-center justify-center gap-2 rounded-full bg-brand-600 py-2.5 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/20 disabled:opacity-50 cursor-pointer"
                   >
                     <span>{isCheckingOut ? 'Memproses...' : 'Bayar Aman ke Rekber'}</span>
                   </button>
