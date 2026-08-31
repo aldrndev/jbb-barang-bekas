@@ -257,10 +257,10 @@ function CheckoutContent() {
 
           <div className="mt-6 flex flex-col gap-2.5">
             <Link
-              href="/nego?tab=orders"
-              className="w-full rounded-full bg-brand-600 py-3.5 text-xs font-bold text-white hover:bg-brand-700 transition-colors text-center shadow-md shadow-brand-600/20"
+              href="/orders"
+              className="w-full rounded-full bg-brand-600 py-3.5 text-xs font-bold text-white hover:bg-brand-700 transition-colors text-center shadow-md shadow-brand-600/20 cursor-pointer"
             >
-              Pantau Status Pesanan di Dashboard
+              Pantau Status di Riwayat Pesanan
             </Link>
             <Link
               href="/"

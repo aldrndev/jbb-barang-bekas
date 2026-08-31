@@ -7,37 +7,30 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 import { formatIDR, formatTimeAgo } from '../../lib/utils';
-import { EscrowTimeline } from '../../components/marketplace/escrow-timeline';
 import {
   MessageSquareQuote,
   ShieldCheck,
   Check,
   X,
-  RefreshCw,
   ShoppingBag,
-  Truck,
-  CheckCircle2,
-  AlertCircle,
   Clock,
-  ArrowRight,
   Sparkles,
-  PackageCheck
+  ArrowRight,
+  Send,
+  Inbox
 } from 'lucide-react';
 
 function NegoDashboardContent() {
   const { user, loginAsDemoBuyer, loginAsDemoSeller } = useAuth();
   const searchParams = useSearchParams();
-  const queryTab = searchParams.get('tab') as 'received' | 'sent' | 'orders' | null;
+  const queryTab = searchParams.get('tab') as 'received' | 'sent' | null;
 
-  const [activeTab, setActiveTab] = useState<'received' | 'sent' | 'orders'>('received');
+  const [activeTab, setActiveTab] = useState<'received' | 'sent'>('received');
   const [counterPriceInput, setCounterPriceInput] = useState<number>(0);
   const [selectedOfferForCounter, setSelectedOfferForCounter] = useState<string | null>(null);
-  const [shippingTrackingInput, setShippingTrackingInput] = useState('');
-  const [courierNameInput, setCourierNameInput] = useState('JNE Reguler');
-  const [selectedOrderForShip, setSelectedOrderForShip] = useState<string | null>(null);
 
   useEffect(() => {
-    if (queryTab && ['received', 'sent', 'orders'].includes(queryTab)) {
+    if (queryTab && ['received', 'sent'].includes(queryTab)) {
       setActiveTab(queryTab);
     } else if (user?.role === 'BUYER') {
       setActiveTab('sent');
@@ -59,15 +52,8 @@ function NegoDashboardContent() {
     enabled: !!user
   });
 
-  const { data: ordersData, refetch: refetchOrders } = useQuery({
-    queryKey: ['orders'],
-    queryFn: () => api.getOrders(),
-    enabled: !!user
-  });
-
   const receivedOffers = receivedOffersData?.data || [];
   const sentOffers = sentOffersData?.data || [];
-  const orders = ordersData?.data || [];
 
   const handleRespond = async (offerId: string, action: 'ACCEPT' | 'REJECT' | 'COUNTER', counterPrice?: number) => {
     const res = await api.respondOffer(offerId, action, counterPrice);
@@ -78,46 +64,15 @@ function NegoDashboardContent() {
     }
   };
 
-  const handleShipOrder = async (orderId: string) => {
-    if (!shippingTrackingInput.trim()) return;
-    const res = await api.updateShipping(orderId, courierNameInput, shippingTrackingInput.trim());
-    if (res.success) {
-      refetchOrders();
-      setSelectedOrderForShip(null);
-      setShippingTrackingInput('');
-    }
-  };
-
-  const handleConfirmDelivered = async (orderId: string) => {
-    const res = await api.confirmDelivered(orderId);
-    if (res.success) {
-      refetchOrders();
-    }
-  };
-
-  const handleCompleteOrder = async (orderId: string) => {
-    const res = await api.completeOrder(orderId);
-    if (res.success) {
-      refetchOrders();
-    }
-  };
-
-  const handleDisputeOrder = async (orderId: string, reason: string) => {
-    const res = await api.disputeOrder(orderId, reason, []);
-    if (res.success) {
-      refetchOrders();
-    }
-  };
-
   if (!user) {
     return (
       <div className="mx-auto max-w-md px-4 py-20 text-center">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 mb-4 border border-brand-200">
           <MessageSquareQuote className="h-8 w-8" />
         </div>
-        <h2 className="text-xl font-bold text-slate-900">Masuk untuk Mengakses Dashboard</h2>
+        <h2 className="text-xl font-bold text-slate-900">Masuk untuk Mengakses Pusat Nego</h2>
         <p className="text-xs text-slate-500 mt-1">
-          Pantau tawaran masuk, penawaran Anda ke penjual, dan status transaksi rekening bersama.
+          Pantau tawaran masuk dari calon pembeli dan kelola penawaran harga Anda ke penjual.
         </p>
         <div className="mt-6 flex flex-col gap-2.5">
           <button
@@ -142,15 +97,15 @@ function NegoDashboardContent() {
 
   return (
     <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8 pb-20">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-5xl space-y-6">
         {/* Header & Quick Role Switcher Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
-              Pusat Nego & Transaksi Rekber
+              Pusat Tawar & Nego Harga
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Kelola penawaran harga dan lacak aliran dana rekening bersama secara transparan.
+              Kelola tawaran resmi masuk dan keluar dengan kepastian harga terkunci 24 jam.
             </p>
           </div>
 
@@ -172,8 +127,28 @@ function NegoDashboardContent() {
           </div>
         </div>
 
-        {/* Tab switcher */}
-        <div className="flex rounded-2xl bg-slate-200/70 p-1 mb-6 text-xs font-bold">
+        {/* Shortcut Banner to Order History */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-2xs">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-700 shrink-0">
+              <ShoppingBag className="h-4.5 w-4.5" />
+            </div>
+            <div>
+              <h3 className="text-xs font-bold text-slate-900">Mencari Status Pesanan & Pembayaran Rekber?</h3>
+              <p className="text-[11px] text-slate-500">Semua pesanan yang telah dibayar dapat dipantau di halaman Riwayat Pesanan.</p>
+            </div>
+          </div>
+          <Link
+            href="/orders"
+            className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 px-3.5 py-1.5 text-xs font-bold text-slate-700 transition-colors shrink-0"
+          >
+            <span>Buka Riwayat Pesanan</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+
+        {/* Tab switcher (Only 2 Tabs: Received vs Sent) */}
+        <div className="flex rounded-2xl bg-slate-200/70 p-1 text-xs font-bold">
           <button
             type="button"
             onClick={() => setActiveTab('received')}
@@ -183,7 +158,7 @@ function NegoDashboardContent() {
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <MessageSquareQuote className="h-4 w-4 text-brand-600" />
+            <Inbox className="h-4 w-4 text-brand-600" />
             <span>Tawaran Masuk ({receivedOffers.length})</span>
           </button>
 
@@ -196,25 +171,12 @@ function NegoDashboardContent() {
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <Clock className="h-4 w-4 text-blue-600" />
+            <Send className="h-4 w-4 text-blue-600" />
             <span>Tawaran Keluar ({sentOffers.length})</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab('orders')}
-            className={`flex-1 flex items-center justify-center gap-2 rounded-xl py-3 transition-all cursor-pointer ${
-              activeTab === 'orders'
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <ShieldCheck className="h-4 w-4 text-teal-600" />
-            <span>Pesanan Rekber ({orders.length})</span>
           </button>
         </div>
 
-        {/* Tab 1: Tawaran Masuk (Untuk Penjual) */}
+        {/* Tab 1: Tawaran Masuk (Sebagai Penjual) */}
         {activeTab === 'received' && (
           <div className="space-y-4">
             {receivedOffers.length === 0 ? (
@@ -222,7 +184,7 @@ function NegoDashboardContent() {
                 <MessageSquareQuote className="mx-auto h-12 w-12 text-slate-300 mb-2" />
                 <h3 className="text-sm font-bold text-slate-700">Belum Ada Tawaran Masuk</h3>
                 <p className="text-xs text-slate-400 mt-1">
-                  Tawaran harga dari calon pembeli atas barang dagangan Anda akan muncul di sini.
+                  Tawaran harga dari calon pembeli barang Anda akan muncul di sini.
                 </p>
               </div>
             ) : (
@@ -278,24 +240,19 @@ function NegoDashboardContent() {
                         onClick={() => handleRespond(offer.id, 'ACCEPT')}
                         className="flex items-center gap-1.5 rounded-full bg-brand-600 px-4 py-2 text-xs font-bold text-white hover:bg-brand-700 cursor-pointer shadow-md shadow-brand-600/20"
                       >
-                        <Check className="h-3.5 w-3.5" />
-                        <span>Terima Tawaran</span>
+                        <Check className="h-4 w-4" />
+                        <span>Terima Tawaran ({formatIDR(offer.offeredPrice)})</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => {
-                          setSelectedOfferForCounter(
-                            selectedOfferForCounter === offer.id ? null : offer.id
-                          );
-                          setCounterPriceInput(
-                            Math.round(((offer.listing?.price || 0) + offer.offeredPrice) / 2)
-                          );
+                          setSelectedOfferForCounter(offer.id);
+                          setCounterPriceInput(offer.offeredPrice);
                         }}
-                        className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer shadow-2xs"
+                        className="flex items-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer"
                       >
-                        <RefreshCw className="h-3.5 w-3.5 text-brand-600" />
-                        <span>Tawar Balik</span>
+                        <span>Tawar Balik (Counter)</span>
                       </button>
 
                       <button
@@ -303,31 +260,40 @@ function NegoDashboardContent() {
                         onClick={() => handleRespond(offer.id, 'REJECT')}
                         className="flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-3.5 py-2 text-xs font-bold text-rose-700 hover:bg-rose-100 cursor-pointer"
                       >
-                        <X className="h-3.5 w-3.5" />
+                        <X className="h-4 w-4" />
                         <span>Tolak</span>
                       </button>
                     </div>
                   )}
 
-                  {/* Counter Price Form */}
+                  {/* Counter Price Form Inline */}
                   {selectedOfferForCounter === offer.id && (
-                    <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 p-3.5 flex flex-col sm:flex-row items-center gap-2">
-                      <input
-                        type="number"
-                        min="1000"
-                        step="any"
-                        placeholder="Harga Tawar Balik (Rp)"
-                        value={counterPriceInput}
-                        onChange={(e) => setCounterPriceInput(Number(e.target.value))}
-                        className="w-full sm:w-64 rounded-xl border border-slate-200 p-2 text-xs font-bold bg-white focus:border-brand-500 focus:outline-none"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleRespond(offer.id, 'COUNTER', counterPriceInput)}
-                        className="w-full sm:w-auto rounded-full bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 cursor-pointer"
-                      >
-                        Kirim Tawaran Balik
-                      </button>
+                    <div className="mt-4 rounded-2xl bg-slate-50 p-4 border border-slate-200 space-y-3">
+                      <h4 className="text-xs font-bold text-slate-900">
+                        Ajukan Harga Counter ke Pembeli
+                      </h4>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          value={counterPriceInput}
+                          onChange={(e) => setCounterPriceInput(Number(e.target.value))}
+                          className="w-48 rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-900 focus:border-brand-500 focus:outline-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRespond(offer.id, 'COUNTER', counterPriceInput)}
+                          className="rounded-full bg-brand-600 px-4 py-2 text-xs font-bold text-white hover:bg-brand-700 cursor-pointer"
+                        >
+                          Kirim Tawar Balik
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedOfferForCounter(null)}
+                          className="text-xs text-slate-500 hover:text-slate-800"
+                        >
+                          Batal
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -336,23 +302,24 @@ function NegoDashboardContent() {
           </div>
         )}
 
-        {/* Tab 2: Tawaran Keluar (Untuk Pembeli) */}
+        {/* Tab 2: Tawaran Terkirim (Sebagai Pembeli) */}
         {activeTab === 'sent' && (
           <div className="space-y-4">
             {sentOffers.length === 0 ? (
               <div className="text-center py-12 bg-white rounded-3xl border border-slate-200 shadow-xs">
-                <MessageSquareQuote className="mx-auto h-12 w-12 text-slate-300 mb-2" />
-                <h3 className="text-sm font-bold text-slate-700">Belum Ada Tawaran yang Diajukan</h3>
+                <Clock className="mx-auto h-12 w-12 text-slate-300 mb-2" />
+                <h3 className="text-sm font-bold text-slate-700">Belum Ada Tawaran Terkirim</h3>
                 <p className="text-xs text-slate-400 mt-1">
-                  Mulai eksplor barang bekas dan ajukan tawaran nego hemat.
+                  Tawaran harga yang Anda ajukan untuk barang-barang bekas yang bisa dinego akan muncul di sini.
                 </p>
-                <Link
-                  href="/cari"
-                  className="inline-flex items-center gap-1 mt-4 rounded-full bg-brand-600 px-4.5 py-2 text-xs font-bold text-white shadow-md shadow-brand-600/20 hover:bg-brand-700"
-                >
-                  <span>Cari Barang Sekarang</span>
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
+                <div className="mt-4">
+                  <Link
+                    href="/cari?isNego=true"
+                    className="inline-flex items-center gap-2 rounded-full bg-brand-600 px-5 py-2 text-xs font-bold text-white hover:bg-brand-700 transition-colors"
+                  >
+                    <span>Cari Barang yang Bisa Dinego</span>
+                  </Link>
+                </div>
               </div>
             ) : (
               sentOffers.map((offer) => (
@@ -408,166 +375,6 @@ function NegoDashboardContent() {
                         <ShoppingBag className="h-4 w-4" />
                         <span>Beli Sekarang ({formatIDR(offer.counterPrice || offer.offeredPrice)})</span>
                       </Link>
-                    </div>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        )}
-
-        {/* Tab 3: Pesanan Rekber */}
-        {activeTab === 'orders' && (
-          <div className="space-y-4">
-            {orders.length === 0 ? (
-              <div className="text-center py-12 bg-white rounded-3xl border border-slate-200 shadow-xs">
-                <ShieldCheck className="mx-auto h-12 w-12 text-slate-300 mb-2" />
-                <h3 className="text-sm font-bold text-slate-700">Belum Ada Transaksi Rekber</h3>
-                <p className="text-xs text-slate-400 mt-1">
-                  Transaksi yang diamankan dengan Rekber JBB akan muncul di sini.
-                </p>
-              </div>
-            ) : (
-              orders.map((order) => (
-                <div
-                  key={order.id}
-                  className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xs space-y-4"
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-                    <div>
-                      <span className="text-[11px] font-bold text-slate-400">
-                        Pesanan: {order.orderNumber}
-                      </span>
-                      <h3 className="text-base font-bold text-slate-900 mt-0.5">
-                        {order.listing?.title}
-                      </h3>
-                      <div className="text-xs text-slate-500">
-                        Total Dana Ditahan: <strong className="text-brand-700">{formatIDR(order.totalAmount)}</strong>
-                      </div>
-                    </div>
-                    <div>
-                      <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-800 border border-brand-200">
-                        {order.escrowStatus}
-                      </span>
-                    </div>
-                  </div>
-
-                  <EscrowTimeline
-                    status={order.escrowStatus}
-                    trackingNumber={order.trackingNumber}
-                    courierName={order.courierName}
-                  />
-
-                  {/* 1. Seller Action: Input Resi Pengiriman */}
-                  {user.id === order.sellerId && (order.escrowStatus === 'PAYMENT_CONFIRMED' || order.escrowStatus === 'SELLER_PACKING') && (
-                    <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200 space-y-3">
-                      <h4 className="text-xs font-bold text-slate-900">
-                        Input Resi Pengiriman Barang
-                      </h4>
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <input
-                          type="text"
-                          placeholder="Nomor Resi / Bukti Kirim"
-                          value={shippingTrackingInput}
-                          onChange={(e) => setShippingTrackingInput(e.target.value)}
-                          className="flex-1 rounded-xl border border-slate-200 p-2 text-xs bg-white focus:border-brand-500 focus:outline-none"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleShipOrder(order.id)}
-                          className="rounded-full bg-brand-600 px-4 py-2 text-xs font-bold text-white hover:bg-brand-700 cursor-pointer shadow-md shadow-brand-600/20"
-                        >
-                          Konfirmasi Pengiriman
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* 2. When In Transit: Buyer Action to Confirm Delivery / Seller waiting info */}
-                  {order.escrowStatus === 'IN_TRANSIT' && (
-                    <>
-                      {user.id === order.buyerId ? (
-                        <div className="rounded-2xl bg-blue-50 p-4 border border-blue-200 flex flex-col sm:flex-row items-center justify-between gap-3">
-                          <div>
-                            <div className="flex items-center gap-1.5 text-xs font-bold text-blue-950">
-                              <PackageCheck className="h-4 w-4 text-blue-600 shrink-0" />
-                              <span>Paket Sudah Sampai di Lokasi Anda?</span>
-                            </div>
-                            <p className="text-[11px] text-blue-800 mt-0.5">
-                              Jika kurir sudah mengantar barang / COD selesai, konfirmasi di bawah ini untuk memulai <strong>Periode Pengecekan Fisik 48 Jam</strong>.
-                            </p>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => handleConfirmDelivered(order.id)}
-                            className="rounded-full bg-blue-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-blue-700 shadow-md shadow-blue-600/20 cursor-pointer whitespace-nowrap"
-                          >
-                            Konfirmasi Paket Diterima
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="rounded-2xl bg-slate-50 p-3.5 border border-slate-200 text-xs text-slate-600 flex items-center gap-2">
-                          <Truck className="h-4 w-4 text-brand-600 shrink-0" />
-                          <span>Barang sedang dalam perjalanan ({order.courierName}: Resi <strong>{order.trackingNumber}</strong>). Menunggu pembeli menerima paket.</span>
-                        </div>
-                      )}
-                    </>
-                  )}
-
-                  {/* 3. When Delivered Inspection: Buyer Release or Dispute / Seller waiting info */}
-                  {order.escrowStatus === 'DELIVERED_INSPECTION' && (
-                    <>
-                      {user.id === order.buyerId ? (
-                        <div className="rounded-2xl bg-brand-50 p-4 border border-brand-200 space-y-3">
-                          <div>
-                            <div className="flex items-center gap-1.5 text-xs font-black text-brand-950">
-                              <Clock className="h-4 w-4 text-brand-600" />
-                              <span>Periode Pengecekan Fisik & Fungsi Aktif (2x24 Jam)</span>
-                            </div>
-                            <p className="text-[11px] text-brand-800 mt-0.5">
-                              Silakan periksa kelengkapan, fungsi, dan bodi barang secara detail. Jika semua sesuai deskripsi, klik untuk mencairkan dana aman ke dompet penjual.
-                            </p>
-                          </div>
-
-                          <div className="flex flex-wrap items-center gap-2 pt-1">
-                            <button
-                              type="button"
-                              onClick={() => handleCompleteOrder(order.id)}
-                              className="flex items-center gap-1.5 rounded-full bg-brand-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/20 cursor-pointer"
-                            >
-                              <CheckCircle2 className="h-4 w-4" />
-                              <span>Barang Sesuai: Cairkan Dana ke Penjual</span>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const reason = prompt('Jelaskan kendala / minus fisik yang ditemukan pada barang:');
-                                if (reason) {
-                                  handleDisputeOrder(order.id, reason);
-                                }
-                              }}
-                              className="flex items-center gap-1.5 rounded-full border border-rose-300 bg-white px-4 py-2.5 text-xs font-bold text-rose-700 hover:bg-rose-50 cursor-pointer"
-                            >
-                              <AlertCircle className="h-4 w-4 text-rose-600" />
-                              <span>Ajukan Komplain / Retur Dana</span>
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="rounded-2xl bg-slate-50 p-3.5 border border-slate-200 text-xs text-slate-700 flex items-center gap-2">
-                          <Clock className="h-4 w-4 text-brand-600 shrink-0" />
-                          <span>Pembeli telah menerima paket dan sedang memeriksa kondisi barang (Masa inspeksi 48 jam). Dana akan cair begitu pembeli puas atau batas waktu habis.</span>
-                        </div>
-                      )}
-                    </>
-                  )}
-
-                  {/* 4. When Completed: Success Note */}
-                  {order.escrowStatus === 'COMPLETED' && (
-                    <div className="rounded-2xl bg-emerald-50 p-3.5 border border-emerald-200 text-xs text-emerald-900 flex items-center gap-2 font-bold">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
-                      <span>Transaksi Selesai! Dana sebesar {formatIDR(order.amount)} telah berhasil dicairkan ke penjual dengan aman.</span>
                     </div>
                   )}
                 </div>
