@@ -228,19 +228,19 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
 
             {/* Thumbnails Carousel */}
             {images.length > 1 && (
-              <div className="flex items-center gap-3 overflow-x-auto pb-1 hide-scrollbar">
+              <div className="flex items-center gap-3 overflow-x-auto p-1.5 hide-scrollbar">
                 {images.map((img, idx) => (
                   <button
                     key={img.id}
                     type="button"
                     onClick={() => setActiveImageIdx(idx)}
-                    className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-2 bg-white transition-all cursor-pointer ${
+                    className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl p-0.5 bg-white transition-all cursor-pointer ${
                       activeImageIdx === idx
-                        ? 'border-brand-600 ring-2 ring-brand-500/20 shadow-xs scale-102'
-                        : 'border-slate-200 hover:border-slate-300'
+                        ? 'border-2 border-brand-600 shadow-sm ring-2 ring-brand-500/20'
+                        : 'border-2 border-slate-200 hover:border-slate-300 opacity-75 hover:opacity-100'
                     }`}
                   >
-                    <img src={img.url} alt={`Thumbnail ${idx + 1}`} className="h-full w-full object-cover" />
+                    <img src={img.url} alt={`Thumbnail ${idx + 1}`} className="h-full w-full object-cover rounded-[12px]" />
                   </button>
                 ))}
               </div>
