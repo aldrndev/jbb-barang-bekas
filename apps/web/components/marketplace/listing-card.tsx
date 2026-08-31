@@ -37,13 +37,6 @@ export function ListingCard({ listing }: ListingCardProps) {
           <ConditionBadge condition={listing.condition} size="sm" />
         </div>
 
-        {listing.isNegotiable && (
-          <div className="absolute top-2.5 right-11 z-10 rounded-full bg-white/95 px-2.5 py-0.5 text-[10px] font-bold text-amber-900 border border-amber-200/80 backdrop-blur-md shadow-2xs flex items-center gap-1">
-            <MessageSquareQuote className="h-3 w-3 text-amber-600" />
-            <span>Nego</span>
-          </div>
-        )}
-
         {/* COD Pill at bottom of image */}
         {listing.isCodAvailable && (
           <div className="absolute bottom-2 left-2 z-10 rounded-full bg-white/95 px-2 py-0.5 text-[9px] font-bold text-brand-700 border border-brand-200/80 backdrop-blur-md shadow-2xs flex items-center gap-1">
@@ -78,16 +71,24 @@ export function ListingCard({ listing }: ListingCardProps) {
           {listing.title}
         </h3>
 
-        {/* Price & Savings */}
-        <div className="mt-2.5 flex items-baseline justify-between gap-1 flex-wrap">
+        {/* Price & Badges */}
+        <div className="mt-2.5 flex items-center justify-between gap-1.5 flex-wrap">
           <div className="text-base sm:text-lg font-black text-slate-900">
             {formatIDR(listing.price)}
           </div>
-          {discountPercent && (
-            <span className="rounded-md bg-rose-50 px-1.5 py-0.5 text-[9px] font-bold text-rose-600 border border-rose-100">
-              Hemat {discountPercent}%
-            </span>
-          )}
+          <div className="flex items-center gap-1 flex-wrap">
+            {listing.isNegotiable && (
+              <span className="rounded-md bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold text-amber-900 border border-amber-200/80 flex items-center gap-0.5">
+                <MessageSquareQuote className="h-2.5 w-2.5 text-amber-600" />
+                <span>Nego</span>
+              </span>
+            )}
+            {discountPercent && (
+              <span className="rounded-md bg-rose-50 px-1.5 py-0.5 text-[9px] font-bold text-rose-600 border border-rose-100">
+                Hemat {discountPercent}%
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Seller Info & Location Footer */}
