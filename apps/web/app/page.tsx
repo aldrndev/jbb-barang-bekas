@@ -223,10 +223,10 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Column: Balanced Premium Showcase & Live Trust Metrics */}
-            <div className="lg:col-span-5 space-y-3.5 mt-6 lg:mt-0 w-full">
+            {/* Right Column: Balanced Premium Showcase Aligned with Left Column */}
+            <div className="lg:col-span-5 w-full">
               {/* Main Featured Showcase Card */}
-              <div className="rounded-2xl border border-slate-200/90 bg-white p-4.5 shadow-xl shadow-slate-200/50 hover:shadow-2xl transition-all">
+              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-lg shadow-slate-200/50 hover:shadow-xl transition-all">
                 {/* Header Tag Bar */}
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-1.5">
@@ -239,7 +239,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Product Showcase Image */}
-                <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-slate-100 mb-3 group">
+                <div className="relative h-44 sm:h-48 w-full overflow-hidden rounded-2xl bg-slate-100 mb-3 group">
                   <img
                     src="https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80"
                     alt="iPhone 13 Pro Showcase"
@@ -255,7 +255,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Title & Pricing */}
-                <h3 className="text-sm font-bold text-slate-900 leading-snug">
+                <h3 className="text-sm font-bold text-slate-900 leading-snug truncate">
                   iPhone 13 Pro 128GB Sierra Blue Resmi iBox
                 </h3>
 
@@ -279,7 +279,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Live Nego Banner */}
-                <div className="mt-2.5 rounded-xl bg-deal-50/70 border border-deal-200/80 p-2 flex items-center justify-between text-xs">
+                <div className="mt-2 rounded-xl bg-deal-50/70 border border-deal-200/80 p-2 flex items-center justify-between text-xs">
                   <div className="flex items-center gap-1.5 text-[11px]">
                     <Zap className="h-3.5 w-3.5 text-deal-600 shrink-0" />
                     <span className="text-slate-700">Tawaran Disetujui:</span>
@@ -315,18 +315,11 @@ export default function HomePage() {
                     <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 </div>
-              </div>
 
-              {/* Supporting Live Escrow Security Pill */}
-              <div className="rounded-xl border border-slate-200/80 bg-white p-3 shadow-xs flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2.5">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-50 text-brand-600 shrink-0">
-                    <ShieldCheck className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-[11px] font-bold text-slate-900">Garansi Rekber 48 Jam Bebas Cemas</div>
-                    <div className="text-[10px] text-slate-500">Dana ditahan aman sampai Anda selesai cek fisik & fungsi barang.</div>
-                  </div>
+                {/* Integrated Compact Escrow Guarantee Ribbon */}
+                <div className="mt-3 rounded-xl bg-slate-50 p-2 border border-slate-100 flex items-center gap-2 text-[10px] text-slate-600">
+                  <ShieldCheck className="h-3.5 w-3.5 text-brand-600 shrink-0" />
+                  <span>Garansi Rekber 48 Jam &bull; Dana aman sampai selesai inspeksi fisik</span>
                 </div>
               </div>
             </div>
