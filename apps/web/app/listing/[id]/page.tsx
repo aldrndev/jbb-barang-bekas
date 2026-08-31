@@ -226,11 +226,10 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                 />
               </div>
 
-              {/* Integrated Bottom Thumbnails Strip with Divider */}
+              {/* Integrated Bottom Thumbnails Strip with Crisp Divider */}
               {images.length > 1 && (
-                <>
-                  <div className="border-t border-slate-100 my-1" />
-                  <div className="flex items-center gap-3 overflow-x-auto py-2 px-1 hide-scrollbar">
+                <div className="border-t border-slate-200 pt-3.5">
+                  <div className="flex items-center gap-3 overflow-x-auto py-1 px-1 hide-scrollbar">
                     {images.map((img, idx) => (
                       <button
                         key={img.id}
@@ -250,7 +249,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                       </button>
                     ))}
                   </div>
-                </>
+                </div>
               )}
             </div>
 
