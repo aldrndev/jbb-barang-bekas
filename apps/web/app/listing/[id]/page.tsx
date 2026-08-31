@@ -30,7 +30,6 @@ import {
   Eye,
   Flame,
   BadgeCheck,
-  Check,
   ChevronRight
 } from 'lucide-react';
 import { useAuth } from '../../../context/auth-context';
@@ -66,8 +65,8 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
     return (
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 animate-pulse">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-7 h-110 bg-slate-200 rounded-3xl" />
-          <div className="lg:col-span-5 h-110 bg-slate-200 rounded-3xl" />
+          <div className="lg:col-span-7 h-110 bg-slate-200/70 rounded-3xl" />
+          <div className="lg:col-span-5 h-110 bg-slate-200/70 rounded-3xl" />
         </div>
       </div>
     );
@@ -76,7 +75,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
   if (!listing) {
     return (
       <div className="mx-auto max-w-xl px-4 py-20 text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 mb-4 shadow-sm">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 mb-4 shadow-2xs border border-rose-100">
           <AlertCircle className="h-9 w-9" />
         </div>
         <h2 className="text-xl font-bold text-slate-900">Barang Tidak Ditemukan</h2>
@@ -85,7 +84,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
         </p>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 mt-6 rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-brand-700 transition-colors shadow-sm"
+          className="inline-flex items-center gap-2 mt-6 rounded-full bg-brand-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-brand-700 transition-colors shadow-sm"
         >
           <ArrowLeft className="h-4 w-4" />
           Kembali ke Beranda
@@ -151,7 +150,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/70 py-6 px-4 sm:px-6 lg:px-8 pb-28 md:pb-12">
+    <div className="min-h-screen bg-slate-50/50 py-6 px-4 sm:px-6 lg:px-8 pb-28 md:pb-12">
       <div className="mx-auto max-w-7xl">
         {/* Breadcrumb & Quick Actions */}
         <div className="flex items-center justify-between text-xs text-slate-500 mb-5">
@@ -168,17 +167,17 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
           <div className="flex items-center gap-2">
             <button
               onClick={handleShare}
-              className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs"
+              className="flex items-center gap-1.5 rounded-full border border-slate-200/70 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs"
             >
               <Share2 className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Bagikan</span>
             </button>
             <button
               onClick={toggleFavorite}
-              className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-2xs ${
+              className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-2xs ${
                 isFavorited
-                  ? 'border-rose-200 bg-rose-50 text-rose-600'
-                  : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                  ? 'border-rose-200/80 bg-rose-50 text-rose-600'
+                  : 'border-slate-200/70 bg-white text-slate-700 hover:bg-slate-50'
               }`}
             >
               <Heart className={`h-3.5 w-3.5 ${isFavorited ? 'fill-rose-500 text-rose-500' : ''}`} />
@@ -189,7 +188,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
 
         {/* Share Toast Notification */}
         {shareToast && (
-          <div className="fixed top-20 right-6 z-50 rounded-2xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white shadow-xl animate-in fade-in slide-in-from-top-3">
+          <div className="fixed top-20 right-6 z-50 rounded-2xl bg-slate-900/95 backdrop-blur-md px-4 py-2.5 text-xs font-bold text-white shadow-xl animate-in fade-in slide-in-from-top-3">
             ✅ Link produk berhasil disalin ke clipboard!
           </div>
         )}
@@ -197,20 +196,22 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Image Gallery, Condition Matrix, Description */}
           <div className="lg:col-span-7 space-y-6">
-            {/* Main Stage Image Box */}
-            <div className="relative aspect-4/3 w-full overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-sm group">
-              <img
-                src={primaryImageUrl}
-                alt={listing.title}
-                className="h-full w-full object-contain p-4 transition-transform duration-300 group-hover:scale-102 cursor-pointer"
-                onClick={() => setIsLightboxOpen(true)}
-              />
+            {/* Main Stage Image Box - Soft ambient background and delicate border */}
+            <div className="relative aspect-4/3 w-full overflow-hidden rounded-3xl border border-slate-200/60 bg-linear-to-b from-slate-50/70 via-white to-slate-50/40 shadow-2xs group">
+              <div className="flex h-full w-full items-center justify-center p-4">
+                <img
+                  src={primaryImageUrl}
+                  alt={listing.title}
+                  className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-102 cursor-pointer drop-shadow-xs"
+                  onClick={() => setIsLightboxOpen(true)}
+                />
+              </div>
 
-              {/* Floating Top Left Badge */}
+              {/* Floating Top Left Badges - Modern soft glassmorphic pills */}
               <div className="absolute top-4 left-4 flex items-center gap-2">
                 <ConditionBadge condition={listing.condition} size="md" />
-                <span className="rounded-full bg-slate-900/80 backdrop-blur-md px-2.5 py-1 text-[11px] font-bold text-white shadow-sm">
-                  📷 {activeImageIdx + 1} / {images.length || 1}
+                <span className="rounded-full bg-white/95 backdrop-blur-md px-3 py-1 text-xs font-bold text-slate-700 border border-slate-200/80 shadow-2xs">
+                  {activeImageIdx + 1} / {images.length || 1}
                 </span>
               </div>
 
@@ -218,7 +219,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
               <button
                 type="button"
                 onClick={() => setIsLightboxOpen(true)}
-                className="absolute bottom-4 right-4 rounded-xl bg-white/90 backdrop-blur-md p-2.5 text-slate-700 shadow-md hover:bg-white hover:text-brand-600 transition-all cursor-pointer opacity-90 hover:opacity-100"
+                className="absolute bottom-4 right-4 rounded-full bg-white/95 backdrop-blur-md p-2.5 text-slate-600 shadow-2xs border border-slate-200/80 hover:bg-white hover:text-brand-600 hover:scale-105 transition-all cursor-pointer"
                 title="Perbesar Foto"
               >
                 <Maximize2 className="h-4 w-4" />
@@ -233,10 +234,10 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                     key={img.id}
                     type="button"
                     onClick={() => setActiveImageIdx(idx)}
-                    className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-2 bg-white transition-all cursor-pointer ${
+                    className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border bg-white transition-all cursor-pointer ${
                       activeImageIdx === idx
-                        ? 'border-brand-600 ring-4 ring-brand-500/15 shadow-sm scale-102'
-                        : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-300'
+                        ? 'border-brand-600 ring-3 ring-brand-500/15 shadow-2xs scale-102'
+                        : 'border-slate-200/70 opacity-70 hover:opacity-100 hover:border-slate-300'
                     }`}
                   >
                     <img src={img.url} alt={`Thumbnail ${idx + 1}`} className="h-full w-full object-cover" />
@@ -246,25 +247,23 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
             )}
 
             {/* Transparent Condition & Inspection Matrix Card */}
-            <div className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-5">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div className="rounded-3xl border border-slate-200/60 bg-white p-6 shadow-2xs space-y-5">
+              <div className="flex items-center justify-between border-b border-slate-100/80 pb-4">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
-                    <Sparkles className="h-5 w-5" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 border border-brand-100/70">
+                    <Sparkles className="h-4.5 w-4.5" />
                   </div>
                   <div>
                     <h3 className="text-sm font-black text-slate-900">Inspeksi & Transparansi Fisik</h3>
                     <p className="text-[11px] text-slate-500 font-medium">Kondisi riil unit terverifikasi penjual</p>
                   </div>
                 </div>
-                <span className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-bold text-emerald-800">
-                  Grade A++ (96% Mulus)
-                </span>
+                <ConditionBadge condition={listing.condition} size="sm" />
               </div>
 
               {/* Structured Inspection Checklist Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="flex items-start gap-2.5 rounded-2xl bg-slate-50/80 p-3.5 border border-slate-100">
+                <div className="flex items-start gap-2.5 rounded-2xl bg-slate-50/70 p-3.5 border border-slate-100/80">
                   <CheckCircle2 className="h-4.5 w-4.5 text-brand-600 shrink-0 mt-0.5" />
                   <div>
                     <span className="text-xs font-bold text-slate-900 block">
@@ -278,7 +277,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                   </div>
                 </div>
 
-                <div className="flex items-start gap-2.5 rounded-2xl bg-slate-50/80 p-3.5 border border-slate-100">
+                <div className="flex items-start gap-2.5 rounded-2xl bg-slate-50/70 p-3.5 border border-slate-100/80">
                   <CheckCircle2
                     className={`h-4.5 w-4.5 shrink-0 mt-0.5 ${
                       listing.hasOriginalReceipt ? 'text-brand-600' : 'text-slate-400'
@@ -295,7 +294,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {listing.purchaseYear && (
-                  <div className="flex items-start gap-2.5 rounded-2xl bg-slate-50/80 p-3.5 border border-slate-100">
+                  <div className="flex items-start gap-2.5 rounded-2xl bg-slate-50/70 p-3.5 border border-slate-100/80">
                     <Calendar className="h-4.5 w-4.5 text-brand-600 shrink-0 mt-0.5" />
                     <div>
                       <span className="text-xs font-bold text-slate-900 block">
@@ -307,7 +306,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                 )}
 
                 {listing.isCodAvailable && (
-                  <div className="flex items-start gap-2.5 rounded-2xl bg-slate-50/80 p-3.5 border border-slate-100">
+                  <div className="flex items-start gap-2.5 rounded-2xl bg-slate-50/70 p-3.5 border border-slate-100/80">
                     <Zap className="h-4.5 w-4.5 text-brand-600 shrink-0 mt-0.5" />
                     <div>
                       <span className="text-xs font-bold text-slate-900 block">
@@ -323,7 +322,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
             </div>
 
             {/* Product Description & Technical Specs */}
-            <div className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-6">
+            <div className="rounded-3xl border border-slate-200/60 bg-white p-6 shadow-2xs space-y-6">
               <div>
                 <h3 className="text-sm font-black text-slate-900 mb-3">Deskripsi Lengkap Penjual</h3>
                 <p className="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line font-medium">
@@ -333,13 +332,13 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
 
               {/* Dynamic Specs Table */}
               {Object.keys(specs).length > 0 && (
-                <div className="border-t border-slate-100 pt-5">
+                <div className="border-t border-slate-100/80 pt-5">
                   <h4 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">
                     Spesifikasi Teknis
                   </h4>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
                     {Object.entries(specs).map(([key, val]) => (
-                      <div key={key} className="rounded-2xl bg-slate-50 p-3 border border-slate-100/80">
+                      <div key={key} className="rounded-2xl bg-slate-50/80 p-3 border border-slate-100/80">
                         <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">
                           {key}
                         </span>
@@ -351,7 +350,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
               )}
 
               {/* Escrow Guarantee Terms Callout */}
-              <div className="rounded-2xl border border-brand-100 bg-brand-50/60 p-4 flex items-start gap-3">
+              <div className="rounded-2xl border border-brand-200/60 bg-brand-50/50 p-4 flex items-start gap-3">
                 <ShieldCheck className="h-5 w-5 text-brand-600 shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-xs font-bold text-brand-950">Jaminan Uang Kembali 100%</h4>
@@ -366,19 +365,19 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
           {/* Right Column: Transaction Sidebar Card */}
           <div className="lg:col-span-5 space-y-6">
             {/* Primary Action & Pricing Card */}
-            <div className="sticky top-24 rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xl shadow-slate-200/50 space-y-5">
+            <div className="sticky top-24 rounded-3xl border border-slate-200/60 bg-white p-6 shadow-xl shadow-slate-200/40 space-y-5">
               {/* Title & Live Status Badges */}
               <div>
-                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                <div className="flex items-center gap-2 mb-2.5 flex-wrap">
                   <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-brand-700 border border-brand-200/70">
                     <Clock className="h-3 w-3" />
                     <span>Aktif</span>
                   </span>
-                  <span className="flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-semibold text-slate-600">
+                  <span className="flex items-center gap-1 rounded-full bg-slate-100/80 px-2.5 py-0.5 text-[10px] font-semibold text-slate-600 border border-slate-200/50">
                     <Eye className="h-3 w-3" />
                     <span>{listing.viewCount}x dilihat</span>
                   </span>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold text-amber-700 border border-amber-200/60">
+                  <span className="flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold text-amber-800 border border-amber-200/70">
                     <Flame className="h-3 w-3" />
                     <span>{listing.offerCount} penawaran</span>
                   </span>
@@ -390,7 +389,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
               </div>
 
               {/* Price Display */}
-              <div className="border-y border-slate-100 py-4">
+              <div className="border-y border-slate-100/80 py-4">
                 <div className="flex items-baseline justify-between">
                   <div>
                     <div className="text-3xl font-black text-slate-900 tracking-tight">
@@ -402,7 +401,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                           {formatIDR(listing.originalPrice)}
                         </span>
                         {savingsPercent > 0 && (
-                          <span className="rounded-md bg-rose-50 px-1.5 py-0.5 text-[10px] font-black text-rose-600 border border-rose-200">
+                          <span className="rounded-md bg-rose-50 px-1.5 py-0.5 text-[10px] font-black text-rose-600 border border-rose-200/70">
                             Hemat {savingsPercent}%
                           </span>
                         )}
@@ -412,7 +411,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
 
                   {listing.isNegotiable && (
                     <div className="text-right">
-                      <span className="rounded-full bg-amber-100/80 px-3 py-1 text-xs font-extrabold text-amber-900 border border-amber-300/60">
+                      <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-extrabold text-amber-900 border border-amber-200/80 shadow-2xs">
                         Bisa Nego
                       </span>
                       {listing.minOfferPrice && (
@@ -426,7 +425,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
               </div>
 
               {/* Verified Location Box */}
-              <div className="flex items-center gap-3 rounded-2xl bg-slate-50/90 p-3.5 border border-slate-100">
+              <div className="flex items-center gap-3 rounded-2xl bg-slate-50/80 p-3.5 border border-slate-100/80">
                 <MapPin className="h-4.5 w-4.5 text-brand-600 shrink-0" />
                 <div className="min-w-0 flex-1">
                   <span className="font-bold text-xs text-slate-900 block truncate">
@@ -443,7 +442,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                 <button
                   type="button"
                   onClick={() => setIsCheckoutModalOpen(true)}
-                  className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-brand-600/30 hover:bg-brand-700 hover:scale-101 transition-all cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 py-3.5 text-sm font-bold text-white shadow-md shadow-brand-600/25 hover:bg-brand-700 hover:scale-101 transition-all cursor-pointer"
                 >
                   <ShoppingBag className="h-4.5 w-4.5" />
                   <span>Beli Langsung via Rekber</span>
@@ -453,7 +452,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                   <button
                     type="button"
                     onClick={() => setIsNegoModalOpen(true)}
-                    className="w-full flex items-center justify-center gap-2 rounded-full border-2 border-brand-600/30 bg-brand-50/60 py-3 text-xs sm:text-sm font-bold text-brand-900 hover:bg-brand-100 hover:border-brand-600/50 transition-all cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 rounded-full border border-brand-200 bg-brand-50/60 py-3 text-xs sm:text-sm font-bold text-brand-900 hover:bg-brand-100 hover:border-brand-300 transition-all cursor-pointer"
                   >
                     <MessageSquareQuote className="h-4 w-4 text-brand-600" />
                     <span>Ajukan Tawaran Nego Harga</span>
@@ -462,7 +461,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
               </div>
 
               {/* Escrow Timeline Visual 4-Step */}
-              <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+              <div className="rounded-2xl border border-slate-100/80 bg-slate-50/60 p-4">
                 <h4 className="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
                   <Lock className="h-3.5 w-3.5 text-brand-600" />
                   <span>Alur Transaksi Rekber JBB</span>
@@ -497,7 +496,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
 
               {/* Seller Trust Profile Card */}
               {listing.seller && (
-                <div className="rounded-2xl border border-slate-200/90 bg-white p-4 space-y-3">
+                <div className="rounded-2xl border border-slate-200/60 bg-white p-4 space-y-3 shadow-2xs">
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
                       Reputasi Penjual
@@ -543,7 +542,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between rounded-xl bg-slate-50 p-2.5 text-xs">
+                  <div className="flex items-center justify-between rounded-xl bg-slate-50 p-2.5 text-xs border border-slate-100/70">
                     <span className="text-slate-500 font-medium">Trust Score:</span>
                     <span className="font-black text-brand-700 bg-brand-100/70 px-2 py-0.5 rounded-md">
                       {listing.seller.trustScore}% Sangat Terpercaya
@@ -559,7 +558,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                         setIsNegoModalOpen(true);
                       }
                     }}
-                    className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs"
+                    className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-slate-200/70 bg-white py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs"
                   >
                     <MessageCircle className="h-3.5 w-3.5 text-brand-600" />
                     <span>Diskusi / Chat Penjual</span>
@@ -572,7 +571,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
       </div>
 
       {/* Floating Bottom Sticky Action Bar (Mobile Only) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur-lg p-3 md:hidden shadow-xl">
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200/70 bg-white/95 backdrop-blur-lg p-3 md:hidden shadow-xl">
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-[10px] text-slate-400 font-semibold leading-none">Harga Total</p>
@@ -584,7 +583,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
               <button
                 type="button"
                 onClick={() => setIsNegoModalOpen(true)}
-                className="rounded-full border border-brand-600/40 bg-brand-50 px-3.5 py-2 text-xs font-bold text-brand-900 cursor-pointer"
+                className="rounded-full border border-brand-200 bg-brand-50 px-3.5 py-2 text-xs font-bold text-brand-900 cursor-pointer"
               >
                 Nego
               </button>
@@ -648,10 +647,10 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
       {/* Direct Checkout Modal */}
       {isCheckoutModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl animate-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-lg rounded-3xl border border-slate-200/80 bg-white p-6 shadow-2xl animate-in zoom-in-95 duration-200">
             {checkoutSuccessOrder ? (
               <div className="text-center py-6">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 mb-4 shadow-xs">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 mb-4 shadow-2xs border border-brand-100">
                   <CheckCircle2 className="h-9 w-9" />
                 </div>
                 <h3 className="text-xl font-black text-slate-900">Pembayaran Rekber Sukses!</h3>
@@ -674,7 +673,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                       setIsCheckoutModalOpen(false);
                       setCheckoutSuccessOrder(null);
                     }}
-                    className="w-full rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer"
+                    className="w-full rounded-full border border-slate-200/70 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer"
                   >
                     Tutup
                   </button>
@@ -682,7 +681,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
               </div>
             ) : (
               <form onSubmit={handleCheckoutSubmit}>
-                <div className="pb-4 border-b border-slate-100 flex items-center justify-between">
+                <div className="pb-4 border-b border-slate-100/80 flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-1.5 text-xs font-black text-brand-700 mb-0.5">
                       <ShieldCheck className="h-4 w-4" />
@@ -709,7 +708,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                       className={`rounded-2xl border p-3 text-left transition-all cursor-pointer ${
                         deliveryMethod === 'KURIR_REGULER'
                           ? 'border-brand-600 bg-brand-50/60 text-brand-950 ring-2 ring-brand-500/20'
-                          : 'border-slate-200 bg-slate-50 text-slate-700'
+                          : 'border-slate-200/70 bg-slate-50 text-slate-700'
                       }`}
                     >
                       <Truck className="h-4 w-4 text-brand-600 mb-1" />
@@ -723,7 +722,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                       className={`rounded-2xl border p-3 text-left transition-all cursor-pointer ${
                         deliveryMethod === 'COD_KETEMUAN'
                           ? 'border-brand-600 bg-brand-50/60 text-brand-950 ring-2 ring-brand-500/20'
-                          : 'border-slate-200 bg-slate-50 text-slate-700'
+                          : 'border-slate-200/70 bg-slate-50 text-slate-700'
                       }`}
                     >
                       <Zap className="h-4 w-4 text-brand-600 mb-1" />
@@ -743,7 +742,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                       placeholder="Nama lengkap"
                       value={recipientName}
                       onChange={(e) => setRecipientName(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 mt-1 focus:border-brand-500 focus:outline-none"
+                      className="w-full rounded-xl border border-slate-200/80 p-2.5 text-xs text-slate-800 mt-1 focus:border-brand-500 focus:outline-none"
                     />
                   </div>
 
@@ -755,7 +754,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                       placeholder="081234567890"
                       value={recipientPhone}
                       onChange={(e) => setRecipientPhone(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 mt-1 focus:border-brand-500 focus:outline-none"
+                      className="w-full rounded-xl border border-slate-200/80 p-2.5 text-xs text-slate-800 mt-1 focus:border-brand-500 focus:outline-none"
                     />
                   </div>
 
@@ -769,7 +768,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                       placeholder={deliveryMethod === 'COD_KETEMUAN' ? 'Contoh: Starbucks Gandaria City jam 3 sore' : 'Jl. Nama Jalan No. XX, RT/RW, Kelurahan, Kecamatan, Kota, Kode Pos'}
                       value={shippingAddress}
                       onChange={(e) => setShippingAddress(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 mt-1 focus:border-brand-500 focus:outline-none"
+                      className="w-full rounded-xl border border-slate-200/80 p-2.5 text-xs text-slate-800 mt-1 focus:border-brand-500 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -788,7 +787,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                     <span>Biaya Jasa Perlindungan Rekber (1%)</span>
                     <span>{formatIDR(Math.round(listing.price * 0.01))}</span>
                   </div>
-                  <div className="border-t border-slate-200 pt-2 flex justify-between font-black text-slate-900 text-sm">
+                  <div className="border-t border-slate-200/80 pt-2 flex justify-between font-black text-slate-900 text-sm">
                     <span>Total Pembayaran</span>
                     <span className="text-brand-700">
                       {formatIDR(listing.price + (deliveryMethod === 'COD_KETEMUAN' ? 0 : 25000) + Math.round(listing.price * 0.01))}
@@ -800,7 +799,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                   <button
                     type="button"
                     onClick={() => setIsCheckoutModalOpen(false)}
-                    className="flex-1 rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer"
+                    className="flex-1 rounded-full border border-slate-200/80 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer"
                   >
                     Batal
                   </button>
