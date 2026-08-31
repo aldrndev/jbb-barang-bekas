@@ -1,75 +1,72 @@
 'use client';
 
-import React, { useState, useEffect, use, Suspense } from 'react';
+import React, { useState, use, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../../lib/api-client';
+import { useAuth } from '../../../context/auth-context';
+import { useWishlist } from '../../../context/wishlist-context';
 import { formatIDR, formatTimeAgo } from '../../../lib/utils';
 import { ConditionBadge } from '../../../components/marketplace/condition-badge';
 import { MakeOfferModal } from '../../../components/marketplace/make-offer-modal';
 import { Breadcrumbs } from '../../../components/layout/breadcrumbs';
 import {
   ShieldCheck,
-  MapPin,
-  Star,
   Zap,
-  CheckCircle2,
+  MapPin,
   Calendar,
-  Sparkles,
-  MessageSquareQuote,
-  ShoppingBag,
-  Share2,
-  AlertCircle,
-  Truck,
-  ArrowLeft,
-  Heart,
-  Maximize2,
-  X,
-  Lock,
-  MessageCircle,
+  CheckCircle2,
   Clock,
-  Eye,
   Flame,
-  BadgeCheck,
+  Eye,
+  ShoppingBag,
+  MessageSquareQuote,
+  Star,
   ChevronRight,
   ChevronLeft,
-  Tag
+  Share2,
+  Heart,
+  Lock,
+  ArrowLeft,
+  AlertCircle,
+  BadgeCheck,
+  Maximize2,
+  X,
+  Sparkles,
+  MessageCircle,
+  Package,
+  FileText
 } from 'lucide-react';
-import { useAuth } from '../../../context/auth-context';
-import { useWishlist } from '../../../context/wishlist-context';
 
 function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
+  const router = useRouter();
   const { user, openAuthModal } = useAuth();
   const { isWishlisted, toggleWishlist } = useWishlist();
-  const searchParams = useSearchParams();
-  const queryOfferId = searchParams.get('offerId');
-  const queryCheckout = searchParams.get('checkout');
 
   const [activeImageIdx, setActiveImageIdx] = useState(0);
-  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [isNegoModalOpen, setIsNegoModalOpen] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [shareToast, setShareToast] = useState(false);
 
+  // Fetch listing detail
   const { data: listingData, isLoading, refetch } = useQuery({
     queryKey: ['listing', idOrSlug],
-    queryFn: () => api.getListingDetail(idOrSlug)
+    queryFn: () => api.getListingDetail(idOrSlug),
+    enabled: !!idOrSlug
   });
 
+  const listing = listingData?.data;
+
+  // Check if current user has an accepted offer for this listing
   const { data: sentOffersData } = useQuery({
     queryKey: ['offers', 'sent'],
     queryFn: () => api.getSentOffers(),
     enabled: !!user
   });
 
-  const listing = listingData?.data;
-  const sentOffers = sentOffersData?.data || [];
-
-  // Detect if current buyer has an accepted offer for this listing
-  const acceptedOffer = sentOffers.find(
-    (o) =>
-      (o.id === queryOfferId || (listing && o.listingId === listing.id)) &&
-      (o.status === 'ACCEPTED' || o.id === queryOfferId)
+  const acceptedOffer = sentOffersData?.data?.find(
+    (o) => (o.listingId === listing?.id || o.listing?.slug === idOrSlug) && o.status === 'ACCEPTED'
   );
 
   const effectivePrice = acceptedOffer
@@ -82,10 +79,13 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 animate-pulse">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-7 h-110 bg-slate-200/80 rounded-3xl border border-slate-200" />
-          <div className="lg:col-span-5 h-110 bg-slate-200/80 rounded-3xl border border-slate-200" />
+      <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="h-6 w-48 bg-slate-200 rounded-lg animate-pulse mb-6" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="lg:col-span-7 h-[420px] bg-slate-200 rounded-3xl animate-pulse" />
+            <div className="lg:col-span-5 h-[420px] bg-slate-200 rounded-3xl animate-pulse" />
+          </div>
         </div>
       </div>
     );
@@ -146,10 +146,10 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-6 px-4 sm:px-6 lg:px-8 pb-28 md:pb-12">
+    <div className="min-h-screen bg-slate-50 py-4 sm:py-6 px-4 sm:px-6 lg:px-8 pb-32 md:pb-16">
       <div className="mx-auto max-w-7xl">
-        {/* Breadcrumb & Quick Actions */}
-        <div className="flex items-center justify-between text-xs text-slate-500 mb-5 gap-3">
+        {/* Breadcrumbs Navigation */}
+        <div className="flex items-center justify-between text-xs text-slate-500 mb-4 gap-3">
           <Breadcrumbs
             items={[
               { label: 'Katalog Barang', href: '/cari' },
@@ -158,13 +158,13 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
             ]}
           />
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="hidden sm:flex items-center gap-2 shrink-0">
             <button
               onClick={handleShare}
               className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-xs"
             >
               <Share2 className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Bagikan</span>
+              <span>Bagikan</span>
             </button>
             <button
               onClick={handleToggleWishlist}
@@ -173,7 +173,6 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                   ? 'border-rose-300 bg-rose-50 text-rose-600'
                   : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-rose-600'
               }`}
-              title={wishlisted ? 'Hapus dari Wishlist' : 'Simpan ke Wishlist'}
             >
               <Heart className={`h-3.5 w-3.5 ${wishlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
               <span className="font-bold">{wishlisted ? 'Tersimpan' : 'Wishlist'}</span>
@@ -188,36 +187,58 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left Column: Image Gallery, Condition Matrix, Description */}
-          <div className="lg:col-span-7 space-y-6">
-            {/* Unified Product Image Gallery Card (Option 2: Premium Docked Tray) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+          {/* Left Column (Photos, Mobile Quick Header, Condition, Specs, Description) */}
+          <div className="lg:col-span-7 space-y-5 sm:space-y-6">
+            {/* Unified Product Image Gallery Card */}
             <div className="rounded-3xl border border-slate-200 bg-white shadow-xs overflow-hidden">
               {/* Top Section: Header & Main Stage Canvas */}
-              <div className="p-5 sm:p-6 pb-4 space-y-3">
-                {/* Top Header Bar: Badges & Fullscreen Button */}
+              <div className="p-4 sm:p-6 pb-3 sm:pb-4 space-y-3">
+                {/* Top Header Bar */}
                 <div className="flex items-center justify-between pb-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <ConditionBadge condition={listing.condition} size="md" />
-                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700 border border-slate-200">
-                      📷 {activeImageIdx + 1} / {images.length || 1}
+                    <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-700 border border-slate-200">
+                      📷 {activeImageIdx + 1}/{images.length || 1}
                     </span>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setIsLightboxOpen(true)}
-                    className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
-                    title="Perbesar Layar Penuh"
-                  >
-                    <Maximize2 className="h-3.5 w-3.5 text-slate-500" />
-                    <span>Perbesar</span>
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    {/* Mobile Wishlist & Share Shortcuts */}
+                    <button
+                      type="button"
+                      onClick={handleShare}
+                      className="sm:hidden flex items-center justify-center h-8 w-8 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
+                      title="Bagikan"
+                    >
+                      <Share2 className="h-4 w-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleToggleWishlist}
+                      className={`sm:hidden flex items-center justify-center h-8 w-8 rounded-full border transition-all ${
+                        wishlisted
+                          ? 'border-rose-300 bg-rose-50 text-rose-600'
+                          : 'border-slate-200 bg-slate-100 text-slate-700'
+                      }`}
+                      title="Wishlist"
+                    >
+                      <Heart className={`h-4 w-4 ${wishlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsLightboxOpen(true)}
+                      className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+                    >
+                      <Maximize2 className="h-3.5 w-3.5 text-slate-500" />
+                      <span className="hidden sm:inline">Perbesar</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Main Stage Image Frame */}
                 <div
-                  className="relative aspect-4/3 sm:aspect-16/11 w-full overflow-hidden rounded-2xl flex items-center justify-center p-2 group cursor-pointer"
+                  className="relative aspect-4/3 sm:aspect-16/11 w-full overflow-hidden rounded-2xl flex items-center justify-center p-2 group cursor-pointer bg-slate-50/50"
                   onClick={() => setIsLightboxOpen(true)}
                 >
                   <img
@@ -228,16 +249,16 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                 </div>
               </div>
 
-              {/* Bottom Section: Premium Docked Thumbnail Tray */}
+              {/* Bottom Section: Docked Thumbnail Tray */}
               {images.length > 1 && (
-                <div className="border-t border-slate-200/90 bg-slate-50/80 px-5 sm:px-6 py-3.5">
-                  <div className="flex items-center gap-3 overflow-x-auto py-1 px-1 hide-scrollbar">
+                <div className="border-t border-slate-200/90 bg-slate-50/80 px-4 sm:px-6 py-3">
+                  <div className="flex items-center gap-2.5 sm:gap-3 overflow-x-auto py-1 px-1 hide-scrollbar">
                     {images.map((img, idx) => (
                       <button
                         key={img.id}
                         type="button"
                         onClick={() => setActiveImageIdx(idx)}
-                        className={`relative h-16 w-16 sm:h-18 sm:w-18 shrink-0 overflow-hidden rounded-2xl transition-all cursor-pointer bg-white ${
+                        className={`relative h-14 w-14 sm:h-18 sm:w-18 shrink-0 overflow-hidden rounded-xl sm:rounded-2xl transition-all cursor-pointer bg-white ${
                           activeImageIdx === idx
                             ? 'ring-2 ring-brand-600 ring-offset-2 ring-offset-slate-50 scale-103 shadow-sm'
                             : 'border border-slate-200/90 opacity-60 hover:opacity-100 hover:border-slate-300'
@@ -246,7 +267,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                         <img
                           src={img.url}
                           alt={`Thumbnail ${idx + 1}`}
-                          className="h-full w-full object-cover rounded-xl"
+                          className="h-full w-full object-cover"
                         />
                       </button>
                     ))}
@@ -255,9 +276,93 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
               )}
             </div>
 
+            {/* Mobile-Only Key Product Summary & Price Block (Immediately under photo on mobile) */}
+            <div className="block lg:hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-xs space-y-4">
+              {/* Special Banner if Accepted Offer exists */}
+              {acceptedOffer && (
+                <div className="rounded-2xl bg-emerald-50 p-3.5 border border-emerald-300 shadow-2xs space-y-1">
+                  <div className="flex items-center gap-1.5 text-emerald-900 font-black text-xs">
+                    <Sparkles className="h-4 w-4 text-emerald-600" />
+                    <span>TAWARAN NEGO ANDA DISETUJUI!</span>
+                  </div>
+                  <p className="text-[11px] text-emerald-800 font-medium leading-snug">
+                    Harga khusus sebesar <strong>{formatIDR(effectivePrice)}</strong> terkunci 24 jam untuk akun Anda.
+                  </p>
+                </div>
+              )}
+
+              {/* Title & Live Status Badges */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-brand-800 border border-brand-200">
+                    <Clock className="h-3 w-3" />
+                    <span>Aktif</span>
+                  </span>
+                  <span className="flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-semibold text-slate-700 border border-slate-200">
+                    <Eye className="h-3 w-3" />
+                    <span>{listing.viewCount}x dilihat</span>
+                  </span>
+                  <span className="flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold text-amber-800 border border-amber-200">
+                    <Flame className="h-3 w-3" />
+                    <span>{listing.offerCount} penawaran</span>
+                  </span>
+                </div>
+
+                <h1 className="text-base sm:text-lg font-black text-slate-900 leading-snug">
+                  {listing.title}
+                </h1>
+              </div>
+
+              {/* Price & Savings */}
+              <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200 space-y-1">
+                <div className="flex items-baseline justify-between">
+                  <div>
+                    <span className="text-2xl font-black text-brand-700">
+                      {formatIDR(effectivePrice)}
+                    </span>
+                    {acceptedOffer ? (
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-xs text-slate-400 line-through">
+                          {formatIDR(listing.price)}
+                        </span>
+                        <span className="rounded-md bg-emerald-100 px-1.5 py-0.2 text-[10px] font-black text-brand-900 border border-brand-200">
+                          Hemat {formatIDR(listing.price - effectivePrice)}
+                        </span>
+                      </div>
+                    ) : (
+                      listing.originalPrice && (
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-xs text-slate-400 line-through">
+                            {formatIDR(listing.originalPrice)}
+                          </span>
+                          {savingsPercent > 0 && (
+                            <span className="rounded-md bg-amber-100 px-1.5 py-0.2 text-[10px] font-black text-amber-900 border border-amber-200">
+                              Hemat {savingsPercent}%
+                            </span>
+                          )}
+                        </div>
+                      )
+                    )}
+                  </div>
+
+                  {listing.isNegotiable && !acceptedOffer && (
+                    <span className="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-extrabold text-amber-900 border border-amber-300">
+                      Bisa Nego
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Verified Location */}
+              <div className="flex items-center gap-2.5 text-xs text-slate-600">
+                <MapPin className="h-4 w-4 text-brand-600 shrink-0" />
+                <span>Lokasi: <strong className="text-slate-900">{listing.district}, {listing.city}</strong></span>
+              </div>
+            </div>
+
             {/* Transparent Condition & Inspection Matrix Card */}
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xs space-y-5">
-              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
                 <div className="flex items-center gap-2.5">
                   <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 border border-brand-100">
                     <Sparkles className="h-4.5 w-4.5" />
@@ -271,7 +376,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
               </div>
 
               {/* Structured Inspection Checklist Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                 <div className="flex items-start gap-2.5 rounded-2xl bg-slate-50 p-3.5 border border-slate-200/80">
                   <CheckCircle2 className="h-4.5 w-4.5 text-brand-600 shrink-0 mt-0.5" />
                   <div>
@@ -331,9 +436,9 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
             </div>
 
             {/* Product Description & Technical Specs */}
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xs space-y-6">
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs space-y-5">
               <div>
-                <h3 className="text-sm font-black text-slate-900 mb-3">Deskripsi Lengkap Penjual</h3>
+                <h3 className="text-sm font-black text-slate-900 mb-2.5">Deskripsi Lengkap Penjual</h3>
                 <p className="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line font-medium">
                   {listing.description}
                 </p>
@@ -341,13 +446,13 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
 
               {/* Dynamic Specs Table */}
               {Object.keys(specs).length > 0 && (
-                <div className="border-t border-slate-200 pt-5">
+                <div className="border-t border-slate-100 pt-4">
                   <h4 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">
                     Spesifikasi Teknis
                   </h4>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                     {Object.entries(specs).map(([key, val]) => (
-                      <div key={key} className="rounded-2xl bg-slate-50 p-3 border border-slate-200/80">
+                      <div key={key} className="rounded-2xl bg-slate-50 p-2.5 sm:p-3 border border-slate-200/80">
                         <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">
                           {key}
                         </span>
@@ -362,18 +467,70 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
               <div className="rounded-2xl border border-brand-200 bg-brand-50/70 p-4 flex items-start gap-3">
                 <ShieldCheck className="h-5 w-5 text-brand-600 shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-xs font-bold text-brand-950">Jaminan Uang Kembali 100%</h4>
+                  <h4 className="text-xs font-bold text-brand-950">Jaminan Uang Kembali 100% (Rekber JBB)</h4>
                   <p className="text-[11px] text-brand-800 mt-0.5 leading-relaxed font-medium">
                     Jika barang yang diterima memiliki minus fisik atau fungsi yang tidak dijelaskan pada deskripsi, Anda berhak mengajukan komplain & retur dana penuh dalam 48 jam.
                   </p>
                 </div>
               </div>
             </div>
+
+            {/* Mobile-Only Seller Profile Snippet */}
+            {listing.seller && (
+              <div className="block lg:hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-xs space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-400">
+                    Profil Penjual
+                  </span>
+                  <span className="text-[10px] font-medium text-slate-400">
+                    Bergabung {formatTimeAgo(listing.seller.createdAt)}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  {listing.seller.avatarUrl ? (
+                    <img
+                      src={listing.seller.avatarUrl}
+                      alt={listing.seller.name}
+                      className="h-12 w-12 rounded-2xl object-cover ring-2 ring-slate-100 shrink-0"
+                    />
+                  ) : (
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 text-sm font-black text-brand-700 shrink-0">
+                      {listing.seller.name.charAt(0)}
+                    </div>
+                  )}
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 font-bold text-sm text-slate-900">
+                      <span className="truncate">{listing.seller.name}</span>
+                      {listing.seller.isKycVerified && (
+                        <BadgeCheck className="h-4 w-4 text-brand-600 fill-brand-100 shrink-0" />
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
+                      <div className="flex items-center gap-1 font-bold text-amber-600">
+                        <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                        <span>{listing.seller.ratingAverage}</span>
+                        <span className="text-slate-400">({listing.seller.ratingCount})</span>
+                      </div>
+                      <span>&bull;</span>
+                      <span className="font-semibold text-slate-700">{listing.seller.totalTransactions} transaksi</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between rounded-2xl bg-slate-50 p-2.5 text-xs border border-slate-200/80">
+                  <span className="text-slate-500 font-medium">Trust Score:</span>
+                  <span className="font-black text-brand-700 bg-brand-100 px-2 py-0.5 rounded-md">
+                    {listing.seller.trustScore}% Sangat Terpercaya
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Right Column: Transaction Sidebar Card */}
-          <div className="lg:col-span-5 space-y-6">
-            {/* Primary Action & Pricing Card */}
+          {/* Right Column: Desktop Transaction Sidebar Card (Hidden on Mobile) */}
+          <div className="hidden lg:block lg:col-span-5 space-y-6">
             <div className="sticky top-24 rounded-3xl border border-slate-200 bg-white p-6 shadow-md shadow-slate-200/60 space-y-5">
               {/* Special Banner if Accepted Offer exists */}
               {acceptedOffer && (
@@ -414,7 +571,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
               <div className="border-y border-slate-200 py-4">
                 <div className="flex items-baseline justify-between">
                   <div>
-                    <div className="text-3xl font-black text-slate-900 tracking-tight">
+                    <div className="text-3xl font-black text-brand-700 tracking-tight">
                       {formatIDR(effectivePrice)}
                     </div>
                     {acceptedOffer ? (
@@ -584,21 +741,6 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                       {listing.seller.trustScore}% Sangat Terpercaya
                     </span>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (!user) {
-                        openAuthModal();
-                      } else {
-                        setIsNegoModalOpen(true);
-                      }
-                    }}
-                    className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-xs"
-                  >
-                    <MessageCircle className="h-3.5 w-3.5 text-brand-600" />
-                    <span>Diskusi / Chat Penjual</span>
-                  </button>
                 </div>
               )}
             </div>
@@ -606,31 +748,36 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
         </div>
       </div>
 
-      {/* Floating Bottom Sticky Action Bar (Mobile Only) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur-lg p-3 md:hidden shadow-xl">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-[10px] text-slate-400 font-semibold leading-none">
-              {acceptedOffer ? 'Harga Nego Disetujui' : 'Harga Total'}
-            </p>
-            <p className="text-base font-black text-slate-900 mt-0.5">{formatIDR(effectivePrice)}</p>
+      {/* Floating Bottom Sticky Action Bar (Mobile Only with Safe Area) */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200/90 bg-white/95 backdrop-blur-md p-3 sm:p-4 md:hidden shadow-2xl safe-area-pb">
+        <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">
+          <div className="min-w-0">
+            <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">
+              {acceptedOffer ? 'Harga Nego Deal' : 'Harga Barang'}
+            </span>
+            <span className="text-lg font-black text-brand-700 truncate block">
+              {formatIDR(effectivePrice)}
+            </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             {listing.isNegotiable && !acceptedOffer && (
               <button
                 type="button"
                 onClick={() => setIsNegoModalOpen(true)}
-                className="rounded-full border border-brand-300 bg-brand-50 px-3.5 py-2 text-xs font-bold text-brand-900 cursor-pointer shadow-xs"
+                className="flex items-center gap-1 rounded-2xl border border-amber-300 bg-amber-50 hover:bg-amber-100 px-3.5 py-2.5 text-xs font-extrabold text-amber-900 cursor-pointer shadow-2xs transition-colors"
               >
-                Nego
+                <MessageSquareQuote className="h-3.5 w-3.5 text-amber-700" />
+                <span>Nego</span>
               </button>
             )}
+
             <Link
               href={checkoutUrl}
-              className="rounded-full bg-brand-600 px-4.5 py-2 text-xs font-bold text-white shadow-md shadow-brand-600/30 cursor-pointer"
+              className="flex items-center gap-1.5 rounded-2xl bg-brand-600 hover:bg-brand-700 px-5 py-2.5 text-xs font-black text-white shadow-md shadow-brand-600/30 transition-all cursor-pointer"
             >
-              {acceptedOffer ? 'Beli Nego' : 'Beli Rekber'}
+              <ShoppingBag className="h-3.5 w-3.5" />
+              <span>{acceptedOffer ? 'Bayar Deal' : 'Beli Rekber'}</span>
             </Link>
           </div>
         </div>
@@ -639,7 +786,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
       {/* Lightbox / Fullscreen Image Viewer Modal */}
       {isLightboxOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-md animate-in fade-in duration-200">
-          {/* Top Bar: Counter & Close Button */}
+          {/* Top Bar */}
           <div className="absolute top-5 left-5 right-5 flex items-center justify-between z-10">
             <div className="rounded-full bg-white/15 backdrop-blur-md px-3.5 py-1 text-xs font-bold text-white border border-white/10">
               Foto {activeImageIdx + 1} dari {images.length || 1}
