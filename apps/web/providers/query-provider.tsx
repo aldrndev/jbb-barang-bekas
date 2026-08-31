@@ -9,9 +9,10 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 0, // Always consider data stale so navigation triggers background revalidation
-            refetchOnMount: true, // Auto refetch on component mount when navigating across routes
-            refetchOnWindowFocus: false,
+            staleTime: 5 * 60 * 1000, // 5 menit: data fresh di memori (tidak membebani API saat bolak-balik klik link)
+            gcTime: 15 * 60 * 1000, // 15 menit: cache disimpan di Garbage Collection memory
+            refetchOnMount: false, // Gunakan cache instan selama data masih fresh
+            refetchOnWindowFocus: false, // Hindari request otomatis saat user ganti tab browser
             retry: 1
           }
         }
