@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 import { formatIDR, formatTimeAgo } from '../../lib/utils';
@@ -22,6 +22,7 @@ import {
 
 function NegoDashboardContent() {
   const { user, loginAsDemoBuyer, loginAsDemoSeller } = useAuth();
+  const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const queryTab = searchParams.get('tab') as 'received' | 'sent' | null;
 
@@ -58,6 +59,11 @@ function NegoDashboardContent() {
   const handleRespond = async (offerId: string, action: 'ACCEPT' | 'REJECT' | 'COUNTER', counterPrice?: number) => {
     const res = await api.respondOffer(offerId, action, counterPrice);
     if (res.success) {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['offers'] }),
+        queryClient.invalidateQueries({ queryKey: ['my-listings'] }),
+        queryClient.invalidateQueries({ queryKey: ['my-orders'] })
+      ]);
       refetchReceived();
       refetchSent();
       setSelectedOfferForCounter(null);

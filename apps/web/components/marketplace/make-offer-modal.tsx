@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface MakeOfferModalProps {
   listing: Listing;
@@ -26,6 +27,7 @@ interface MakeOfferModalProps {
 }
 
 export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: MakeOfferModalProps) {
+  const queryClient = useQueryClient();
   const { user, openAuthModal, loginAsDemoBuyer } = useAuth();
   const minAllowed = listing.minOfferPrice || Math.round(listing.price * 0.7);
   const defaultSuggestion = Math.max(minAllowed, Math.round(listing.price * 0.9));
@@ -73,6 +75,11 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
 
     if (res.success) {
       setIsSuccess(true);
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['offers'] }),
+        queryClient.invalidateQueries({ queryKey: ['listing'] }),
+        queryClient.invalidateQueries({ queryKey: ['my-listings'] })
+      ]);
       if (onOfferSuccess) onOfferSuccess();
     } else {
       setErrorMsg(res.error?.message || 'Gagal mengajukan tawaran. Silakan coba lagi.');

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import type { UserProfile } from '@jbb/types';
 import { api } from '../lib/api-client';
 
@@ -20,6 +21,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -47,6 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('jbb_auth_token', newToken);
     localStorage.setItem('jbb_auth_user', JSON.stringify(newUser));
     setIsAuthModalOpen(false);
+    queryClient.invalidateQueries();
   };
 
   const logout = () => {
@@ -54,6 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     localStorage.removeItem('jbb_auth_token');
     localStorage.removeItem('jbb_auth_user');
+    queryClient.clear();
   };
 
   const loginAsDemoBuyer = async () => {

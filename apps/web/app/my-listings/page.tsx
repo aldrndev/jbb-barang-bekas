@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 import { formatIDR, formatTimeAgo } from '../../lib/utils';
@@ -29,6 +29,7 @@ import {
 
 export default function MyListingsPage() {
   const { user, openAuthModal } = useAuth();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatusUpdatingId, setSelectedStatusUpdatingId] = useState<string | null>(null);
@@ -91,6 +92,12 @@ export default function MyListingsPage() {
   const handleUpdateStatus = async (id: string, newStatus: string) => {
     const res = await api.updateListingStatus(id, newStatus);
     if (res.success) {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['my-listings'] }),
+        queryClient.invalidateQueries({ queryKey: ['listings'] }),
+        queryClient.invalidateQueries({ queryKey: ['featured-listings'] }),
+        queryClient.invalidateQueries({ queryKey: ['listing'] })
+      ]);
       refetch();
       setSelectedStatusUpdatingId(null);
     } else {
@@ -102,6 +109,11 @@ export default function MyListingsPage() {
     if (confirm(`Apakah Anda yakin ingin menghapus iklan "${title}"?`)) {
       const res = await api.deleteListing(id);
       if (res.success) {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ['my-listings'] }),
+          queryClient.invalidateQueries({ queryKey: ['listings'] }),
+          queryClient.invalidateQueries({ queryKey: ['featured-listings'] })
+        ]);
         refetch();
       } else {
         alert(res.error?.message || 'Gagal menghapus iklan');

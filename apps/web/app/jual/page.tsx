@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 import { formatIDR } from '../../lib/utils';
@@ -24,6 +24,7 @@ import {
 
 export default function JualBarangPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { user, openAuthModal } = useAuth();
 
   const [title, setTitle] = useState('');
@@ -118,6 +119,11 @@ export default function JualBarangPage() {
     const res = await api.createListing(payload);
 
     if (res.success && res.data) {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['listings'] }),
+        queryClient.invalidateQueries({ queryKey: ['featured-listings'] }),
+        queryClient.invalidateQueries({ queryKey: ['my-listings'] })
+      ]);
       router.push(`/listing/${res.data.slug || res.data.id}`);
     } else {
       setErrorMsg(res.error?.message || 'Gagal mempublikasikan listing. Periksa form Anda.');

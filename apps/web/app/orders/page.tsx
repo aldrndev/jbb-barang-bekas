@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 import { formatIDR } from '../../lib/utils';
@@ -30,6 +30,7 @@ import {
 
 export default function OrderHistoryPage() {
   const { user, openAuthModal } = useAuth();
+  const queryClient = useQueryClient();
   const [orderMode, setOrderMode] = useState<'buyer' | 'seller'>('buyer');
   const [activeTab, setActiveTab] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -119,6 +120,11 @@ export default function OrderHistoryPage() {
     if (confirm('Konfirmasi bahwa barang telah Anda terima dan sesuai deskripsi? Dana akan diteruskan ke penjual.')) {
       const res = await api.completeOrder(orderId);
       if (res.success) {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ['my-orders'] }),
+          queryClient.invalidateQueries({ queryKey: ['orders'] }),
+          queryClient.invalidateQueries({ queryKey: ['my-listings'] })
+        ]);
         refetch();
       } else {
         alert(res.error?.message || 'Gagal melepaskan dana');
@@ -132,6 +138,10 @@ export default function OrderHistoryPage() {
       const res = await api.disputeOrder(orderId, reason.trim(), []);
       if (res.success) {
         alert('Komplain Anda telah terdaftar. Tim CS Rekber JBB akan menahan dana dan memediasi dengan penjual.');
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ['my-orders'] }),
+          queryClient.invalidateQueries({ queryKey: ['orders'] })
+        ]);
         refetch();
       } else {
         alert(res.error?.message || 'Gagal mengajukan komplain');
@@ -149,6 +159,10 @@ export default function OrderHistoryPage() {
       alert('Resi pengiriman berhasil disimpan! Pembeli telah diberi tahu.');
       setShippingOrderId(null);
       setTrackingNumberInput('');
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['my-orders'] }),
+        queryClient.invalidateQueries({ queryKey: ['orders'] })
+      ]);
       refetch();
     } else {
       alert(res.error?.message || 'Gagal mengupdate resi');

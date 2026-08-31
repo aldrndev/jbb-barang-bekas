@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 import { formatIDR } from '../../lib/utils';
@@ -28,6 +28,7 @@ import {
 
 function CheckoutContent() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { user, openAuthModal, loginAsDemoBuyer } = useAuth();
   const searchParams = useSearchParams();
   const listingIdOrSlug = searchParams.get('listingId');
@@ -140,6 +141,13 @@ function CheckoutContent() {
     if (res.success && res.data) {
       setSuccessOrder(res.data);
       setErrorMessage(null);
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['my-orders'] }),
+        queryClient.invalidateQueries({ queryKey: ['orders'] }),
+        queryClient.invalidateQueries({ queryKey: ['offers'] }),
+        queryClient.invalidateQueries({ queryKey: ['listing'] }),
+        queryClient.invalidateQueries({ queryKey: ['my-listings'] })
+      ]);
     } else {
       setErrorMessage(res.error?.message || 'Gagal memproses pesanan Rekber. Silakan periksa kembali formulir Anda.');
     }
