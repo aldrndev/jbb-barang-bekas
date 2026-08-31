@@ -155,6 +155,31 @@ export const orderRoutes = new Hono<AppEnv>()
     });
   })
 
+  .put('/:id/deliver', async (c) => {
+    const user = c.get('user')!;
+    const orderId = c.req.param('id');
+
+    const order = memoryStore.orders.find((o) => o.id === orderId);
+    if (!order) {
+      return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } }, 404);
+    }
+
+    if (order.buyerId !== user.id && user.role !== 'ADMIN') {
+      return c.json({ success: false, error: { code: 'FORBIDDEN', message: 'Hanya pembeli yang bisa konfirmasi penerimaan paket' } }, 403);
+    }
+
+    order.escrowStatus = 'DELIVERED_INSPECTION';
+    order.deliveredAt = new Date().toISOString();
+    order.inspectionDeadline = new Date(Date.now() + 48 * 3600 * 1000).toISOString();
+    order.updatedAt = new Date().toISOString();
+
+    return c.json({
+      success: true,
+      message: 'Paket berhasil dikonfirmasi sampai. Periode inspeksi fisik 48 jam dimulai!',
+      data: order
+    });
+  })
+
   .put('/:id/complete', async (c) => {
     const user = c.get('user')!;
     const orderId = c.req.param('id');

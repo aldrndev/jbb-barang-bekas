@@ -129,6 +129,11 @@ export const api = {
       body: JSON.stringify({ orderId, courierName, trackingNumber })
     }),
 
+  confirmDelivered: (orderId: string) =>
+    request<Order>(`/api/orders/${orderId}/deliver`, {
+      method: 'PUT'
+    }),
+
   completeOrder: (orderId: string) =>
     request<Order>(`/api/orders/${orderId}/complete`, {
       method: 'PUT'

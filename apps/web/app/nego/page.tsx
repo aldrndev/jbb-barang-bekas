@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 import { formatIDR, formatTimeAgo } from '../../lib/utils';
@@ -21,11 +21,11 @@ import {
   Clock,
   ArrowRight,
   Sparkles,
-  UserCheck
+  PackageCheck
 } from 'lucide-react';
 
 function NegoDashboardContent() {
-  const { user, openAuthModal, loginAsDemoBuyer, loginAsDemoSeller } = useAuth();
+  const { user, loginAsDemoBuyer, loginAsDemoSeller } = useAuth();
   const searchParams = useSearchParams();
   const queryTab = searchParams.get('tab') as 'received' | 'sent' | 'orders' | null;
 
@@ -88,8 +88,22 @@ function NegoDashboardContent() {
     }
   };
 
+  const handleConfirmDelivered = async (orderId: string) => {
+    const res = await api.confirmDelivered(orderId);
+    if (res.success) {
+      refetchOrders();
+    }
+  };
+
   const handleCompleteOrder = async (orderId: string) => {
     const res = await api.completeOrder(orderId);
+    if (res.success) {
+      refetchOrders();
+    }
+  };
+
+  const handleDisputeOrder = async (orderId: string, reason: string) => {
+    const res = await api.disputeOrder(orderId, reason, []);
     if (res.success) {
       refetchOrders();
     }
@@ -444,7 +458,7 @@ function NegoDashboardContent() {
                     courierName={order.courierName}
                   />
 
-                  {/* Seller Action: Update Tracking */}
+                  {/* 1. Seller Action: Input Resi Pengiriman */}
                   {user.id === order.sellerId && (order.escrowStatus === 'PAYMENT_CONFIRMED' || order.escrowStatus === 'SELLER_PACKING') && (
                     <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200 space-y-3">
                       <h4 className="text-xs font-bold text-slate-900">
@@ -469,24 +483,91 @@ function NegoDashboardContent() {
                     </div>
                   )}
 
-                  {/* Buyer Action: Complete & Release Escrow */}
-                  {user.id === order.buyerId && order.escrowStatus === 'DELIVERED_INSPECTION' && (
-                    <div className="rounded-2xl bg-brand-50 p-4 border border-brand-200 flex flex-col sm:flex-row items-center justify-between gap-3">
-                      <div>
-                        <h4 className="text-xs font-bold text-brand-950">
-                          Barang Sudah Selesai Dicek?
-                        </h4>
-                        <p className="text-[11px] text-brand-800 mt-0.5">
-                          Jika kondisi fisik dan fungsi sesuai deskripsi, klik untuk mencairkan dana ke penjual.
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleCompleteOrder(order.id)}
-                        className="rounded-full bg-brand-600 px-5 py-2 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/20 cursor-pointer"
-                      >
-                        Cairkan Dana ke Penjual
-                      </button>
+                  {/* 2. When In Transit: Buyer Action to Confirm Delivery / Seller waiting info */}
+                  {order.escrowStatus === 'IN_TRANSIT' && (
+                    <>
+                      {user.id === order.buyerId ? (
+                        <div className="rounded-2xl bg-blue-50 p-4 border border-blue-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+                          <div>
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-blue-950">
+                              <PackageCheck className="h-4 w-4 text-blue-600 shrink-0" />
+                              <span>Paket Sudah Sampai di Lokasi Anda?</span>
+                            </div>
+                            <p className="text-[11px] text-blue-800 mt-0.5">
+                              Jika kurir sudah mengantar barang / COD selesai, konfirmasi di bawah ini untuk memulai <strong>Periode Pengecekan Fisik 48 Jam</strong>.
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleConfirmDelivered(order.id)}
+                            className="rounded-full bg-blue-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-blue-700 shadow-md shadow-blue-600/20 cursor-pointer whitespace-nowrap"
+                          >
+                            Konfirmasi Paket Diterima
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="rounded-2xl bg-slate-50 p-3.5 border border-slate-200 text-xs text-slate-600 flex items-center gap-2">
+                          <Truck className="h-4 w-4 text-brand-600 shrink-0" />
+                          <span>Barang sedang dalam perjalanan ({order.courierName}: Resi <strong>{order.trackingNumber}</strong>). Menunggu pembeli menerima paket.</span>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {/* 3. When Delivered Inspection: Buyer Release or Dispute / Seller waiting info */}
+                  {order.escrowStatus === 'DELIVERED_INSPECTION' && (
+                    <>
+                      {user.id === order.buyerId ? (
+                        <div className="rounded-2xl bg-brand-50 p-4 border border-brand-200 space-y-3">
+                          <div>
+                            <div className="flex items-center gap-1.5 text-xs font-black text-brand-950">
+                              <Clock className="h-4 w-4 text-brand-600" />
+                              <span>Periode Pengecekan Fisik & Fungsi Aktif (2x24 Jam)</span>
+                            </div>
+                            <p className="text-[11px] text-brand-800 mt-0.5">
+                              Silakan periksa kelengkapan, fungsi, dan bodi barang secara detail. Jika semua sesuai deskripsi, klik untuk mencairkan dana aman ke dompet penjual.
+                            </p>
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-2 pt-1">
+                            <button
+                              type="button"
+                              onClick={() => handleCompleteOrder(order.id)}
+                              className="flex items-center gap-1.5 rounded-full bg-brand-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/20 cursor-pointer"
+                            >
+                              <CheckCircle2 className="h-4 w-4" />
+                              <span>Barang Sesuai: Cairkan Dana ke Penjual</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const reason = prompt('Jelaskan kendala / minus fisik yang ditemukan pada barang:');
+                                if (reason) {
+                                  handleDisputeOrder(order.id, reason);
+                                }
+                              }}
+                              className="flex items-center gap-1.5 rounded-full border border-rose-300 bg-white px-4 py-2.5 text-xs font-bold text-rose-700 hover:bg-rose-50 cursor-pointer"
+                            >
+                              <AlertCircle className="h-4 w-4 text-rose-600" />
+                              <span>Ajukan Komplain / Retur Dana</span>
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="rounded-2xl bg-slate-50 p-3.5 border border-slate-200 text-xs text-slate-700 flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-brand-600 shrink-0" />
+                          <span>Pembeli telah menerima paket dan sedang memeriksa kondisi barang (Masa inspeksi 48 jam). Dana akan cair begitu pembeli puas atau batas waktu habis.</span>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {/* 4. When Completed: Success Note */}
+                  {order.escrowStatus === 'COMPLETED' && (
+                    <div className="rounded-2xl bg-emerald-50 p-3.5 border border-emerald-200 text-xs text-emerald-900 flex items-center gap-2 font-bold">
+                      <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                      <span>Transaksi Selesai! Dana sebesar {formatIDR(order.amount)} telah berhasil dicairkan ke penjual dengan aman.</span>
                     </div>
                   )}
                 </div>
