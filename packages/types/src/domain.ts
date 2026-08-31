@@ -62,7 +62,25 @@ export const CompletenessLabel: Record<Completeness, string> = {
 
 export type ListingStatus = 'DRAFT' | 'ACTIVE' | 'IN_NEGO' | 'RESERVED' | 'SOLD' | 'ARCHIVED';
 
+export const ListingStatusLabel: Record<ListingStatus, { label: string; badge: string }> = {
+  DRAFT: { label: 'Draf Iklan', badge: 'Draf' },
+  ACTIVE: { label: 'Iklan Aktif', badge: 'Aktif' },
+  IN_NEGO: { label: 'Sedang Nego', badge: 'Nego Berjalan' },
+  RESERVED: { label: 'Sudah Dibooking', badge: 'Booking' },
+  SOLD: { label: 'Terjual', badge: 'Terjual' },
+  ARCHIVED: { label: 'Diarsipkan', badge: 'Arsip' }
+};
+
 export type OfferStatus = 'PENDING' | 'ACCEPTED' | 'COUNTERED' | 'REJECTED' | 'EXPIRED' | 'COMPLETED';
+
+export const OfferStatusLabel: Record<OfferStatus, { label: string; badge: string }> = {
+  PENDING: { label: 'Menunggu Respon Penjual', badge: 'Menunggu Respon' },
+  ACCEPTED: { label: 'Tawaran Disetujui', badge: 'Disetujui' },
+  COUNTERED: { label: 'Penjual Tawar Balik', badge: 'Tawar Balik' },
+  REJECTED: { label: 'Tawaran Ditolak', badge: 'Ditolak' },
+  EXPIRED: { label: 'Tawaran Kadaluarsa', badge: 'Kadaluarsa' },
+  COMPLETED: { label: 'Transaksi Nego Selesai', badge: 'Selesai' }
+};
 
 export type EscrowStatus =
   | 'WAITING_PAYMENT'
@@ -73,6 +91,49 @@ export type EscrowStatus =
   | 'COMPLETED'
   | 'DISPUTED'
   | 'CANCELLED';
+
+export const EscrowStatusLabel: Record<EscrowStatus, { label: string; badge: string; description: string }> = {
+  WAITING_PAYMENT: {
+    label: 'Menunggu Pembayaran Rekber',
+    badge: 'Menunggu Bayar',
+    description: 'Pembeli belum menyelesaikan transfer pembayaran ke rekening bersama.'
+  },
+  PAYMENT_CONFIRMED: {
+    label: 'Dana Rekber Terverifikasi',
+    badge: 'Dana Diamankan',
+    description: 'Dana aman 100% di perantara Rekber JBB. Penjual diinstruksikan memproses pesanan.'
+  },
+  SELLER_PACKING: {
+    label: 'Penjual Sedang Mengemas Paket',
+    badge: 'Sedang Dikemas',
+    description: 'Penjual sedang menyiapkan dan mengemas barang untuk diserahkan ke kurir / COD.'
+  },
+  IN_TRANSIT: {
+    label: 'Dalam Pengiriman Kurir',
+    badge: 'Dalam Pengiriman',
+    description: 'Paket dalam perjalanan via kurir dengan nomor resi terdaftar.'
+  },
+  DELIVERED_INSPECTION: {
+    label: 'Masa Inspeksi Fisik 48 Jam Aktif',
+    badge: 'Inspeksi 48 Jam',
+    description: 'Barang telah diterima. Pembeli memiliki waktu 2x24 jam untuk memeriksa kondisi fisik & fungsi.'
+  },
+  COMPLETED: {
+    label: 'Transaksi Selesai',
+    badge: 'Selesai',
+    description: 'Pembeli telah mengonfirmasi kesesuaian barang. Dana telah berhasil dicairkan ke saldo penjual.'
+  },
+  DISPUTED: {
+    label: 'Komplain Garansi 48 Jam Diajukan',
+    badge: 'Komplain / Retur',
+    description: 'Pembeli mengajukan komplain karena minus barang tidak sesuai deskripsi. Dana ditahan sementara oleh tim CS.'
+  },
+  CANCELLED: {
+    label: 'Pesanan Dibatalkan',
+    badge: 'Dibatalkan',
+    description: 'Transaksi dibatalkan dan dana telah dikembalikan ke pembeli jika sudah dibayar.'
+  }
+};
 
 export type DeliveryMethod = 'COD_KETEMUAN' | 'KURIR_REGULER' | 'KURIR_INSTANT';
 

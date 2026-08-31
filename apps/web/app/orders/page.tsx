@@ -7,6 +7,8 @@ import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 import { formatIDR } from '../../lib/utils';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
+import { EscrowStatusBadge } from '../../components/marketplace/escrow-status-badge';
+import { EscrowTimeline } from '../../components/marketplace/escrow-timeline';
 import type { Order } from '@jbb/types';
 import {
   ShoppingBag,
@@ -18,7 +20,9 @@ import {
   Search,
   ExternalLink,
   FileText,
-  X
+  X,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 
 export default function OrderHistoryPage() {
@@ -27,6 +31,7 @@ export default function OrderHistoryPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedInvoiceOrder, setSelectedInvoiceOrder] = useState<Order | null>(null);
   const [copiedResi, setCopiedResi] = useState<string | null>(null);
+  const [expandedTimelineId, setExpandedTimelineId] = useState<string | null>(null);
 
   const { data: orders = [], isLoading, refetch } = useQuery({
     queryKey: ['my-orders'],
@@ -78,7 +83,7 @@ export default function OrderHistoryPage() {
     // Tab status match
     if (activeTab === 'all') return true;
     if (activeTab === 'pending_payment') return order.escrowStatus === 'WAITING_PAYMENT';
-    if (activeTab === 'processing') return order.escrowStatus === 'PAYMENT_CONFIRMED' || order.escrowStatus === 'SELLER_PACKING';
+    if (activeTab === 'packing') return order.escrowStatus === 'PAYMENT_CONFIRMED' || order.escrowStatus === 'SELLER_PACKING';
     if (activeTab === 'shipped') return order.escrowStatus === 'IN_TRANSIT';
     if (activeTab === 'inspection') return order.escrowStatus === 'DELIVERED_INSPECTION';
     if (activeTab === 'completed') return order.escrowStatus === 'COMPLETED';
@@ -117,7 +122,7 @@ export default function OrderHistoryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8 pb-24">
       <div className="mx-auto max-w-6xl space-y-6">
         {/* Orders Header Card */}
         <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
@@ -153,11 +158,11 @@ export default function OrderHistoryPage() {
           <div className="mt-6 pt-5 border-t border-slate-200 flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
             {[
               { id: 'all', label: 'Semua Pesanan', count: orders.length },
-              { id: 'processing', label: 'Diproses Rekber', count: orders.filter((o) => o.escrowStatus === 'PAYMENT_CONFIRMED' || o.escrowStatus === 'SELLER_PACKING').length },
-              { id: 'shipped', label: 'Dalam Pengiriman', count: orders.filter((o) => o.escrowStatus === 'IN_TRANSIT').length },
-              { id: 'inspection', label: 'Inspeksi 48 Jam', count: orders.filter((o) => o.escrowStatus === 'DELIVERED_INSPECTION').length },
+              { id: 'packing', label: 'Sedang Dikemas Penjual', count: orders.filter((o) => o.escrowStatus === 'PAYMENT_CONFIRMED' || o.escrowStatus === 'SELLER_PACKING').length },
+              { id: 'shipped', label: 'Dalam Pengiriman Kurir', count: orders.filter((o) => o.escrowStatus === 'IN_TRANSIT').length },
+              { id: 'inspection', label: 'Masa Inspeksi 48 Jam', count: orders.filter((o) => o.escrowStatus === 'DELIVERED_INSPECTION').length },
               { id: 'completed', label: 'Selesai', count: orders.filter((o) => o.escrowStatus === 'COMPLETED').length },
-              { id: 'disputed', label: 'Komplain / Retur', count: orders.filter((o) => o.escrowStatus === 'DISPUTED' || o.escrowStatus === 'CANCELLED').length }
+              { id: 'disputed', label: 'Komplain / Dispute', count: orders.filter((o) => o.escrowStatus === 'DISPUTED' || o.escrowStatus === 'CANCELLED').length }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -215,6 +220,7 @@ export default function OrderHistoryPage() {
                 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=200&auto=format&fit=crop&q=80';
 
               const isBuyer = order.buyerId === user.id;
+              const isTimelineExpanded = expandedTimelineId === order.id;
 
               return (
                 <div
@@ -224,7 +230,7 @@ export default function OrderHistoryPage() {
                   {/* Card Top Header */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
                     <div className="flex items-center gap-2.5 flex-wrap">
-                      <span className="text-xs font-black text-slate-900">
+                      <span className="text-xs font-black text-slate-900 font-mono">
                         {order.orderNumber}
                       </span>
                       <span className="text-slate-300">&bull;</span>
@@ -241,35 +247,9 @@ export default function OrderHistoryPage() {
                       </span>
                     </div>
 
-                    {/* Status Badge */}
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-extrabold border ${
-                          order.escrowStatus === 'COMPLETED'
-                            ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                            : order.escrowStatus === 'IN_TRANSIT'
-                            ? 'bg-blue-50 text-blue-800 border-blue-200'
-                            : order.escrowStatus === 'DELIVERED_INSPECTION'
-                            ? 'bg-purple-50 text-purple-800 border-purple-200 animate-pulse'
-                            : order.escrowStatus === 'PAYMENT_CONFIRMED' || order.escrowStatus === 'SELLER_PACKING'
-                            ? 'bg-brand-50 text-brand-800 border-brand-200'
-                            : order.escrowStatus === 'DISPUTED'
-                            ? 'bg-rose-50 text-rose-800 border-rose-200'
-                            : 'bg-amber-50 text-amber-900 border-amber-200'
-                        }`}
-                      >
-                        {order.escrowStatus === 'COMPLETED'
-                          ? '✓ Transaksi Selesai'
-                          : order.escrowStatus === 'IN_TRANSIT'
-                          ? '🚚 Dalam Pengiriman'
-                          : order.escrowStatus === 'DELIVERED_INSPECTION'
-                          ? '⏱️ Masa Inspeksi 48 Jam'
-                          : order.escrowStatus === 'PAYMENT_CONFIRMED' || order.escrowStatus === 'SELLER_PACKING'
-                          ? '🛡️ Dana Ditahan Rekber'
-                          : order.escrowStatus === 'DISPUTED'
-                          ? '⚠️ Komplain / Dispute'
-                          : 'Menunggu Pembayaran'}
-                      </span>
+                    {/* Clean Human-Readable Status Badge */}
+                    <div>
+                      <EscrowStatusBadge status={order.escrowStatus} size="md" />
                     </div>
                   </div>
 
@@ -333,16 +313,38 @@ export default function OrderHistoryPage() {
                     </div>
                   ) : null}
 
+                  {/* Collapsible Escrow Timeline */}
+                  {isTimelineExpanded && (
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 animate-in fade-in">
+                      <EscrowTimeline
+                        status={order.escrowStatus}
+                        trackingNumber={order.trackingNumber}
+                        courierName={order.courierName}
+                      />
+                    </div>
+                  )}
+
                   {/* Card Action Buttons */}
                   <div className="pt-2 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedInvoiceOrder(order)}
-                      className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
-                    >
-                      <FileText className="h-3.5 w-3.5 text-slate-500" />
-                      <span>Lihat Bukti Rekber</span>
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedInvoiceOrder(order)}
+                        className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
+                      >
+                        <FileText className="h-3.5 w-3.5 text-slate-500" />
+                        <span>Bukti Rekber</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setExpandedTimelineId(isTimelineExpanded ? null : order.id)}
+                        className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
+                      >
+                        <span>Lacak Alur</span>
+                        {isTimelineExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                      </button>
+                    </div>
 
                     <div className="flex flex-wrap items-center gap-2">
                       {/* Buyer Actions */}
@@ -406,31 +408,31 @@ export default function OrderHistoryPage() {
               </div>
 
               <div className="space-y-3 text-xs">
-                <div className="flex justify-between py-1 border-b border-slate-100">
+                <div className="flex justify-between items-center py-1 border-b border-slate-100">
                   <span className="text-slate-500">Nomor Pesanan:</span>
                   <span className="font-mono font-bold text-slate-900">{selectedInvoiceOrder.orderNumber}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-100">
+                <div className="flex justify-between items-center py-1 border-b border-slate-100">
                   <span className="text-slate-500">Status Rekber:</span>
-                  <span className="font-bold text-brand-700">{selectedInvoiceOrder.escrowStatus}</span>
+                  <EscrowStatusBadge status={selectedInvoiceOrder.escrowStatus} size="sm" />
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-100">
+                <div className="flex justify-between items-center py-1 border-b border-slate-100">
                   <span className="text-slate-500">Nama Pembeli:</span>
                   <span className="font-bold text-slate-900">{selectedInvoiceOrder.recipientName || user.name}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-100">
+                <div className="flex justify-between items-center py-1 border-b border-slate-100">
                   <span className="text-slate-500">WhatsApp:</span>
                   <span className="font-bold text-slate-900">{selectedInvoiceOrder.recipientPhone || user.phone}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-100">
+                <div className="flex justify-between items-center py-1 border-b border-slate-100">
                   <span className="text-slate-500">Harga Barang:</span>
                   <span className="font-bold text-slate-900">{formatIDR(selectedInvoiceOrder.amount)}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-100">
+                <div className="flex justify-between items-center py-1 border-b border-slate-100">
                   <span className="text-slate-500">Biaya Proteksi Rekber (1%):</span>
                   <span className="font-bold text-slate-900">{formatIDR(selectedInvoiceOrder.serviceFee)}</span>
                 </div>
-                <div className="flex justify-between py-1 pt-2 border-t border-slate-200 text-sm font-black text-slate-900">
+                <div className="flex justify-between items-center py-1 pt-2 border-t border-slate-200 text-sm font-black text-slate-900">
                   <span>Total Dana Ditahan:</span>
                   <span className="text-brand-700">{formatIDR(selectedInvoiceOrder.totalAmount)}</span>
                 </div>
