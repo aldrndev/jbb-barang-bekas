@@ -37,56 +37,56 @@ export function getConditionMeta(condition: ItemCondition) {
         label: 'Baru Segel',
         displayLabel: 'Baru Segel 100%',
         score: '100%',
-        badgeClasses: 'bg-white/95 text-emerald-800 border border-emerald-300/80 shadow-2xs',
-        dotColor: 'bg-emerald-500'
+        badgeClasses: 'bg-emerald-50 text-emerald-900 border border-emerald-300 shadow-xs',
+        dotColor: 'bg-emerald-600'
       };
     case 'LIKE_NEW':
       return {
         label: 'Like New',
         displayLabel: 'Like New (96% Mulus)',
         score: '96%',
-        badgeClasses: 'bg-white/95 text-emerald-800 border border-emerald-300/80 shadow-2xs',
-        dotColor: 'bg-emerald-500 animate-pulse'
+        badgeClasses: 'bg-emerald-50 text-emerald-900 border border-emerald-300 shadow-xs',
+        dotColor: 'bg-emerald-600 animate-pulse'
       };
     case 'USED_EXCELLENT':
       return {
         label: 'Sangat Mulus',
         displayLabel: 'Sangat Mulus (90%)',
         score: '90%',
-        badgeClasses: 'bg-white/95 text-teal-800 border border-teal-300/80 shadow-2xs',
-        dotColor: 'bg-teal-500'
+        badgeClasses: 'bg-teal-50 text-teal-900 border border-teal-300 shadow-xs',
+        dotColor: 'bg-teal-600'
       };
     case 'USED_GOOD':
       return {
         label: 'Normal Terawat',
         displayLabel: 'Normal Terawat (75%)',
         score: '75%',
-        badgeClasses: 'bg-white/95 text-blue-800 border border-blue-300/80 shadow-2xs',
-        dotColor: 'bg-blue-500'
+        badgeClasses: 'bg-blue-50 text-blue-900 border border-blue-300 shadow-xs',
+        dotColor: 'bg-blue-600'
       };
     case 'USED_FAIR':
       return {
         label: 'Minus Fisik',
         displayLabel: 'Minus Fisik (60%)',
         score: '60%',
-        badgeClasses: 'bg-white/95 text-amber-900 border border-amber-300/80 shadow-2xs',
-        dotColor: 'bg-amber-500'
+        badgeClasses: 'bg-amber-50 text-amber-950 border border-amber-300 shadow-xs',
+        dotColor: 'bg-amber-600'
       };
     case 'PARTS_ONLY':
       return {
         label: 'Sparepart',
         displayLabel: 'Sparepart / Mati',
         score: 'Mati',
-        badgeClasses: 'bg-white/95 text-rose-800 border border-rose-300/80 shadow-2xs',
-        dotColor: 'bg-rose-500'
+        badgeClasses: 'bg-rose-50 text-rose-950 border border-rose-300 shadow-xs',
+        dotColor: 'bg-rose-600'
       };
     default:
       return {
         label: 'Bekas',
         displayLabel: 'Kondisi Bekas (80%)',
         score: '80%',
-        badgeClasses: 'bg-white/95 text-slate-800 border border-slate-300/80 shadow-2xs',
-        dotColor: 'bg-slate-500'
+        badgeClasses: 'bg-slate-100 text-slate-900 border border-slate-300 shadow-xs',
+        dotColor: 'bg-slate-600'
       };
   }
 }
