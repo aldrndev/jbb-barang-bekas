@@ -401,12 +401,12 @@ export default function HomePage() {
                   className="group flex flex-col items-center text-center p-2 sm:p-2.5 rounded-2xl hover:bg-slate-50 transition-colors"
                 >
                   <div
-                    className={`flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2.5xl sm:rounded-3xl text-white shadow-md ${conf.iconBg} group-hover:scale-108 group-hover:-translate-y-1 transition-all duration-300`}
+                    className={`flex h-13 w-13 sm:h-16 sm:w-16 items-center justify-center rounded-2xl sm:rounded-3xl text-white shadow-md ${conf.iconBg} group-hover:scale-108 group-hover:-translate-y-1 transition-all duration-300`}
                   >
-                    {categoryIconMap[cat.slug] || <Sparkles className="h-7 w-7 sm:h-7.5 sm:w-7.5" strokeWidth={1.85} />}
+                    {categoryIconMap[cat.slug] || <Sparkles className="h-6 w-6 sm:h-7.5 sm:w-7.5" strokeWidth={1.85} />}
                   </div>
 
-                  <span className="mt-2.5 text-xs font-bold text-slate-800 text-center line-clamp-1 group-hover:text-brand-600 transition-colors">
+                  <span className="mt-2 text-[11px] sm:text-xs font-bold text-slate-800 text-center line-clamp-2 min-h-7 sm:min-h-0 flex items-center justify-center group-hover:text-brand-600 transition-colors leading-tight px-0.5">
                     {cat.name}
                   </span>
 
