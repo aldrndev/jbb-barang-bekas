@@ -191,5 +191,45 @@ export const api = {
       body: JSON.stringify(payload)
     }),
 
-  getSellerReviews: (sellerId: string) => request<Review[]>(`/api/reviews/seller/${sellerId}`)
+  getSellerReviews: (sellerId: string) => request<Review[]>(`/api/reviews/seller/${sellerId}`),
+
+  // Cloudflare Storage / R2 Upload
+  uploadImage: async (file: File): Promise<ApiResponse<{ url: string; key: string }>> => {
+    const token = getAuthToken();
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/api/uploads`, {
+        method: 'POST',
+        headers,
+        body: formData
+      });
+
+      const data: any = await res.json();
+      if (!res.ok || data.success === false) {
+        return {
+          success: false,
+          error: {
+            code: data?.error?.code || 'UPLOAD_FAILED',
+            message: data?.error?.message || 'Gagal mengupload gambar ke Cloudflare Storage'
+          }
+        };
+      }
+      return data as ApiResponse<{ url: string; key: string }>;
+    } catch (err: any) {
+      return {
+        success: false,
+        error: {
+          code: 'UPLOAD_FAILED',
+          message: err.message || 'Gagal mengupload file ke Cloudflare Storage'
+        }
+      };
+    }
+  }
 };

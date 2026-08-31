@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -31,7 +31,10 @@ import {
   Flame,
   Camera,
   Layers,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Loader2,
+  UploadCloud,
+  Cloud
 } from 'lucide-react';
 
 const PRESET_DEMO_PHOTOS = [
@@ -73,6 +76,7 @@ export default function JualBarangPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { user, openAuthModal } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [title, setTitle] = useState('');
   const [categoryId, setCategoryId] = useState('');
@@ -93,11 +97,13 @@ export default function JualBarangPage() {
   const [isCodAvailable, setIsCodAvailable] = useState(true);
   const [codMeetingPoint, setCodMeetingPoint] = useState('');
 
-  // Images
+  // Images & Cloudflare Upload
   const [imageUrls, setImageUrls] = useState<string[]>([
     'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80'
   ]);
   const [newImageUrl, setNewImageUrl] = useState('');
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -108,6 +114,57 @@ export default function JualBarangPage() {
   });
 
   const categories = categoriesData?.data || [];
+
+  const handleFileUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+
+    if (imageUrls.length + files.length > 10) {
+      alert('Maksimal total 10 foto per barang');
+      return;
+    }
+
+    setIsUploadingImage(true);
+    setErrorMsg(null);
+
+    const uploadPromises = Array.from(files).map(async (file) => {
+      // Validate file size
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error(`File "${file.name}" melebihi batas 5 MB`);
+      }
+      const res = await api.uploadImage(file);
+      if (res.success && res.data?.url) {
+        return res.data.url;
+      } else {
+        throw new Error(res.error?.message || `Gagal mengupload ${file.name}`);
+      }
+    });
+
+    try {
+      const uploadedUrls = await Promise.all(uploadPromises);
+      setImageUrls((prev) => [...prev, ...uploadedUrls]);
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Gagal mengupload foto ke Cloudflare Storage');
+    } finally {
+      setIsUploadingImage(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    handleFileUpload(e.dataTransfer.files);
+  };
 
   const handleAddImage = () => {
     if (newImageUrl.trim()) {
@@ -279,26 +336,84 @@ export default function JualBarangPage() {
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Form Inputs (7 Cols) */}
           <div className="lg:col-span-7 space-y-6">
-            {/* Section 1: Photos */}
+            {/* Section 1: Photos & Cloudflare Storage Upload */}
             <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                  <Upload className="h-4 w-4 text-brand-600" />
-                  <span>1. Foto Barang Bekas (Maks. 10 Foto)</span>
-                </h2>
-                <span className="text-[11px] font-bold text-slate-400">
-                  {imageUrls.length}/10 Foto
+                <div className="flex items-center gap-2">
+                  <UploadCloud className="h-4 w-4 text-brand-600" />
+                  <h2 className="text-sm font-black text-slate-900">
+                    1. Foto Barang Bekas (Maks. 10 Foto)
+                  </h2>
+                </div>
+                <span className="flex items-center gap-1 text-[10px] font-bold text-brand-700 bg-brand-50 border border-brand-200 px-2 py-0.5 rounded-md">
+                  <Cloud className="h-3 w-3" />
+                  <span>Cloudflare Storage</span>
                 </span>
               </div>
               <p className="text-xs text-slate-500">
-                Foto bagian depan, belakang, sudut lecet/minus (jika ada), dan nota/kelengkapan dus.
+                Unggah foto bagian depan, belakang, sudut lecet/minus (jika ada), dan nota/dus bawaan.
               </p>
 
-              {/* Preset Sample Photos for Fast Testing */}
+              {/* Hidden File Input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/heic"
+                multiple
+                className="hidden"
+                onChange={(e) => handleFileUpload(e.target.files)}
+              />
+
+              {/* Drag & Drop Upload Dropzone Box */}
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+                className={`relative rounded-3xl border-2 border-dashed p-6 text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-2.5 ${
+                  isDragging
+                    ? 'border-brand-500 bg-brand-50/80 scale-[1.01]'
+                    : isUploadingImage
+                    ? 'border-slate-300 bg-slate-50 opacity-70 pointer-events-none'
+                    : 'border-slate-300 bg-slate-50/60 hover:bg-slate-50 hover:border-brand-400'
+                }`}
+              >
+                {isUploadingImage ? (
+                  <div className="flex flex-col items-center gap-2 py-2">
+                    <Loader2 className="h-8 w-8 text-brand-600 animate-spin" />
+                    <span className="text-xs font-bold text-slate-800">
+                      Mengupload ke Cloudflare Storage (R2)...
+                    </span>
+                    <span className="text-[10px] text-slate-400">Mohon tunggu sebentar</span>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white border border-slate-200 text-brand-600 shadow-xs">
+                      <Camera className="h-6 w-6" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-black text-slate-900">
+                        Klik untuk Pilih Foto dari Galeri / Kamera HP
+                      </p>
+                      <p className="text-[11px] text-slate-500">
+                        atau seret foto langsung ke sini (JPG, PNG, WEBP, HEIC &bull; Maks. 5 MB)
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className="rounded-full bg-slate-900 px-4 py-1.5 text-[11px] font-bold text-white hover:bg-slate-800 transition-colors pointer-events-none mt-1 shadow-2xs"
+                    >
+                      + Pilih Foto dari Perangkat
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {/* Preset Sample Photos for Fast Demo Testing */}
               <div className="rounded-2xl bg-slate-50 p-3 border border-slate-200 space-y-2">
                 <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-600">
                   <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-                  <span>Pilih Contoh Foto Demo Cepat:</span>
+                  <span>Pilihan Cepat Contoh Foto Demo:</span>
                 </div>
                 <div className="flex items-center gap-1.5 flex-wrap">
                   {PRESET_DEMO_PHOTOS.map((preset, idx) => (
@@ -314,45 +429,55 @@ export default function JualBarangPage() {
                 </div>
               </div>
 
-              {/* Uploaded Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-                {imageUrls.map((url, idx) => (
-                  <div key={idx} className="relative aspect-square rounded-2xl border border-slate-200 overflow-hidden group shadow-2xs">
-                    <img src={url} alt={`Upload ${idx + 1}`} className="h-full w-full object-cover" />
-                    {idx === 0 && (
-                      <span className="absolute top-2 left-2 rounded-md bg-brand-600 px-1.5 py-0.5 text-[9px] font-black text-white shadow-xs">
-                        ★ Cover
-                      </span>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveImage(idx)}
-                      className="absolute top-2 right-2 rounded-full bg-slate-900/80 p-1 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-600 cursor-pointer"
-                      title="Hapus foto"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
+              {/* Uploaded Grid Preview */}
+              {imageUrls.length > 0 && (
+                <div className="space-y-2 pt-1">
+                  <div className="flex items-center justify-between text-xs text-slate-500">
+                    <span className="font-bold">Foto yang Diunggah ({imageUrls.length}/10):</span>
+                    <span className="text-[10px] text-slate-400">Foto pertama adalah foto sampul (Cover)</span>
                   </div>
-                ))}
-              </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {imageUrls.map((url, idx) => (
+                      <div key={idx} className="relative aspect-square rounded-2xl border border-slate-200 overflow-hidden group shadow-2xs bg-slate-100">
+                        <img src={url} alt={`Upload ${idx + 1}`} className="h-full w-full object-cover" />
+                        {idx === 0 && (
+                          <span className="absolute top-2 left-2 rounded-md bg-brand-600 px-1.5 py-0.5 text-[9px] font-black text-white shadow-xs">
+                            ★ Cover
+                          </span>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(idx)}
+                          className="absolute top-2 right-2 rounded-full bg-slate-900/80 p-1 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-600 cursor-pointer"
+                          title="Hapus foto"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-              {/* Add URL input */}
-              <div className="flex gap-2 pt-1">
-                <input
-                  type="url"
-                  placeholder="Atau tempel link URL foto baru..."
-                  value={newImageUrl}
-                  onChange={(e) => setNewImageUrl(e.target.value)}
-                  className="flex-1 rounded-2xl border border-slate-200 bg-slate-50/70 px-3.5 py-2 text-xs text-slate-800 focus:border-brand-500 focus:bg-white focus:outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={handleAddImage}
-                  className="flex items-center gap-1 rounded-2xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 cursor-pointer shadow-xs"
-                >
-                  <Plus className="h-4 w-4" />
-                  <span>Tambah</span>
-                </button>
+              {/* Optional Manual URL input */}
+              <div className="pt-1">
+                <div className="flex gap-2">
+                  <input
+                    type="url"
+                    placeholder="Atau masukkan URL gambar online langsung..."
+                    value={newImageUrl}
+                    onChange={(e) => setNewImageUrl(e.target.value)}
+                    className="flex-1 rounded-2xl border border-slate-200 bg-slate-50/70 px-3.5 py-2 text-xs text-slate-800 focus:border-brand-500 focus:bg-white focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddImage}
+                    className="flex items-center gap-1 rounded-2xl border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer shadow-xs"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span>Tambah URL</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -638,11 +763,13 @@ export default function JualBarangPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isUploadingImage}
               className="w-full rounded-2xl bg-brand-600 hover:bg-brand-700 py-3.5 text-sm font-black text-white shadow-lg shadow-brand-600/25 transition-all hover:scale-101 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isSubmitting ? (
                 <span>Mempublikasikan Iklan...</span>
+              ) : isUploadingImage ? (
+                <span>Sedang Mengupload Gambar...</span>
               ) : (
                 <>
                   <span>Publikasikan Iklan Sekarang</span>
@@ -733,7 +860,7 @@ export default function JualBarangPage() {
               <ul className="space-y-2 text-brand-900 leading-relaxed text-[11px]">
                 <li className="flex items-start gap-2">
                   <span className="text-brand-600 font-bold">✓</span>
-                  <span><strong>Foto Lengkap:</strong> Ambil foto di pencahayaan terang dari berbagai sudut dan foto nota asli jika masih ada.</span>
+                  <span><strong>Foto Asli & Jelas:</strong> Upload foto langsung dari kamera HP Anda ke Cloudflare Storage agar calon pembeli yakin barang real.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-brand-600 font-bold">✓</span>
