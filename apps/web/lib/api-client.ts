@@ -26,8 +26,34 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
       headers
     });
 
-    const data: ApiResponse<T> = await res.json();
-    return data;
+    const data: any = await res.json();
+
+    if (!res.ok || data.success === false) {
+      let errorMessage = 'Terjadi kesalahan pada permintaan';
+
+      if (data?.error?.message) {
+        errorMessage = data.error.message;
+      } else if (data?.error?.issues && Array.isArray(data.error.issues) && data.error.issues[0]?.message) {
+        errorMessage = data.error.issues[0].message;
+      } else if (Array.isArray(data?.error) && data.error[0]?.message) {
+        errorMessage = data.error[0].message;
+      } else if (typeof data?.error === 'string') {
+        errorMessage = data.error;
+      } else if (data?.message) {
+        errorMessage = data.message;
+      }
+
+      return {
+        success: false,
+        error: {
+          code: data?.error?.code || 'VALIDATION_ERROR',
+          message: errorMessage,
+          details: data?.error
+        }
+      };
+    }
+
+    return data as ApiResponse<T>;
   } catch (err: any) {
     console.error(`API Error on [${endpoint}]:`, err);
     return {

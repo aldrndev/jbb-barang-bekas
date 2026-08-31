@@ -11,11 +11,29 @@ import type { Order } from '@jbb/types';
 export const orderRoutes = new Hono<AppEnv>()
   .use('*', authMiddleware)
 
-  .post('/', zValidator('json', createOrderSchema), async (c) => {
-    const user = c.get('user')!;
-    const { listingId, offerId, deliveryMethod, recipientName, recipientPhone, shippingAddress, courierName } =
-      c.req.valid('json');
-    const db = getDb(c.env.DB);
+  .post(
+    '/',
+    zValidator('json', createOrderSchema, (result, c) => {
+      if (!result.success) {
+        const firstError = result.error.issues?.[0]?.message || 'Input data pesanan tidak valid';
+        return c.json(
+          {
+            success: false,
+            error: {
+              code: 'VALIDATION_ERROR',
+              message: firstError,
+              details: result.error.issues
+            }
+          },
+          400
+        );
+      }
+    }),
+    async (c) => {
+      const user = c.get('user')!;
+      const { listingId, offerId, deliveryMethod, recipientName, recipientPhone, shippingAddress, courierName } =
+        c.req.valid('json');
+      const db = getDb(c.env.DB);
 
     if (db) {
       const listingDb = await db.query.listings.findFirst({

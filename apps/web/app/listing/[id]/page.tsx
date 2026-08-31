@@ -56,6 +56,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
   const [shippingAddress, setShippingAddress] = useState('');
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutSuccessOrder, setCheckoutSuccessOrder] = useState<any>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const { data: listingData, isLoading, refetch } = useQuery({
     queryKey: ['listing', idOrSlug],
@@ -164,8 +165,41 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
 
   const handleCheckoutSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setCheckoutError(null);
+
     if (!user) {
       openAuthModal();
+      return;
+    }
+
+    const trimmedName = recipientName.trim();
+    const trimmedPhone = recipientPhone.trim();
+    const trimmedAddress = shippingAddress.trim();
+
+    if (!trimmedName || trimmedName.length < 2) {
+      setCheckoutError('Nama penerima minimal 2 karakter');
+      return;
+    }
+
+    if (!trimmedPhone) {
+      setCheckoutError('Nomor WhatsApp penerima wajib diisi');
+      return;
+    }
+
+    // WhatsApp phone validation (e.g. 081234567890 or 6281234567890)
+    const phoneRegex = /^(\+62|62|0)8[1-9][0-9]{6,10}$/;
+    if (!phoneRegex.test(trimmedPhone)) {
+      setCheckoutError('Format nomor WhatsApp tidak valid. Gunakan format seperti 081234567890');
+      return;
+    }
+
+    if (deliveryMethod === 'KURIR_REGULER' && trimmedAddress.length < 10) {
+      setCheckoutError('Alamat pengiriman lengkap wajib minimal 10 karakter (mohon sertakan jalan, kota, atau patokan)');
+      return;
+    }
+
+    if (deliveryMethod === 'COD_KETEMUAN' && trimmedAddress.length < 5) {
+      setCheckoutError('Titik temu COD minimal 5 karakter (contoh: Starbucks Gandaria City jam 3 sore)');
       return;
     }
 
@@ -174,13 +208,16 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
       listingId: listing.id,
       offerId: acceptedOffer?.id,
       deliveryMethod,
-      recipientName: recipientName || user.name,
-      recipientPhone: recipientPhone || user.phone || '081234567890',
-      shippingAddress: shippingAddress || (deliveryMethod === 'COD_KETEMUAN' ? (listing.codMeetingPoint || listing.city) : 'Alamat Pengiriman')
+      recipientName: trimmedName,
+      recipientPhone: trimmedPhone,
+      shippingAddress: trimmedAddress || (deliveryMethod === 'COD_KETEMUAN' ? (listing.codMeetingPoint || listing.city) : 'Alamat Pengiriman')
     });
 
     if (res.success && res.data) {
       setCheckoutSuccessOrder(res.data);
+      setCheckoutError(null);
+    } else {
+      setCheckoutError(res.error?.message || 'Gagal memproses pesanan Rekber. Silakan periksa kembali data Anda.');
     }
     setIsCheckingOut(false);
   };
@@ -764,6 +801,16 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                   </button>
                 </div>
 
+                {checkoutError && (
+                  <div className="mt-3 rounded-2xl bg-rose-50 p-3.5 border border-rose-200 text-xs text-rose-800 flex items-start gap-2.5 animate-in fade-in slide-in-from-top-2">
+                    <AlertCircle className="h-4 w-4 text-rose-600 shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="block font-bold">Gagal Melanjutkan Checkout</strong>
+                      <span className="font-medium">{checkoutError}</span>
+                    </div>
+                  </div>
+                )}
+
                 {acceptedOffer && (
                   <div className="mt-3 rounded-xl bg-emerald-50 p-2.5 border border-emerald-200 text-xs flex items-center gap-2">
                     <Tag className="h-4 w-4 text-emerald-600 shrink-0" />
@@ -779,7 +826,10 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                   <div className="grid grid-cols-2 gap-2 mt-1.5">
                     <button
                       type="button"
-                      onClick={() => setDeliveryMethod('KURIR_REGULER')}
+                      onClick={() => {
+                        setDeliveryMethod('KURIR_REGULER');
+                        setCheckoutError(null);
+                      }}
                       className={`rounded-2xl border p-3 text-left transition-all cursor-pointer ${
                         deliveryMethod === 'KURIR_REGULER'
                           ? 'border-brand-600 bg-brand-50/60 text-brand-950 ring-2 ring-brand-500/20'
@@ -793,7 +843,10 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
 
                     <button
                       type="button"
-                      onClick={() => setDeliveryMethod('COD_KETEMUAN')}
+                      onClick={() => {
+                        setDeliveryMethod('COD_KETEMUAN');
+                        setCheckoutError(null);
+                      }}
                       className={`rounded-2xl border p-3 text-left transition-all cursor-pointer ${
                         deliveryMethod === 'COD_KETEMUAN'
                           ? 'border-brand-600 bg-brand-50/60 text-brand-950 ring-2 ring-brand-500/20'
@@ -816,34 +869,61 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                       required
                       placeholder="Nama lengkap"
                       value={recipientName}
-                      onChange={(e) => setRecipientName(e.target.value)}
+                      onChange={(e) => {
+                        setRecipientName(e.target.value);
+                        if (checkoutError) setCheckoutError(null);
+                      }}
                       className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 mt-1 focus:border-brand-500 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-bold text-slate-700">Nomor WhatsApp</label>
+                    <div className="flex items-center justify-between">
+                      <label className="text-[11px] font-bold text-slate-700">Nomor WhatsApp</label>
+                      <span className="text-[10px] text-slate-400">Contoh: 081234567890</span>
+                    </div>
                     <input
                       type="tel"
                       required
                       placeholder="081234567890"
                       value={recipientPhone}
-                      onChange={(e) => setRecipientPhone(e.target.value)}
+                      onChange={(e) => {
+                        setRecipientPhone(e.target.value);
+                        if (checkoutError) setCheckoutError(null);
+                      }}
                       className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 mt-1 focus:border-brand-500 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-bold text-slate-700">
-                      {deliveryMethod === 'COD_KETEMUAN' ? 'Titik Temu COD yang Disepakati' : 'Alamat Pengiriman Lengkap'}
-                    </label>
+                    <div className="flex items-center justify-between">
+                      <label className="text-[11px] font-bold text-slate-700">
+                        {deliveryMethod === 'COD_KETEMUAN' ? 'Titik Temu COD yang Disepakati' : 'Alamat Pengiriman Lengkap'}
+                      </label>
+                      <span
+                        className={`text-[10px] font-bold ${
+                          shippingAddress.trim().length >= (deliveryMethod === 'COD_KETEMUAN' ? 5 : 10)
+                            ? 'text-emerald-600'
+                            : 'text-amber-600'
+                        }`}
+                      >
+                        {shippingAddress.trim().length} / {deliveryMethod === 'COD_KETEMUAN' ? '5 min' : '10 min karakter'}
+                      </span>
+                    </div>
                     <textarea
                       rows={2}
                       required
                       placeholder={deliveryMethod === 'COD_KETEMUAN' ? 'Contoh: Starbucks Gandaria City jam 3 sore' : 'Jl. Nama Jalan No. XX, RT/RW, Kelurahan, Kecamatan, Kota, Kode Pos'}
                       value={shippingAddress}
-                      onChange={(e) => setShippingAddress(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 mt-1 focus:border-brand-500 focus:outline-none"
+                      onChange={(e) => {
+                        setShippingAddress(e.target.value);
+                        if (checkoutError) setCheckoutError(null);
+                      }}
+                      className={`w-full rounded-xl border p-2.5 text-xs text-slate-800 mt-1 focus:outline-none ${
+                        checkoutError && shippingAddress.trim().length < (deliveryMethod === 'COD_KETEMUAN' ? 5 : 10)
+                          ? 'border-rose-400 focus:border-rose-500 bg-rose-50/30'
+                          : 'border-slate-200 focus:border-brand-500'
+                      }`}
                     />
                   </div>
                 </div>
