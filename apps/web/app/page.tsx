@@ -422,25 +422,33 @@ export default function HomePage() {
 
       {/* Section 1: 🔥 Hot Nego Deals */}
       {hotDeals.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 sm:px-6 py-6">
-          <div className="rounded-3xl bg-linear-to-r from-amber-500/10 via-orange-500/10 to-amber-500/5 p-6 border border-amber-200/60">
-            <div className="flex items-center justify-between mb-5">
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 py-4 sm:py-6">
+          <div className="rounded-3xl border border-amber-200/90 bg-linear-to-b from-amber-50/50 via-white to-white p-5 sm:p-7 shadow-xs">
+            {/* Aligned Section Header */}
+            <div className="flex items-center justify-between mb-5 pb-3.5 border-b border-amber-200/80">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500 text-white shadow-md shadow-amber-500/30">
-                  <TrendingUp className="h-5 w-5" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500 text-white shadow-md shadow-amber-500/25">
+                  <TrendingUp className="h-4 w-4" />
                 </div>
                 <div>
                   <h2 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
                     <span>Hot Nego Deals</span>
-                    <span className="rounded-full bg-amber-200 px-2 py-0.5 text-[10px] font-extrabold text-amber-900">
+                    <span className="rounded-full bg-amber-200/80 px-2 py-0.5 text-[10px] font-extrabold text-amber-900">
                       Banyak Ditawar
                     </span>
                   </h2>
-                  <p className="text-xs text-slate-600">Barang dengan penawaran aktif & siap deal cepat</p>
+                  <p className="text-xs text-slate-500 font-medium hidden sm:block">
+                    Barang dengan penawaran aktif & siap deal cepat dengan harga terkunci
+                  </p>
                 </div>
               </div>
-              <Link href="/cari?isNego=true" className="text-xs font-bold text-amber-700 hover:underline hidden sm:block">
-                Lihat Semua Nego &rarr;
+
+              <Link
+                href="/cari?isNego=true"
+                className="inline-flex items-center gap-1 text-xs font-bold text-amber-700 hover:text-amber-800 transition-colors"
+              >
+                <span>Lihat Semua ({hotDeals.length})</span>
+                <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
 
@@ -455,89 +463,100 @@ export default function HomePage() {
 
       {/* Section 2: 💎 Grade A++ Mulus Terawat (95%+) */}
       {pristineGrade.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 sm:px-6 py-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-600 text-white shadow-md shadow-teal-600/30">
-                <Sparkles className="h-5 w-5" />
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 py-4 sm:py-6">
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs">
+            {/* Aligned Section Header */}
+            <div className="flex items-center justify-between mb-5 pb-3.5 border-b border-slate-200">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50 text-brand-600 border border-brand-100">
+                  <Sparkles className="h-4 w-4" />
+                </div>
+                <div>
+                  <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+                    Kondisi Seperti Baru (95%+)
+                  </h2>
+                  <p className="text-xs text-slate-500 font-medium hidden sm:block">
+                    Unit pemakaian sangat terawat, bodi mulus tanpa lecet berarti dengan kelengkapan asli
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-base sm:text-lg font-black text-slate-900">
-                  Kondisi Seperti Baru (95%+)
-                </h2>
-                <p className="text-xs text-slate-500">
-                  Unit pemakaian sangat terawat, bodi mulus tanpa lecet berarti
-                </p>
-              </div>
-            </div>
-            <Link href="/cari?condition=LIKE_NEW" className="text-xs font-bold text-emerald-600 hover:text-emerald-700">
-              Lihat Kategori Mulus &rarr;
-            </Link>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {pristineGrade.slice(0, 4).map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
-            ))}
+              <Link
+                href="/cari?condition=LIKE_NEW"
+                className="inline-flex items-center gap-1 text-xs font-bold text-brand-600 hover:text-brand-700 transition-colors"
+              >
+                <span>Lihat Semua ({pristineGrade.length})</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {pristineGrade.slice(0, 4).map((listing) => (
+                <ListingCard key={listing.id} listing={listing} />
+              ))}
+            </div>
           </div>
         </section>
       )}
 
       {/* Section 3: 📍 Siap COD Terdekat */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-md shadow-emerald-600/30">
-              <MapPin className="h-5 w-5" />
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-4 sm:py-6">
+        <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs">
+          {/* Aligned Section Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-3.5 border-b border-slate-200">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50 text-brand-600 border border-brand-100">
+                <MapPin className="h-4 w-4" />
+              </div>
+              <div>
+                <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+                  Rekomendasi Siap COD (Ketemuan Langsung)
+                </h2>
+                <p className="text-xs text-slate-500 font-medium hidden sm:block">
+                  Janjian di tempat aman, cek fisik langsung di tempat, dan bayar tanpa cemas
+                </p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-base sm:text-lg font-black text-slate-900">
-                Rekomendasi Siap COD (Ketemuan Langsung)
-              </h2>
-              <p className="text-xs text-slate-500">
-                Janjian di tempat aman, cek fisik di tempat, bayar tanpa cemas
-              </p>
+
+            {/* City Filter Pills */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 hide-scrollbar">
+              {['Semua', 'Jakarta Selatan', 'Bandung', 'Surabaya', 'Yogyakarta'].map((city) => (
+                <button
+                  key={city}
+                  type="button"
+                  onClick={() => setSelectedCity(city)}
+                  className={`rounded-xl px-3 py-1.5 text-xs font-bold whitespace-nowrap transition-colors cursor-pointer ${
+                    selectedCity === city
+                      ? 'bg-slate-900 text-white shadow-xs'
+                      : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 hover:text-slate-900'
+                  }`}
+                >
+                  {city}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* City Filter Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
-            {['Semua', 'Jakarta Selatan', 'Bandung', 'Surabaya', 'Yogyakarta'].map((city) => (
-              <button
-                key={city}
-                type="button"
-                onClick={() => setSelectedCity(city)}
-                className={`rounded-xl px-3 py-1 text-xs font-bold whitespace-nowrap transition-colors cursor-pointer ${
-                  selectedCity === city
-                    ? 'bg-slate-900 text-white'
-                    : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
-                }`}
-              >
-                {city}
-              </button>
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-8">
+              {[1, 2, 3, 4].map((n) => (
+                <div key={n} className="h-72 rounded-2xl bg-slate-200/60 animate-pulse" />
+              ))}
+            </div>
+          ) : listings.length === 0 ? (
+            <div className="text-center py-12 bg-slate-50 rounded-2xl border border-slate-200">
+              <MapPin className="mx-auto h-10 w-10 text-slate-300 mb-2" />
+              <h3 className="text-sm font-bold text-slate-700">Belum ada barang di wilayah {selectedCity}</h3>
+              <p className="text-xs text-slate-400 mt-1">Coba ganti filter wilayah ke Semua Wilayah.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {listings.slice(0, 8).map((listing) => (
+                <ListingCard key={listing.id} listing={listing} />
+              ))}
+            </div>
+          )}
         </div>
-
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-8">
-            {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="h-72 rounded-2xl bg-slate-200/60 animate-pulse" />
-            ))}
-          </div>
-        ) : listings.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-3xl border border-slate-200">
-            <MapPin className="mx-auto h-10 w-10 text-slate-300 mb-2" />
-            <h3 className="text-sm font-bold text-slate-700">Belum ada barang di wilayah {selectedCity}</h3>
-            <p className="text-xs text-slate-400 mt-1">Coba ganti filter wilayah ke Semua Wilayah.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {listings.slice(0, 8).map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
-            ))}
-          </div>
-        )}
       </section>
     </div>
   );
