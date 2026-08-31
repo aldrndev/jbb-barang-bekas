@@ -33,8 +33,7 @@ import {
   Layers,
   Image as ImageIcon,
   Loader2,
-  UploadCloud,
-  Cloud
+  UploadCloud
 } from 'lucide-react';
 
 const PRESET_DEMO_PHOTOS = [
@@ -336,7 +335,7 @@ export default function JualBarangPage() {
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Form Inputs (7 Cols) */}
           <div className="lg:col-span-7 space-y-6">
-            {/* Section 1: Photos & Cloudflare Storage Upload */}
+            {/* Section 1: Photos Upload */}
             <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -345,9 +344,8 @@ export default function JualBarangPage() {
                     1. Foto Barang Bekas (Maks. 10 Foto)
                   </h2>
                 </div>
-                <span className="flex items-center gap-1 text-[10px] font-bold text-brand-700 bg-brand-50 border border-brand-200 px-2 py-0.5 rounded-md">
-                  <Cloud className="h-3 w-3" />
-                  <span>Cloudflare Storage</span>
+                <span className="text-[11px] font-bold text-slate-400">
+                  {imageUrls.length}/10 Foto
                 </span>
               </div>
               <p className="text-xs text-slate-500">
@@ -382,7 +380,7 @@ export default function JualBarangPage() {
                   <div className="flex flex-col items-center gap-2 py-2">
                     <Loader2 className="h-8 w-8 text-brand-600 animate-spin" />
                     <span className="text-xs font-bold text-slate-800">
-                      Mengupload ke Cloudflare Storage (R2)...
+                      Sedang Mengunggah Foto...
                     </span>
                     <span className="text-[10px] text-slate-400">Mohon tunggu sebentar</span>
                   </div>
@@ -860,7 +858,7 @@ export default function JualBarangPage() {
               <ul className="space-y-2 text-brand-900 leading-relaxed text-[11px]">
                 <li className="flex items-start gap-2">
                   <span className="text-brand-600 font-bold">✓</span>
-                  <span><strong>Foto Asli & Jelas:</strong> Upload foto langsung dari kamera HP Anda ke Cloudflare Storage agar calon pembeli yakin barang real.</span>
+                  <span><strong>Foto Asli & Jelas:</strong> Upload foto langsung dari kamera HP atau galeri Anda agar calon pembeli yakin barang real & original.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-brand-600 font-bold">✓</span>
