@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useWishlist } from '../../context/wishlist-context';
 import { ListingCard } from '../../components/marketplace/listing-card';
+import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import { formatIDR } from '../../lib/utils';
 import {
   Heart,
@@ -37,8 +38,15 @@ export default function WishlistPage() {
     });
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl space-y-6">
+    <div className="min-h-screen bg-slate-50 py-6 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl space-y-4">
+        {/* Breadcrumb Navigation */}
+        <Breadcrumbs
+          items={[
+            { label: 'Wishlist & Favorit' }
+          ]}
+        />
+
         {/* Wishlist Header Card */}
         <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { ListingCard } from '../../components/marketplace/listing-card';
+import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import {
   Search,
   SlidersHorizontal,
@@ -12,22 +13,32 @@ import {
   Sparkles,
   Filter,
   ArrowUpDown,
-  X
+  X,
+  Zap
 } from 'lucide-react';
 import type { ItemCondition } from '@jbb/types';
 
 function CariContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [q, setQ] = useState(searchParams.get('q') || '');
-  const [category, setCategory] = useState(searchParams.get('category') || 'all');
+  const queryQ = searchParams.get('q') || '';
+  const queryCategory = searchParams.get('category') || '';
+  const queryCity = searchParams.get('city') || '';
+  const queryIsCod = searchParams.get('isCod') === 'true';
+  const queryIsNego = searchParams.get('isNego') === 'true';
+  const querySort = (searchParams.get('sortBy') as 'newest' | 'price_asc' | 'price_desc' | 'popular') || 'newest';
+
+  const [q, setQ] = useState(queryQ);
+  const [category, setCategory] = useState(queryCategory);
   const [condition, setCondition] = useState<string>(searchParams.get('condition') || 'all');
   const [minPrice, setMinPrice] = useState<number | undefined>(undefined);
   const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined);
-  const [city, setCity] = useState(searchParams.get('city') || 'all');
-  const [isCod, setIsCod] = useState(searchParams.get('isCod') === 'true');
-  const [isNego, setIsNego] = useState(searchParams.get('isNego') === 'true');
-  const [sortBy, setSortBy] = useState<'newest' | 'price_asc' | 'price_desc' | 'popular'>('newest');
+  const [city, setCity] = useState(queryCity);
+  const [isCod, setIsCod] = useState(queryIsCod);
+  const [isNego, setIsNego] = useState(queryIsNego);
+  const [sortBy, setSortBy] = useState<'newest' | 'price_asc' | 'price_desc' | 'popular'>(querySort);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   const { data: categoriesData } = useQuery({
     queryKey: ['categories'],
@@ -37,15 +48,15 @@ function CariContent() {
   const categories = categoriesData?.data || [];
 
   const { data: listingsData, isLoading } = useQuery({
-    queryKey: ['searchListings', q, category, condition, minPrice, maxPrice, city, isCod, isNego, sortBy],
+    queryKey: ['listings', { q, category, condition, minPrice, maxPrice, city, isCod, isNego, sortBy }],
     queryFn: () =>
       api.getListings({
         q: q.trim() || undefined,
-        category: category === 'all' ? undefined : category,
+        category: category === 'all' || !category ? undefined : category,
         condition: condition === 'all' ? undefined : condition,
         minPrice,
         maxPrice,
-        city: city === 'all' ? undefined : city,
+        city: city === 'all' || !city ? undefined : city,
         isCod: isCod ? true : undefined,
         isNego: isNego ? true : undefined,
         sortBy
@@ -56,8 +67,18 @@ function CariContent() {
   const total = listingsData?.data?.pagination?.total || 0;
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 py-6 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
+        {/* Breadcrumb Navigation */}
+        <Breadcrumbs
+          items={[
+            { label: 'Katalog Barang', href: '/cari' },
+            ...(category ? [{ label: category }] : []),
+            ...(q ? [{ label: `Hasil: "${q}"` }] : [])
+          ]}
+          className="mb-4"
+        />
+
         {/* Search header */}
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>

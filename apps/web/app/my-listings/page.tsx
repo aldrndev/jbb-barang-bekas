@@ -7,6 +7,7 @@ import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 import { formatIDR, formatTimeAgo } from '../../lib/utils';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
+import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import type { Listing, ListingStatus } from '@jbb/types';
 import {
   Package,
@@ -130,8 +131,16 @@ export default function MyListingsPage() {
     .reduce((acc, curr) => acc + (curr.price || 0), 0);
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8 pb-24">
-      <div className="mx-auto max-w-6xl space-y-6">
+    <div className="min-h-screen bg-slate-50 py-6 px-4 sm:px-6 lg:px-8 pb-24">
+      <div className="mx-auto max-w-6xl space-y-4">
+        {/* Breadcrumb Navigation */}
+        <Breadcrumbs
+          items={[
+            { label: 'Penjualan Saya', href: '/orders?role=seller' },
+            { label: 'Barang yang Dijual' }
+          ]}
+        />
+
         {/* Main Dashboard Header Card */}
         <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

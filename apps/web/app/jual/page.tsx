@@ -7,19 +7,23 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 import { formatIDR } from '../../lib/utils';
-import type { ItemCondition, Completeness } from '@jbb/types';
+import { ItemCondition, Completeness } from '@jbb/types';
+import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import {
   Upload,
   Plus,
   Trash2,
   Sparkles,
   ShieldCheck,
+  Zap,
+  Info,
   CheckCircle2,
-  MapPin,
-  HelpCircle,
+  AlertCircle,
   ArrowRight,
   Lock,
-  User
+  User,
+  MapPin,
+  HelpCircle
 } from 'lucide-react';
 
 export default function JualBarangPage() {
@@ -166,8 +170,17 @@ export default function JualBarangPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 py-6 px-4 sm:px-6 lg:px-8 pb-24">
       <div className="mx-auto max-w-3xl">
+        {/* Breadcrumb Navigation */}
+        <Breadcrumbs
+          items={[
+            { label: 'Penjualan Saya', href: '/orders?role=seller' },
+            { label: 'Pasang Iklan Baru' }
+          ]}
+          className="mb-4"
+        />
+
         {/* Page Title */}
         <div className="mb-6">
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900">

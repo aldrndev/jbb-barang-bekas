@@ -8,6 +8,7 @@ import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 import { formatIDR } from '../../lib/utils';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
+import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import {
   ShieldCheck,
   Truck,
@@ -288,23 +289,18 @@ function CheckoutContent() {
     <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8 pb-24">
       <div className="mx-auto max-w-6xl">
         {/* Top Header & Breadcrumb */}
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-200/80">
-          <div className="flex items-center gap-2 text-xs text-slate-500">
-            <Link
-              href={`/listing/${listing.slug || listing.id}`}
-              className="flex items-center gap-1 font-bold text-slate-700 hover:text-brand-600 transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              <span>Kembali ke Detail Barang</span>
-            </Link>
-            <ChevronRight className="h-3 w-3 text-slate-300" />
-            <span className="text-slate-900 font-bold">Checkout Rekber Aman</span>
-          </div>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200/80">
+          <Breadcrumbs
+            items={[
+              { label: 'Katalog Barang', href: '/cari' },
+              { label: listing.title, href: `/listing/${listing.slug || listing.id}` },
+              { label: 'Checkout Rekber' }
+            ]}
+          />
 
-          <div className="flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-800 border border-brand-200">
+          <div className="flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-800 border border-brand-200 shrink-0 self-start sm:self-auto">
             <ShieldCheck className="h-4 w-4 text-brand-600" />
-            <span className="hidden sm:inline">Garansi Rekening Bersama 100%</span>
-            <span className="sm:hidden">Rekber 100%</span>
+            <span>Garansi Rekber 100%</span>
           </div>
         </div>
 

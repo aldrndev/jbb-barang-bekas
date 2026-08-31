@@ -9,6 +9,7 @@ import { formatIDR } from '../../lib/utils';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
 import { EscrowStatusBadge } from '../../components/marketplace/escrow-status-badge';
 import { EscrowTimeline } from '../../components/marketplace/escrow-timeline';
+import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import type { Order } from '@jbb/types';
 import {
   ShoppingBag,
@@ -173,8 +174,15 @@ export default function OrderHistoryPage() {
   const sellerCount = orders.filter((o) => o.sellerId === user.id).length;
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8 pb-24">
-      <div className="mx-auto max-w-6xl space-y-6">
+    <div className="min-h-screen bg-slate-50 py-6 px-4 sm:px-6 lg:px-8 pb-24">
+      <div className="mx-auto max-w-6xl space-y-4">
+        {/* Breadcrumb Navigation */}
+        <Breadcrumbs
+          items={[
+            { label: orderMode === 'buyer' ? 'Belanjaan Saya' : 'Penjualan Saya' }
+          ]}
+        />
+
         {/* Main Header Card */}
         <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

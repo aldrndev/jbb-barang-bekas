@@ -7,6 +7,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 import { formatIDR, formatTimeAgo } from '../../lib/utils';
+import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import {
   MessageSquareQuote,
   ShieldCheck,
@@ -102,8 +103,15 @@ function NegoDashboardContent() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8 pb-20">
-      <div className="mx-auto max-w-5xl space-y-6">
+    <div className="min-h-screen bg-slate-50 py-6 px-4 sm:px-6 lg:px-8 pb-20">
+      <div className="mx-auto max-w-5xl space-y-5">
+        {/* Breadcrumb Navigation */}
+        <Breadcrumbs
+          items={[
+            { label: activeTab === 'received' ? 'Tawaran Masuk' : 'Tawaran Keluar' }
+          ]}
+        />
+
         {/* Header & Quick Role Switcher Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>

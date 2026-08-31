@@ -8,6 +8,7 @@ import { api } from '../../../lib/api-client';
 import { formatIDR, formatTimeAgo } from '../../../lib/utils';
 import { ConditionBadge } from '../../../components/marketplace/condition-badge';
 import { MakeOfferModal } from '../../../components/marketplace/make-offer-modal';
+import { Breadcrumbs } from '../../../components/layout/breadcrumbs';
 import {
   ShieldCheck,
   MapPin,
@@ -148,18 +149,16 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
     <div className="min-h-screen bg-slate-50 py-6 px-4 sm:px-6 lg:px-8 pb-28 md:pb-12">
       <div className="mx-auto max-w-7xl">
         {/* Breadcrumb & Quick Actions */}
-        <div className="flex items-center justify-between text-xs text-slate-500 mb-5">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <Link href="/" className="hover:text-brand-600 transition-colors font-medium">Beranda</Link>
-            <ChevronRight className="h-3 w-3 text-slate-300" />
-            <Link href={`/cari?category=${listing.category?.slug}`} className="hover:text-brand-600 transition-colors font-medium">
-              {listing.category?.name || 'Katalog'}
-            </Link>
-            <ChevronRight className="h-3 w-3 text-slate-300" />
-            <span className="text-slate-800 font-bold truncate max-w-xs sm:max-w-md">{listing.title}</span>
-          </div>
+        <div className="flex items-center justify-between text-xs text-slate-500 mb-5 gap-3">
+          <Breadcrumbs
+            items={[
+              { label: 'Katalog Barang', href: '/cari' },
+              ...(listing.category ? [{ label: listing.category.name, href: `/cari?category=${listing.category.slug}` }] : []),
+              { label: listing.title }
+            ]}
+          />
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={handleShare}
               className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-xs"
