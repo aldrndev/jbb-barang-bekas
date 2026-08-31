@@ -27,14 +27,14 @@ import {
 } from 'lucide-react';
 
 const categoryIconMap: Record<string, React.ReactNode> = {
-  'hp-gadget': <Smartphone className="h-5 w-5" />,
-  'laptop-komputer': <Laptop className="h-5 w-5" />,
-  'kamera-fotografi': <Camera className="h-5 w-5" />,
-  'motor-otomotif': <Bike className="h-5 w-5" />,
-  'console-gaming': <Gamepad2 className="h-5 w-5" />,
-  'fashion-sepatu': <Shirt className="h-5 w-5" />,
-  'audio-headphone': <Headphones className="h-5 w-5" />,
-  'elektronik-rumah': <Tv className="h-5 w-5" />
+  'hp-gadget': <Smartphone className="h-7 w-7 sm:h-7.5 sm:w-7.5" strokeWidth={1.85} />,
+  'laptop-komputer': <Laptop className="h-7 w-7 sm:h-7.5 sm:w-7.5" strokeWidth={1.85} />,
+  'kamera-fotografi': <Camera className="h-7 w-7 sm:h-7.5 sm:w-7.5" strokeWidth={1.85} />,
+  'motor-otomotif': <Bike className="h-7 w-7 sm:h-7.5 sm:w-7.5" strokeWidth={1.85} />,
+  'console-gaming': <Gamepad2 className="h-7 w-7 sm:h-7.5 sm:w-7.5" strokeWidth={1.85} />,
+  'fashion-sepatu': <Shirt className="h-7 w-7 sm:h-7.5 sm:w-7.5" strokeWidth={1.85} />,
+  'audio-headphone': <Headphones className="h-7 w-7 sm:h-7.5 sm:w-7.5" strokeWidth={1.85} />,
+  'elektronik-rumah': <Tv className="h-7 w-7 sm:h-7.5 sm:w-7.5" strokeWidth={1.85} />
 };
 
 export default function HomePage() {
@@ -408,9 +408,9 @@ export default function HomePage() {
                   className="group flex flex-col items-center text-center p-2 sm:p-2.5 rounded-2xl hover:bg-slate-50 transition-colors"
                 >
                   <div
-                    className={`flex h-13 w-13 sm:h-15 sm:w-15 items-center justify-center rounded-2xl text-white shadow-md ${conf.iconBg} group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300`}
+                    className={`flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2.5xl sm:rounded-3xl text-white shadow-md ${conf.iconBg} group-hover:scale-108 group-hover:-translate-y-1 transition-all duration-300`}
                   >
-                    {categoryIconMap[cat.slug] || <Sparkles className="h-6 w-6" />}
+                    {categoryIconMap[cat.slug] || <Sparkles className="h-7 w-7 sm:h-7.5 sm:w-7.5" strokeWidth={1.85} />}
                   </div>
 
                   <span className="mt-2.5 text-xs font-bold text-slate-800 text-center line-clamp-1 group-hover:text-brand-600 transition-colors">
