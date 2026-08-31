@@ -334,123 +334,96 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Rich Enterprise Categories Section */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
-        {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 pb-4 border-b border-slate-200/60 gap-3">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-700 mb-2">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Jelajahi Berdasarkan Kategori</span>
+      {/* Modern Compact Category Icon Hub Section */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-6">
+        <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs">
+          {/* Section Header */}
+          <div className="flex items-center justify-between mb-5 pb-3.5 border-b border-slate-100">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50 text-brand-600 border border-brand-100">
+                <Sparkles className="h-4 w-4" />
+              </div>
+              <div>
+                <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+                  Kategori Pilihan
+                </h2>
+                <p className="text-xs text-slate-500 font-medium hidden sm:block">
+                  Jelajahi barang bekas terverifikasi dengan garansi rekening bersama
+                </p>
+              </div>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-              Kategori Pilihan Terverifikasi
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Setiap kategori dilengkapi jaminan inspeksi kondisi fisik dan perlindungan rekening bersama 48 jam.
-            </p>
+
+            <Link
+              href="/cari"
+              className="inline-flex items-center gap-1 text-xs font-bold text-brand-600 hover:text-brand-700 transition-colors"
+            >
+              <span>Lihat Semua ({categories.length})</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
-          <Link
-            href="/cari"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:border-brand-500 hover:text-brand-600 hover:shadow-sm transition-all self-start sm:self-auto"
-          >
-            <span>Semua Kategori ({categories.length})</span>
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </div>
 
-        {/* Enhanced Category Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {categories.map((cat) => {
-            const themeConfig: Record<
-              string,
-              {
-                iconBg: string;
-                tag: string;
-                accentLight: string;
-              }
-            > = {
-              'hp-gadget': {
-                iconBg: 'bg-linear-to-br from-emerald-500 to-teal-600 shadow-emerald-500/25',
-                tag: '🔥 Paling Dicari',
-                accentLight: 'bg-emerald-50/70 border-emerald-100'
-              },
-              'laptop-komputer': {
-                iconBg: 'bg-linear-to-br from-blue-500 to-indigo-600 shadow-blue-500/25',
-                tag: '💻 Kerja & Gaming',
-                accentLight: 'bg-blue-50/70 border-blue-100'
-              },
-              'kamera-fotografi': {
-                iconBg: 'bg-linear-to-br from-amber-500 to-orange-600 shadow-amber-500/25',
-                tag: '📷 Lensa & Body',
-                accentLight: 'bg-amber-50/70 border-amber-100'
-              },
-              'motor-otomotif': {
-                iconBg: 'bg-linear-to-br from-cyan-500 to-blue-600 shadow-cyan-500/25',
-                tag: '🛵 Siap COD Aman',
-                accentLight: 'bg-cyan-50/70 border-cyan-100'
-              },
-              'console-gaming': {
-                iconBg: 'bg-linear-to-br from-purple-500 to-violet-600 shadow-purple-500/25',
-                tag: '🎮 Fullset Ori',
-                accentLight: 'bg-purple-50/70 border-purple-100'
-              },
-              'fashion-sepatu': {
-                iconBg: 'bg-linear-to-br from-rose-500 to-pink-600 shadow-rose-500/25',
-                tag: '👟 Thrift Kurasi',
-                accentLight: 'bg-rose-50/70 border-rose-100'
-              },
-              'audio-headphone': {
-                iconBg: 'bg-linear-to-br from-teal-500 to-cyan-600 shadow-teal-500/25',
-                tag: '🎧 Hi-Res Audio',
-                accentLight: 'bg-teal-50/70 border-teal-100'
-              },
-              'elektronik-rumah': {
-                iconBg: 'bg-linear-to-br from-slate-600 to-slate-800 shadow-slate-500/25',
-                tag: '📺 Rumah & Kantor',
-                accentLight: 'bg-slate-100/70 border-slate-200'
-              }
-            };
+          {/* Compact Icon + Label Grid (4 cols on mobile, 8 cols on desktop) */}
+          <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 sm:gap-3">
+            {categories.map((cat) => {
+              const themeConfig: Record<
+                string,
+                {
+                  iconBg: string;
+                }
+              > = {
+                'hp-gadget': {
+                  iconBg: 'bg-linear-to-br from-emerald-500 to-teal-600 shadow-emerald-500/25'
+                },
+                'laptop-komputer': {
+                  iconBg: 'bg-linear-to-br from-blue-500 to-indigo-600 shadow-blue-500/25'
+                },
+                'kamera-fotografi': {
+                  iconBg: 'bg-linear-to-br from-amber-500 to-orange-600 shadow-amber-500/25'
+                },
+                'motor-otomotif': {
+                  iconBg: 'bg-linear-to-br from-cyan-500 to-blue-600 shadow-cyan-500/25'
+                },
+                'console-gaming': {
+                  iconBg: 'bg-linear-to-br from-purple-500 to-violet-600 shadow-purple-500/25'
+                },
+                'fashion-sepatu': {
+                  iconBg: 'bg-linear-to-br from-rose-500 to-pink-600 shadow-rose-500/25'
+                },
+                'audio-headphone': {
+                  iconBg: 'bg-linear-to-br from-teal-500 to-cyan-600 shadow-teal-500/25'
+                },
+                'elektronik-rumah': {
+                  iconBg: 'bg-linear-to-br from-slate-600 to-slate-800 shadow-slate-500/25'
+                }
+              };
 
-            const conf = themeConfig[cat.slug] || {
-              iconBg: 'bg-linear-to-br from-emerald-600 to-teal-700 shadow-emerald-500/25',
-              tag: '⚡ Siap Rekber',
-              accentLight: 'bg-slate-50 border-slate-100'
-            };
+              const conf = themeConfig[cat.slug] || {
+                iconBg: 'bg-linear-to-br from-emerald-600 to-teal-700 shadow-emerald-500/25'
+              };
 
-            return (
-              <Link
-                key={cat.id}
-                href={`/cari?category=${cat.slug}`}
-                className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-xs hover:-translate-y-1 hover:border-brand-400 hover:shadow-lg hover:shadow-brand-500/10 transition-all duration-300"
-              >
-                {/* Top Row: Icon + Popularity Tag */}
-                <div className="flex items-start justify-between gap-2">
+              return (
+                <Link
+                  key={cat.id}
+                  href={`/cari?category=${cat.slug}`}
+                  className="group flex flex-col items-center text-center p-2 sm:p-2.5 rounded-2xl hover:bg-slate-50 transition-colors"
+                >
                   <div
-                    className={`flex h-12 w-12 items-center justify-center rounded-2xl text-white shadow-md ${conf.iconBg} group-hover:scale-108 transition-transform duration-300`}
+                    className={`flex h-13 w-13 sm:h-15 sm:w-15 items-center justify-center rounded-2xl text-white shadow-md ${conf.iconBg} group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300`}
                   >
                     {categoryIconMap[cat.slug] || <Sparkles className="h-6 w-6" />}
                   </div>
-                  <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-700 group-hover:bg-brand-50 group-hover:text-brand-700 transition-colors">
-                    {conf.tag}
-                  </span>
-                </div>
 
-                {/* Middle Info: Title + Unit Counter */}
-                <div className="mt-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-bold text-slate-900 group-hover:text-brand-600 transition-colors">
-                      {cat.name}
-                    </h3>
-                    <ArrowRight className="h-4 w-4 text-slate-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:text-brand-600 transition-all duration-200" />
-                  </div>
-                  <p className="text-[11px] font-medium text-slate-500 mt-1">
-                    {cat.itemCount} unit terdaftar &bull; Siap Nego
-                  </p>
-                </div>
-              </Link>
-            );
-          })}
+                  <span className="mt-2.5 text-xs font-bold text-slate-800 text-center line-clamp-1 group-hover:text-brand-600 transition-colors">
+                    {cat.name}
+                  </span>
+
+                  <span className="text-[10px] font-semibold text-slate-400 mt-0.5">
+                    {cat.itemCount}+ unit
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </section>
 
