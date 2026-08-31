@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import '../styles/globals.css';
 import { AuthProvider } from '../context/auth-context';
+import { WishlistProvider } from '../context/wishlist-context';
 import { QueryProvider } from '../providers/query-provider';
 import { Navbar } from '../components/layout/navbar';
 import { MobileBottomBar } from '../components/layout/mobile-bottom-bar';
@@ -24,12 +25,14 @@ export default function RootLayout({
       <body className="min-h-screen bg-slate-50 text-slate-900 flex flex-col antialiased">
         <QueryProvider>
           <AuthProvider>
-            <ScrollToTop />
-            <Navbar />
-            <main className="flex-1 pb-16 md:pb-0">{children}</main>
-            <Footer />
-            <MobileBottomBar />
-            <AuthModal />
+            <WishlistProvider>
+              <ScrollToTop />
+              <Navbar />
+              <main className="flex-1 pb-16 md:pb-0">{children}</main>
+              <Footer />
+              <MobileBottomBar />
+              <AuthModal />
+            </WishlistProvider>
           </AuthProvider>
         </QueryProvider>
       </body>

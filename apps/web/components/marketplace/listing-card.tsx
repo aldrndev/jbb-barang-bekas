@@ -5,13 +5,17 @@ import Link from 'next/link';
 import type { Listing } from '@jbb/types';
 import { formatIDR, formatTimeAgo } from '../../lib/utils';
 import { ConditionBadge } from './condition-badge';
-import { MapPin, ShieldCheck, Star, Zap, MessageSquareQuote } from 'lucide-react';
+import { MapPin, ShieldCheck, Star, Zap, MessageSquareQuote, Heart } from 'lucide-react';
+import { useWishlist } from '../../context/wishlist-context';
 
 interface ListingCardProps {
   listing: Listing;
 }
 
 export function ListingCard({ listing }: ListingCardProps) {
+  const { isWishlisted, toggleWishlist } = useWishlist();
+  const wishlisted = isWishlisted(listing.id);
+
   const primaryImage = listing.images.find((img) => img.isPrimary)?.url || listing.images[0]?.url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80';
 
   const discountPercent = listing.originalPrice
@@ -19,12 +23,9 @@ export function ListingCard({ listing }: ListingCardProps) {
     : null;
 
   return (
-    <Link
-      href={`/listing/${listing.slug || listing.id}`}
-      className="group flex flex-col overflow-hidden rounded-3xl border border-slate-200/60 bg-white shadow-2xs hover:border-brand-500/30 hover:shadow-md transition-all duration-200"
-    >
+    <div className="group relative flex flex-col overflow-hidden rounded-3xl border border-slate-200/60 bg-white shadow-2xs hover:border-brand-500/30 hover:shadow-md transition-all duration-200">
       {/* Image Container */}
-      <div className="relative aspect-4/3 w-full overflow-hidden bg-slate-50/80">
+      <Link href={`/listing/${listing.slug || listing.id}`} className="relative aspect-4/3 w-full overflow-hidden bg-slate-50/80 block">
         <img
           src={primaryImage}
           alt={listing.title}
@@ -37,7 +38,7 @@ export function ListingCard({ listing }: ListingCardProps) {
         </div>
 
         {listing.isNegotiable && (
-          <div className="absolute top-2.5 right-2.5 z-10 rounded-full bg-white/95 px-2.5 py-0.5 text-[10px] font-bold text-amber-900 border border-amber-200/80 backdrop-blur-md shadow-2xs flex items-center gap-1">
+          <div className="absolute top-2.5 right-11 z-10 rounded-full bg-white/95 px-2.5 py-0.5 text-[10px] font-bold text-amber-900 border border-amber-200/80 backdrop-blur-md shadow-2xs flex items-center gap-1">
             <MessageSquareQuote className="h-3 w-3 text-amber-600" />
             <span>Nego</span>
           </div>
@@ -50,10 +51,28 @@ export function ListingCard({ listing }: ListingCardProps) {
             <span>Siap COD</span>
           </div>
         )}
-      </div>
+      </Link>
+
+      {/* Floating Wishlist Heart Button */}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleWishlist(listing);
+        }}
+        className={`absolute top-2.5 right-2.5 z-20 flex h-7 w-7 items-center justify-center rounded-full backdrop-blur-md transition-all cursor-pointer shadow-xs ${
+          wishlisted
+            ? 'bg-rose-500 text-white shadow-rose-500/30 scale-105'
+            : 'bg-white/90 text-slate-500 hover:bg-white hover:text-rose-500 border border-slate-200/80'
+        }`}
+        title={wishlisted ? 'Hapus dari Wishlist' : 'Simpan ke Wishlist'}
+      >
+        <Heart className={`h-3.5 w-3.5 ${wishlisted ? 'fill-current' : ''}`} />
+      </button>
 
       {/* Card Content */}
-      <div className="flex flex-1 flex-col p-4">
+      <Link href={`/listing/${listing.slug || listing.id}`} className="flex flex-1 flex-col p-4 block">
         {/* Title */}
         <h3 className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-2 leading-snug group-hover:text-brand-600 transition-colors">
           {listing.title}
@@ -83,7 +102,7 @@ export function ListingCard({ listing }: ListingCardProps) {
             <span>Rekber</span>
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 }

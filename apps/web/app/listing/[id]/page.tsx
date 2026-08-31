@@ -36,9 +36,11 @@ import {
   Tag
 } from 'lucide-react';
 import { useAuth } from '../../../context/auth-context';
+import { useWishlist } from '../../../context/wishlist-context';
 
 function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
   const { user, openAuthModal } = useAuth();
+  const { isWishlisted, toggleWishlist } = useWishlist();
   const searchParams = useSearchParams();
   const queryOfferId = searchParams.get('offerId');
   const queryCheckout = searchParams.get('checkout');
@@ -46,8 +48,6 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [isNegoModalOpen, setIsNegoModalOpen] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
-  const [favoriteCountOffset, setFavoriteCountOffset] = useState(0);
   const [shareToast, setShareToast] = useState(false);
 
   const { data: listingData, isLoading, refetch } = useQuery({
@@ -120,13 +120,12 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
     ? Math.round(((listing.originalPrice - effectivePrice) / listing.originalPrice) * 100)
     : 0;
 
-  const toggleFavorite = () => {
-    if (!user) {
-      openAuthModal();
-      return;
+  const wishlisted = listing ? isWishlisted(listing.id) : false;
+
+  const handleToggleWishlist = () => {
+    if (listing) {
+      toggleWishlist(listing);
     }
-    setIsFavorited(!isFavorited);
-    setFavoriteCountOffset(isFavorited ? 0 : 1);
   };
 
   const handleShare = () => {
@@ -169,15 +168,16 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
               <span className="hidden sm:inline">Bagikan</span>
             </button>
             <button
-              onClick={toggleFavorite}
+              onClick={handleToggleWishlist}
               className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-xs ${
-                isFavorited
+                wishlisted
                   ? 'border-rose-300 bg-rose-50 text-rose-600'
-                  : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                  : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-rose-600'
               }`}
+              title={wishlisted ? 'Hapus dari Wishlist' : 'Simpan ke Wishlist'}
             >
-              <Heart className={`h-3.5 w-3.5 ${isFavorited ? 'fill-rose-500 text-rose-500' : ''}`} />
-              <span className="font-bold">{listing.favoriteCount + favoriteCountOffset}</span>
+              <Heart className={`h-3.5 w-3.5 ${wishlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
+              <span className="font-bold">{wishlisted ? 'Tersimpan' : 'Wishlist'}</span>
             </button>
           </div>
         </div>

@@ -16,7 +16,7 @@ export function MobileBottomBar() {
     { href: '/jual', label: 'Jual', icon: PlusCircle, isHighlight: true },
     { href: '/nego', label: 'Tawaran', icon: MessageSquareText },
     {
-      href: '#',
+      href: user ? '/profile' : '#',
       label: user ? 'Profil' : 'Masuk',
       icon: User,
       onClick: !user ? openAuthModal : undefined
