@@ -66,14 +66,19 @@ function CariContent() {
   const listings = listingsData?.data?.items || [];
   const total = listingsData?.data?.pagination?.total || 0;
 
+  const activeCategory = categories.find((c) => c.slug === category || c.id === category);
+  const activeCategoryName = activeCategory?.name || (category && category !== 'all' ? category.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) : null);
+
   return (
     <div className="min-h-screen bg-slate-50 py-6 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         {/* Breadcrumb Navigation */}
         <Breadcrumbs
           items={[
-            { label: 'Katalog Barang', href: '/cari' },
-            ...(category ? [{ label: category }] : []),
+            { label: 'Katalog Barang', href: (category && category !== 'all') || q ? '/cari' : undefined },
+            ...(activeCategoryName && category !== 'all'
+              ? [{ label: activeCategoryName, href: q ? `/cari?category=${category}` : undefined }]
+              : []),
             ...(q ? [{ label: `Hasil: "${q}"` }] : [])
           ]}
           className="mb-4"
@@ -82,9 +87,11 @@ function CariContent() {
         {/* Search header */}
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Eksplor Barang Bekas</h1>
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
+              {activeCategoryName && category !== 'all' ? activeCategoryName : 'Eksplor Barang Bekas'}
+            </h1>
             <p className="text-xs text-slate-500 mt-1">
-              Menampilkan {total} barang bekas terverifikasi siap transaksi
+              Menampilkan {total} barang bekas {activeCategoryName && category !== 'all' ? `kategori ${activeCategoryName}` : 'terverifikasi siap transaksi'}
             </p>
           </div>
 
