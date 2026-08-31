@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 import { useWishlist } from '../../context/wishlist-context';
 import { formatIDR } from '../../lib/utils';
@@ -32,6 +34,16 @@ import {
 export default function ProfilePage() {
   const { user, openAuthModal, logout, login } = useAuth();
   const { wishlistCount } = useWishlist();
+
+  const { data: myListings = [] } = useQuery({
+    queryKey: ['my-listings'],
+    queryFn: async () => {
+      const res = await api.getMyListings();
+      if (res.success && res.data) return res.data;
+      return [];
+    },
+    enabled: !!user
+  });
 
   const [activeTab, setActiveTab] = useState<'biodata' | 'security' | 'listings' | 'reputation'>('biodata');
 
@@ -426,53 +438,93 @@ export default function ProfilePage() {
           <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-6">
             <div className="flex items-center justify-between border-b border-slate-200 pb-4">
               <div>
-                <h3 className="text-base font-black text-slate-900">Iklan Barang Bekas Anda</h3>
+                <h3 className="text-base font-black text-slate-900">Iklan Barang Bekas Anda ({myListings.length})</h3>
                 <p className="text-xs text-slate-500">Kelola status barang yang sedang Anda tawarkan di marketplace.</p>
               </div>
-              <Link
-                href="/jual"
-                className="flex items-center gap-1.5 rounded-full bg-brand-600 px-4 py-2 text-xs font-bold text-white shadow-xs"
-              >
-                <Plus className="h-4 w-4 stroke-3" />
-                <span>Pasang Iklan Baru</span>
-              </Link>
-            </div>
-
-            <div className="space-y-3">
-              <div className="rounded-2xl border border-slate-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50">
-                <div className="flex items-center gap-3.5">
-                  <img
-                    src="https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=200&auto=format&fit=crop&q=80"
-                    alt="iPhone 13 Pro"
-                    className="h-16 w-16 rounded-xl object-cover border border-slate-200 shrink-0"
-                  />
-                  <div>
-                    <span className="rounded-full bg-emerald-100 text-brand-800 text-[10px] font-bold px-2 py-0.5">
-                      Aktif &bull; Grade A++
-                    </span>
-                    <h4 className="text-xs sm:text-sm font-bold text-slate-900 mt-1">
-                      iPhone 13 Pro 128GB Sierra Blue Resmi iBox
-                    </h4>
-                    <span className="text-xs font-black text-brand-700">{formatIDR(9850000)}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Link
-                    href="/listing/iphone-13-pro-128gb-sierra-blue-resmi-ibox-mulus-96"
-                    className="rounded-xl border border-slate-200 bg-white hover:bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700"
-                  >
-                    Lihat Iklan
-                  </Link>
-                  <Link
-                    href="/nego"
-                    className="rounded-xl bg-amber-500 hover:bg-amber-600 px-3 py-1.5 text-xs font-bold text-white"
-                  >
-                    Cek Nego (2)
-                  </Link>
-                </div>
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/my-listings"
+                  className="rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 px-3.5 py-2 text-xs font-bold text-slate-700 transition-colors"
+                >
+                  Kelola Detail Iklan
+                </Link>
+                <Link
+                  href="/jual"
+                  className="flex items-center gap-1.5 rounded-full bg-brand-600 px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-brand-700 transition-colors"
+                >
+                  <Plus className="h-4 w-4 stroke-3" />
+                  <span>Pasang Iklan Baru</span>
+                </Link>
               </div>
             </div>
+
+            {myListings.length === 0 ? (
+              <div className="text-center py-10 border border-slate-200 rounded-2xl bg-slate-50">
+                <Package className="mx-auto h-10 w-10 text-slate-300 mb-2" />
+                <p className="text-xs font-bold text-slate-700">Belum Ada Iklan Aktif</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">Barang bekas yang Anda pasang akan muncul di sini.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {myListings.map((item: any) => {
+                  const img = item.images?.[0]?.url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200';
+                  return (
+                    <div
+                      key={item.id}
+                      className="rounded-2xl border border-slate-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50 hover:bg-slate-50 transition-colors"
+                    >
+                      <div className="flex items-center gap-3.5">
+                        <img
+                          src={img}
+                          alt={item.title}
+                          className="h-16 w-16 rounded-xl object-cover border border-slate-200 shrink-0"
+                        />
+                        <div className="space-y-0.5">
+                          <span
+                            className={`rounded-full px-2 py-0.5 text-[9px] font-extrabold border ${
+                              item.status === 'ACTIVE'
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                                : item.status === 'IN_NEGO'
+                                ? 'bg-amber-50 text-amber-900 border-amber-200'
+                                : item.status === 'SOLD'
+                                ? 'bg-purple-50 text-purple-900 border-purple-200'
+                                : 'bg-slate-100 text-slate-700 border-slate-200'
+                            }`}
+                          >
+                            {item.status === 'ACTIVE'
+                              ? 'Aktif'
+                              : item.status === 'IN_NEGO'
+                              ? 'Sedang Nego'
+                              : item.status === 'SOLD'
+                              ? 'Terjual'
+                              : item.status}
+                          </span>
+                          <h4 className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-1">
+                            {item.title}
+                          </h4>
+                          <span className="text-xs font-black text-brand-700 block">{formatIDR(item.price)}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={`/listing/${item.slug || item.id}`}
+                          className="rounded-xl border border-slate-200 bg-white hover:bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 transition-colors"
+                        >
+                          Lihat Iklan
+                        </Link>
+                        <Link
+                          href="/nego?tab=received"
+                          className="rounded-xl bg-amber-500 hover:bg-amber-600 px-3 py-1.5 text-xs font-bold text-white transition-colors"
+                        >
+                          Cek Nego ({item.offerCount || 0})
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 

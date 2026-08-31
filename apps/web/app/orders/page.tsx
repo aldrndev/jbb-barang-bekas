@@ -22,16 +22,25 @@ import {
   FileText,
   X,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Tag,
+  Send,
+  Sparkles
 } from 'lucide-react';
 
 export default function OrderHistoryPage() {
   const { user, openAuthModal } = useAuth();
+  const [orderMode, setOrderMode] = useState<'buyer' | 'seller'>('buyer');
   const [activeTab, setActiveTab] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedInvoiceOrder, setSelectedInvoiceOrder] = useState<Order | null>(null);
   const [copiedResi, setCopiedResi] = useState<string | null>(null);
   const [expandedTimelineId, setExpandedTimelineId] = useState<string | null>(null);
+
+  // Seller Resi input state
+  const [shippingOrderId, setShippingOrderId] = useState<string | null>(null);
+  const [courierNameInput, setCourierNameInput] = useState('JNE Reguler');
+  const [trackingNumberInput, setTrackingNumberInput] = useState('');
 
   const { data: orders = [], isLoading, refetch } = useQuery({
     queryKey: ['my-orders'],
@@ -55,7 +64,7 @@ export default function OrderHistoryPage() {
           <div className="space-y-1">
             <h2 className="text-lg font-black text-slate-900">Masuk untuk Melihat Riwayat Pesanan</h2>
             <p className="text-xs text-slate-500">
-              Pantau status penahanan dana Rekber, nomor resi pengiriman, dan konfirmasi barang Anda.
+              Pantau status penahanan dana Rekber, nomor resi pengiriman, dan pencairan saldo penjualan.
             </p>
           </div>
           <button
@@ -70,8 +79,17 @@ export default function OrderHistoryPage() {
     );
   }
 
+  // Filter orders by mode (buyer purchases vs seller sales)
+  const modeOrders = orders.filter((order) => {
+    if (orderMode === 'buyer') {
+      return order.buyerId === user.id;
+    } else {
+      return order.sellerId === user.id;
+    }
+  });
+
   // Filter orders by tab and search query
-  const filteredOrders = orders.filter((order) => {
+  const filteredOrders = modeOrders.filter((order) => {
     // Search query match
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -121,48 +139,134 @@ export default function OrderHistoryPage() {
     }
   };
 
+  const handleSubmitShipping = async (orderId: string) => {
+    if (!trackingNumberInput.trim()) {
+      alert('Masukkan nomor resi pengiriman');
+      return;
+    }
+    const res = await api.updateShipping(orderId, courierNameInput, trackingNumberInput.trim());
+    if (res.success) {
+      alert('Resi pengiriman berhasil disimpan! Pembeli telah diberi tahu.');
+      setShippingOrderId(null);
+      setTrackingNumberInput('');
+      refetch();
+    } else {
+      alert(res.error?.message || 'Gagal mengupdate resi');
+    }
+  };
+
+  const buyerCount = orders.filter((o) => o.buyerId === user.id).length;
+  const sellerCount = orders.filter((o) => o.sellerId === user.id).length;
+
   return (
     <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8 pb-24">
       <div className="mx-auto max-w-6xl space-y-6">
-        {/* Orders Header Card */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
+        {/* Main Header Card */}
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 border border-brand-100 shadow-xs">
-                <ShoppingBag className="h-6 w-6" />
+                {orderMode === 'buyer' ? <ShoppingBag className="h-6 w-6" /> : <Tag className="h-6 w-6" />}
               </div>
               <div>
                 <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                  Riwayat & Status Pesanan
+                  {orderMode === 'buyer' ? 'Riwayat Pembelian Rekber' : 'Riwayat Penjualan Rekber'}
                 </h1>
                 <p className="text-xs text-slate-500 font-medium mt-0.5">
-                  Lacak status transaksi Rekber, pengiriman kurir, dan garansi inspeksi fisik 48 jam
+                  {orderMode === 'buyer'
+                    ? 'Lacak barang yang Anda beli, nomor resi pengiriman, dan inspeksi fisik 48 jam'
+                    : 'Kelola pesanan masuk dari pembeli, input resi kirim, dan pantau pencairan dana'}
                 </p>
               </div>
             </div>
 
-            {/* Search input */}
-            <div className="relative w-full sm:w-72">
+            {/* Buyer vs Seller Mode Switcher Pills */}
+            <div className="flex items-center rounded-2xl bg-slate-100 p-1 border border-slate-200 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setOrderMode('buyer');
+                  setActiveTab('all');
+                }}
+                className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition-all cursor-pointer ${
+                  orderMode === 'buyer'
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <ShoppingBag className="h-3.5 w-3.5 text-brand-600" />
+                <span>Belanjaan Saya</span>
+                {buyerCount > 0 && (
+                  <span className="ml-1 rounded-full bg-slate-100 px-1.5 py-0.2 text-[10px] font-black text-slate-700">
+                    {buyerCount}
+                  </span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setOrderMode('seller');
+                  setActiveTab('all');
+                }}
+                className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition-all cursor-pointer ${
+                  orderMode === 'seller'
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Tag className="h-3.5 w-3.5 text-amber-600" />
+                <span>Penjualan Saya</span>
+                {sellerCount > 0 && (
+                  <span className="ml-1 rounded-full bg-amber-100 px-1.5 py-0.2 text-[10px] font-black text-amber-800">
+                    {sellerCount}
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Search bar & Quick Navigation */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+            <div className="relative w-full sm:w-80">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari nomor pesanan / barang..."
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 pl-9 pr-3.5 py-2 text-xs text-slate-800 focus:border-brand-500 focus:outline-none focus:bg-white"
+                placeholder={orderMode === 'buyer' ? 'Cari nomor pesanan / barang...' : 'Cari transaksi penjualan...'}
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 pl-9 pr-3.5 py-2 text-xs text-slate-800 focus:border-brand-500 focus:outline-none focus:bg-white"
               />
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
             </div>
+
+            {orderMode === 'seller' && (
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <Link
+                  href="/my-listings"
+                  className="w-full sm:w-auto flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 px-3.5 py-2 text-xs font-bold text-slate-700 transition-colors"
+                >
+                  <Package className="h-3.5 w-3.5 text-slate-500" />
+                  <span>Kelola Barang yang Dijual</span>
+                </Link>
+                <Link
+                  href="/jual"
+                  className="w-full sm:w-auto flex items-center justify-center gap-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 px-3.5 py-2 text-xs font-bold text-white shadow-xs transition-colors"
+                >
+                  <span>+ Pasang Iklan</span>
+                </Link>
+              </div>
+            )}
           </div>
 
-          {/* Status Tabs */}
-          <div className="mt-6 pt-5 border-t border-slate-200 flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
+          {/* Status Filter Tabs */}
+          <div className="border-t border-slate-200 pt-4 flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
             {[
-              { id: 'all', label: 'Semua Pesanan', count: orders.length },
-              { id: 'packing', label: 'Sedang Dikemas Penjual', count: orders.filter((o) => o.escrowStatus === 'PAYMENT_CONFIRMED' || o.escrowStatus === 'SELLER_PACKING').length },
-              { id: 'shipped', label: 'Dalam Pengiriman Kurir', count: orders.filter((o) => o.escrowStatus === 'IN_TRANSIT').length },
-              { id: 'inspection', label: 'Masa Inspeksi 48 Jam', count: orders.filter((o) => o.escrowStatus === 'DELIVERED_INSPECTION').length },
-              { id: 'completed', label: 'Selesai', count: orders.filter((o) => o.escrowStatus === 'COMPLETED').length },
-              { id: 'disputed', label: 'Komplain / Dispute', count: orders.filter((o) => o.escrowStatus === 'DISPUTED' || o.escrowStatus === 'CANCELLED').length }
+              { id: 'all', label: 'Semua Status', count: modeOrders.length },
+              { id: 'packing', label: orderMode === 'seller' ? 'Perlu Dikirim' : 'Sedang Dikemas', count: modeOrders.filter((o) => o.escrowStatus === 'PAYMENT_CONFIRMED' || o.escrowStatus === 'SELLER_PACKING').length },
+              { id: 'shipped', label: 'Dalam Pengiriman', count: modeOrders.filter((o) => o.escrowStatus === 'IN_TRANSIT').length },
+              { id: 'inspection', label: 'Masa Cek 48 Jam', count: modeOrders.filter((o) => o.escrowStatus === 'DELIVERED_INSPECTION').length },
+              { id: 'completed', label: 'Selesai & Cair', count: modeOrders.filter((o) => o.escrowStatus === 'COMPLETED').length },
+              { id: 'disputed', label: 'Komplain / Retur', count: modeOrders.filter((o) => o.escrowStatus === 'DISPUTED' || o.escrowStatus === 'CANCELLED').length }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -191,24 +295,36 @@ export default function OrderHistoryPage() {
         ) : filteredOrders.length === 0 ? (
           <div className="rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-xs space-y-4">
             <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-slate-50 text-slate-400 border border-slate-200">
-              <Package className="h-10 w-10" />
+              {orderMode === 'buyer' ? <ShoppingBag className="h-10 w-10" /> : <Tag className="h-10 w-10" />}
             </div>
             <div className="space-y-1">
               <h2 className="text-base sm:text-lg font-black text-slate-900">
-                Tidak Ada Transaksi di Kategori Ini
+                {orderMode === 'buyer' ? 'Belum Ada Transaksi Pembelian' : 'Belum Ada Transaksi Penjualan'}
               </h2>
               <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                Transaksi yang Anda bayar lewat Rekber JBB akan otomatis tercatat dan dapat dipantau di sini.
+                {orderMode === 'buyer'
+                  ? 'Barang bekas berkualitas yang Anda beli lewat Rekber JBB akan otomatis terpantau di sini.'
+                  : 'Pesanan barang Anda yang dibayar pembeli lewat Rekber JBB akan muncul di sini untuk Anda proses.'}
               </p>
             </div>
             <div className="pt-2">
-              <Link
-                href="/cari"
-                className="inline-flex items-center gap-2 rounded-full bg-brand-600 hover:bg-brand-700 px-6 py-2.5 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
-              >
-                <ShoppingBag className="h-4 w-4" />
-                <span>Cari Barang Idaman</span>
-              </Link>
+              {orderMode === 'buyer' ? (
+                <Link
+                  href="/cari"
+                  className="inline-flex items-center gap-2 rounded-full bg-brand-600 hover:bg-brand-700 px-6 py-2.5 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
+                >
+                  <ShoppingBag className="h-4 w-4" />
+                  <span>Cari Barang Idaman</span>
+                </Link>
+              ) : (
+                <Link
+                  href="/jual"
+                  className="inline-flex items-center gap-2 rounded-full bg-brand-600 hover:bg-brand-700 px-6 py-2.5 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
+                >
+                  <Tag className="h-4 w-4" />
+                  <span>Pasang Barang untuk Dijual</span>
+                </Link>
+              )}
             </div>
           </div>
         ) : (
@@ -220,6 +336,7 @@ export default function OrderHistoryPage() {
                 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=200&auto=format&fit=crop&q=80';
 
               const isBuyer = order.buyerId === user.id;
+              const isSeller = order.sellerId === user.id;
               const isTimelineExpanded = expandedTimelineId === order.id;
 
               return (
@@ -243,7 +360,9 @@ export default function OrderHistoryPage() {
                       </span>
                       <span className="text-slate-300">&bull;</span>
                       <span className="text-xs font-semibold text-slate-700">
-                        {isBuyer ? `Penjual: ${order.seller?.name || 'Penjual'}` : `Pembeli: ${order.buyer?.name || 'Pembeli'}`}
+                        {isBuyer
+                          ? `Penjual: ${order.seller?.name || 'Penjual'}`
+                          : `Pembeli: ${order.buyer?.name || order.recipientName || 'Pembeli'}`}
                       </span>
                     </div>
 
@@ -267,23 +386,28 @@ export default function OrderHistoryPage() {
                           {order.listing?.title || 'Barang Bekas'}
                         </h3>
                         <p className="text-xs text-slate-500">
-                          Metode: <strong className="text-slate-800">{order.deliveryMethod === 'COD_KETEMUAN' ? 'COD Ketemuan Langsung' : 'Kurir Kilat'}</strong>
+                          Metode:{' '}
+                          <strong className="text-slate-800">
+                            {order.deliveryMethod === 'COD_KETEMUAN' ? 'COD Ketemuan Langsung' : 'Kurir Kilat'}
+                          </strong>
                         </p>
                       </div>
                     </div>
 
                     <div className="text-left sm:text-right w-full sm:w-auto p-3 sm:p-0 rounded-2xl bg-slate-50 sm:bg-transparent border sm:border-0 border-slate-200">
-                      <span className="text-[11px] text-slate-400 font-medium block">Total Pembayaran Rekber</span>
+                      <span className="text-[11px] text-slate-400 font-medium block">
+                        {isSeller ? 'Total Saldo yang Akan Diterima' : 'Total Pembayaran Rekber'}
+                      </span>
                       <span className="text-base sm:text-lg font-black text-brand-700">
-                        {formatIDR(order.totalAmount)}
+                        {formatIDR(isSeller ? order.amount : order.totalAmount)}
                       </span>
                       <span className="text-[10px] text-slate-400 block mt-0.5">
-                        (Termasuk proteksi garansi 1%)
+                        {isSeller ? '(Dana cair setelah 48 jam)' : '(Termasuk proteksi garansi 1%)'}
                       </span>
                     </div>
                   </div>
 
-                  {/* Delivery & Tracking Callout */}
+                  {/* Delivery & Tracking Info */}
                   {order.deliveryMethod === 'KURIR_REGULER' && order.trackingNumber ? (
                     <div className="rounded-2xl bg-slate-50 p-3.5 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                       <div className="flex items-center gap-2">
@@ -312,6 +436,52 @@ export default function OrderHistoryPage() {
                       </span>
                     </div>
                   ) : null}
+
+                  {/* Seller Action: Inline Resi Input Form */}
+                  {isSeller && shippingOrderId === order.id && (
+                    <div className="rounded-2xl border border-brand-200 bg-brand-50/60 p-4 space-y-3 animate-in fade-in">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                          <Truck className="h-4 w-4 text-brand-600" />
+                          <span>Input Nomor Resi Pengiriman Barang</span>
+                        </h4>
+                        <button
+                          type="button"
+                          onClick={() => setShippingOrderId(null)}
+                          className="text-xs text-slate-500 hover:text-slate-800"
+                        >
+                          Batal
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <select
+                          value={courierNameInput}
+                          onChange={(e) => setCourierNameInput(e.target.value)}
+                          className="rounded-xl border border-slate-300 bg-white p-2 text-xs text-slate-800 font-bold focus:border-brand-500 focus:outline-none"
+                        >
+                          <option value="JNE Reguler">JNE Reguler</option>
+                          <option value="J&T Express">J&T Express</option>
+                          <option value="SiCepat Express">SiCepat Express</option>
+                          <option value="GoSend / GrabExpress">GoSend / GrabExpress</option>
+                          <option value="Anteraja">Anteraja</option>
+                        </select>
+                        <input
+                          type="text"
+                          value={trackingNumberInput}
+                          onChange={(e) => setTrackingNumberInput(e.target.value)}
+                          placeholder="Nomor Resi / AWB..."
+                          className="rounded-xl border border-slate-300 bg-white p-2 text-xs text-slate-900 font-mono font-bold focus:border-brand-500 focus:outline-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleSubmitShipping(order.id)}
+                          className="rounded-xl bg-brand-600 hover:bg-brand-700 py-2 text-xs font-bold text-white shadow-xs transition-colors cursor-pointer"
+                        >
+                          Simpan & Kirimkan
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Collapsible Escrow Timeline */}
                   {isTimelineExpanded && (
@@ -347,7 +517,19 @@ export default function OrderHistoryPage() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2">
-                      {/* Buyer Actions */}
+                      {/* Seller Action: Input Resi */}
+                      {isSeller && (order.escrowStatus === 'PAYMENT_CONFIRMED' || order.escrowStatus === 'SELLER_PACKING') && (
+                        <button
+                          type="button"
+                          onClick={() => setShippingOrderId(order.id)}
+                          className="flex items-center gap-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 px-4 py-1.5 text-xs font-bold text-white shadow-xs transition-colors cursor-pointer"
+                        >
+                          <Truck className="h-3.5 w-3.5" />
+                          <span>Input Resi Pengiriman</span>
+                        </button>
+                      )}
+
+                      {/* Buyer Actions: Confirm release or dispute */}
                       {isBuyer && order.escrowStatus === 'DELIVERED_INSPECTION' && (
                         <>
                           <button
@@ -394,7 +576,7 @@ export default function OrderHistoryPage() {
                     <ShieldCheck className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-slate-900">Bukti Pembayaran Rekber JBB</h3>
+                    <h3 className="text-sm font-black text-slate-900">Bukti Transaksi Rekber JBB</h3>
                     <p className="text-[10px] text-slate-400">Nomor Transaksi Resmi Terverifikasi</p>
                   </div>
                 </div>
@@ -421,8 +603,8 @@ export default function OrderHistoryPage() {
                   <span className="font-bold text-slate-900">{selectedInvoiceOrder.recipientName || user.name}</span>
                 </div>
                 <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                  <span className="text-slate-500">WhatsApp:</span>
-                  <span className="font-bold text-slate-900">{selectedInvoiceOrder.recipientPhone || user.phone}</span>
+                  <span className="text-slate-500">Nama Penjual:</span>
+                  <span className="font-bold text-slate-900">{selectedInvoiceOrder.seller?.name || 'Penjual'}</span>
                 </div>
                 <div className="flex justify-between items-center py-1 border-b border-slate-100">
                   <span className="text-slate-500">Harga Barang:</span>
@@ -439,7 +621,7 @@ export default function OrderHistoryPage() {
               </div>
 
               <div className="rounded-2xl bg-brand-50/80 p-3.5 border border-brand-200 text-[11px] text-brand-900 leading-relaxed">
-                🛡️ <strong>Jaminan Rekber:</strong> Dana Anda berada dalam rekening perantara resmi JBB dan baru akan dicairkan ke penjual setelah barang diterima dan melewati masa inspeksi fisik 48 jam.
+                🛡️ <strong>Jaminan Rekber:</strong> Dana transaksi berada dalam rekening perantara resmi JBB dan baru akan dicairkan ke penjual setelah barang diterima dan melewati masa inspeksi fisik 48 jam.
               </div>
 
               <button

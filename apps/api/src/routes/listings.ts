@@ -196,6 +196,78 @@ export const listingRoutes = new Hono<AppEnv>()
     return c.json({ success: true, data: featured });
   })
 
+  .get('/my', authMiddleware, async (c) => {
+    const user = c.get('user')!;
+    const db = getDb(c.env.DB);
+
+    if (db) {
+      const myListings = await db.query.listings.findMany({
+        where: eq(schema.listings.sellerId, user.id),
+        with: { images: true, category: true },
+        orderBy: [desc(schema.listings.createdAt)]
+      });
+
+      const formatted: Listing[] = myListings.map((l: any) => ({
+        ...l,
+        isNegotiable: Boolean(l.isNegotiable),
+        hasOriginalReceipt: Boolean(l.hasOriginalReceipt),
+        isCodAvailable: Boolean(l.isCodAvailable),
+        completeness: typeof l.completeness === 'string' ? JSON.parse(l.completeness) : l.completeness,
+        specs: l.specs ? (typeof l.specs === 'string' ? JSON.parse(l.specs) : l.specs) : null,
+        images: l.images || [],
+        seller: user,
+        category: l.category
+      }));
+
+      return c.json({ success: true, data: formatted });
+    }
+
+    const myListings = memoryStore.listings.filter((item) => item.sellerId === user.id || item.seller?.id === user.id);
+    return c.json({ success: true, data: myListings });
+  })
+
+  .put('/:id/status', authMiddleware, async (c) => {
+    const user = c.get('user')!;
+    const id = c.req.param('id');
+    const { status } = await c.req.json<{ status: string }>();
+    const db = getDb(c.env.DB);
+
+    if (db) {
+      await db.update(schema.listings).set({
+        status: status as any,
+        updatedAt: new Date().toISOString()
+      }).where(and(eq(schema.listings.id, id), eq(schema.listings.sellerId, user.id)));
+
+      return c.json({ success: true, message: 'Status iklan berhasil diperbarui' });
+    }
+
+    const listing = memoryStore.listings.find((l) => l.id === id);
+    if (listing) {
+      listing.status = status as any;
+      listing.updatedAt = new Date().toISOString();
+    }
+    return c.json({ success: true, message: 'Status iklan berhasil diperbarui' });
+  })
+
+  .delete('/:id', authMiddleware, async (c) => {
+    const user = c.get('user')!;
+    const id = c.req.param('id');
+    const db = getDb(c.env.DB);
+
+    if (db) {
+      await db.delete(schema.listings).where(
+        and(eq(schema.listings.id, id), eq(schema.listings.sellerId, user.id))
+      );
+      return c.json({ success: true, message: 'Iklan berhasil dihapus' });
+    }
+
+    const idx = memoryStore.listings.findIndex((l) => l.id === id);
+    if (idx !== -1) {
+      memoryStore.listings.splice(idx, 1);
+    }
+    return c.json({ success: true, message: 'Iklan berhasil dihapus' });
+  })
+
   .get('/:idOrSlug', async (c) => {
     const idOrSlug = c.req.param('idOrSlug');
     const db = getDb(c.env.DB);

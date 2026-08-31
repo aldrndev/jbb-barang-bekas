@@ -114,6 +114,19 @@ export const api = {
 
   getListingDetail: (idOrSlug: string) => request<Listing>(`/api/listings/${idOrSlug}`),
 
+  getMyListings: () => request<Listing[]>('/api/listings/my'),
+
+  updateListingStatus: (id: string, status: string) =>
+    request<{ message: string }>(`/api/listings/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status })
+    }),
+
+  deleteListing: (id: string) =>
+    request<{ message: string }>(`/api/listings/${id}`, {
+      method: 'DELETE'
+    }),
+
   recordView: (idOrSlug: string) =>
     request<{ viewCount: number }>(`/api/listings/${idOrSlug}/view`, { method: 'POST' }),
 

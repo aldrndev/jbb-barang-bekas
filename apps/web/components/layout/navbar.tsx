@@ -12,7 +12,8 @@ import {
   LogOut,
   ChevronDown,
   Heart,
-  ShoppingBag
+  ShoppingBag,
+  Package
 } from 'lucide-react';
 import { useAuth } from '../../context/auth-context';
 import { useWishlist } from '../../context/wishlist-context';
@@ -152,7 +153,7 @@ export function Navbar() {
 
               {/* Profile Dropdown Menu */}
               {isProfileMenuOpen && (
-                <div className="absolute right-0 mt-2 w-60 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-slate-200/50 z-50 animate-in fade-in">
+                <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-slate-200/50 z-50 animate-in fade-in">
                   <div className="border-b border-slate-200 px-3 py-2.5">
                     <p className="text-xs font-bold text-slate-900">{user.name}</p>
                     <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
@@ -172,12 +173,20 @@ export function Navbar() {
                       Profil Saya
                     </Link>
                     <Link
+                      href="/my-listings"
+                      onClick={() => setIsProfileMenuOpen(false)}
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                    >
+                      <Package className="h-4 w-4 text-brand-600" />
+                      Barang Dijual (Iklan Saya)
+                    </Link>
+                    <Link
                       href="/orders"
                       onClick={() => setIsProfileMenuOpen(false)}
                       className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
                     >
-                      <ShoppingBag className="h-4 w-4 text-slate-400" />
-                      Riwayat Pesanan
+                      <ShoppingBag className="h-4 w-4 text-blue-600" />
+                      Riwayat Pembelian & Penjualan
                     </Link>
                     <Link
                       href="/wishlist"
