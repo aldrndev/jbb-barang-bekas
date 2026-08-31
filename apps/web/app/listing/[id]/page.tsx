@@ -240,7 +240,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                         : 'border-2 border-slate-200 hover:border-slate-300 opacity-75 hover:opacity-100'
                     }`}
                   >
-                    <img src={img.url} alt={`Thumbnail ${idx + 1}`} className="h-full w-full object-cover rounded-[12px]" />
+                    <img src={img.url} alt={`Thumbnail ${idx + 1}`} className="h-full w-full object-cover rounded-xl" />
                   </button>
                 ))}
               </div>

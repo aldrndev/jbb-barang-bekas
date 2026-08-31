@@ -73,7 +73,7 @@ export function ListingCard({ listing }: ListingCardProps) {
 
         {/* Seller Info & Location Footer */}
         <div className="mt-3 flex items-center justify-between border-t border-slate-100/80 pt-2.5 text-[11px] text-slate-500">
-          <div className="flex items-center gap-1 truncate max-w-[120px]">
+          <div className="flex items-center gap-1 truncate max-w-30">
             <MapPin className="h-3 w-3 text-slate-400 shrink-0" />
             <span className="truncate">{listing.city}</span>
           </div>

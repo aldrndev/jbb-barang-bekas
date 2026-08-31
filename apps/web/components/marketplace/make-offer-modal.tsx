@@ -1,9 +1,20 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import type { Listing } from '@jbb/types';
 import { formatIDR } from '../../lib/utils';
-import { X, Sparkles, ShieldCheck, ArrowRight, MessageSquareQuote, CheckCircle2 } from 'lucide-react';
+import {
+  X,
+  Sparkles,
+  ShieldCheck,
+  ArrowRight,
+  MessageSquareQuote,
+  CheckCircle2,
+  Lock,
+  User,
+  AlertCircle
+} from 'lucide-react';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 
@@ -15,16 +26,19 @@ interface MakeOfferModalProps {
 }
 
 export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: MakeOfferModalProps) {
-  const { user, openAuthModal } = useAuth();
-  const [offerAmount, setOfferAmount] = useState<number>(
-    Math.round(listing.price * 0.9) // Default 10% discount suggestion
-  );
+  const { user, openAuthModal, loginAsDemoBuyer } = useAuth();
+  const minAllowed = listing.minOfferPrice || Math.round(listing.price * 0.7);
+  const defaultSuggestion = Math.max(minAllowed, Math.round(listing.price * 0.9));
+
+  const [offerAmount, setOfferAmount] = useState<number>(defaultSuggestion);
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
 
   if (!isOpen) return null;
+
+  const isSellerOfThisItem = user && user.id === listing.sellerId;
 
   const handleQuickPercent = (percentOff: number) => {
     const calculated = Math.round(listing.price * (1 - percentOff / 100));
@@ -39,6 +53,16 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
     e.preventDefault();
     if (!user) {
       openAuthModal();
+      return;
+    }
+
+    if (offerAmount >= listing.price) {
+      setErrorMsg('Harga tawaran harus lebih rendah dari harga asli barang.');
+      return;
+    }
+
+    if (listing.minOfferPrice && offerAmount < listing.minOfferPrice) {
+      setErrorMsg(`Tawaran minimal dari penjual adalah ${formatIDR(listing.minOfferPrice)}.`);
       return;
     }
 
@@ -69,20 +93,96 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
 
         {isSuccess ? (
           <div className="text-center py-6">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 mb-4 shadow-inner">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 mb-4 shadow-xs border border-brand-100">
               <CheckCircle2 className="h-9 w-9" />
             </div>
             <h3 className="text-xl font-black text-slate-900">Tawaran Berhasil Dikirim!</h3>
-            <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-              Penjual ({listing.seller?.name}) telah menerima notifikasi tawaran Anda sebesar{' '}
-              <strong className="text-slate-900">{formatIDR(offerAmount)}</strong>.
+            <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+              Penjual (<strong className="text-slate-800">{listing.seller?.name}</strong>) telah menerima notifikasi tawaran Anda sebesar{' '}
+              <strong className="text-brand-700">{formatIDR(offerAmount)}</strong>.
             </p>
-            <div className="mt-6 flex flex-col gap-2">
-              <button
+            <p className="text-[11px] text-slate-400 mt-2">
+              Jika penjual menyetujui, harga ini akan terkunci 24 jam khusus untuk akun Anda checkout.
+            </p>
+            <div className="mt-6 flex flex-col gap-2.5">
+              <Link
+                href="/nego?tab=sent"
                 onClick={onClose}
-                className="w-full rounded-xl bg-emerald-600 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 transition-colors cursor-pointer"
+                className="w-full rounded-full bg-brand-600 py-3 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/20 transition-all text-center"
               >
-                Selesai & Kembali ke Barang
+                Pantau Tawaran di Menu Nego & Pesanan
+              </Link>
+              <button
+                type="button"
+                onClick={onClose}
+                className="w-full rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
+              >
+                Selesai & Tetap di Halaman Ini
+              </button>
+            </div>
+          </div>
+        ) : isSellerOfThisItem ? (
+          <div className="text-center py-6 space-y-4">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 border border-amber-200">
+              <AlertCircle className="h-7 w-7" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-slate-900">Anda Pemilik Barang Ini</h3>
+              <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
+                Anda saat ini login sebagai <strong>{user.name}</strong> (penjual listing ini). Anda tidak dapat menawar barang milik sendiri.
+              </p>
+            </div>
+            <div className="pt-2 space-y-2">
+              <button
+                type="button"
+                onClick={async () => {
+                  await loginAsDemoBuyer();
+                  setErrorMsg(null);
+                }}
+                className="w-full rounded-full bg-brand-600 py-3 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/20 cursor-pointer"
+              >
+                Ganti Akun ke Pembeli (Dimas)
+              </button>
+              <Link
+                href="/nego"
+                onClick={onClose}
+                className="block w-full rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 text-center"
+              >
+                Buka Menu Nego & Pesanan Masuk
+              </Link>
+            </div>
+          </div>
+        ) : !user ? (
+          <div className="text-center py-6 space-y-4">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 border border-brand-100">
+              <Lock className="h-7 w-7" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-slate-900">Masuk untuk Menawar</h3>
+              <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
+                Ajukan tawaran resmi agar harga terkunci 24 jam dengan perlindungan Rekber JBB.
+              </p>
+            </div>
+            <div className="pt-2 space-y-2">
+              <button
+                type="button"
+                onClick={async () => {
+                  await loginAsDemoBuyer();
+                }}
+                className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 py-3 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/20 cursor-pointer"
+              >
+                <Sparkles className="h-4 w-4" />
+                <span>Masuk Cepat Demo (Pembeli: Dimas)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  openAuthModal();
+                }}
+                className="w-full rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer"
+              >
+                Masuk / Daftar Akun Sendiri
               </button>
             </div>
           </div>
@@ -90,14 +190,19 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
           <>
             {/* Header */}
             <div className="pb-4 border-b border-slate-100">
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 mb-1">
+              <div className="flex items-center gap-2 text-xs font-bold text-brand-700 mb-1">
                 <MessageSquareQuote className="h-4 w-4" />
                 <span>AJUKAN TAWARAN NEGO</span>
               </div>
               <h3 className="text-base font-bold text-slate-900 line-clamp-1">{listing.title}</h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Harga Pasang: <strong className="text-slate-900">{formatIDR(listing.price)}</strong>
-              </p>
+              <div className="flex items-center justify-between text-xs text-slate-500 mt-1">
+                <span>Harga Pasang: <strong className="text-slate-900">{formatIDR(listing.price)}</strong></span>
+                {listing.minOfferPrice && (
+                  <span className="text-[11px] text-amber-800 font-semibold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                    Batas Min: {formatIDR(listing.minOfferPrice)}
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Quick Discount Percent Chips */}
@@ -111,7 +216,7 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
                     onClick={() => handleQuickPercent(percent)}
                     className={`rounded-xl border py-2 text-xs font-bold transition-all cursor-pointer ${
                       discountPercent === percent
-                        ? 'border-emerald-600 bg-emerald-50 text-emerald-700 ring-2 ring-emerald-500/20'
+                        ? 'border-brand-600 bg-brand-50 text-brand-900 ring-2 ring-brand-500/20'
                         : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100'
                     }`}
                   >
@@ -141,11 +246,11 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
                     required
                     value={offerAmount}
                     onChange={(e) => setOfferAmount(Number(e.target.value))}
-                    className="w-full rounded-xl border border-slate-200 py-2 pl-10 pr-3 text-sm font-extrabold text-slate-900 focus:border-emerald-500 focus:outline-none"
+                    className="w-full rounded-xl border border-slate-200 py-2.5 pl-10 pr-3 text-sm font-extrabold text-slate-900 focus:border-brand-500 focus:outline-none"
                   />
                 </div>
                 {discountAmount > 0 && (
-                  <div className="mt-1 flex items-center justify-between text-[11px] text-emerald-600 font-bold">
+                  <div className="mt-1 flex items-center justify-between text-[11px] text-brand-700 font-bold">
                     <span>Hemat {formatIDR(discountAmount)} ({discountPercent}% lebih murah)</span>
                   </div>
                 )}
@@ -155,16 +260,16 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
                 <label className="text-[11px] font-bold text-slate-700">Catatan untuk Penjual (Opsional)</label>
                 <textarea
                   rows={2}
-                  placeholder="Contoh: Bisa COD Gandaria City besok siang gan? Siap langsung bungkus."
+                  placeholder="Contoh: Bisa COD Gandaria City besok siang gan? Siap langsung checkout rekber."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-emerald-500 focus:outline-none mt-1"
+                  className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:outline-none mt-1"
                 />
               </div>
 
               {/* Escrow Guarantee Notice */}
-              <div className="rounded-2xl bg-slate-50 p-3 text-[11px] text-slate-600 flex items-start gap-2 border border-slate-100">
-                <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+              <div className="rounded-2xl bg-slate-50 p-3 text-[11px] text-slate-600 flex items-start gap-2 border border-slate-200">
+                <ShieldCheck className="h-4 w-4 text-brand-600 shrink-0 mt-0.5" />
                 <p>
                   Jika penjual menyetujui, harga ini akan <strong>terkunci 24 jam</strong> khusus untuk Anda melakukan checkout via Rekber JBB.
                 </p>
@@ -174,14 +279,14 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 rounded-xl border border-slate-200 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer"
+                  className="flex-1 rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="flex-2 flex items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 shadow-md shadow-emerald-600/20 disabled:opacity-50 transition-all cursor-pointer"
+                  className="flex-2 flex items-center justify-center gap-2 rounded-full bg-brand-600 py-2.5 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/20 disabled:opacity-50 transition-all cursor-pointer"
                 >
                   <span>{isLoading ? 'Mengirim...' : 'Kirim Tawaran'}</span>
                   <ArrowRight className="h-4 w-4" />
