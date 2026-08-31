@@ -90,8 +90,8 @@ function CariContent() {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Left Sidebar Filters */}
-          <div className="lg:col-span-1 space-y-6 bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs h-fit">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div className="lg:col-span-1 space-y-6 bg-white p-5 rounded-3xl border border-slate-200 shadow-xs h-fit">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
                 <Filter className="h-4 w-4 text-emerald-600" />
                 <span>Filter Pencarian</span>
@@ -204,7 +204,7 @@ function CariContent() {
             </div>
 
             {/* Toggles */}
-            <div className="space-y-2.5 pt-2 border-t border-slate-100">
+            <div className="space-y-2.5 pt-2 border-t border-slate-200">
               <label className="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
                 <input
                   type="checkbox"

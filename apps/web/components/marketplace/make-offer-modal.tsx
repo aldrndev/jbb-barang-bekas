@@ -189,7 +189,7 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
         ) : (
           <>
             {/* Header */}
-            <div className="pb-4 border-b border-slate-100">
+            <div className="pb-4 border-b border-slate-200">
               <div className="flex items-center gap-2 text-xs font-bold text-brand-700 mb-1">
                 <MessageSquareQuote className="h-4 w-4" />
                 <span>AJUKAN TAWARAN NEGO</span>

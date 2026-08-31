@@ -383,7 +383,7 @@ export default function JualBarangPage() {
             </div>
 
             {/* Nego Toggle */}
-            <div className="rounded-2xl bg-slate-50 p-4 border border-slate-100 flex items-center justify-between">
+            <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200 flex items-center justify-between">
               <div>
                 <div className="text-xs font-bold text-slate-900">Izinkan Calon Pembeli Menawar (Nego)?</div>
                 <div className="text-[10px] text-slate-500">

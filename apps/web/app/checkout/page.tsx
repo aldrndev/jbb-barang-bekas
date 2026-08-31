@@ -531,7 +531,7 @@ function CheckoutContent() {
               </h3>
 
               {/* Product Info Block */}
-              <div className="flex items-center gap-3.5 pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-3.5 pb-4 border-b border-slate-200">
                 <img
                   src={primaryImage}
                   alt={listing.title}

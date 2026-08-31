@@ -7,7 +7,7 @@ export function Footer() {
     <footer className="border-t border-slate-200 bg-white pt-12 pb-20 md:pb-12 text-slate-600">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {/* Value Proposition Bar */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 pb-12 border-b border-slate-100">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 pb-12 border-b border-slate-200">
           <div className="flex items-start gap-3.5">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
               <ShieldCheck className="h-6 w-6" />

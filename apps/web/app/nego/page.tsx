@@ -231,7 +231,7 @@ function NegoDashboardContent() {
                   key={offer.id}
                   className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xs"
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
                     <div>
                       <span className="text-[10px] font-bold text-brand-800 bg-brand-50 px-2 py-0.5 rounded-md border border-brand-200">
                         Tawaran dari {offer.buyer?.name}
@@ -265,7 +265,7 @@ function NegoDashboardContent() {
                   </div>
 
                   {offer.message && (
-                    <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-xs text-slate-600 italic border border-slate-100">
+                    <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-xs text-slate-600 italic border border-slate-200">
                       "{offer.message}"
                     </div>
                   )}
@@ -360,7 +360,7 @@ function NegoDashboardContent() {
                   key={offer.id}
                   className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xs"
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
                     <div>
                       <h3 className="text-sm font-bold text-slate-900">
                         {offer.listing?.title}
@@ -433,7 +433,7 @@ function NegoDashboardContent() {
                   key={order.id}
                   className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xs space-y-4"
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
                     <div>
                       <span className="text-[11px] font-bold text-slate-400">
                         Pesanan: {order.orderNumber}

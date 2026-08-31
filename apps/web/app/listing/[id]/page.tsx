@@ -258,7 +258,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
 
             {/* Transparent Condition & Inspection Matrix Card */}
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xs space-y-5">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div className="flex items-center gap-2.5">
                   <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 border border-brand-100">
                     <Sparkles className="h-4.5 w-4.5" />
@@ -342,7 +342,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
 
               {/* Dynamic Specs Table */}
               {Object.keys(specs).length > 0 && (
-                <div className="border-t border-slate-100 pt-5">
+                <div className="border-t border-slate-200 pt-5">
                   <h4 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">
                     Spesifikasi Teknis
                   </h4>
@@ -412,7 +412,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
               </div>
 
               {/* Price Display */}
-              <div className="border-y border-slate-100 py-4">
+              <div className="border-y border-slate-200 py-4">
                 <div className="flex items-baseline justify-between">
                   <div>
                     <div className="text-3xl font-black text-slate-900 tracking-tight">

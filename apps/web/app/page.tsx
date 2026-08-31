@@ -259,7 +259,7 @@ export default function HomePage() {
                   iPhone 13 Pro 128GB Sierra Blue Resmi iBox
                 </h3>
 
-                <div className="mt-2 flex items-baseline justify-between border-b border-slate-100 pb-2.5">
+                <div className="mt-2 flex items-baseline justify-between border-b border-slate-200 pb-2.5">
                   <div>
                     <div className="text-lg font-black text-slate-900 tracking-tight">
                       Rp 9.850.000
@@ -317,7 +317,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Integrated Compact Escrow Guarantee Ribbon */}
-                <div className="mt-3 rounded-xl bg-slate-50 p-2 border border-slate-100 flex items-center gap-2 text-[10px] text-slate-600">
+                <div className="mt-3 rounded-xl bg-slate-50 p-2 border border-slate-200 flex items-center gap-2 text-[10px] text-slate-600">
                   <ShieldCheck className="h-3.5 w-3.5 text-brand-600 shrink-0" />
                   <span>Garansi Rekber 48 Jam &bull; Dana aman sampai selesai inspeksi fisik</span>
                 </div>
@@ -331,7 +331,7 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-4 sm:px-6 py-6">
         <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs">
           {/* Section Header */}
-          <div className="flex items-center justify-between mb-5 pb-3.5 border-b border-slate-100">
+          <div className="flex items-center justify-between mb-5 pb-3.5 border-b border-slate-200">
             <div className="flex items-center gap-2.5">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50 text-brand-600 border border-brand-100">
                 <Sparkles className="h-4 w-4" />
