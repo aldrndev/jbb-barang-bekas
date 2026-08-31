@@ -24,10 +24,22 @@ export const orderRoutes = new Hono<AppEnv>()
     }
 
     let finalPrice = listing.price;
+    let appliedOfferId = offerId || null;
+
     if (offerId) {
       const offer = memoryStore.offers.find((o) => o.id === offerId && o.buyerId === user.id);
       if (offer && offer.status === 'ACCEPTED') {
         finalPrice = offer.counterPrice || offer.offeredPrice;
+        offer.status = 'COMPLETED';
+      }
+    } else {
+      const activeAcceptedOffer = memoryStore.offers.find(
+        (o) => o.listingId === listingId && o.buyerId === user.id && o.status === 'ACCEPTED'
+      );
+      if (activeAcceptedOffer) {
+        finalPrice = activeAcceptedOffer.counterPrice || activeAcceptedOffer.offeredPrice;
+        appliedOfferId = activeAcceptedOffer.id;
+        activeAcceptedOffer.status = 'COMPLETED';
       }
     }
 
@@ -44,7 +56,7 @@ export const orderRoutes = new Hono<AppEnv>()
       listingId,
       buyerId: user.id,
       sellerId: listing.sellerId,
-      offerId: offerId || null,
+      offerId: appliedOfferId,
       amount: finalPrice,
       shippingFee,
       serviceFee,
