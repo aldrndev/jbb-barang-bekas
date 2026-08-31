@@ -46,7 +46,7 @@ export const seedCategories = [
   },
   {
     id: 'cat-fashion',
-    name: 'Fashion & Sepatu (Thrift)',
+    name: 'Fashion & Sepatu',
     slug: 'fashion-sepatu',
     icon: 'Shirt',
     featured: true,
