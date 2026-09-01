@@ -47,22 +47,8 @@ export function ListingCard({ listing, showRemoveFromWishlist = false }: Listing
         )}
       </Link>
 
-      {/* Floating Wishlist Heart Button */}
-      {/* Floating Wishlist Heart / Trash Button */}
-      {showRemoveFromWishlist ? (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleWishlist(listing);
-          }}
-          className="absolute top-2.5 right-2.5 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-white/95 text-rose-600 hover:bg-rose-500 hover:text-white border border-rose-200 backdrop-blur-md transition-all cursor-pointer shadow-xs"
-          title="Hapus dari Wishlist"
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
-      ) : (
+      {/* Floating Wishlist Heart Button (Browsing mode) */}
+      {!showRemoveFromWishlist && (
         <button
           type="button"
           onClick={(e) => {
