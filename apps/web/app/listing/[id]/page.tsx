@@ -158,7 +158,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-3 sm:py-6 px-3.5 sm:px-6 lg:px-8 pb-24 lg:pb-12">
+    <div className="bg-slate-50 py-3 sm:py-6 px-3.5 sm:px-6 lg:px-8 pb-6 sm:pb-8">
       <div className="mx-auto max-w-7xl space-y-5 sm:space-y-6">
         {/* Breadcrumbs Navigation */}
         <div className="flex items-center justify-between text-xs text-slate-500 gap-3 min-w-0">
