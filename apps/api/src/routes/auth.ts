@@ -1,229 +1,110 @@
-import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
-import { eq } from 'drizzle-orm';
-import { loginSchema, registerSchema, updateProfileSchema, submitKycSchema, updateBankPayoutSchema } from '@jbb/validators';
-import type { AppEnv } from '../types/env';
-import { getDb, schema } from '../db';
-import { memoryStore } from '../services/store';
-import { signJwt } from '../utils/auth';
-import { authMiddleware } from '../middlewares/auth';
 import type { UserProfile } from '@jbb/types';
+import {
+  googleAuthSchema,
+  submitKycSchema,
+  updateBankPayoutSchema,
+  updateProfileSchema
+} from '@jbb/validators';
+import { eq } from 'drizzle-orm';
+import { Hono } from 'hono';
+import { getDb, schema } from '../db';
+import { authMiddleware } from '../middlewares/auth';
+import { memoryStore } from '../services/store';
+import type { AppEnv } from '../types/env';
+import { signJwt } from '../utils/auth';
+
+interface GoogleTokenInfo {
+  email?: string;
+  email_verified?: string | boolean;
+  name?: string;
+  picture?: string;
+  sub?: string;
+  aud?: string;
+  error_description?: string;
+}
+
+async function verifyGoogleCredential(
+  credential: string
+): Promise<{ email: string; name: string; avatarUrl: string | null } | null> {
+  try {
+    const res = await fetch(
+      `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(credential)}`
+    );
+    if (!res.ok) {
+      return null;
+    }
+
+    const payload = (await res.json()) as GoogleTokenInfo;
+    const isVerified = payload.email_verified === 'true' || payload.email_verified === true;
+
+    if (!payload.email || !isVerified) {
+      return null;
+    }
+
+    return {
+      email: payload.email.toLowerCase().trim(),
+      name: payload.name || payload.email.split('@')[0] || 'Pengguna Google',
+      avatarUrl: payload.picture || null
+    };
+  } catch {
+    return null;
+  }
+}
 
 export const authRoutes = new Hono<AppEnv>()
-  .post('/register', zValidator('json', registerSchema), async (c) => {
-    const { name, email, phone } = c.req.valid('json');
-    const db = getDb(c.env.DB);
+  .post('/google', zValidator('json', googleAuthSchema), async (c) => {
+    try {
+      const { credential } = c.req.valid('json');
+      const googleUser = await verifyGoogleCredential(credential);
 
-    if (db) {
-      const [existing] = await db
-        .select()
-        .from(schema.users)
-        .where(eq(schema.users.email, email))
-        .limit(1);
-
-      if (existing) {
+      if (!googleUser) {
         return c.json(
-          { success: false, error: { code: 'EMAIL_EXISTS', message: 'Email sudah terdaftar. Silakan login.' } },
-          400
-        );
-      }
-
-      const newUser: UserProfile = {
-        id: `usr-${Date.now()}`,
-        name,
-        email,
-        phone: phone || null,
-        role: 'BUYER',
-        isKycVerified: false,
-        isPhoneVerified: !!phone,
-        trustScore: 0,
-        totalTransactions: 0,
-        ratingAverage: 0,
-        ratingCount: 0,
-        createdAt: new Date().toISOString()
-      };
-
-      await db.insert(schema.users).values({
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-        passwordHash: 'mock_hashed_password',
-        phone: newUser.phone,
-        role: newUser.role,
-        isKycVerified: newUser.isKycVerified,
-        isPhoneVerified: newUser.isPhoneVerified,
-        trustScore: newUser.trustScore,
-        totalTransactions: newUser.totalTransactions,
-        ratingAverage: newUser.ratingAverage,
-        ratingCount: newUser.ratingCount,
-        createdAt: newUser.createdAt,
-        updatedAt: newUser.createdAt
-      });
-
-      const secret = c.env.JWT_SECRET || 'jbb_marketplace_super_secret_jwt_key_2026';
-      const token = await signJwt(newUser, secret);
-
-      return c.json({
-        success: true,
-        message: 'Registrasi berhasil!',
-        data: { token, user: newUser }
-      });
-    }
-
-    // Fallback to MemoryStore
-    const existing = memoryStore.findUserByEmail(email);
-    if (existing) {
-      return c.json(
-        { success: false, error: { code: 'EMAIL_EXISTS', message: 'Email sudah terdaftar. Silakan login.' } },
-        400
-      );
-    }
-
-    const newUser: UserProfile = {
-      id: `usr-${Date.now()}`,
-      name,
-      email,
-      phone: phone || null,
-      role: 'BUYER',
-      isKycVerified: false,
-      isPhoneVerified: !!phone,
-      trustScore: 0,
-      totalTransactions: 0,
-      ratingAverage: 0,
-      ratingCount: 0,
-      createdAt: new Date().toISOString()
-    };
-
-    memoryStore.addUser(newUser);
-    const secret = c.env.JWT_SECRET || 'jbb_marketplace_super_secret_jwt_key_2026';
-    const token = await signJwt(newUser, secret);
-
-    return c.json({
-      success: true,
-      message: 'Registrasi berhasil!',
-      data: { token, user: newUser }
-    });
-  })
-
-  .post('/login', zValidator('json', loginSchema), async (c) => {
-    const { email } = c.req.valid('json');
-    const db = getDb(c.env.DB);
-
-    if (db) {
-      const [userDb] = await db
-        .select()
-        .from(schema.users)
-        .where(eq(schema.users.email, email))
-        .limit(1);
-
-      if (!userDb) {
-        return c.json(
-          { success: false, error: { code: 'INVALID_CREDENTIALS', message: 'Email atau password salah' } },
+          {
+            success: false,
+            error: {
+              code: 'INVALID_GOOGLE_AUTH',
+              message: 'Otentikasi Google gagal atau token tidak valid'
+            }
+          },
           401
         );
       }
 
-      const user: UserProfile = {
-        id: userDb.id,
-        name: userDb.name,
-        email: userDb.email,
-        phone: userDb.phone,
-        avatarUrl: userDb.avatarUrl,
-        role: userDb.role as any,
-        isKycVerified: Boolean(userDb.isKycVerified),
-        isPhoneVerified: Boolean(userDb.isPhoneVerified),
-        trustScore: userDb.trustScore,
-        totalTransactions: userDb.totalTransactions,
-        ratingAverage: userDb.ratingAverage,
-        ratingCount: userDb.ratingCount,
-        city: userDb.city,
-        province: userDb.province,
-        bio: userDb.bio,
-        createdAt: userDb.createdAt
-      };
-
-      const secret = c.env.JWT_SECRET || 'jbb_marketplace_super_secret_jwt_key_2026';
-      const token = await signJwt(user, secret);
-
-      return c.json({
-        success: true,
-        message: 'Login berhasil!',
-        data: { token, user }
-      });
-    }
-
-    // Memory Store fallback
-    const user = memoryStore.findUserByEmail(email);
-    if (!user) {
-      return c.json(
-        { success: false, error: { code: 'INVALID_CREDENTIALS', message: 'Email atau password salah' } },
-        401
-      );
-    }
-
-    const secret = c.env.JWT_SECRET || 'jbb_marketplace_super_secret_jwt_key_2026';
-    const token = await signJwt(user, secret);
-
-    return c.json({
-      success: true,
-      message: 'Login berhasil!',
-      data: { token, user }
-    });
-  })
-
-  .post('/google', async (c) => {
-    try {
-      const body = await c.req.json();
-      const { credential, email, name, avatarUrl } = body;
-
-      // Extract user info from credential or direct payload
-      let userEmail = email;
-      let userName = name;
-      let userAvatar = avatarUrl;
-
-      // If Google JWT credential is provided, decode payload safely
-      if (credential && typeof credential === 'string') {
-        try {
-          const parts = credential.split('.');
-          if (parts.length === 3) {
-            const payload = JSON.parse(atob(parts[1]));
-            userEmail = payload.email || userEmail;
-            userName = payload.name || userName;
-            userAvatar = payload.picture || userAvatar;
-          }
-        } catch {
-          // ignore parsing error and use fallback fields
-        }
-      }
-
-      if (!userEmail) {
+      const secret = c.env.JWT_SECRET;
+      if (!secret) {
         return c.json(
-          { success: false, error: { code: 'INVALID_GOOGLE_AUTH', message: 'Email akun Google tidak ditemukan' } },
-          400
+          {
+            success: false,
+            error: {
+              code: 'SERVER_CONFIGURATION_ERROR',
+              message: 'Konfigurasi secret token server belum terpasang'
+            }
+          },
+          500
         );
       }
 
       const db = getDb(c.env.DB);
-      const secret = c.env.JWT_SECRET || 'jbb_marketplace_super_secret_jwt_key_2026';
-      const isSuperAdmin = userEmail.toLowerCase() === 'aldrn.dev@gmail.com';
+      const now = new Date().toISOString();
 
       if (db) {
         let [existingUser] = await db
           .select()
           .from(schema.users)
-          .where(eq(schema.users.email, userEmail.toLowerCase()))
+          .where(eq(schema.users.email, googleUser.email))
           .limit(1);
 
         if (!existingUser) {
           const newUserId = `usr-g-${Date.now()}`;
-          const created = {
+          const newUserRecord = {
             id: newUserId,
-            name: userName || userEmail.split('@')[0],
-            email: userEmail.toLowerCase(),
-            passwordHash: 'google_oauth_authenticated',
+            name: googleUser.name,
+            email: googleUser.email,
+            passwordHash: null,
             phone: null,
-            role: isSuperAdmin ? ('ADMIN' as const) : ('BUYER' as const),
-            avatarUrl: userAvatar || null,
+            role: 'BUYER' as const,
+            avatarUrl: googleUser.avatarUrl,
             isKycVerified: false,
             isPhoneVerified: false,
             trustScore: 0,
@@ -233,30 +114,25 @@ export const authRoutes = new Hono<AppEnv>()
             city: null,
             province: null,
             bio: null,
+            nik: null,
+            ktpImageUrl: null,
+            selfieImageUrl: null,
+            kycSubmittedAt: null,
             bankName: null,
             bankAccountNumber: null,
             bankAccountHolder: null,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            createdAt: now,
+            updatedAt: now
           };
 
-          await db.insert(schema.users).values(created);
-          existingUser = created as any;
-        } else {
-          // If existing user needs admin upgrade or avatar update
-          const updates: Record<string, any> = {};
-          if (isSuperAdmin && existingUser.role !== 'ADMIN') {
-            updates.role = 'ADMIN';
-            existingUser.role = 'ADMIN';
-          }
-          if (userAvatar && existingUser.avatarUrl !== userAvatar) {
-            updates.avatarUrl = userAvatar;
-            existingUser.avatarUrl = userAvatar;
-          }
-          if (Object.keys(updates).length > 0) {
-            updates.updatedAt = new Date().toISOString();
-            await db.update(schema.users).set(updates).where(eq(schema.users.id, existingUser.id));
-          }
+          await db.insert(schema.users).values(newUserRecord);
+          existingUser = newUserRecord;
+        } else if (googleUser.avatarUrl && existingUser.avatarUrl !== googleUser.avatarUrl) {
+          await db
+            .update(schema.users)
+            .set({ avatarUrl: googleUser.avatarUrl, updatedAt: now })
+            .where(eq(schema.users.id, existingUser.id));
+          existingUser.avatarUrl = googleUser.avatarUrl;
         }
 
         const userProfile: UserProfile = {
@@ -264,8 +140,8 @@ export const authRoutes = new Hono<AppEnv>()
           name: existingUser.name,
           email: existingUser.email,
           phone: existingUser.phone,
-          avatarUrl: existingUser.avatarUrl || userAvatar,
-          role: (isSuperAdmin ? 'ADMIN' : existingUser.role) as any,
+          avatarUrl: existingUser.avatarUrl,
+          role: existingUser.role,
           isKycVerified: Boolean(existingUser.isKycVerified),
           isPhoneVerified: Boolean(existingUser.isPhoneVerified),
           trustScore: existingUser.trustScore,
@@ -275,13 +151,13 @@ export const authRoutes = new Hono<AppEnv>()
           city: existingUser.city,
           province: existingUser.province,
           bio: existingUser.bio,
-          nik: (existingUser as any).nik,
-          ktpImageUrl: (existingUser as any).ktpImageUrl,
-          selfieImageUrl: (existingUser as any).selfieImageUrl,
-          kycSubmittedAt: (existingUser as any).kycSubmittedAt,
-          bankName: (existingUser as any).bankName,
-          bankAccountNumber: (existingUser as any).bankAccountNumber,
-          bankAccountHolder: (existingUser as any).bankAccountHolder,
+          nik: existingUser.nik,
+          ktpImageUrl: existingUser.ktpImageUrl,
+          selfieImageUrl: existingUser.selfieImageUrl,
+          kycSubmittedAt: existingUser.kycSubmittedAt,
+          bankName: existingUser.bankName,
+          bankAccountNumber: existingUser.bankAccountNumber,
+          bankAccountHolder: existingUser.bankAccountHolder,
           createdAt: existingUser.createdAt
         };
 
@@ -294,28 +170,27 @@ export const authRoutes = new Hono<AppEnv>()
         });
       }
 
-      // Memory Store fallback
-      let user = memoryStore.findUserByEmail(userEmail.toLowerCase());
+      // Memory Store Fallback
+      let user = memoryStore.findUserByEmail(googleUser.email);
       if (!user) {
         user = {
           id: `usr-g-${Date.now()}`,
-          name: userName || userEmail.split('@')[0],
-          email: userEmail.toLowerCase(),
+          name: googleUser.name,
+          email: googleUser.email,
           phone: null,
-          role: isSuperAdmin ? 'ADMIN' : 'BUYER',
-          avatarUrl: userAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(userName || 'GoogleUser')}`,
+          role: 'BUYER',
+          avatarUrl:
+            googleUser.avatarUrl ||
+            `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(googleUser.name)}`,
           isKycVerified: false,
           isPhoneVerified: false,
           trustScore: 0,
           totalTransactions: 0,
           ratingAverage: 0,
           ratingCount: 0,
-          createdAt: new Date().toISOString()
+          createdAt: now
         };
         memoryStore.addUser(user);
-      } else if (isSuperAdmin) {
-        user.role = 'ADMIN';
-        if (userAvatar) user.avatarUrl = userAvatar;
       }
 
       const token = await signJwt(user, secret);
@@ -325,11 +200,12 @@ export const authRoutes = new Hono<AppEnv>()
         message: 'Berhasil login dengan Google!',
         data: { token, user }
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Gagal autentikasi Google';
       return c.json(
         {
           success: false,
-          error: { code: 'GOOGLE_AUTH_FAILED', message: err.message || 'Gagal autentikasi Google' }
+          error: { code: 'GOOGLE_AUTH_FAILED', message: errorMessage }
         },
         500
       );
@@ -347,18 +223,25 @@ export const authRoutes = new Hono<AppEnv>()
   .put('/profile', authMiddleware, zValidator('json', updateProfileSchema), async (c) => {
     const user = c.get('user');
     if (!user) {
-      return c.json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Unauthorized' } }, 401);
+      return c.json(
+        {
+          success: false,
+          error: { code: 'UNAUTHORIZED', message: 'Unauthorized' }
+        },
+        401
+      );
     }
 
     const updates = c.req.valid('json');
     const db = getDb(c.env.DB);
+    const now = new Date().toISOString();
 
     if (db) {
       await db
         .update(schema.users)
         .set({
           ...updates,
-          updatedAt: new Date().toISOString()
+          updatedAt: now
         })
         .where(eq(schema.users.id, user.id));
     }
@@ -375,7 +258,13 @@ export const authRoutes = new Hono<AppEnv>()
   .post('/kyc', authMiddleware, zValidator('json', submitKycSchema), async (c) => {
     const user = c.get('user');
     if (!user) {
-      return c.json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Unauthorized' } }, 401);
+      return c.json(
+        {
+          success: false,
+          error: { code: 'UNAUTHORIZED', message: 'Unauthorized' }
+        },
+        401
+      );
     }
 
     const { nik, ktpImageUrl, selfieImageUrl } = c.req.valid('json');
@@ -429,7 +318,13 @@ export const authRoutes = new Hono<AppEnv>()
   .put('/bank-payout', authMiddleware, zValidator('json', updateBankPayoutSchema), async (c) => {
     const user = c.get('user');
     if (!user) {
-      return c.json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Unauthorized' } }, 401);
+      return c.json(
+        {
+          success: false,
+          error: { code: 'UNAUTHORIZED', message: 'Unauthorized' }
+        },
+        401
+      );
     }
 
     const { bankName, bankAccountNumber, bankAccountHolder } = c.req.valid('json');
@@ -458,4 +353,3 @@ export const authRoutes = new Hono<AppEnv>()
       data: user
     });
   });
-

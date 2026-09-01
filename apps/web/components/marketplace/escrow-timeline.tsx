@@ -1,6 +1,5 @@
-import React from 'react';
 import type { EscrowStatus } from '@jbb/types';
-import { CheckCircle2, Circle, Clock, PackageCheck, Truck, ShieldCheck, AlertCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Clock, PackageCheck, ShieldCheck, Truck } from 'lucide-react';
 
 interface EscrowTimelineProps {
   status: EscrowStatus;
@@ -25,13 +24,16 @@ export function EscrowTimeline({ status, trackingNumber, courierName }: EscrowTi
     {
       id: 'IN_TRANSIT',
       label: 'Dalam Pengiriman',
-      description: trackingNumber ? `${courierName || 'Kurir'}: Resi ${trackingNumber}` : 'Barang dalam perjalanan ke alamat Anda.',
+      description: trackingNumber
+        ? `${courierName || 'Kurir'}: Resi ${trackingNumber}`
+        : 'Barang dalam perjalanan ke alamat Anda.',
       icon: Truck
     },
     {
       id: 'DELIVERED_INSPECTION',
       label: 'Periode Cek Barang (48 Jam)',
-      description: 'Barang diterima. Anda memiliki waktu 2x24 jam untuk cek kondisi fisik & fungsi.',
+      description:
+        'Barang diterima. Anda memiliki waktu 2x24 jam untuk cek kondisi fisik & fungsi.',
       icon: Clock
     },
     {
@@ -44,14 +46,22 @@ export function EscrowTimeline({ status, trackingNumber, courierName }: EscrowTi
 
   const getStepIndex = (st: EscrowStatus) => {
     switch (st) {
-      case 'WAITING_PAYMENT': return 0;
-      case 'PAYMENT_CONFIRMED': return 1;
-      case 'SELLER_PACKING': return 2;
-      case 'IN_TRANSIT': return 3;
-      case 'DELIVERED_INSPECTION': return 4;
-      case 'COMPLETED': return 5;
-      case 'DISPUTED': return -1;
-      default: return 1;
+      case 'WAITING_PAYMENT':
+        return 0;
+      case 'PAYMENT_CONFIRMED':
+        return 1;
+      case 'SELLER_PACKING':
+        return 2;
+      case 'IN_TRANSIT':
+        return 3;
+      case 'DELIVERED_INSPECTION':
+        return 4;
+      case 'COMPLETED':
+        return 5;
+      case 'DISPUTED':
+        return -1;
+      default:
+        return 1;
     }
   };
 
@@ -65,7 +75,8 @@ export function EscrowTimeline({ status, trackingNumber, courierName }: EscrowTi
           <span>Status: Komplain / Sengketa Sedang Ditinjau Tim Rekber</span>
         </div>
         <p className="text-xs text-rose-600 mt-1">
-          Dana transaksi saat ini dibekukan sementara hingga bukti unboxing selesai diverifikasi oleh tim penengah.
+          Dana transaksi saat ini dibekukan sementara hingga bukti unboxing selesai diverifikasi
+          oleh tim penengah.
         </p>
       </div>
     );
@@ -95,8 +106,8 @@ export function EscrowTimeline({ status, trackingNumber, courierName }: EscrowTi
                 isDone
                   ? 'bg-brand-600 text-white shadow-sm'
                   : isCurrent
-                  ? 'bg-brand-100 text-brand-800 ring-4 ring-brand-50'
-                  : 'bg-slate-100 text-slate-400'
+                    ? 'bg-brand-100 text-brand-800 ring-4 ring-brand-50'
+                    : 'bg-slate-100 text-slate-400'
               }`}
             >
               <Icon className="h-4 w-4" />

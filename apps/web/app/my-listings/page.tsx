@@ -1,37 +1,27 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../lib/api-client';
-import { useAuth } from '../../context/auth-context';
-import { useToast } from '../../context/toast-context';
-import { formatIDR, formatTimeAgo } from '../../lib/utils';
-import { ConditionBadge } from '../../components/marketplace/condition-badge';
-import { Breadcrumbs } from '../../components/layout/breadcrumbs';
-import type { Listing, ListingStatus } from '@jbb/types';
 import {
+  Edit3,
+  ExternalLink,
+  Eye,
+  Heart,
+  Lock,
+  MessageSquareQuote,
   Package,
   Plus,
   Search,
-  Eye,
-  MessageSquareQuote,
-  Heart,
-  ExternalLink,
-  Trash2,
-  CheckCircle2,
-  Clock,
-  MoreVertical,
-  Zap,
-  Tag,
-  ShieldCheck,
-  Sparkles,
   ShoppingBag,
-  TrendingUp,
-  Filter,
-  Edit3,
-  Lock
+  Trash2
 } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
+import { Breadcrumbs } from '../../components/layout/breadcrumbs';
+import { ConditionBadge } from '../../components/marketplace/condition-badge';
+import { useAuth } from '../../context/auth-context';
+import { useToast } from '../../context/toast-context';
+import { api } from '../../lib/api-client';
+import { formatIDR } from '../../lib/utils';
 
 export default function MyListingsPage() {
   const { user, openAuthModal } = useAuth();
@@ -39,7 +29,11 @@ export default function MyListingsPage() {
   const [activeTab, setActiveTab] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { data: myListings = [], isLoading, refetch } = useQuery({
+  const {
+    data: myListings = [],
+    isLoading,
+    refetch
+  } = useQuery({
     queryKey: ['my-listings'],
     queryFn: async () => {
       const res = await api.getMyListings();
@@ -59,7 +53,9 @@ export default function MyListingsPage() {
             <Package className="h-7 w-7" />
           </div>
           <div className="space-y-1">
-            <h2 className="text-base sm:text-lg font-black text-slate-900">Masuk untuk Mengelola Barang Dijual</h2>
+            <h2 className="text-base sm:text-lg font-black text-slate-900">
+              Masuk untuk Mengelola Barang Dijual
+            </h2>
             <p className="text-xs text-slate-500">
               Pantau status iklan barang bekas Anda, tawaran nego masuk, dan statistik pengunjung.
             </p>
@@ -98,7 +94,9 @@ export default function MyListingsPage() {
   });
 
   const toast = useToast();
-  const [listingToDelete, setListingToDelete] = useState<{ id: string; title: string } | null>(null);
+  const [listingToDelete, setListingToDelete] = useState<{ id: string; title: string } | null>(
+    null
+  );
 
   const handleUpdateStatus = async (id: string, newStatus: string) => {
     const res = await api.updateListingStatus(id, newStatus);
@@ -195,19 +193,33 @@ export default function MyListingsPage() {
           {/* Quick Metrics Bar (Mobile-Friendly 4 Grid) */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 pt-3 border-t border-slate-100">
             <div className="rounded-2xl bg-slate-50 p-2.5 sm:p-3 border border-slate-200/80">
-              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Iklan Aktif</span>
-              <span className="text-base sm:text-lg font-black text-slate-900 mt-0.5 block">{totalActive} Barang</span>
+              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+                Iklan Aktif
+              </span>
+              <span className="text-base sm:text-lg font-black text-slate-900 mt-0.5 block">
+                {totalActive} Barang
+              </span>
             </div>
             <div className="rounded-2xl bg-slate-50 p-2.5 sm:p-3 border border-slate-200/80">
-              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Dilihat Pembeli</span>
-              <span className="text-base sm:text-lg font-black text-brand-700 mt-0.5 block">{totalViews.toLocaleString('id-ID')}x</span>
+              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+                Dilihat Pembeli
+              </span>
+              <span className="text-base sm:text-lg font-black text-brand-700 mt-0.5 block">
+                {totalViews.toLocaleString('id-ID')}x
+              </span>
             </div>
             <div className="rounded-2xl bg-slate-50 p-2.5 sm:p-3 border border-slate-200/80">
-              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Tawaran Nego</span>
-              <span className="text-base sm:text-lg font-black text-amber-600 mt-0.5 block">{totalOffers} Tawaran</span>
+              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+                Tawaran Nego
+              </span>
+              <span className="text-base sm:text-lg font-black text-amber-600 mt-0.5 block">
+                {totalOffers} Tawaran
+              </span>
             </div>
             <div className="rounded-2xl bg-slate-50 p-2.5 sm:p-3 border border-slate-200/80">
-              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Nilai Aset Aktif</span>
+              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+                Nilai Aset Aktif
+              </span>
               <span className="text-base sm:text-lg font-black text-slate-900 mt-0.5 block truncate">
                 {formatIDR(totalAssetValue)}
               </span>
@@ -231,10 +243,26 @@ export default function MyListingsPage() {
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
               {[
                 { id: 'all', label: 'Semua Iklan', count: myListings.length },
-                { id: 'active', label: 'Aktif Dijual', count: myListings.filter((i) => i.status === 'ACTIVE').length },
-                { id: 'in_nego', label: 'Sedang Nego', count: myListings.filter((i) => i.status === 'IN_NEGO').length },
-                { id: 'reserved', label: 'Dibooking', count: myListings.filter((i) => i.status === 'RESERVED').length },
-                { id: 'sold', label: 'Terjual', count: myListings.filter((i) => i.status === 'SOLD').length }
+                {
+                  id: 'active',
+                  label: 'Aktif Dijual',
+                  count: myListings.filter((i) => i.status === 'ACTIVE').length
+                },
+                {
+                  id: 'in_nego',
+                  label: 'Sedang Nego',
+                  count: myListings.filter((i) => i.status === 'IN_NEGO').length
+                },
+                {
+                  id: 'reserved',
+                  label: 'Dibooking',
+                  count: myListings.filter((i) => i.status === 'RESERVED').length
+                },
+                {
+                  id: 'sold',
+                  label: 'Terjual',
+                  count: myListings.filter((i) => i.status === 'SOLD').length
+                }
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -258,7 +286,10 @@ export default function MyListingsPage() {
         {isLoading ? (
           <div className="space-y-3.5">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-40 rounded-3xl bg-white border border-slate-200 p-5 shadow-2xs" />
+              <div
+                key={i}
+                className="h-40 rounded-3xl bg-white border border-slate-200 p-5 shadow-2xs"
+              />
             ))}
           </div>
         ) : filteredListings.length === 0 ? (
@@ -271,7 +302,8 @@ export default function MyListingsPage() {
                 Belum Ada Iklan di Kategori Ini
               </h2>
               <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
-                Pasang barang bekas Anda yang sudah tidak terpakai dengan proteksi rekber aman dan cepat laku.
+                Pasang barang bekas Anda yang sudah tidak terpakai dengan proteksi rekber aman dan
+                cepat laku.
               </p>
             </div>
             <div className="pt-1">
@@ -305,23 +337,23 @@ export default function MyListingsPage() {
                           item.status === 'ACTIVE'
                             ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                             : item.status === 'IN_NEGO'
-                            ? 'bg-amber-50 text-amber-900 border-amber-200'
-                            : item.status === 'RESERVED'
-                            ? 'bg-blue-50 text-blue-900 border-blue-200'
-                            : item.status === 'SOLD'
-                            ? 'bg-purple-50 text-purple-900 border-purple-200'
-                            : 'bg-slate-100 text-slate-700 border-slate-200'
+                              ? 'bg-amber-50 text-amber-900 border-amber-200'
+                              : item.status === 'RESERVED'
+                                ? 'bg-blue-50 text-blue-900 border-blue-200'
+                                : item.status === 'SOLD'
+                                  ? 'bg-purple-50 text-purple-900 border-purple-200'
+                                  : 'bg-slate-100 text-slate-700 border-slate-200'
                         }`}
                       >
                         {item.status === 'ACTIVE'
                           ? 'Aktif'
                           : item.status === 'IN_NEGO'
-                          ? 'Sedang Nego'
-                          : item.status === 'RESERVED'
-                          ? 'Dibooking'
-                          : item.status === 'SOLD'
-                          ? 'Terjual'
-                          : 'Draf'}
+                            ? 'Sedang Nego'
+                            : item.status === 'RESERVED'
+                              ? 'Dibooking'
+                              : item.status === 'SOLD'
+                                ? 'Terjual'
+                                : 'Draf'}
                       </span>
 
                       {item.isCodAvailable && (
@@ -446,7 +478,9 @@ export default function MyListingsPage() {
               <div className="text-center space-y-1">
                 <h3 className="text-base font-black text-slate-900">Hapus Iklan Ini?</h3>
                 <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                  Apakah Anda yakin ingin menghapus iklan <strong>&ldquo;{listingToDelete.title}&rdquo;</strong>? Tindakan ini tidak dapat dibatalkan.
+                  Apakah Anda yakin ingin menghapus iklan{' '}
+                  <strong>&ldquo;{listingToDelete.title}&rdquo;</strong>? Tindakan ini tidak dapat
+                  dibatalkan.
                 </p>
               </div>
               <div className="flex items-center gap-3 pt-2">

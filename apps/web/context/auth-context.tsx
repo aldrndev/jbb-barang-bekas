@@ -1,8 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import type { UserProfile } from '@jbb/types';
+import { useQueryClient } from '@tanstack/react-query';
+import type React from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { api } from '../lib/api-client';
 import { toTitleCase } from '../lib/utils';
 
@@ -13,7 +14,11 @@ function normalizeUser(u: UserProfile): UserProfile {
     name: toTitleCase(u.name),
     city: u.city ? toTitleCase(u.city) : u.city,
     province: u.province ? toTitleCase(u.province) : u.province,
-    bankAccountHolder: u.bankAccountHolder ? toTitleCase(u.bankAccountHolder) : (u.name ? toTitleCase(u.name) : undefined)
+    bankAccountHolder: u.bankAccountHolder
+      ? toTitleCase(u.bankAccountHolder)
+      : u.name
+        ? toTitleCase(u.name)
+        : undefined
   };
 }
 
@@ -26,10 +31,7 @@ interface AuthContextType {
   closeAuthModal: () => void;
   login: (token: string, user: UserProfile) => void;
   logout: () => void;
-  loginWithGoogle: (data: { credential?: string; email?: string; name?: string; avatarUrl?: string }) => Promise<{ success: boolean; error?: string }>;
-  loginAsDemoBuyer: () => Promise<void>;
-  loginAsDemoSeller: () => Promise<void>;
-  loginAsDemoAdmin: () => Promise<void>;
+  loginWithGoogle: (data: { credential: string }) => Promise<{ success: boolean; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -48,7 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (savedToken && savedUser) {
       try {
         setToken(savedToken);
-        const parsed = JSON.parse(savedUser);
+        const parsed = JSON.parse(savedUser) as UserProfile;
         setUser(normalizeUser(parsed));
       } catch {
         localStorage.removeItem('jbb_auth_token');
@@ -76,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     queryClient.clear();
   };
 
-  const loginWithGoogle = async (data: { credential?: string; email?: string; name?: string; avatarUrl?: string }) => {
+  const loginWithGoogle = async (data: { credential: string }) => {
     setIsLoading(true);
     try {
       const res = await api.loginWithGoogle(data);
@@ -87,46 +89,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       setIsLoading(false);
       return { success: false, error: res.error?.message || 'Gagal login dengan Google' };
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Gagal autentikasi Google';
       setIsLoading(false);
-      return { success: false, error: err.message || 'Gagal autentikasi Google' };
+      return { success: false, error: errorMessage };
     }
-  };
-
-  const loginAsDemoBuyer = async () => {
-    const res = await api.login('dimas.ardi@example.com', 'password123');
-    if (res.success && res.data) {
-      login(res.data.token, res.data.user);
-    }
-  };
-
-  const loginAsDemoSeller = async () => {
-    const res = await api.login('budi.gadget@example.com', 'password123');
-    if (res.success && res.data) {
-      login(res.data.token, res.data.user);
-    }
-  };
-
-  const loginAsDemoAdmin = async () => {
-    const adminUser: UserProfile = {
-      id: 'usr-admin-master',
-      name: 'Administrator Rekber Peygo',
-      email: 'admin.rekber@peygo.id',
-      phone: '081199887766',
-      role: 'ADMIN',
-      isKycVerified: true,
-      isPhoneVerified: true,
-      trustScore: 100,
-      totalTransactions: 999,
-      ratingAverage: 5.0,
-      ratingCount: 500,
-      city: 'Jakarta Pusat',
-      province: 'DKI Jakarta',
-      bio: 'Master Administrator & Escrow Dispute Resolution Officer Rekber Peygo.',
-      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      createdAt: '2023-01-01T00:00:00Z'
-    };
-    login('admin_master_secret_jwt_token', adminUser);
   };
 
   return (
@@ -140,10 +107,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         closeAuthModal: () => setIsAuthModalOpen(false),
         login,
         logout,
-        loginWithGoogle,
-        loginAsDemoBuyer,
-        loginAsDemoSeller,
-        loginAsDemoAdmin
+        loginWithGoogle
       }}
     >
       {children}

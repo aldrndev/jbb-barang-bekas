@@ -1,5 +1,5 @@
 import { seedCategories, seedListings, seedUsers } from '@jbb/database';
-import type { Category, Listing, Offer, Order, Review, UserProfile } from '@jbb/types';
+import type { Category, Completeness, Listing, Offer, Order, Review, UserProfile } from '@jbb/types';
 
 // In-memory data store for ultra-fast edge simulation and fallback
 class MemoryStore {
@@ -7,7 +7,7 @@ class MemoryStore {
   categories: Category[] = [...seedCategories];
   listings: Listing[] = seedListings.map((item) => ({
     ...item,
-    completeness: JSON.parse(item.completeness) as any,
+    completeness: JSON.parse(item.completeness) as Completeness[],
     specs: item.specs ? JSON.parse(item.specs) : null,
     seller: seedUsers.find((u) => u.id === item.sellerId),
     category: seedCategories.find((c) => c.id === item.categoryId)
@@ -125,7 +125,8 @@ class MemoryStore {
       reviewerId: 'usr-seller-1',
       sellerId: 'usr-seller-5',
       rating: 5,
-      comment: 'Mantap bang PS5 mulus banget sesuai deskripsi! Respon cepat dan ramah banget saat COD.',
+      comment:
+        'Mantap bang PS5 mulus banget sesuai deskripsi! Respon cepat dan ramah banget saat COD.',
       itemConditionMatch: true,
       fastResponse: true,
       createdAt: '2026-08-29T18:00:00Z'
@@ -137,7 +138,8 @@ class MemoryStore {
       reviewerId: 'usr-seller-3',
       sellerId: 'usr-seller-4',
       rating: 5,
-      comment: 'Sepatu Nike Dunk Panda 100% original, packing bubble wrap tebal dan sampai tepat waktu.',
+      comment:
+        'Sepatu Nike Dunk Panda 100% original, packing bubble wrap tebal dan sampai tepat waktu.',
       itemConditionMatch: true,
       fastResponse: true,
       createdAt: '2026-08-28T17:00:00Z'
@@ -163,7 +165,7 @@ class MemoryStore {
     return {
       ...user,
       isKycVerified: isVerified,
-      trustScore: isRejected ? 75 : (isVerified ? 98 : (user.trustScore || 80)),
+      trustScore: isRejected ? 75 : isVerified ? 98 : user.trustScore || 80,
       role: isVerified ? 'SELLER' : user.role
     };
   }
@@ -239,7 +241,9 @@ class MemoryStore {
   }
 
   removeFromWishlist(userId: string, listingId: string) {
-    this.wishlists = this.wishlists.filter((w) => !(w.userId === userId && w.listingId === listingId));
+    this.wishlists = this.wishlists.filter(
+      (w) => !(w.userId === userId && w.listingId === listingId)
+    );
   }
 
   clearWishlist(userId: string) {

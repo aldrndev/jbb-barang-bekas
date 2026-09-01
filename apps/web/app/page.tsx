@@ -1,36 +1,32 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { api } from '../lib/api-client';
-import { ListingCard } from '../components/marketplace/listing-card';
-import { formatIDR, toTitleCase } from '../lib/utils';
 import {
-  ShieldCheck,
-  Sparkles,
-  Zap,
-  TrendingUp,
-  Smartphone,
-  Laptop,
-  Camera,
-  Bike,
-  Gamepad2,
-  Shirt,
-  Headphones,
-  Tv,
   ArrowRight,
-  MapPin,
+  Bike,
+  Camera,
   CheckCircle2,
-  MessageSquareQuote,
-  Search,
-  Star,
   ChevronRight,
+  Gamepad2,
+  Headphones,
+  Laptop,
   LayoutGrid,
-  Layers,
-  Sparkle,
-  Lock
+  MapPin,
+  Search,
+  ShieldCheck,
+  Shirt,
+  Smartphone,
+  Sparkles,
+  Star,
+  TrendingUp,
+  Tv,
+  Zap
 } from 'lucide-react';
+import Link from 'next/link';
+import React from 'react';
+import { ListingCard } from '../components/marketplace/listing-card';
+import { api } from '../lib/api-client';
+import { formatIDR, toTitleCase } from '../lib/utils';
 
 interface CategoryTheme {
   pastelBg: string;
@@ -146,7 +142,8 @@ export default function HomePage() {
   const featuredListings = featuredData?.data || [];
 
   // Dynamically pick from featured listings or first available listing from database
-  const spotlightListing = featuredListings.length > 0 ? featuredListings[0] : (listings.length > 0 ? listings[0] : null);
+  const spotlightListing =
+    featuredListings.length > 0 ? featuredListings[0] : listings.length > 0 ? listings[0] : null;
   const isRealSpotlight = Boolean(spotlightListing);
 
   const hotDeals = listings.filter((l) => l.isNegotiable && l.offerCount > 0);
@@ -185,13 +182,18 @@ export default function HomePage() {
     const topSellers = uniqueSellers.slice(0, 3);
 
     // Calculate dynamic average rating across all sellers in DB
-    const totalRatings = uniqueSellers.reduce((sum, s) => sum + (Number(s.ratingAverage) || 4.9), 0);
-    const averageScore = uniqueSellers.length > 0
-      ? (totalRatings / uniqueSellers.length).toFixed(1)
-      : '4.9';
+    const totalRatings = uniqueSellers.reduce(
+      (sum, s) => sum + (Number(s.ratingAverage) || 4.9),
+      0
+    );
+    const averageScore =
+      uniqueSellers.length > 0 ? (totalRatings / uniqueSellers.length).toFixed(1) : '4.9';
 
     // Calculate dynamic total transactions from sellers in DB
-    const totalTransactions = uniqueSellers.reduce((sum, s) => sum + (Number(s.totalTransactions) || 0), 0);
+    const totalTransactions = uniqueSellers.reduce(
+      (sum, s) => sum + (Number(s.totalTransactions) || 0),
+      0
+    );
     const totalItems = listingsData?.data?.pagination?.total || listings.length || 34;
 
     return {
@@ -233,7 +235,8 @@ export default function HomePage() {
               </h1>
 
               <p className="text-xs sm:text-base text-slate-600 max-w-xl leading-relaxed">
-                Inspeksi kondisi fisik transparan, fitur tawar harga resmi dengan kunci deal 24 jam, dan dana ditahan aman sampai barang Anda cek sendiri.
+                Inspeksi kondisi fisik transparan, fitur tawar harga resmi dengan kunci deal 24 jam,
+                dan dana ditahan aman sampai barang Anda cek sendiri.
               </p>
 
               {/* Seamless Hero Search Engine Widget */}
@@ -327,7 +330,7 @@ export default function HomePage() {
                 <div className="flex items-center gap-2">
                   {/* Real Avatars of Active Verified Sellers */}
                   <div className="flex -space-x-2">
-                    {socialProofMetrics.topSellers.map((seller: any, idx: number) => (
+                    {socialProofMetrics.topSellers.map((seller: any, idx: number) =>
                       seller.avatarUrl ? (
                         <img
                           key={seller.id || idx}
@@ -345,7 +348,7 @@ export default function HomePage() {
                           {seller.name.charAt(0)}
                         </div>
                       )
-                    ))}
+                    )}
                   </div>
 
                   <div className="text-xs">
@@ -354,7 +357,8 @@ export default function HomePage() {
                       <span>{socialProofMetrics.averageScore} / 5.0</span>
                     </div>
                     <p className="text-[9px] sm:text-[10px] text-slate-500">
-                      {socialProofMetrics.totalTransactions.toLocaleString('id-ID')}+ Transaksi Sukses
+                      {socialProofMetrics.totalTransactions.toLocaleString('id-ID')}+ Transaksi
+                      Sukses
                     </p>
                   </div>
                 </div>
@@ -381,19 +385,21 @@ export default function HomePage() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-1.5">
                     <span className="flex h-2 w-2 rounded-full bg-brand-500" />
-                    <span className="text-[11px] font-bold text-slate-800">Spotlight Barang Pilihan</span>
+                    <span className="text-[11px] font-bold text-slate-800">
+                      Spotlight Barang Pilihan
+                    </span>
                   </div>
                   <span className="rounded-md bg-brand-50 border border-brand-200 px-2 py-0.5 text-[10px] font-bold text-brand-700">
                     {isRealSpotlight && spotlightListing
                       ? spotlightListing.condition === 'NEW'
                         ? 'Baru Segel 100%'
                         : spotlightListing.condition === 'LIKE_NEW'
-                        ? 'Grade A++ Mulus 96%'
-                        : spotlightListing.condition === 'USED_EXCELLENT'
-                        ? 'Grade A Mulus 92%'
-                        : spotlightListing.condition === 'USED_GOOD'
-                        ? 'Grade B Normal 85%'
-                        : 'Kondisi Bekas'
+                          ? 'Grade A++ Mulus 96%'
+                          : spotlightListing.condition === 'USED_EXCELLENT'
+                            ? 'Grade A Mulus 92%'
+                            : spotlightListing.condition === 'USED_GOOD'
+                              ? 'Grade B Normal 85%'
+                              : 'Kondisi Bekas'
                       : 'Grade A++ Mulus 96%'}
                   </span>
                 </div>
@@ -409,7 +415,11 @@ export default function HomePage() {
                           'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80'
                         : 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80'
                     }
-                    alt={isRealSpotlight && spotlightListing ? spotlightListing.title : 'iPhone 13 Pro Showcase'}
+                    alt={
+                      isRealSpotlight && spotlightListing
+                        ? spotlightListing.title
+                        : 'iPhone 13 Pro Showcase'
+                    }
                     className="h-full w-full object-cover group-hover:scale-103 transition-transform duration-500"
                   />
                   <div className="absolute bottom-2 left-2 rounded-lg bg-slate-900/80 backdrop-blur-md px-2 py-0.5 text-[10px] text-white font-medium flex items-center gap-1">
@@ -447,7 +457,8 @@ export default function HomePage() {
                       Beli Baru:{' '}
                       {isRealSpotlight && spotlightListing
                         ? formatIDR(
-                            spotlightListing.originalPrice || Math.round(spotlightListing.price * 1.35)
+                            spotlightListing.originalPrice ||
+                              Math.round(spotlightListing.price * 1.35)
                           )
                         : 'Rp 18.499.000'}
                     </div>
@@ -457,9 +468,11 @@ export default function HomePage() {
                       Hemat{' '}
                       {isRealSpotlight && spotlightListing
                         ? Math.round(
-                            (((spotlightListing.originalPrice || Math.round(spotlightListing.price * 1.35)) -
+                            (((spotlightListing.originalPrice ||
+                              Math.round(spotlightListing.price * 1.35)) -
                               spotlightListing.price) /
-                              (spotlightListing.originalPrice || Math.round(spotlightListing.price * 1.35))) *
+                              (spotlightListing.originalPrice ||
+                                Math.round(spotlightListing.price * 1.35))) *
                               100
                           )
                         : 46}
@@ -469,8 +482,8 @@ export default function HomePage() {
                       -
                       {isRealSpotlight && spotlightListing
                         ? formatIDR(
-                            (spotlightListing.originalPrice || Math.round(spotlightListing.price * 1.35)) -
-                              spotlightListing.price
+                            (spotlightListing.originalPrice ||
+                              Math.round(spotlightListing.price * 1.35)) - spotlightListing.price
                           )
                         : 'Rp 8.649.000'}
                     </span>
@@ -487,7 +500,8 @@ export default function HomePage() {
                     <strong className="text-deal-800 font-bold">
                       {isRealSpotlight && spotlightListing
                         ? formatIDR(
-                            spotlightListing.minOfferPrice || Math.round(spotlightListing.price * 0.92)
+                            spotlightListing.minOfferPrice ||
+                              Math.round(spotlightListing.price * 0.92)
                           )
                         : 'Rp 9.400.000'}
                     </strong>
@@ -523,13 +537,20 @@ export default function HomePage() {
                         <ShieldCheck className="h-3 w-3 text-brand-600 shrink-0" />
                       </div>
                       <div className="text-[9px] sm:text-[10px] text-slate-500 truncate">
-                        {isRealSpotlight && spotlightListing?.seller?.ratingCount && spotlightListing.seller.ratingCount > 0 ? (
+                        {isRealSpotlight &&
+                        spotlightListing?.seller?.ratingCount &&
+                        spotlightListing.seller.ratingCount > 0 ? (
                           <>
-                            ⭐ {spotlightListing.seller.ratingAverage.toFixed(1)} &bull; {spotlightListing.seller.isKycVerified ? 'Terverifikasi' : 'Penjual Rekber'}
+                            ⭐ {spotlightListing.seller.ratingAverage.toFixed(1)} &bull;{' '}
+                            {spotlightListing.seller.isKycVerified
+                              ? 'Terverifikasi'
+                              : 'Penjual Rekber'}
                           </>
                         ) : (
                           <>
-                            {isRealSpotlight && spotlightListing?.seller?.isKycVerified ? '🛡️ Terverifikasi' : '🛡️ Garansi Rekber'}
+                            {isRealSpotlight && spotlightListing?.seller?.isKycVerified
+                              ? '🛡️ Terverifikasi'
+                              : '🛡️ Garansi Rekber'}
                           </>
                         )}
                       </div>
@@ -559,7 +580,9 @@ export default function HomePage() {
                 {/* Integrated Compact Escrow Guarantee Ribbon */}
                 <div className="mt-3 rounded-xl bg-slate-50 p-2 border border-slate-200 flex items-center gap-1.5 text-[9px] sm:text-[10px] text-slate-600">
                   <ShieldCheck className="h-3.5 w-3.5 text-brand-600 shrink-0" />
-                  <span className="truncate">Garansi Rekber 48 Jam &bull; Dana aman sampai cek fisik</span>
+                  <span className="truncate">
+                    Garansi Rekber 48 Jam &bull; Dana aman sampai cek fisik
+                  </span>
                 </div>
               </div>
             </div>
@@ -608,9 +631,14 @@ export default function HomePage() {
 
               // Compute actual live count of active products
               const liveCount = listings.filter(
-                (l) => (l.categoryId === cat.id || l.category?.slug === cat.slug || l.category?.id === cat.id) && l.status === 'ACTIVE'
+                (l) =>
+                  (l.categoryId === cat.id ||
+                    l.category?.slug === cat.slug ||
+                    l.category?.id === cat.id) &&
+                  l.status === 'ACTIVE'
               ).length;
-              const displayCount = typeof cat.itemCount === 'number' && cat.itemCount >= 0 ? cat.itemCount : liveCount;
+              const displayCount =
+                typeof cat.itemCount === 'number' && cat.itemCount >= 0 ? cat.itemCount : liveCount;
 
               return (
                 <Link
@@ -704,7 +732,8 @@ export default function HomePage() {
                     Kondisi Seperti Baru (95%+)
                   </h2>
                   <p className="text-xs text-slate-500 font-medium hidden sm:block">
-                    Unit pemakaian sangat terawat, bodi mulus tanpa lecet berarti dengan kelengkapan asli
+                    Unit pemakaian sangat terawat, bodi mulus tanpa lecet berarti dengan kelengkapan
+                    asli
                   </p>
                 </div>
               </div>
@@ -759,13 +788,18 @@ export default function HomePage() {
           {isLoading ? (
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 py-6">
               {[1, 2, 3, 4].map((n) => (
-                <div key={n} className="h-60 sm:h-72 rounded-2xl bg-white border border-slate-200 shadow-2xs animate-pulse" />
+                <div
+                  key={n}
+                  className="h-60 sm:h-72 rounded-2xl bg-white border border-slate-200 shadow-2xs animate-pulse"
+                />
               ))}
             </div>
           ) : codListings.length === 0 ? (
             <div className="text-center py-10 bg-slate-50 rounded-2xl border border-slate-200">
               <MapPin className="mx-auto h-8 w-8 text-slate-300 mb-2" />
-              <h3 className="text-xs sm:text-sm font-bold text-slate-700">Belum ada barang siap COD</h3>
+              <h3 className="text-xs sm:text-sm font-bold text-slate-700">
+                Belum ada barang siap COD
+              </h3>
               <p className="text-[11px] text-slate-400 mt-1">Coba lihat koleksi barang lainnya.</p>
             </div>
           ) : (

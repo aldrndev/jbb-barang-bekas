@@ -1,36 +1,30 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api-client';
-import { formatIDR, formatTimeAgo } from '@/lib/utils';
+import { formatIDR } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
 import {
-  Building,
-  ShieldCheck,
-  CreditCard,
-  CheckCircle2,
-  AlertTriangle,
-  UserCheck,
-  ArrowRight,
-  Sparkles,
-  TrendingUp,
   Activity,
-  ArrowUpRight,
-  Clock,
-  Lock,
-  Wallet,
-  CheckCircle,
-  FileSpreadsheet,
-  RefreshCw,
-  Search,
-  Package,
-  Layers,
-  Smartphone,
-  Laptop,
+  AlertTriangle,
+  ArrowRight,
+  Building,
   Camera,
-  Gamepad2
+  CheckCircle,
+  CheckCircle2,
+  Clock,
+  CreditCard,
+  Gamepad2,
+  Laptop,
+  Layers,
+  Lock,
+  RefreshCw,
+  ShieldCheck,
+  Smartphone,
+  TrendingUp,
+  UserCheck
 } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
 
 const DEFAULT_KYC_QUEUE = [
   {
@@ -39,8 +33,10 @@ const DEFAULT_KYC_QUEUE = [
     email: 'rian.hidayat@example.com',
     phone: '081288991122',
     nik: '3273081903980002',
-    ktpImageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
-    selfieImageUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&auto=format&fit=crop&q=80',
+    ktpImageUrl:
+      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
+    selfieImageUrl:
+      'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&auto=format&fit=crop&q=80',
     isKycVerified: false,
     trustScore: 82,
     role: 'BUYER',
@@ -53,8 +49,10 @@ const DEFAULT_KYC_QUEUE = [
     email: 'siti.nurhaliza@example.com',
     phone: '081377889900',
     nik: '3175026708990004',
-    ktpImageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
-    selfieImageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80',
+    ktpImageUrl:
+      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
+    selfieImageUrl:
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80',
     isKycVerified: false,
     trustScore: 85,
     role: 'BUYER',
@@ -67,8 +65,10 @@ const DEFAULT_KYC_QUEUE = [
     email: 'ahmad.zaki@example.com',
     phone: '081900112233',
     nik: '3578011204940003',
-    ktpImageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
-    selfieImageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
+    ktpImageUrl:
+      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
+    selfieImageUrl:
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
     isKycVerified: false,
     trustScore: 80,
     role: 'BUYER',
@@ -99,7 +99,11 @@ const DEFAULT_DISPUTES = [
 export default function AdminOverviewPage() {
   const [activeChartRange, setActiveChartRange] = useState<'7d' | '30d'>('7d');
 
-  const { data: statsData, isFetching, refetch } = useQuery({
+  const {
+    data: statsData,
+    isFetching,
+    refetch
+  } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: () => api.getAdminStats()
   });
@@ -125,18 +129,32 @@ export default function AdminOverviewPage() {
     activeListingsCount: 38
   };
 
-  const allDisputes = (disputesData?.data && Array.isArray(disputesData.data))
-    ? disputesData.data
-    : (disputesData?.data === undefined ? DEFAULT_DISPUTES : []);
-  const activeDisputes = allDisputes.filter((d: any) => d.escrowStatus === 'DISPUTED' || !d.escrowStatus);
-  const activeDisputesCount = statsData?.data?.activeDisputesCount !== undefined ? statsData.data.activeDisputesCount : activeDisputes.length;
+  const allDisputes =
+    disputesData?.data && Array.isArray(disputesData.data)
+      ? disputesData.data
+      : disputesData?.data === undefined
+        ? DEFAULT_DISPUTES
+        : [];
+  const activeDisputes = allDisputes.filter(
+    (d: any) => d.escrowStatus === 'DISPUTED' || !d.escrowStatus
+  );
+  const activeDisputesCount =
+    statsData?.data?.activeDisputesCount !== undefined
+      ? statsData.data.activeDisputesCount
+      : activeDisputes.length;
   const urgentDisputes = activeDisputes.slice(0, 2);
 
-  const allKyc = (kycData?.data && Array.isArray(kycData.data))
-    ? kycData.data
-    : (kycData?.data === undefined ? DEFAULT_KYC_QUEUE : []);
+  const allKyc =
+    kycData?.data && Array.isArray(kycData.data)
+      ? kycData.data
+      : kycData?.data === undefined
+        ? DEFAULT_KYC_QUEUE
+        : [];
   const pendingKyc = allKyc.filter((u: any) => !u.isKycVerified && !u.isRejected);
-  const pendingKycCount = statsData?.data?.pendingKycCount !== undefined ? statsData.data.pendingKycCount : pendingKyc.length;
+  const pendingKycCount =
+    statsData?.data?.pendingKycCount !== undefined
+      ? statsData.data.pendingKycCount
+      : pendingKyc.length;
 
   const liveActivityStream = [
     {
@@ -220,7 +238,13 @@ export default function AdminOverviewPage() {
                 <span>Brankas Rekber Multi-Sig Online</span>
               </span>
               <span className="text-xs text-slate-400 font-medium">
-                Update: {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                Update:{' '}
+                {new Date().toLocaleDateString('id-ID', {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                })}
               </span>
             </div>
 
@@ -228,7 +252,8 @@ export default function AdminOverviewPage() {
               Pusat Komando & Brankas Rekber Bekasin
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Memantau perputaran dana garansi 48 jam, stabilitas escrow gateway, mitigasi sengketa barang bekas, dan persetujuan identitas KYC.
+              Memantau perputaran dana garansi 48 jam, stabilitas escrow gateway, mitigasi sengketa
+              barang bekas, dan persetujuan identitas KYC.
             </p>
           </div>
 
@@ -360,9 +385,7 @@ export default function AdminOverviewPage() {
           </div>
 
           <div>
-            <p className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              98.4%
-            </p>
+            <p className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">98.4%</p>
             <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium mt-1">
               <span>Hanya 1.6% kasus komplain</span>
             </div>
@@ -403,7 +426,10 @@ export default function AdminOverviewPage() {
           {/* CSS-based Modern Bar Visualizer */}
           <div className="h-56 w-full flex items-end justify-between gap-2 sm:gap-6 pt-6 pb-2 px-2">
             {chartDays.map((item, idx) => (
-              <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group cursor-pointer">
+              <div
+                key={idx}
+                className="flex-1 flex flex-col items-center gap-2 h-full justify-end group cursor-pointer"
+              >
                 <div className="w-full flex items-end justify-center gap-1 sm:gap-1.5 h-full">
                   {/* GMV Bar */}
                   <div
@@ -433,7 +459,8 @@ export default function AdminOverviewPage() {
 
           <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
             <span className="text-slate-600 font-medium">
-              💡 <strong>Insight Operasional:</strong> Volume akhir pekan (Sabtu-Minggu) meningkat 28% dari rata-rata harian.
+              💡 <strong>Insight Operasional:</strong> Volume akhir pekan (Sabtu-Minggu) meningkat
+              28% dari rata-rata harian.
             </span>
             <span className="text-emerald-700 font-bold whitespace-nowrap">
               Auto-Settlement 100% On-Time
@@ -547,7 +574,9 @@ export default function AdminOverviewPage() {
               <div className="p-6 rounded-2xl bg-white/80 border border-rose-200 text-center space-y-1">
                 <CheckCircle2 className="h-8 w-8 text-emerald-600 mx-auto" />
                 <h4 className="font-black text-slate-900 text-xs">Semua Sengketa Selesai! 🎉</h4>
-                <p className="text-[11px] text-slate-500">Tidak ada kasus sengketa aktif yang memerlukan mediasi admin.</p>
+                <p className="text-[11px] text-slate-500">
+                  Tidak ada kasus sengketa aktif yang memerlukan mediasi admin.
+                </p>
               </div>
             ) : (
               urgentDisputes.map((d: any) => (
@@ -563,12 +592,16 @@ export default function AdminOverviewPage() {
                       {formatIDR(d.amount || 16500000)}
                     </span>
                   </div>
-                  <h4 className="font-bold text-xs text-slate-900 line-clamp-1">{d.title || d.listing?.title}</h4>
+                  <h4 className="font-bold text-xs text-slate-900 line-clamp-1">
+                    {d.title || d.listing?.title}
+                  </h4>
                   <p className="text-[11px] text-slate-600 line-clamp-2 bg-rose-50/50 p-2 rounded-xl border border-rose-100">
                     "{d.reason || d.disputeReason}"
                   </p>
                   <div className="pt-1 flex items-center justify-between">
-                    <span className="text-[10px] text-slate-500">Penggugat: <strong>{d.buyerName || d.buyer?.name}</strong></span>
+                    <span className="text-[10px] text-slate-500">
+                      Penggugat: <strong>{d.buyerName || d.buyer?.name}</strong>
+                    </span>
                     <Link
                       href={`/admin/sengketa/${d.id}`}
                       className="inline-flex items-center gap-1 text-[11px] font-black text-rose-700 hover:text-rose-800"
@@ -608,7 +641,9 @@ export default function AdminOverviewPage() {
               <div className="p-6 rounded-2xl bg-white/80 border border-amber-200 text-center space-y-1">
                 <CheckCircle2 className="h-8 w-8 text-emerald-600 mx-auto" />
                 <h4 className="font-black text-slate-900 text-xs">Semua KYC Telah Diproses! 🎉</h4>
-                <p className="text-[11px] text-slate-500">Tidak ada pengajuan verifikasi identitas tertunda.</p>
+                <p className="text-[11px] text-slate-500">
+                  Tidak ada pengajuan verifikasi identitas tertunda.
+                </p>
               </div>
             ) : (
               pendingKyc.slice(0, 3).map((u: any) => (
@@ -671,13 +706,17 @@ export default function AdminOverviewPage() {
               >
                 {/* Left: Icon + Type Badge + Description */}
                 <div className="flex items-center gap-3.5 min-w-0">
-                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border ${act.iconColor}`}>
+                  <div
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border ${act.iconColor}`}
+                  >
                     <Icon className="h-5 w-5" />
                   </div>
 
                   <div className="space-y-0.5 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${act.badgeColor}`}>
+                      <span
+                        className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${act.badgeColor}`}
+                      >
                         {act.badge}
                       </span>
                       <span className="font-mono text-[11px] font-bold text-slate-400">
@@ -735,7 +774,9 @@ export default function AdminOverviewPage() {
           <div className="rounded-2xl bg-white p-4 border border-slate-200 shadow-2xs space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="font-bold text-slate-800">BCA Escrow Pool</span>
-              <span className="text-[10px] text-emerald-700 font-black bg-emerald-50 px-1.5 py-0.2 rounded">Aktif</span>
+              <span className="text-[10px] text-emerald-700 font-black bg-emerald-50 px-1.5 py-0.2 rounded">
+                Aktif
+              </span>
             </div>
             <p className="text-base font-black text-slate-900">Rp 32.500.000</p>
             <span className="text-[10px] text-slate-400 block font-mono">Rek. 8820-1928-3741</span>
@@ -744,7 +785,9 @@ export default function AdminOverviewPage() {
           <div className="rounded-2xl bg-white p-4 border border-slate-200 shadow-2xs space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="font-bold text-slate-800">Mandiri Virtual Account</span>
-              <span className="text-[10px] text-emerald-700 font-black bg-emerald-50 px-1.5 py-0.2 rounded">Aktif</span>
+              <span className="text-[10px] text-emerald-700 font-black bg-emerald-50 px-1.5 py-0.2 rounded">
+                Aktif
+              </span>
             </div>
             <p className="text-base font-black text-slate-900">Rp 16.000.000</p>
             <span className="text-[10px] text-slate-400 block font-mono">VA Gateway Midtrans</span>
@@ -753,7 +796,9 @@ export default function AdminOverviewPage() {
           <div className="rounded-2xl bg-white p-4 border border-slate-200 shadow-2xs space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="font-bold text-slate-800">Auto-Disbursement API</span>
-              <span className="text-[10px] text-emerald-700 font-black bg-emerald-50 px-1.5 py-0.2 rounded">Live</span>
+              <span className="text-[10px] text-emerald-700 font-black bg-emerald-50 px-1.5 py-0.2 rounded">
+                Live
+              </span>
             </div>
             <p className="text-base font-black text-emerald-600">Disbursement Ready</p>
             <span className="text-[10px] text-slate-400 block">Jago, SeaBank, BRI, BNI</span>

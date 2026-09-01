@@ -1,39 +1,29 @@
-import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
-import { eq, or, desc } from 'drizzle-orm';
-import { createOrderSchema, disputeOrderSchema, updateShippingSchema } from '@jbb/validators';
-import type { AppEnv } from '../types/env';
-import { getDb, schema } from '../db';
-import { memoryStore } from '../services/store';
-import { authMiddleware } from '../middlewares/auth';
 import type { Order } from '@jbb/types';
+import { createOrderSchema, disputeOrderSchema, updateShippingSchema } from '@jbb/validators';
+import { desc, eq, or } from 'drizzle-orm';
+import { Hono } from 'hono';
+import { getDb, schema } from '../db';
+import { authMiddleware } from '../middlewares/auth';
+import { memoryStore } from '../services/store';
+import type { AppEnv } from '../types/env';
 
 export const orderRoutes = new Hono<AppEnv>()
   .use('*', authMiddleware)
 
-  .post(
-    '/',
-    zValidator('json', createOrderSchema, (result, c) => {
-      if (!result.success) {
-        const firstError = result.error.issues?.[0]?.message || 'Input data pesanan tidak valid';
-        return c.json(
-          {
-            success: false,
-            error: {
-              code: 'VALIDATION_ERROR',
-              message: firstError,
-              details: result.error.issues
-            }
-          },
-          400
-        );
-      }
-    }),
-    async (c) => {
-      const user = c.get('user')!;
-      const { listingId, offerId, deliveryMethod, recipientName, recipientPhone, shippingAddress, courierName } =
-        c.req.valid('json');
-      const db = getDb(c.env.DB);
+  .post('/', zValidator('json', createOrderSchema), async (c) => {
+    const user = c.get('user')!;
+    const {
+      listingId,
+      offerId,
+      deliveryMethod,
+      recipientName,
+      recipientPhone,
+      shippingAddress,
+      courierName
+    } = c.req.valid('json');
+    const db = getDb(c.env.DB);
+    const now = new Date().toISOString();
 
     if (db) {
       const listingDb = await db.query.listings.findFirst({
@@ -41,11 +31,46 @@ export const orderRoutes = new Hono<AppEnv>()
       });
 
       if (!listingDb) {
-        return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Barang tidak ditemukan' } }, 404);
+        return c.json(
+          { success: false, error: { code: 'NOT_FOUND', message: 'Barang tidak ditemukan' } },
+          404
+        );
+      }
+
+      if (listingDb.status !== 'ACTIVE') {
+        return c.json(
+          {
+            success: false,
+            error: {
+              code: 'LISTING_NOT_ACTIVE',
+              message: 'Barang sudah terjual atau tidak lagi aktif'
+            }
+          },
+          400
+        );
       }
 
       if (listingDb.sellerId === user.id) {
-        return c.json({ success: false, error: { code: 'INVALID_ACTION', message: 'Tidak bisa membeli barang sendiri' } }, 400);
+        return c.json(
+          {
+            success: false,
+            error: { code: 'INVALID_ACTION', message: 'Tidak bisa membeli barang sendiri' }
+          },
+          400
+        );
+      }
+
+      if (deliveryMethod === 'COD_KETEMUAN' && !listingDb.isCodAvailable) {
+        return c.json(
+          {
+            success: false,
+            error: {
+              code: 'COD_UNAVAILABLE',
+              message: 'Penjual tidak melayani metode transaksi COD'
+            }
+          },
+          400
+        );
       }
 
       let finalPrice = listingDb.price;
@@ -57,16 +82,26 @@ export const orderRoutes = new Hono<AppEnv>()
         });
         if (offer && offer.buyerId === user.id && offer.status === 'ACCEPTED') {
           finalPrice = offer.counterPrice || offer.offeredPrice;
-          await db.update(schema.offers).set({ status: 'COMPLETED' }).where(eq(schema.offers.id, offerId));
+          await db
+            .update(schema.offers)
+            .set({ status: 'COMPLETED' })
+            .where(eq(schema.offers.id, offerId));
         }
       } else {
         const activeAcceptedOffer = await db.query.offers.findFirst({
           where: eq(schema.offers.listingId, listingId)
         });
-        if (activeAcceptedOffer && activeAcceptedOffer.buyerId === user.id && activeAcceptedOffer.status === 'ACCEPTED') {
+        if (
+          activeAcceptedOffer &&
+          activeAcceptedOffer.buyerId === user.id &&
+          activeAcceptedOffer.status === 'ACCEPTED'
+        ) {
           finalPrice = activeAcceptedOffer.counterPrice || activeAcceptedOffer.offeredPrice;
           appliedOfferId = activeAcceptedOffer.id;
-          await db.update(schema.offers).set({ status: 'COMPLETED' }).where(eq(schema.offers.id, activeAcceptedOffer.id));
+          await db
+            .update(schema.offers)
+            .set({ status: 'COMPLETED' })
+            .where(eq(schema.offers.id, activeAcceptedOffer.id));
         }
       }
 
@@ -76,7 +111,6 @@ export const orderRoutes = new Hono<AppEnv>()
 
       const orderId = `ord-${Date.now()}`;
       const orderNumber = `JBB-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Date.now().toString().slice(-4)}`;
-      const now = new Date().toISOString();
 
       await db.insert(schema.orders).values({
         id: orderId,
@@ -94,12 +128,16 @@ export const orderRoutes = new Hono<AppEnv>()
         recipientName,
         recipientPhone,
         shippingAddress,
-        courierName: courierName || (deliveryMethod === 'COD_KETEMUAN' ? 'COD Langsung' : 'JNE Reguler'),
+        courierName:
+          courierName || (deliveryMethod === 'COD_KETEMUAN' ? 'COD Langsung' : 'JNE Reguler'),
         createdAt: now,
         updatedAt: now
       });
 
-      await db.update(schema.listings).set({ status: 'RESERVED' }).where(eq(schema.listings.id, listingId));
+      await db
+        .update(schema.listings)
+        .set({ status: 'RESERVED' })
+        .where(eq(schema.listings.id, listingId));
 
       const createdOrder = await db.query.orders.findFirst({
         where: eq(schema.orders.id, orderId),
@@ -123,11 +161,43 @@ export const orderRoutes = new Hono<AppEnv>()
     // Memory Store Fallback
     const listing = memoryStore.listings.find((l) => l.id === listingId);
     if (!listing) {
-      return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Barang tidak ditemukan' } }, 404);
+      return c.json(
+        { success: false, error: { code: 'NOT_FOUND', message: 'Barang tidak ditemukan' } },
+        404
+      );
+    }
+
+    if (listing.status !== 'ACTIVE') {
+      return c.json(
+        {
+          success: false,
+          error: {
+            code: 'LISTING_NOT_ACTIVE',
+            message: 'Barang sudah terjual atau tidak lagi aktif'
+          }
+        },
+        400
+      );
     }
 
     if (listing.sellerId === user.id) {
-      return c.json({ success: false, error: { code: 'INVALID_ACTION', message: 'Tidak bisa membeli barang sendiri' } }, 400);
+      return c.json(
+        {
+          success: false,
+          error: { code: 'INVALID_ACTION', message: 'Tidak bisa membeli barang sendiri' }
+        },
+        400
+      );
+    }
+
+    if (deliveryMethod === 'COD_KETEMUAN' && !listing.isCodAvailable) {
+      return c.json(
+        {
+          success: false,
+          error: { code: 'COD_UNAVAILABLE', message: 'Penjual tidak melayani metode transaksi COD' }
+        },
+        400
+      );
     }
 
     let finalPrice = listing.price;
@@ -173,9 +243,10 @@ export const orderRoutes = new Hono<AppEnv>()
       recipientName,
       recipientPhone,
       shippingAddress,
-      courierName: courierName || (deliveryMethod === 'COD_KETEMUAN' ? 'COD Langsung' : 'Kurir Rekomendasi'),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      courierName:
+        courierName || (deliveryMethod === 'COD_KETEMUAN' ? 'COD Langsung' : 'Kurir Rekomendasi'),
+      createdAt: now,
+      updatedAt: now,
       listing,
       buyer: user,
       seller: memoryStore.findUserById(listing.sellerId)
@@ -240,11 +311,17 @@ export const orderRoutes = new Hono<AppEnv>()
       });
 
       if (!order) {
-        return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } }, 404);
+        return c.json(
+          { success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } },
+          404
+        );
       }
 
       if (order.buyerId !== user.id && order.sellerId !== user.id && user.role !== 'ADMIN') {
-        return c.json({ success: false, error: { code: 'FORBIDDEN', message: 'Akses ditolak' } }, 403);
+        return c.json(
+          { success: false, error: { code: 'FORBIDDEN', message: 'Akses ditolak' } },
+          403
+        );
       }
 
       return c.json({ success: true, data: order });
@@ -252,11 +329,17 @@ export const orderRoutes = new Hono<AppEnv>()
 
     const order = memoryStore.orders.find((o) => o.id === orderId || o.orderNumber === orderId);
     if (!order) {
-      return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } }, 404);
+      return c.json(
+        { success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } },
+        404
+      );
     }
 
     if (order.buyerId !== user.id && order.sellerId !== user.id && user.role !== 'ADMIN') {
-      return c.json({ success: false, error: { code: 'FORBIDDEN', message: 'Akses ditolak' } }, 403);
+      return c.json(
+        { success: false, error: { code: 'FORBIDDEN', message: 'Akses ditolak' } },
+        403
+      );
     }
 
     return c.json({
@@ -275,6 +358,7 @@ export const orderRoutes = new Hono<AppEnv>()
     const orderId = c.req.param('id');
     const { courierName, trackingNumber } = c.req.valid('json');
     const db = getDb(c.env.DB);
+    const now = new Date().toISOString();
 
     if (db) {
       const order = await db.query.orders.findFirst({
@@ -282,11 +366,20 @@ export const orderRoutes = new Hono<AppEnv>()
       });
 
       if (!order) {
-        return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } }, 404);
+        return c.json(
+          { success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } },
+          404
+        );
       }
 
       if (order.sellerId !== user.id) {
-        return c.json({ success: false, error: { code: 'FORBIDDEN', message: 'Hanya penjual yang bisa input resi' } }, 403);
+        return c.json(
+          {
+            success: false,
+            error: { code: 'FORBIDDEN', message: 'Hanya penjual yang bisa input resi' }
+          },
+          403
+        );
       }
 
       await db
@@ -295,8 +388,8 @@ export const orderRoutes = new Hono<AppEnv>()
           courierName,
           trackingNumber,
           escrowStatus: 'IN_TRANSIT',
-          shippedAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          shippedAt: now,
+          updatedAt: now
         })
         .where(eq(schema.orders.id, orderId));
 
@@ -315,18 +408,27 @@ export const orderRoutes = new Hono<AppEnv>()
     // Memory Store Fallback
     const order = memoryStore.orders.find((o) => o.id === orderId);
     if (!order) {
-      return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } }, 404);
+      return c.json(
+        { success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } },
+        404
+      );
     }
 
     if (order.sellerId !== user.id) {
-      return c.json({ success: false, error: { code: 'FORBIDDEN', message: 'Hanya penjual yang bisa input resi' } }, 403);
+      return c.json(
+        {
+          success: false,
+          error: { code: 'FORBIDDEN', message: 'Hanya penjual yang bisa input resi' }
+        },
+        403
+      );
     }
 
     order.courierName = courierName;
     order.trackingNumber = trackingNumber;
     order.escrowStatus = 'IN_TRANSIT';
-    order.shippedAt = new Date().toISOString();
-    order.updatedAt = new Date().toISOString();
+    order.shippedAt = now;
+    order.updatedAt = now;
 
     return c.json({
       success: true,
@@ -339,6 +441,7 @@ export const orderRoutes = new Hono<AppEnv>()
     const user = c.get('user')!;
     const orderId = c.req.param('id');
     const db = getDb(c.env.DB);
+    const now = new Date().toISOString();
 
     if (db) {
       const order = await db.query.orders.findFirst({
@@ -346,20 +449,32 @@ export const orderRoutes = new Hono<AppEnv>()
       });
 
       if (!order) {
-        return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } }, 404);
+        return c.json(
+          { success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } },
+          404
+        );
       }
 
       if (order.buyerId !== user.id && user.role !== 'ADMIN') {
-        return c.json({ success: false, error: { code: 'FORBIDDEN', message: 'Hanya pembeli yang bisa konfirmasi penerimaan paket' } }, 403);
+        return c.json(
+          {
+            success: false,
+            error: {
+              code: 'FORBIDDEN',
+              message: 'Hanya pembeli yang bisa konfirmasi penerimaan paket'
+            }
+          },
+          403
+        );
       }
 
       await db
         .update(schema.orders)
         .set({
           escrowStatus: 'DELIVERED_INSPECTION',
-          deliveredAt: new Date().toISOString(),
+          deliveredAt: now,
           inspectionDeadline: new Date(Date.now() + 48 * 3600 * 1000).toISOString(),
-          updatedAt: new Date().toISOString()
+          updatedAt: now
         })
         .where(eq(schema.orders.id, orderId));
 
@@ -378,17 +493,29 @@ export const orderRoutes = new Hono<AppEnv>()
     // Memory Store Fallback
     const order = memoryStore.orders.find((o) => o.id === orderId);
     if (!order) {
-      return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } }, 404);
+      return c.json(
+        { success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } },
+        404
+      );
     }
 
     if (order.buyerId !== user.id && user.role !== 'ADMIN') {
-      return c.json({ success: false, error: { code: 'FORBIDDEN', message: 'Hanya pembeli yang bisa konfirmasi penerimaan paket' } }, 403);
+      return c.json(
+        {
+          success: false,
+          error: {
+            code: 'FORBIDDEN',
+            message: 'Hanya pembeli yang bisa konfirmasi penerimaan paket'
+          }
+        },
+        403
+      );
     }
 
     order.escrowStatus = 'DELIVERED_INSPECTION';
-    order.deliveredAt = new Date().toISOString();
+    order.deliveredAt = now;
     order.inspectionDeadline = new Date(Date.now() + 48 * 3600 * 1000).toISOString();
-    order.updatedAt = new Date().toISOString();
+    order.updatedAt = now;
 
     return c.json({
       success: true,
@@ -401,6 +528,7 @@ export const orderRoutes = new Hono<AppEnv>()
     const user = c.get('user')!;
     const orderId = c.req.param('id');
     const db = getDb(c.env.DB);
+    const now = new Date().toISOString();
 
     if (db) {
       const order = await db.query.orders.findFirst({
@@ -408,23 +536,38 @@ export const orderRoutes = new Hono<AppEnv>()
       });
 
       if (!order) {
-        return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } }, 404);
+        return c.json(
+          { success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } },
+          404
+        );
       }
 
       if (order.buyerId !== user.id && user.role !== 'ADMIN') {
-        return c.json({ success: false, error: { code: 'FORBIDDEN', message: 'Hanya pembeli yang bisa konfirmasi terima barang' } }, 403);
+        return c.json(
+          {
+            success: false,
+            error: {
+              code: 'FORBIDDEN',
+              message: 'Hanya pembeli yang bisa konfirmasi terima barang'
+            }
+          },
+          403
+        );
       }
 
       await db
         .update(schema.orders)
         .set({
           escrowStatus: 'COMPLETED',
-          deliveredAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          deliveredAt: now,
+          updatedAt: now
         })
         .where(eq(schema.orders.id, orderId));
 
-      await db.update(schema.listings).set({ status: 'SOLD' }).where(eq(schema.listings.id, order.listingId));
+      await db
+        .update(schema.listings)
+        .set({ status: 'SOLD' })
+        .where(eq(schema.listings.id, order.listingId));
 
       const updated = await db.query.orders.findFirst({
         where: eq(schema.orders.id, orderId),
@@ -441,16 +584,25 @@ export const orderRoutes = new Hono<AppEnv>()
     // Memory Store Fallback
     const order = memoryStore.orders.find((o) => o.id === orderId);
     if (!order) {
-      return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } }, 404);
+      return c.json(
+        { success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } },
+        404
+      );
     }
 
     if (order.buyerId !== user.id && user.role !== 'ADMIN') {
-      return c.json({ success: false, error: { code: 'FORBIDDEN', message: 'Hanya pembeli yang bisa konfirmasi terima barang' } }, 403);
+      return c.json(
+        {
+          success: false,
+          error: { code: 'FORBIDDEN', message: 'Hanya pembeli yang bisa konfirmasi terima barang' }
+        },
+        403
+      );
     }
 
     order.escrowStatus = 'COMPLETED';
-    order.deliveredAt = new Date().toISOString();
-    order.updatedAt = new Date().toISOString();
+    order.deliveredAt = now;
+    order.updatedAt = now;
 
     const listing = memoryStore.listings.find((l) => l.id === order.listingId);
     if (listing) {
@@ -469,6 +621,7 @@ export const orderRoutes = new Hono<AppEnv>()
     const orderId = c.req.param('id');
     const { reason, evidenceUrls } = c.req.valid('json');
     const db = getDb(c.env.DB);
+    const now = new Date().toISOString();
 
     if (db) {
       const order = await db.query.orders.findFirst({
@@ -476,11 +629,33 @@ export const orderRoutes = new Hono<AppEnv>()
       });
 
       if (!order) {
-        return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } }, 404);
+        return c.json(
+          { success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } },
+          404
+        );
       }
 
       if (order.buyerId !== user.id) {
-        return c.json({ success: false, error: { code: 'FORBIDDEN', message: 'Hanya pembeli yang bisa mengajukan komplain' } }, 403);
+        return c.json(
+          {
+            success: false,
+            error: { code: 'FORBIDDEN', message: 'Hanya pembeli yang bisa mengajukan komplain' }
+          },
+          403
+        );
+      }
+
+      if (order.escrowStatus === 'COMPLETED' || order.escrowStatus === 'CANCELLED') {
+        return c.json(
+          {
+            success: false,
+            error: {
+              code: 'INVALID_ACTION',
+              message: 'Pesanan yang telah selesai tidak dapat diajukan sengketa'
+            }
+          },
+          400
+        );
       }
 
       await db
@@ -489,7 +664,7 @@ export const orderRoutes = new Hono<AppEnv>()
           escrowStatus: 'DISPUTED',
           disputeReason: reason,
           disputeEvidenceUrls: JSON.stringify(evidenceUrls),
-          updatedAt: new Date().toISOString()
+          updatedAt: now
         })
         .where(eq(schema.orders.id, orderId));
 
@@ -508,17 +683,39 @@ export const orderRoutes = new Hono<AppEnv>()
     // Memory Store Fallback
     const order = memoryStore.orders.find((o) => o.id === orderId);
     if (!order) {
-      return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } }, 404);
+      return c.json(
+        { success: false, error: { code: 'NOT_FOUND', message: 'Pesanan tidak ditemukan' } },
+        404
+      );
     }
 
     if (order.buyerId !== user.id) {
-      return c.json({ success: false, error: { code: 'FORBIDDEN', message: 'Hanya pembeli yang bisa mengajukan komplain' } }, 403);
+      return c.json(
+        {
+          success: false,
+          error: { code: 'FORBIDDEN', message: 'Hanya pembeli yang bisa mengajukan komplain' }
+        },
+        403
+      );
+    }
+
+    if (order.escrowStatus === 'COMPLETED' || order.escrowStatus === 'CANCELLED') {
+      return c.json(
+        {
+          success: false,
+          error: {
+            code: 'INVALID_ACTION',
+            message: 'Pesanan yang telah selesai tidak dapat diajukan sengketa'
+          }
+        },
+        400
+      );
     }
 
     order.escrowStatus = 'DISPUTED';
     order.disputeReason = reason;
     order.disputeEvidenceUrls = evidenceUrls;
-    order.updatedAt = new Date().toISOString();
+    order.updatedAt = now;
 
     return c.json({
       success: true,

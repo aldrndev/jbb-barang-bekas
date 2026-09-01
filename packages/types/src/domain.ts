@@ -6,7 +6,12 @@ export type ItemCondition =
   | 'USED_FAIR'
   | 'PARTS_ONLY';
 
-export const ItemConditionLabel: Record<ItemCondition, { label: string; badge: string; description: string; score: string }> = {
+export type ListingCondition = ItemCondition;
+
+export const ItemConditionLabel: Record<
+  ItemCondition,
+  { label: string; badge: string; description: string; score: string }
+> = {
   NEW: {
     label: 'Baru (BNOB / Segel)',
     badge: '100% Baru',
@@ -71,7 +76,13 @@ export const ListingStatusLabel: Record<ListingStatus, { label: string; badge: s
   ARCHIVED: { label: 'Diarsipkan', badge: 'Arsip' }
 };
 
-export type OfferStatus = 'PENDING' | 'ACCEPTED' | 'COUNTERED' | 'REJECTED' | 'EXPIRED' | 'COMPLETED';
+export type OfferStatus =
+  | 'PENDING'
+  | 'ACCEPTED'
+  | 'COUNTERED'
+  | 'REJECTED'
+  | 'EXPIRED'
+  | 'COMPLETED';
 
 export const OfferStatusLabel: Record<OfferStatus, { label: string; badge: string }> = {
   PENDING: { label: 'Menunggu Respon Penjual', badge: 'Menunggu Respon' },
@@ -92,7 +103,10 @@ export type EscrowStatus =
   | 'DISPUTED'
   | 'CANCELLED';
 
-export const EscrowStatusLabel: Record<EscrowStatus, { label: string; badge: string; description: string }> = {
+export const EscrowStatusLabel: Record<
+  EscrowStatus,
+  { label: string; badge: string; description: string }
+> = {
   WAITING_PAYMENT: {
     label: 'Menunggu Pembayaran Rekber',
     badge: 'Menunggu Bayar',
@@ -101,7 +115,8 @@ export const EscrowStatusLabel: Record<EscrowStatus, { label: string; badge: str
   PAYMENT_CONFIRMED: {
     label: 'Dana Rekber Terverifikasi',
     badge: 'Dana Diamankan',
-    description: 'Dana aman 100% di perantara Rekber Peygo. Penjual diinstruksikan memproses pesanan.'
+    description:
+      'Dana aman 100% di perantara Rekber Peygo. Penjual diinstruksikan memproses pesanan.'
   },
   SELLER_PACKING: {
     label: 'Penjual Sedang Mengemas Paket',
@@ -116,17 +131,20 @@ export const EscrowStatusLabel: Record<EscrowStatus, { label: string; badge: str
   DELIVERED_INSPECTION: {
     label: 'Masa Inspeksi Fisik 48 Jam Aktif',
     badge: 'Inspeksi 48 Jam',
-    description: 'Barang telah diterima. Pembeli memiliki waktu 2x24 jam untuk memeriksa kondisi fisik & fungsi.'
+    description:
+      'Barang telah diterima. Pembeli memiliki waktu 2x24 jam untuk memeriksa kondisi fisik & fungsi.'
   },
   COMPLETED: {
     label: 'Transaksi Selesai',
     badge: 'Selesai',
-    description: 'Pembeli telah mengonfirmasi kesesuaian barang. Dana telah berhasil dicairkan ke saldo penjual.'
+    description:
+      'Pembeli telah mengonfirmasi kesesuaian barang. Dana telah berhasil dicairkan ke saldo penjual.'
   },
   DISPUTED: {
     label: 'Komplain Garansi 48 Jam Diajukan',
     badge: 'Komplain / Retur',
-    description: 'Pembeli mengajukan komplain karena minus barang tidak sesuai deskripsi. Dana ditahan sementara oleh tim CS.'
+    description:
+      'Pembeli mengajukan komplain karena minus barang tidak sesuai deskripsi. Dana ditahan sementara oleh tim CS.'
   },
   CANCELLED: {
     label: 'Pesanan Dibatalkan',
@@ -171,8 +189,9 @@ export interface Category {
   slug: string;
   icon: string;
   parentId?: string | null;
-  itemCount: number;
-  featured: boolean;
+  sortOrder?: number;
+  itemCount?: number;
+  featured?: boolean;
 }
 
 export interface ListingImage {
@@ -203,7 +222,7 @@ export interface Listing {
   viewCount: number;
   offerCount: number;
   favoriteCount: number;
-  
+
   // Location
   province: string;
   city: string;
@@ -211,10 +230,10 @@ export interface Listing {
   postalCode?: string | null;
   isCodAvailable: boolean;
   codMeetingPoint?: string | null;
-  
+
   // Specifications JSON (e.g. storage, RAM, color, odometer, size)
   specs?: Record<string, string | number | boolean> | null;
-  
+
   images: ListingImage[];
   seller?: UserProfile;
   category?: Category;
@@ -253,7 +272,7 @@ export interface Order {
   totalAmount: number;
   deliveryMethod: DeliveryMethod;
   escrowStatus: EscrowStatus;
-  
+
   // Shipping details
   recipientName: string;
   recipientPhone: string;
@@ -263,12 +282,12 @@ export interface Order {
   shippedAt?: string | null;
   deliveredAt?: string | null;
   inspectionDeadline?: string | null;
-  
+
   // Dispute
   disputeReason?: string | null;
   disputeEvidenceUrls?: string[] | null;
   disputeStatus?: string | null;
-  
+
   listing?: Listing;
   buyer?: UserProfile;
   seller?: UserProfile;

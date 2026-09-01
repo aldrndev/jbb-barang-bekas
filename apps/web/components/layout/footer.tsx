@@ -1,9 +1,7 @@
 'use client';
-
-import React from 'react';
+import { Lock, RefreshCw, ShieldCheck, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShieldCheck, Lock, RefreshCw, Zap, Heart } from 'lucide-react';
 import { PeygoLogoIcon } from '../common/peygo-logo';
 
 export function Footer() {
@@ -71,17 +69,28 @@ export function Footer() {
           <div className="flex items-center gap-2.5">
             <PeygoLogoIcon size="xs" />
             <span className="font-bold text-slate-800">
-              Pey<span className="bg-linear-to-r from-brand-600 to-emerald-500 bg-clip-text text-transparent">go</span>
+              Pey
+              <span className="bg-linear-to-r from-brand-600 to-emerald-500 bg-clip-text text-transparent">
+                go
+              </span>
               <span className="text-slate-400 font-normal"> &bull; Jual Beli Barang Bekas</span>
             </span>
             <span>&copy; {new Date().getFullYear()} PT Peygo Rekber Indonesia.</span>
           </div>
 
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-            <Link href="/syarat-ketentuan" className="hover:text-emerald-600 transition-colors">Syarat & Ketentuan</Link>
-            <Link href="/kebijakan-privasi" className="hover:text-emerald-600 transition-colors">Kebijakan Privasi</Link>
-            <Link href="/panduan-rekber" className="hover:text-emerald-600 transition-colors">Panduan Rekber</Link>
-            <Link href="/pusat-bantuan" className="hover:text-emerald-600 transition-colors">Pusat Bantuan</Link>
+            <Link href="/syarat-ketentuan" className="hover:text-emerald-600 transition-colors">
+              Syarat & Ketentuan
+            </Link>
+            <Link href="/kebijakan-privasi" className="hover:text-emerald-600 transition-colors">
+              Kebijakan Privasi
+            </Link>
+            <Link href="/panduan-rekber" className="hover:text-emerald-600 transition-colors">
+              Panduan Rekber
+            </Link>
+            <Link href="/pusat-bantuan" className="hover:text-emerald-600 transition-colors">
+              Pusat Bantuan
+            </Link>
           </div>
         </div>
       </div>

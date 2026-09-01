@@ -1,51 +1,33 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '../../lib/api-client';
-import { useAuth } from '../../context/auth-context';
-import { useWishlist } from '../../context/wishlist-context';
-import { useToast } from '../../context/toast-context';
-import { formatIDR, toTitleCase, cleanWhitespace } from '../../lib/utils';
-import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import {
-  User,
-  ShieldCheck,
+  AlertCircle,
   BadgeCheck,
-  Star,
-  ShoppingBag,
-  Heart,
-  MessageSquareText,
-  Plus,
+  Camera,
+  Check,
+  CheckCircle2,
+  Clock,
+  Copy,
+  CreditCard,
+  Edit3,
+  Loader2,
+  Lock,
   LogOut,
   MapPin,
-  Phone,
-  Mail,
-  Edit3,
-  CheckCircle2,
-  Lock,
-  Building,
-  CreditCard,
-  Package,
-  Calendar,
-  Sparkles,
-  ArrowRight,
-  ChevronRight,
-  RefreshCw,
-  Copy,
-  Check,
-  Upload,
-  Camera,
-  AlertCircle,
   ShieldAlert,
-  X,
-  Loader2,
-  FileText,
-  CheckCircle,
-  HelpCircle,
-  Clock
+  ShieldCheck,
+  Star,
+  User,
+  X
 } from 'lucide-react';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Breadcrumbs } from '../../components/layout/breadcrumbs';
+import { useAuth } from '../../context/auth-context';
+import { useToast } from '../../context/toast-context';
+import { useWishlist } from '../../context/wishlist-context';
+import { api } from '../../lib/api-client';
+import { cleanWhitespace, toTitleCase } from '../../lib/utils';
 
 const SUPPORTED_BANKS = [
   { code: 'BCA', name: 'Bank Central Asia (BCA)' },
@@ -80,7 +62,9 @@ export default function ProfilePage() {
   const [isEditingBank, setIsEditingBank] = useState(false);
   const [bankName, setBankName] = useState(user?.bankName || 'Bank Central Asia (BCA)');
   const [bankAccountNumber, setBankAccountNumber] = useState(user?.bankAccountNumber || '');
-  const [bankAccountHolder, setBankAccountHolder] = useState(user?.bankAccountHolder || user?.name || '');
+  const [bankAccountHolder, setBankAccountHolder] = useState(
+    user?.bankAccountHolder || user?.name || ''
+  );
   const [isSavingBank, setIsSavingBank] = useState(false);
   const [copiedRekening, setCopiedRekening] = useState(false);
 
@@ -122,7 +106,8 @@ export default function ProfilePage() {
           <div className="space-y-1">
             <h2 className="text-base sm:text-lg font-black text-slate-900">Masuk ke Akun Anda</h2>
             <p className="text-xs text-slate-500">
-              Silakan masuk atau daftar untuk mengelola profil, melihat riwayat pesanan, dan iklan Anda.
+              Silakan masuk atau daftar untuk mengelola profil, melihat riwayat pesanan, dan iklan
+              Anda.
             </p>
           </div>
           <div className="pt-2">
@@ -268,7 +253,10 @@ export default function ProfilePage() {
     if (res.success && res.data) {
       login(currentToken, res.data);
       setIsKycModalOpen(false);
-      toast.success('Dokumen KYC Terkirim', 'Pengajuan verifikasi identitas Anda sedang ditinjau oleh Tim Mediasi Bekasin.');
+      toast.success(
+        'Dokumen KYC Terkirim',
+        'Pengajuan verifikasi identitas Anda sedang ditinjau oleh Tim Mediasi Bekasin.'
+      );
     } else {
       const updatedUser = {
         ...user,
@@ -280,7 +268,10 @@ export default function ProfilePage() {
       };
       login(currentToken, updatedUser);
       setIsKycModalOpen(false);
-      toast.success('Dokumen KYC Terkirim', 'Pengajuan verifikasi identitas Anda sedang ditinjau oleh Tim Mediasi Bekasin.');
+      toast.success(
+        'Dokumen KYC Terkirim',
+        'Pengajuan verifikasi identitas Anda sedang ditinjau oleh Tim Mediasi Bekasin.'
+      );
     }
     setIsSubmittingKyc(false);
   };
@@ -330,7 +321,9 @@ export default function ProfilePage() {
 
               <div className="space-y-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-base sm:text-xl font-black text-slate-900 truncate">{toTitleCase(user.name)}</h1>
+                  <h1 className="text-base sm:text-xl font-black text-slate-900 truncate">
+                    {toTitleCase(user.name)}
+                  </h1>
                   {user.isKycVerified ? (
                     <span className="inline-flex items-center gap-1 rounded-full bg-brand-50 px-2.5 py-0.5 text-[10px] font-extrabold text-brand-900 border border-brand-200">
                       <ShieldCheck className="h-3 w-3 text-brand-600" />
@@ -364,8 +357,12 @@ export default function ProfilePage() {
                   <span>&bull;</span>
                   <span className="flex items-center gap-1 font-semibold text-amber-600">
                     <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                    <span>{user.ratingCount > 0 ? user.ratingAverage.toFixed(1) : 'Pengguna Baru'}</span>
-                    <span className="text-slate-400 font-normal">({user.ratingCount || 0} ulasan)</span>
+                    <span>
+                      {user.ratingCount > 0 ? user.ratingAverage.toFixed(1) : 'Pengguna Baru'}
+                    </span>
+                    <span className="text-slate-400 font-normal">
+                      ({user.ratingCount || 0} ulasan)
+                    </span>
                   </span>
                 </div>
               </div>
@@ -401,11 +398,15 @@ export default function ProfilePage() {
             </div>
             <div className="rounded-2xl bg-slate-50 p-3 border border-slate-200/80">
               <span className="text-[10px] font-bold text-slate-400 block">Total Transaksi</span>
-              <span className="text-sm sm:text-base font-black text-slate-900">{user.totalTransactions || 0} Selesai</span>
+              <span className="text-sm sm:text-base font-black text-slate-900">
+                {user.totalTransactions || 0} Selesai
+              </span>
             </div>
             <div className="rounded-2xl bg-slate-50 p-3 border border-slate-200/80">
               <span className="text-[10px] font-bold text-slate-400 block">Wishlist Disimpan</span>
-              <span className="text-sm sm:text-base font-black text-slate-900">{wishlistCount} Item</span>
+              <span className="text-sm sm:text-base font-black text-slate-900">
+                {wishlistCount} Item
+              </span>
             </div>
           </div>
         </div>
@@ -456,7 +457,9 @@ export default function ProfilePage() {
             <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
               <div>
                 <h3 className="text-sm sm:text-base font-black text-slate-900">Biodata Pengguna</h3>
-                <p className="text-[11px] sm:text-xs text-slate-500 font-medium">Kelola identitas publik dan kontak WhatsApp Anda.</p>
+                <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
+                  Kelola identitas publik dan kontak WhatsApp Anda.
+                </p>
               </div>
               {isSavedToast && (
                 <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800 animate-in fade-in">
@@ -468,7 +471,9 @@ export default function ProfilePage() {
             <form onSubmit={handleSaveProfile} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Nama Lengkap
+                  </label>
                   <input
                     type="text"
                     value={name}
@@ -480,7 +485,9 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Email Terdaftar</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Email Terdaftar
+                  </label>
                   <input
                     type="email"
                     value={user.email}
@@ -490,7 +497,9 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Nomor WhatsApp Aktif</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Nomor WhatsApp Aktif
+                  </label>
                   <input
                     type="tel"
                     value={phone}
@@ -502,7 +511,9 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Kota / Domisili</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Kota / Domisili
+                  </label>
                   <input
                     type="text"
                     value={city}
@@ -544,8 +555,12 @@ export default function ProfilePage() {
           <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-7 shadow-xs space-y-4 sm:space-y-5">
             <div className="border-b border-slate-100 pb-3.5 flex items-center justify-between">
               <div>
-                <h3 className="text-sm sm:text-base font-black text-slate-900">Status Keamanan & KYC</h3>
-                <p className="text-[11px] sm:text-xs text-slate-500 font-medium">Verifikasi identitas KTP dan nomor rekening pencairan Rekber Bekasin.</p>
+                <h3 className="text-sm sm:text-base font-black text-slate-900">
+                  Status Keamanan & KYC
+                </h3>
+                <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
+                  Verifikasi identitas KTP dan nomor rekening pencairan Rekber Bekasin.
+                </p>
               </div>
             </div>
 
@@ -598,7 +613,9 @@ export default function ProfilePage() {
               <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 space-y-2.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className={`h-4.5 w-4.5 ${user.phone ? 'text-brand-600' : 'text-slate-400'}`} />
+                    <CheckCircle2
+                      className={`h-4.5 w-4.5 ${user.phone ? 'text-brand-600' : 'text-slate-400'}`}
+                    />
                     <h4 className="text-xs font-bold text-slate-900">WhatsApp Notifikasi</h4>
                   </div>
                   {user.phone ? (
@@ -614,7 +631,8 @@ export default function ProfilePage() {
                 <p className="text-[11px] text-slate-600 font-medium leading-relaxed">
                   {user.phone ? (
                     <>
-                      Nomor WhatsApp <strong>{user.phone}</strong> terhubung untuk notifikasi pencairan dana Rekber & update resi kurir.
+                      Nomor WhatsApp <strong>{user.phone}</strong> terhubung untuk notifikasi
+                      pencairan dana Rekber & update resi kurir.
                     </>
                   ) : (
                     'Tambahkan nomor WhatsApp aktif untuk menerima konfirmasi pesanan & notifikasi pencairan dana.'
@@ -645,7 +663,13 @@ export default function ProfilePage() {
                     className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-bold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer shadow-2xs"
                   >
                     <Edit3 className="h-3 w-3 text-brand-600" />
-                    <span>{isEditingBank ? 'Batal' : bankAccountNumber ? 'Ubah Rekening' : '+ Tambah Rekening'}</span>
+                    <span>
+                      {isEditingBank
+                        ? 'Batal'
+                        : bankAccountNumber
+                          ? 'Ubah Rekening'
+                          : '+ Tambah Rekening'}
+                    </span>
                   </button>
                   {bankAccountNumber ? (
                     <button
@@ -653,7 +677,11 @@ export default function ProfilePage() {
                       onClick={handleCopyRekening}
                       className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-bold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer shadow-2xs"
                     >
-                      {copiedRekening ? <Check className="h-3 w-3 text-emerald-600" /> : <Copy className="h-3 w-3" />}
+                      {copiedRekening ? (
+                        <Check className="h-3 w-3 text-emerald-600" />
+                      ) : (
+                        <Copy className="h-3 w-3" />
+                      )}
                       <span>{copiedRekening ? 'Tersalin' : 'Salin No Rek'}</span>
                     </button>
                   ) : null}
@@ -661,10 +689,15 @@ export default function ProfilePage() {
               </div>
 
               {isEditingBank ? (
-                <form onSubmit={handleSaveBankAccount} className="bg-white rounded-2xl p-4 border border-brand-200 shadow-2xs space-y-3 animate-in fade-in">
+                <form
+                  onSubmit={handleSaveBankAccount}
+                  className="bg-white rounded-2xl p-4 border border-brand-200 shadow-2xs space-y-3 animate-in fade-in"
+                >
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">Nama Bank / Wallet</label>
+                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                        Nama Bank / Wallet
+                      </label>
                       <select
                         value={bankName}
                         onChange={(e) => setBankName(e.target.value)}
@@ -678,7 +711,9 @@ export default function ProfilePage() {
                       </select>
                     </div>
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">Nomor Rekening / No HP Wallet</label>
+                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                        Nomor Rekening / No HP Wallet
+                      </label>
                       <input
                         type="text"
                         required
@@ -689,7 +724,9 @@ export default function ProfilePage() {
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">Atas Nama Rekening</label>
+                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                        Atas Nama Rekening
+                      </label>
                       <input
                         type="text"
                         required
@@ -722,22 +759,33 @@ export default function ProfilePage() {
               ) : bankAccountNumber ? (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
                   <div className="rounded-xl bg-white p-3 border border-slate-200/80">
-                    <span className="text-[10px] font-bold text-slate-400 block">Bank / E-Wallet</span>
-                    <span className="font-bold text-slate-900">{bankName || 'Bank Central Asia (BCA)'}</span>
+                    <span className="text-[10px] font-bold text-slate-400 block">
+                      Bank / E-Wallet
+                    </span>
+                    <span className="font-bold text-slate-900">
+                      {bankName || 'Bank Central Asia (BCA)'}
+                    </span>
                   </div>
                   <div className="rounded-xl bg-white p-3 border border-slate-200/80">
-                    <span className="text-[10px] font-bold text-slate-400 block">Nomor Rekening</span>
+                    <span className="text-[10px] font-bold text-slate-400 block">
+                      Nomor Rekening
+                    </span>
                     <span className="font-mono font-bold text-slate-900">{bankAccountNumber}</span>
                   </div>
                   <div className="rounded-xl bg-white p-3 border border-slate-200/80">
                     <span className="text-[10px] font-bold text-slate-400 block">Atas Nama</span>
-                    <span className="font-bold text-slate-900">{bankAccountHolder || user.name}</span>
+                    <span className="font-bold text-slate-900">
+                      {bankAccountHolder || user.name}
+                    </span>
                   </div>
                 </div>
               ) : (
                 <div className="rounded-xl bg-white p-4 border border-dashed border-slate-300 text-center space-y-1.5">
                   <p className="text-xs font-bold text-slate-700">Belum Ada Rekening Pencairan</p>
-                  <p className="text-[11px] text-slate-400">Daftarkan nomor rekening bank atau e-wallet Anda untuk menerima pencairan hasil penjualan barang.</p>
+                  <p className="text-[11px] text-slate-400">
+                    Daftarkan nomor rekening bank atau e-wallet Anda untuk menerima pencairan hasil
+                    penjualan barang.
+                  </p>
                   <button
                     type="button"
                     onClick={() => setIsEditingBank(true)}
@@ -749,7 +797,8 @@ export default function ProfilePage() {
               )}
 
               <p className="text-[10px] sm:text-[11px] text-slate-500 leading-relaxed font-medium">
-                Dana penjualan otomatis dicairkan ke rekening ini setelah masa garansi fisik 48 jam berakhir tanpa sengketa.
+                Dana penjualan otomatis dicairkan ke rekening ini setelah masa garansi fisik 48 jam
+                berakhir tanpa sengketa.
               </p>
             </div>
           </div>
@@ -759,17 +808,25 @@ export default function ProfilePage() {
         {activeTab === 'reputation' && (
           <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-7 shadow-xs space-y-4">
             <div className="border-b border-slate-100 pb-3.5">
-              <h3 className="text-sm sm:text-base font-black text-slate-900">Ulasan & Reputasi Transaksi</h3>
-              <p className="text-[11px] sm:text-xs text-slate-500 font-medium">Riwayat ulasan dari pembeli dan penjual terverifikasi Rekber.</p>
+              <h3 className="text-sm sm:text-base font-black text-slate-900">
+                Ulasan & Reputasi Transaksi
+              </h3>
+              <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
+                Riwayat ulasan dari pembeli dan penjual terverifikasi Rekber.
+              </p>
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 flex items-center gap-4">
-              <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${user.ratingCount > 0 ? 'bg-amber-500' : 'bg-slate-300'} text-white font-black text-lg shrink-0 shadow-xs`}>
+              <div
+                className={`flex h-12 w-12 items-center justify-center rounded-2xl ${user.ratingCount > 0 ? 'bg-amber-500' : 'bg-slate-300'} text-white font-black text-lg shrink-0 shadow-xs`}
+              >
                 ★ {user.ratingCount > 0 ? user.ratingAverage.toFixed(1) : '-'}
               </div>
               <div className="space-y-0.5 text-xs">
                 <span className="font-bold text-slate-900 block">
-                  {user.ratingCount > 0 ? `Rating Rata-rata (${user.ratingAverage.toFixed(1)} / 5.0)` : 'Pengguna Baru (Belum Ada Ulasan)'}
+                  {user.ratingCount > 0
+                    ? `Rating Rata-rata (${user.ratingAverage.toFixed(1)} / 5.0)`
+                    : 'Pengguna Baru (Belum Ada Ulasan)'}
                 </span>
                 <span className="text-slate-600 text-[11px]">
                   {user.ratingCount > 0
@@ -792,8 +849,12 @@ export default function ProfilePage() {
                   <BadgeCheck className="h-4.5 w-4.5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-slate-900">Verifikasi Identitas Resmi (KYC)</h3>
-                  <p className="text-[10px] text-slate-500">Layanan Rekber Terpercaya Anti-Penipuan</p>
+                  <h3 className="text-sm font-black text-slate-900">
+                    Verifikasi Identitas Resmi (KYC)
+                  </h3>
+                  <p className="text-[10px] text-slate-500">
+                    Layanan Rekber Terpercaya Anti-Penipuan
+                  </p>
                 </div>
               </div>
               <button
@@ -839,10 +900,16 @@ export default function ProfilePage() {
                   />
                   {ktpImageUrl ? (
                     <div className="flex items-center gap-3">
-                      <img src={ktpImageUrl} alt="KTP" className="h-14 w-20 object-cover rounded-xl border border-slate-200" />
+                      <img
+                        src={ktpImageUrl}
+                        alt="KTP"
+                        className="h-14 w-20 object-cover rounded-xl border border-slate-200"
+                      />
                       <div className="text-left">
                         <span className="font-bold text-slate-900 block">Foto KTP Terpilih</span>
-                        <span className="text-[10px] text-brand-600 font-bold">Klik untuk ganti foto</span>
+                        <span className="text-[10px] text-brand-600 font-bold">
+                          Klik untuk ganti foto
+                        </span>
                       </div>
                     </div>
                   ) : (
@@ -872,23 +939,32 @@ export default function ProfilePage() {
                   />
                   {selfieImageUrl ? (
                     <div className="flex items-center gap-3">
-                      <img src={selfieImageUrl} alt="Selfie" className="h-14 w-14 object-cover rounded-xl border border-slate-200" />
+                      <img
+                        src={selfieImageUrl}
+                        alt="Selfie"
+                        className="h-14 w-14 object-cover rounded-xl border border-slate-200"
+                      />
                       <div className="text-left">
                         <span className="font-bold text-slate-900 block">Foto Selfie Terpilih</span>
-                        <span className="text-[10px] text-brand-600 font-bold">Klik untuk ganti foto</span>
+                        <span className="text-[10px] text-brand-600 font-bold">
+                          Klik untuk ganti foto
+                        </span>
                       </div>
                     </div>
                   ) : (
                     <div className="space-y-1">
                       <User className="h-6 w-6 text-brand-600 mx-auto" />
-                      <span className="font-bold text-slate-800 block">Pilih / Ambil Foto Selfie + KTP</span>
+                      <span className="font-bold text-slate-800 block">
+                        Pilih / Ambil Foto Selfie + KTP
+                      </span>
                     </div>
                   )}
                 </div>
               </div>
 
               <div className="rounded-xl bg-slate-50 p-2.5 border border-slate-200 text-[10px] text-slate-500 leading-relaxed">
-                🔒 Data KTP dienkripsi dengan standar perbankan dan hanya digunakan untuk verifikasi rekening bersama anti-penipuan.
+                🔒 Data KTP dienkripsi dengan standar perbankan dan hanya digunakan untuk verifikasi
+                rekening bersama anti-penipuan.
               </div>
 
               <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
@@ -904,7 +980,11 @@ export default function ProfilePage() {
                   disabled={isSubmittingKyc}
                   className="flex items-center gap-1.5 rounded-full bg-brand-600 hover:bg-brand-700 px-5 py-2 text-xs font-bold text-white shadow-md shadow-brand-600/25 cursor-pointer disabled:opacity-50"
                 >
-                  {isSubmittingKyc ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ShieldCheck className="h-3.5 w-3.5" />}
+                  {isSubmittingKyc ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <ShieldCheck className="h-3.5 w-3.5" />
+                  )}
                   <span>{isSubmittingKyc ? 'Memverifikasi...' : 'Kirim & Verifikasi KYC'}</span>
                 </button>
               </div>

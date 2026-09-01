@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import '../styles/globals.css';
-import { AuthProvider } from '../context/auth-context';
-import { WishlistProvider } from '../context/wishlist-context';
-import { ToastProvider } from '../context/toast-context';
-import { QueryProvider } from '../providers/query-provider';
-import { Navbar } from '../components/layout/navbar';
-import { MobileBottomBar } from '../components/layout/mobile-bottom-bar';
-import { Footer } from '../components/layout/footer';
 import { AuthModal } from '../components/auth/auth-modal';
 import { ScrollToTop } from '../components/common/scroll-to-top';
+import { Footer } from '../components/layout/footer';
+import { MobileBottomBar } from '../components/layout/mobile-bottom-bar';
+import { Navbar } from '../components/layout/navbar';
+import { AuthProvider } from '../context/auth-context';
+import { ToastProvider } from '../context/toast-context';
+import { WishlistProvider } from '../context/wishlist-context';
+import { QueryProvider } from '../providers/query-provider';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://peygo.id';
 
@@ -43,12 +43,8 @@ export const metadata: Metadata = {
     canonical: '/'
   },
   icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' }
-    ],
-    apple: [
-      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }
-    ]
+    icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
+    apple: [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }]
   },
   openGraph: {
     type: 'website',
@@ -98,7 +94,8 @@ const jsonLd = {
       name: 'Peygo',
       url: siteUrl,
       logo: `${siteUrl}/favicon.svg`,
-      description: 'Platform jual beli barang bekas aman dan terpercaya dengan rekening bersama di Indonesia.',
+      description:
+        'Platform jual beli barang bekas aman dan terpercaya dengan rekening bersama di Indonesia.',
       sameAs: [
         'https://instagram.com/peygo.id',
         'https://twitter.com/peygo_id',

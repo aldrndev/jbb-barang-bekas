@@ -1,12 +1,10 @@
 'use client';
-
-import React from 'react';
-import Link from 'next/link';
 import type { Listing } from '@jbb/types';
-import { formatIDR, formatTimeAgo, toTitleCase } from '../../lib/utils';
-import { ConditionBadge } from './condition-badge';
-import { MapPin, ShieldCheck, Star, Zap, MessageSquareQuote, Heart, Trash2 } from 'lucide-react';
+import { Heart, MapPin, MessageSquareQuote, ShieldCheck, Trash2, Zap } from 'lucide-react';
+import Link from 'next/link';
 import { useWishlist } from '../../context/wishlist-context';
+import { formatIDR, toTitleCase } from '../../lib/utils';
+import { ConditionBadge } from './condition-badge';
 
 interface ListingCardProps {
   listing: Listing;
@@ -17,7 +15,10 @@ export function ListingCard({ listing, showRemoveFromWishlist = false }: Listing
   const { isWishlisted, toggleWishlist } = useWishlist();
   const wishlisted = isWishlisted(listing.id);
 
-  const primaryImage = listing.images.find((img) => img.isPrimary)?.url || listing.images[0]?.url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80';
+  const primaryImage =
+    listing.images.find((img) => img.isPrimary)?.url ||
+    listing.images[0]?.url ||
+    'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80';
 
   const discountPercent = listing.originalPrice
     ? Math.round(((listing.originalPrice - listing.price) / listing.originalPrice) * 100)
@@ -26,7 +27,10 @@ export function ListingCard({ listing, showRemoveFromWishlist = false }: Listing
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-3xl border border-slate-200/60 bg-white shadow-2xs hover:border-brand-500/40 hover:shadow-md transition-colors duration-150">
       {/* Image Container */}
-      <Link href={`/listing/${listing.slug || listing.id}`} className="relative aspect-4/3 w-full overflow-hidden bg-slate-50/80 block">
+      <Link
+        href={`/listing/${listing.slug || listing.id}`}
+        className="relative aspect-4/3 w-full overflow-hidden bg-slate-50/80 block"
+      >
         <img
           src={primaryImage}
           alt={listing.title}
@@ -92,7 +96,10 @@ export function ListingCard({ listing, showRemoveFromWishlist = false }: Listing
       )}
 
       {/* Card Content */}
-      <Link href={`/listing/${listing.slug || listing.id}`} className="flex flex-1 flex-col p-3.5 sm:p-4">
+      <Link
+        href={`/listing/${listing.slug || listing.id}`}
+        className="flex flex-1 flex-col p-3.5 sm:p-4"
+      >
         {/* Title */}
         <h3 className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-2 leading-snug group-hover:text-brand-600 transition-colors">
           {listing.title}

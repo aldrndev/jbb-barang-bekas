@@ -14,23 +14,70 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Jakarta Selatan',
-        districts: ['Kebayoran Baru', 'Kebayoran Lama', 'Cilandak', 'Pesanggrahan', 'Pasar Minggu', 'Jagakarsa', 'Mampang Prapatan', 'Pancoran', 'Tebet', 'Setiabudi']
+        districts: [
+          'Kebayoran Baru',
+          'Kebayoran Lama',
+          'Cilandak',
+          'Pesanggrahan',
+          'Pasar Minggu',
+          'Jagakarsa',
+          'Mampang Prapatan',
+          'Pancoran',
+          'Tebet',
+          'Setiabudi'
+        ]
       },
       {
         name: 'Jakarta Pusat',
-        districts: ['Gambir', 'Tanah Abang', 'Menteng', 'Senen', 'Cempaka Putih', 'Johar Baru', 'Kemayoran', 'Sawah Besar']
+        districts: [
+          'Gambir',
+          'Tanah Abang',
+          'Menteng',
+          'Senen',
+          'Cempaka Putih',
+          'Johar Baru',
+          'Kemayoran',
+          'Sawah Besar'
+        ]
       },
       {
         name: 'Jakarta Barat',
-        districts: ['Cengkareng', 'Grogol Petamburan', 'Kalideres', 'Kebon Jeruk', 'Kembangan', 'Palmerah', 'Taman Sari', 'Tambora']
+        districts: [
+          'Cengkareng',
+          'Grogol Petamburan',
+          'Kalideres',
+          'Kebon Jeruk',
+          'Kembangan',
+          'Palmerah',
+          'Taman Sari',
+          'Tambora'
+        ]
       },
       {
         name: 'Jakarta Timur',
-        districts: ['Matraman', 'Pulo Gadung', 'Jatinegara', 'Duren Sawit', 'Kramat Jati', 'Makasar', 'Pasar Rebo', 'Ciracas', 'Cipayung', 'Cakung']
+        districts: [
+          'Matraman',
+          'Pulo Gadung',
+          'Jatinegara',
+          'Duren Sawit',
+          'Kramat Jati',
+          'Makasar',
+          'Pasar Rebo',
+          'Ciracas',
+          'Cipayung',
+          'Cakung'
+        ]
       },
       {
         name: 'Jakarta Utara',
-        districts: ['Penjaringan', 'Tanjung Priok', 'Koja', 'Cilincing', 'Pademangan', 'Kelapa Gading']
+        districts: [
+          'Penjaringan',
+          'Tanjung Priok',
+          'Koja',
+          'Cilincing',
+          'Pademangan',
+          'Kelapa Gading'
+        ]
       },
       {
         name: 'Kepulauan Seribu',
@@ -43,27 +90,112 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Bandung',
-        districts: ['Coblong', 'Cicendo', 'Sumur Bandung', 'Andir', 'Astanaanyar', 'Babakan Ciparay', 'Bandung Kidul', 'Bandung Kulon', 'Bandung Wetan', 'Batununggal', 'Bojongloa Kaler', 'Bojongloa Kidul', 'Buahbatu', 'Cibeunying Kaler', 'Cibeunying Kidul', 'Cibiru', 'Cidadap', 'Cinambo', 'Gedebage', 'Kiaracondong', 'Lengkong', 'Mandalajati', 'Panyileukan', 'Rancasari', 'Regol', 'Sukajadi', 'Sukasari', 'Ujungberung']
+        districts: [
+          'Coblong',
+          'Cicendo',
+          'Sumur Bandung',
+          'Andir',
+          'Astanaanyar',
+          'Babakan Ciparay',
+          'Bandung Kidul',
+          'Bandung Kulon',
+          'Bandung Wetan',
+          'Batununggal',
+          'Bojongloa Kaler',
+          'Bojongloa Kidul',
+          'Buahbatu',
+          'Cibeunying Kaler',
+          'Cibeunying Kidul',
+          'Cibiru',
+          'Cidadap',
+          'Cinambo',
+          'Gedebage',
+          'Kiaracondong',
+          'Lengkong',
+          'Mandalajati',
+          'Panyileukan',
+          'Rancasari',
+          'Regol',
+          'Sukajadi',
+          'Sukasari',
+          'Ujungberung'
+        ]
       },
       {
         name: 'Kota Bekasi',
-        districts: ['Bekasi Barat', 'Bekasi Timur', 'Bekasi Selatan', 'Bekasi Utara', 'Medan Satria', 'Rawalumbu', 'Pondok Gede', 'Jatiasih', 'Jatisampurna', 'Mustika Jaya', 'Bantargebang', 'Pondok Melati']
+        districts: [
+          'Bekasi Barat',
+          'Bekasi Timur',
+          'Bekasi Selatan',
+          'Bekasi Utara',
+          'Medan Satria',
+          'Rawalumbu',
+          'Pondok Gede',
+          'Jatiasih',
+          'Jatisampurna',
+          'Mustika Jaya',
+          'Bantargebang',
+          'Pondok Melati'
+        ]
       },
       {
         name: 'Kota Depok',
-        districts: ['Beji', 'Pancoran Mas', 'Cipayung', 'Sukmajaya', 'Cilodong', 'Cimanggis', 'Tapos', 'Sawangan', 'Bojongsari', 'Limo', 'Cinere']
+        districts: [
+          'Beji',
+          'Pancoran Mas',
+          'Cipayung',
+          'Sukmajaya',
+          'Cilodong',
+          'Cimanggis',
+          'Tapos',
+          'Sawangan',
+          'Bojongsari',
+          'Limo',
+          'Cinere'
+        ]
       },
       {
         name: 'Kota Bogor',
-        districts: ['Bogor Barat', 'Bogor Selatan', 'Bogor Tengah', 'Bogor Timur', 'Bogor Utara', 'Tanah Sareal']
+        districts: [
+          'Bogor Barat',
+          'Bogor Selatan',
+          'Bogor Tengah',
+          'Bogor Timur',
+          'Bogor Utara',
+          'Tanah Sareal'
+        ]
       },
       {
         name: 'Kab. Bogor',
-        districts: ['Cibinong', 'Babakan Madang', 'Bojonggede', 'Ciawi', 'Ciampea', 'Cileungsi', 'Gunung Putri', 'Kemang', 'Klapanunggal', 'Parung', 'Citeureup', 'Sukaraja']
+        districts: [
+          'Cibinong',
+          'Babakan Madang',
+          'Bojonggede',
+          'Ciawi',
+          'Ciampea',
+          'Cileungsi',
+          'Gunung Putri',
+          'Kemang',
+          'Klapanunggal',
+          'Parung',
+          'Citeureup',
+          'Sukaraja'
+        ]
       },
       {
         name: 'Kab. Bekasi',
-        districts: ['Cikarang Barat', 'Cikarang Pusat', 'Cikarang Selatan', 'Cikarang Timur', 'Cikarang Utara', 'Tambun Selatan', 'Tambun Utara', 'Cibitung', 'Setu', 'Tarumajaya']
+        districts: [
+          'Cikarang Barat',
+          'Cikarang Pusat',
+          'Cikarang Selatan',
+          'Cikarang Timur',
+          'Cikarang Utara',
+          'Tambun Selatan',
+          'Tambun Utara',
+          'Cibitung',
+          'Setu',
+          'Tarumajaya'
+        ]
       },
       {
         name: 'Kota Cimahi',
@@ -71,7 +203,18 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
       },
       {
         name: 'Kab. Bandung',
-        districts: ['Baleendah', 'Banjaran', 'Bojongsoang', 'Cangkuang', 'Cicalengka', 'Cileunyi', 'Katapang', 'Margaasih', 'Margahayu', 'Soreang']
+        districts: [
+          'Baleendah',
+          'Banjaran',
+          'Bojongsoang',
+          'Cangkuang',
+          'Cicalengka',
+          'Cileunyi',
+          'Katapang',
+          'Margaasih',
+          'Margahayu',
+          'Soreang'
+        ]
       },
       {
         name: 'Kab. Bandung Barat',
@@ -83,7 +226,15 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
       },
       {
         name: 'Kota Sukabumi',
-        districts: ['Baros', 'Cibeureum', 'Cikole', 'Citamiang', 'Gunungpuyuh', 'Lembursitu', 'Warudoyong']
+        districts: [
+          'Baros',
+          'Cibeureum',
+          'Cikole',
+          'Citamiang',
+          'Gunungpuyuh',
+          'Lembursitu',
+          'Warudoyong'
+        ]
       },
       {
         name: 'Kota Tasikmalaya',
@@ -91,7 +242,14 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
       },
       {
         name: 'Kab. Karawang',
-        districts: ['Karawang Barat', 'Karawang Timur', 'Telukjambe Timur', 'Telukjambe Barat', 'Klari', 'Cikampek']
+        districts: [
+          'Karawang Barat',
+          'Karawang Timur',
+          'Telukjambe Timur',
+          'Telukjambe Barat',
+          'Klari',
+          'Cikampek'
+        ]
       }
     ]
   },
@@ -100,15 +258,49 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Tangerang Selatan',
-        districts: ['Serpong', 'Serpong Utara', 'Pondok Aren', 'Ciputat', 'Ciputat Timur', 'Pamulang', 'Setu']
+        districts: [
+          'Serpong',
+          'Serpong Utara',
+          'Pondok Aren',
+          'Ciputat',
+          'Ciputat Timur',
+          'Pamulang',
+          'Setu'
+        ]
       },
       {
         name: 'Kota Tangerang',
-        districts: ['Batuceper', 'Benda', 'Cibodas', 'Ciledug', 'Cipondoh', 'Jatiuwung', 'Karangtengah', 'Karawaci', 'Larangan', 'Neglasari', 'Periuk', 'Pinang', 'Tangerang']
+        districts: [
+          'Batuceper',
+          'Benda',
+          'Cibodas',
+          'Ciledug',
+          'Cipondoh',
+          'Jatiuwung',
+          'Karangtengah',
+          'Karawaci',
+          'Larangan',
+          'Neglasari',
+          'Periuk',
+          'Pinang',
+          'Tangerang'
+        ]
       },
       {
         name: 'Kab. Tangerang',
-        districts: ['Balaraja', 'Cikupa', 'Curug', 'Kelapa Dua', 'Kosambi', 'Legok', 'Pagedangan', 'Pasar Kemis', 'Sepatan', 'Teluknaga', 'Tigaraksa']
+        districts: [
+          'Balaraja',
+          'Cikupa',
+          'Curug',
+          'Kelapa Dua',
+          'Kosambi',
+          'Legok',
+          'Pagedangan',
+          'Pasar Kemis',
+          'Sepatan',
+          'Teluknaga',
+          'Tigaraksa'
+        ]
       },
       {
         name: 'Kota Serang',
@@ -116,7 +308,16 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
       },
       {
         name: 'Kota Cilegon',
-        districts: ['Cibeber', 'Cilegon', 'Citangkil', 'Ciwandan', 'Gerogol', 'Jombang', 'Pulomerak', 'Purwakarta']
+        districts: [
+          'Cibeber',
+          'Cilegon',
+          'Citangkil',
+          'Ciwandan',
+          'Gerogol',
+          'Jombang',
+          'Pulomerak',
+          'Purwakarta'
+        ]
       },
       {
         name: 'Kab. Serang',
@@ -137,15 +338,57 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Yogyakarta',
-        districts: ['Danurejan', 'Gedongtengen', 'Gondokusuman', 'Gondomanan', 'Jetis', 'Kotagede', 'Kraton', 'Mantrijeron', 'Mergangsan', 'Ngampilan', 'Pakualaman', 'Tegalrejo', 'Umbulharjo', 'Wirobrajan']
+        districts: [
+          'Danurejan',
+          'Gedongtengen',
+          'Gondokusuman',
+          'Gondomanan',
+          'Jetis',
+          'Kotagede',
+          'Kraton',
+          'Mantrijeron',
+          'Mergangsan',
+          'Ngampilan',
+          'Pakualaman',
+          'Tegalrejo',
+          'Umbulharjo',
+          'Wirobrajan'
+        ]
       },
       {
         name: 'Kab. Sleman',
-        districts: ['Depok', 'Mlati', 'Ngaglik', 'Gamping', 'Godean', 'Kalasan', 'Berbah', 'Prambanan', 'Sleman', 'Tempel', 'Turi', 'Pakem', 'Cangkringan']
+        districts: [
+          'Depok',
+          'Mlati',
+          'Ngaglik',
+          'Gamping',
+          'Godean',
+          'Kalasan',
+          'Berbah',
+          'Prambanan',
+          'Sleman',
+          'Tempel',
+          'Turi',
+          'Pakem',
+          'Cangkringan'
+        ]
       },
       {
         name: 'Kab. Bantul',
-        districts: ['Bantul', 'Banguntapan', 'Sewon', 'Kasihan', 'Piyungan', 'Pleret', 'Imogiri', 'Kretek', 'Sanden', 'Sedayu', 'Pandak', 'Srandakan']
+        districts: [
+          'Bantul',
+          'Banguntapan',
+          'Sewon',
+          'Kasihan',
+          'Piyungan',
+          'Pleret',
+          'Imogiri',
+          'Kretek',
+          'Sanden',
+          'Sedayu',
+          'Pandak',
+          'Srandakan'
+        ]
       },
       {
         name: 'Kab. Kulon Progo',
@@ -162,7 +405,23 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Semarang',
-        districts: ['Banyumanik', 'Candisari', 'Gajahmungkur', 'Gayamsari', 'Genuk', 'Gunungpati', 'Ngaliyan', 'Pedurungan', 'Semarang Barat', 'Semarang Selatan', 'Semarang Tengah', 'Semarang Timur', 'Semarang Utara', 'Tembalang', 'Tugu']
+        districts: [
+          'Banyumanik',
+          'Candisari',
+          'Gajahmungkur',
+          'Gayamsari',
+          'Genuk',
+          'Gunungpati',
+          'Ngaliyan',
+          'Pedurungan',
+          'Semarang Barat',
+          'Semarang Selatan',
+          'Semarang Tengah',
+          'Semarang Timur',
+          'Semarang Utara',
+          'Tembalang',
+          'Tugu'
+        ]
       },
       {
         name: 'Kota Surakarta (Solo)',
@@ -174,7 +433,14 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
       },
       {
         name: 'Kab. Klaten',
-        districts: ['Klaten Utara', 'Klaten Tengah', 'Klaten Selatan', 'Delanggu', 'Prambanan', 'Jogonalan']
+        districts: [
+          'Klaten Utara',
+          'Klaten Tengah',
+          'Klaten Selatan',
+          'Delanggu',
+          'Prambanan',
+          'Jogonalan'
+        ]
       },
       {
         name: 'Kota Magelang',
@@ -186,7 +452,12 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
       },
       {
         name: 'Kota Pekalongan',
-        districts: ['Pekalongan Barat', 'Pekalongan Selatan', 'Pekalongan Timur', 'Pekalongan Utara']
+        districts: [
+          'Pekalongan Barat',
+          'Pekalongan Selatan',
+          'Pekalongan Timur',
+          'Pekalongan Utara'
+        ]
       },
       {
         name: 'Kota Tegal',
@@ -194,7 +465,14 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
       },
       {
         name: 'Kab. Banyumas (Purwokerto)',
-        districts: ['Purwokerto Barat', 'Purwokerto Selatan', 'Purwokerto Timur', 'Purwokerto Utara', 'Baturraden', 'Sokaraja']
+        districts: [
+          'Purwokerto Barat',
+          'Purwokerto Selatan',
+          'Purwokerto Timur',
+          'Purwokerto Utara',
+          'Baturraden',
+          'Sokaraja'
+        ]
       },
       {
         name: 'Kab. Kudus',
@@ -207,7 +485,32 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Surabaya',
-        districts: ['Gubeng', 'Wonokromo', 'Tegalsari', 'Genteng', 'Bubutan', 'Rungkut', 'Sukolilo', 'Mulyorejo', 'Kenjeran', 'Krembangan', 'Pabean Cantian', 'Semampir', 'Sawahan', 'Wonocolo', 'Wiyung', 'Dukuh Pakis', 'Gayungan', 'Jambangan', 'Karangpilang', 'Sambikerep', 'Tandes', 'Lakarsantri', 'Pakal', 'Benowo']
+        districts: [
+          'Gubeng',
+          'Wonokromo',
+          'Tegalsari',
+          'Genteng',
+          'Bubutan',
+          'Rungkut',
+          'Sukolilo',
+          'Mulyorejo',
+          'Kenjeran',
+          'Krembangan',
+          'Pabean Cantian',
+          'Semampir',
+          'Sawahan',
+          'Wonocolo',
+          'Wiyung',
+          'Dukuh Pakis',
+          'Gayungan',
+          'Jambangan',
+          'Karangpilang',
+          'Sambikerep',
+          'Tandes',
+          'Lakarsantri',
+          'Pakal',
+          'Benowo'
+        ]
       },
       {
         name: 'Kota Malang',
@@ -219,7 +522,17 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
       },
       {
         name: 'Kab. Sidoarjo',
-        districts: ['Sidoarjo', 'Waru', 'Candi', 'Gedangan', 'Sedati', 'Buduran', 'Taman', 'Krian', 'Sukodono']
+        districts: [
+          'Sidoarjo',
+          'Waru',
+          'Candi',
+          'Gedangan',
+          'Sedati',
+          'Buduran',
+          'Taman',
+          'Krian',
+          'Sukodono'
+        ]
       },
       {
         name: 'Kab. Gresik',
@@ -273,11 +586,39 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Medan',
-        districts: ['Medan Kota', 'Medan Barat', 'Medan Baru', 'Medan Petisah', 'Medan Sunggal', 'Medan Selayang', 'Medan Tembung', 'Medan Helvetia', 'Medan Denai', 'Medan Johor', 'Medan Amplas', 'Medan Timur', 'Medan Perjuangan', 'Medan Maimun', 'Medan Polonia', 'Medan Marelan', 'Medan Labuhan', 'Medan Belawan', 'Medan Deli', 'Medan Tuntungan']
+        districts: [
+          'Medan Kota',
+          'Medan Barat',
+          'Medan Baru',
+          'Medan Petisah',
+          'Medan Sunggal',
+          'Medan Selayang',
+          'Medan Tembung',
+          'Medan Helvetia',
+          'Medan Denai',
+          'Medan Johor',
+          'Medan Amplas',
+          'Medan Timur',
+          'Medan Perjuangan',
+          'Medan Maimun',
+          'Medan Polonia',
+          'Medan Marelan',
+          'Medan Labuhan',
+          'Medan Belawan',
+          'Medan Deli',
+          'Medan Tuntungan'
+        ]
       },
       {
         name: 'Kab. Deli Serdang',
-        districts: ['Lubuk Pakam', 'Percut Sei Tuan', 'Sunggal', 'Tanjung Morawa', 'Pancur Batu', 'Batang Kuis']
+        districts: [
+          'Lubuk Pakam',
+          'Percut Sei Tuan',
+          'Sunggal',
+          'Tanjung Morawa',
+          'Pancur Batu',
+          'Batang Kuis'
+        ]
       },
       {
         name: 'Kota Binjai',
@@ -285,7 +626,16 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
       },
       {
         name: 'Kota Pematangsiantar',
-        districts: ['Siantar Barat', 'Siantar Marihat', 'Siantar Marimbun', 'Siantar Martoba', 'Siantar Selatan', 'Siantar Sitalasari', 'Siantar Timur', 'Siantar Utara']
+        districts: [
+          'Siantar Barat',
+          'Siantar Marihat',
+          'Siantar Marimbun',
+          'Siantar Martoba',
+          'Siantar Selatan',
+          'Siantar Sitalasari',
+          'Siantar Timur',
+          'Siantar Utara'
+        ]
       }
     ]
   },
@@ -294,7 +644,19 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Padang',
-        districts: ['Padang Barat', 'Padang Timur', 'Padang Selatan', 'Padang Utara', 'Koto Tangah', 'Kuranji', 'Nanggalo', 'Lubuk Begalung', 'Lubuk Kilangan', 'Pauh', 'Bungus Teluk Kabung']
+        districts: [
+          'Padang Barat',
+          'Padang Timur',
+          'Padang Selatan',
+          'Padang Utara',
+          'Koto Tangah',
+          'Kuranji',
+          'Nanggalo',
+          'Lubuk Begalung',
+          'Lubuk Kilangan',
+          'Pauh',
+          'Bungus Teluk Kabung'
+        ]
       },
       {
         name: 'Kota Bukittinggi',
@@ -302,7 +664,13 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
       },
       {
         name: 'Kota Payakumbuh',
-        districts: ['Payakumbuh Barat', 'Payakumbuh Selatan', 'Payakumbuh Timur', 'Payakumbuh Utara', 'Lamposi Tigo Nagori']
+        districts: [
+          'Payakumbuh Barat',
+          'Payakumbuh Selatan',
+          'Payakumbuh Timur',
+          'Payakumbuh Utara',
+          'Lamposi Tigo Nagori'
+        ]
       }
     ]
   },
@@ -311,11 +679,34 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Pekanbaru',
-        districts: ['Bukit Raya', 'Marpoyan Damai', 'Payung Sekaki', 'Pekanbaru Kota', 'Rumbai', 'Rumbai Barat', 'Rumbai Timur', 'Sail', 'Senapelan', 'Sukajadi', 'Tenayan Raya', 'Tuah Madani', 'Kulim', 'Binawidya', 'Lima Puluh']
+        districts: [
+          'Bukit Raya',
+          'Marpoyan Damai',
+          'Payung Sekaki',
+          'Pekanbaru Kota',
+          'Rumbai',
+          'Rumbai Barat',
+          'Rumbai Timur',
+          'Sail',
+          'Senapelan',
+          'Sukajadi',
+          'Tenayan Raya',
+          'Tuah Madani',
+          'Kulim',
+          'Binawidya',
+          'Lima Puluh'
+        ]
       },
       {
         name: 'Kota Dumai',
-        districts: ['Dumai Barat', 'Dumai Kota', 'Dumai Selatan', 'Dumai Timur', 'Medang Kampai', 'Sungai Sembilan']
+        districts: [
+          'Dumai Barat',
+          'Dumai Kota',
+          'Dumai Selatan',
+          'Dumai Timur',
+          'Medang Kampai',
+          'Sungai Sembilan'
+        ]
       },
       {
         name: 'Kab. Kampar',
@@ -328,11 +719,26 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Batam',
-        districts: ['Batam Kota', 'Batu Ampar', 'Bengkong', 'Lubuk Baja', 'Nongsa', 'Sekupang', 'Sagulung', 'Batu Aji', 'Sei Beduk']
+        districts: [
+          'Batam Kota',
+          'Batu Ampar',
+          'Bengkong',
+          'Lubuk Baja',
+          'Nongsa',
+          'Sekupang',
+          'Sagulung',
+          'Batu Aji',
+          'Sei Beduk'
+        ]
       },
       {
         name: 'Kota Tanjungpinang',
-        districts: ['Bukit Bestari', 'Tanjungpinang Barat', 'Tanjungpinang Kota', 'Tanjungpinang Timur']
+        districts: [
+          'Bukit Bestari',
+          'Tanjungpinang Barat',
+          'Tanjungpinang Kota',
+          'Tanjungpinang Timur'
+        ]
       }
     ]
   },
@@ -341,11 +747,31 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Palembang',
-        districts: ['Ilir Barat I', 'Ilir Barat II', 'Ilir Timur I', 'Ilir Timur II', 'Ilir Timur III', 'Seberang Ulu I', 'Seberang Ulu II', 'Sukarami', 'Alang-Alang Lebar', 'Sako', 'Kemuning', 'Plaju', 'Kalidoni', 'Bukit Kecil']
+        districts: [
+          'Ilir Barat I',
+          'Ilir Barat II',
+          'Ilir Timur I',
+          'Ilir Timur II',
+          'Ilir Timur III',
+          'Seberang Ulu I',
+          'Seberang Ulu II',
+          'Sukarami',
+          'Alang-Alang Lebar',
+          'Sako',
+          'Kemuning',
+          'Plaju',
+          'Kalidoni',
+          'Bukit Kecil'
+        ]
       },
       {
         name: 'Kota Prabumulih',
-        districts: ['Prabumulih Barat', 'Prabumulih Selatan', 'Prabumulih Timur', 'Prabumulih Utara']
+        districts: [
+          'Prabumulih Barat',
+          'Prabumulih Selatan',
+          'Prabumulih Timur',
+          'Prabumulih Utara'
+        ]
       }
     ]
   },
@@ -354,7 +780,28 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Bandar Lampung',
-        districts: ['Bumi Waras', 'Enggal', 'Kedamaian', 'Kedaton', 'Kemiling', 'Labuhan Ratu', 'Langkapura', 'Panjang', 'Rajabasa', 'Sukabumi', 'Sukarame', 'Tanjung Karang Barat', 'Tanjung Karang Pusat', 'Tanjung Karang Timur', 'Tanjung Senang', 'Telukbetung Barat', 'Telukbetung Selatan', 'Telukbetung Timur', 'Telukbetung Utara', 'Way Halim']
+        districts: [
+          'Bumi Waras',
+          'Enggal',
+          'Kedamaian',
+          'Kedaton',
+          'Kemiling',
+          'Labuhan Ratu',
+          'Langkapura',
+          'Panjang',
+          'Rajabasa',
+          'Sukabumi',
+          'Sukarame',
+          'Tanjung Karang Barat',
+          'Tanjung Karang Pusat',
+          'Tanjung Karang Timur',
+          'Tanjung Senang',
+          'Telukbetung Barat',
+          'Telukbetung Selatan',
+          'Telukbetung Timur',
+          'Telukbetung Utara',
+          'Way Halim'
+        ]
       },
       {
         name: 'Kota Metro',
@@ -367,15 +814,40 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Samarinda',
-        districts: ['Loa Janan Ilir', 'Palaran', 'Samarinda Ilir', 'Samarinda Kota', 'Samarinda Seberang', 'Samarinda Ulu', 'Samarinda Utara', 'Sambutan', 'Sungai Kunjang', 'Sungai Pinang']
+        districts: [
+          'Loa Janan Ilir',
+          'Palaran',
+          'Samarinda Ilir',
+          'Samarinda Kota',
+          'Samarinda Seberang',
+          'Samarinda Ulu',
+          'Samarinda Utara',
+          'Sambutan',
+          'Sungai Kunjang',
+          'Sungai Pinang'
+        ]
       },
       {
         name: 'Kota Balikpapan',
-        districts: ['Balikpapan Barat', 'Balikpapan Kota', 'Balikpapan Selatan', 'Balikpapan Tengah', 'Balikpapan Timur', 'Balikpapan Utara']
+        districts: [
+          'Balikpapan Barat',
+          'Balikpapan Kota',
+          'Balikpapan Selatan',
+          'Balikpapan Tengah',
+          'Balikpapan Timur',
+          'Balikpapan Utara'
+        ]
       },
       {
         name: 'Kab. Kutai Kartanegara',
-        districts: ['Tenggarong', 'Tenggarong Seberang', 'Loa Janan', 'Loa Kulu', 'Samboja', 'Muara Badak']
+        districts: [
+          'Tenggarong',
+          'Tenggarong Seberang',
+          'Loa Janan',
+          'Loa Kulu',
+          'Samboja',
+          'Muara Badak'
+        ]
       }
     ]
   },
@@ -384,11 +856,24 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Pontianak',
-        districts: ['Pontianak Barat', 'Pontianak Kota', 'Pontianak Selatan', 'Pontianak Tenggara', 'Pontianak Timur', 'Pontianak Utara']
+        districts: [
+          'Pontianak Barat',
+          'Pontianak Kota',
+          'Pontianak Selatan',
+          'Pontianak Tenggara',
+          'Pontianak Timur',
+          'Pontianak Utara'
+        ]
       },
       {
         name: 'Kota Singkawang',
-        districts: ['Singkawang Barat', 'Singkawang Selatan', 'Singkawang Tengah', 'Singkawang Timur', 'Singkawang Utara']
+        districts: [
+          'Singkawang Barat',
+          'Singkawang Selatan',
+          'Singkawang Tengah',
+          'Singkawang Timur',
+          'Singkawang Utara'
+        ]
       },
       {
         name: 'Kab. Kubu Raya',
@@ -401,11 +886,23 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Banjarmasin',
-        districts: ['Banjarmasin Barat', 'Banjarmasin Selatan', 'Banjarmasin Tengah', 'Banjarmasin Timur', 'Banjarmasin Utara']
+        districts: [
+          'Banjarmasin Barat',
+          'Banjarmasin Selatan',
+          'Banjarmasin Tengah',
+          'Banjarmasin Timur',
+          'Banjarmasin Utara'
+        ]
       },
       {
         name: 'Kota Banjarbaru',
-        districts: ['Banjarbaru Selatan', 'Banjarbaru Utara', 'Cempaka', 'Landasan Ulin', 'Liang Anggang']
+        districts: [
+          'Banjarbaru Selatan',
+          'Banjarbaru Utara',
+          'Cempaka',
+          'Landasan Ulin',
+          'Liang Anggang'
+        ]
       }
     ]
   },
@@ -414,7 +911,23 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Makassar',
-        districts: ['Biringkanaya', 'Bontoala', 'Makassar', 'Mamajang', 'Manggala', 'Mariso', 'Panakkukang', 'Rappocini', 'Tallo', 'Tamalanrea', 'Tamalate', 'Ujung Pandang', 'Ujung Tanah', 'Wajo', 'Kepulauan Sangkarrang']
+        districts: [
+          'Biringkanaya',
+          'Bontoala',
+          'Makassar',
+          'Mamajang',
+          'Manggala',
+          'Mariso',
+          'Panakkukang',
+          'Rappocini',
+          'Tallo',
+          'Tamalanrea',
+          'Tamalate',
+          'Ujung Pandang',
+          'Ujung Tanah',
+          'Wajo',
+          'Kepulauan Sangkarrang'
+        ]
       },
       {
         name: 'Kab. Gowa',
@@ -430,7 +943,17 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
       },
       {
         name: 'Kota Palopo',
-        districts: ['Bara', 'Mungkajang', 'Sendana', 'Tellu Wanua', 'Wara', 'Wara Barat', 'Wara Selatan', 'Wara Timur', 'Wara Utara']
+        districts: [
+          'Bara',
+          'Mungkajang',
+          'Sendana',
+          'Tellu Wanua',
+          'Wara',
+          'Wara Barat',
+          'Wara Selatan',
+          'Wara Timur',
+          'Wara Utara'
+        ]
       }
     ]
   },
@@ -439,11 +962,29 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
     cities: [
       {
         name: 'Kota Manado',
-        districts: ['Bunaken', 'Bunaken Kepulauan', 'Malalayang', 'Mapanget', 'Paal Dua', 'Sario', 'Singkil', 'Tikala', 'Tuminting', 'Wanea', 'Wenang']
+        districts: [
+          'Bunaken',
+          'Bunaken Kepulauan',
+          'Malalayang',
+          'Mapanget',
+          'Paal Dua',
+          'Sario',
+          'Singkil',
+          'Tikala',
+          'Tuminting',
+          'Wanea',
+          'Wenang'
+        ]
       },
       {
         name: 'Kota Tomohon',
-        districts: ['Tomohon Barat', 'Tomohon Selatan', 'Tomohon Tengah', 'Tomohon Timur', 'Tomohon Utara']
+        districts: [
+          'Tomohon Barat',
+          'Tomohon Selatan',
+          'Tomohon Tengah',
+          'Tomohon Timur',
+          'Tomohon Utara'
+        ]
       },
       {
         name: 'Kab. Minahasa Utara',
@@ -495,12 +1036,16 @@ export const INDONESIA_LOCATIONS: ProvinceData[] = [
 export const ALL_PROVINCES = INDONESIA_LOCATIONS.map((p) => p.name);
 
 export function getCitiesByProvince(provinceName: string): string[] {
-  const found = INDONESIA_LOCATIONS.find((p) => p.name.toLowerCase() === provinceName.toLowerCase());
+  const found = INDONESIA_LOCATIONS.find(
+    (p) => p.name.toLowerCase() === provinceName.toLowerCase()
+  );
   return found ? found.cities.map((c) => c.name) : [];
 }
 
 export function getDistrictsByCity(provinceName: string, cityName: string): string[] {
-  const province = INDONESIA_LOCATIONS.find((p) => p.name.toLowerCase() === provinceName.toLowerCase());
+  const province = INDONESIA_LOCATIONS.find(
+    (p) => p.name.toLowerCase() === provinceName.toLowerCase()
+  );
   if (!province) return [];
   const city = province.cities.find((c) => c.name.toLowerCase() === cityName.toLowerCase());
   return city ? city.districts : [];

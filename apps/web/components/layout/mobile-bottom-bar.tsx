@@ -1,9 +1,7 @@
 'use client';
-
-import React from 'react';
+import { Compass, Home, MessageSquareText, Plus, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Compass, Plus, MessageSquareText, User } from 'lucide-react';
 import { useAuth } from '../../context/auth-context';
 
 export function MobileBottomBar() {
@@ -11,7 +9,11 @@ export function MobileBottomBar() {
   const { user, openAuthModal } = useAuth();
 
   // Hide global navigation bottom bar on product detail, checkout, and admin pages
-  if (pathname.startsWith('/listing') || pathname.startsWith('/checkout') || pathname.startsWith('/admin')) {
+  if (
+    pathname.startsWith('/listing') ||
+    pathname.startsWith('/checkout') ||
+    pathname.startsWith('/admin')
+  ) {
     return null;
   }
 
@@ -33,7 +35,9 @@ export function MobileBottomBar() {
       <div className="flex items-center justify-around max-w-md mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href || (item.href !== '/' && item.href !== '#' && pathname.startsWith(item.href));
+          const isActive =
+            pathname === item.href ||
+            (item.href !== '/' && item.href !== '#' && pathname.startsWith(item.href));
 
           if (item.isHighlight) {
             return user ? (
@@ -110,12 +114,16 @@ export function MobileBottomBar() {
               }`}
             >
               <div className="relative">
-                <Icon className={`h-5 w-5 ${isActive ? 'stroke-2.5 text-brand-600' : 'stroke-2'}`} />
+                <Icon
+                  className={`h-5 w-5 ${isActive ? 'stroke-2.5 text-brand-600' : 'stroke-2'}`}
+                />
                 {item.href === '/nego' && (
                   <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2 rounded-full bg-brand-500 ring-1.5 ring-white"></span>
                 )}
               </div>
-              <span className={`text-[10px] mt-0.5 ${isActive ? 'font-black text-brand-700' : 'font-medium'}`}>
+              <span
+                className={`text-[10px] mt-0.5 ${isActive ? 'font-black text-brand-700' : 'font-medium'}`}
+              >
                 {item.label}
               </span>
               {isActive && (

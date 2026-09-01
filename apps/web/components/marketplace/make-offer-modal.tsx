@@ -1,23 +1,22 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
 import type { Listing } from '@jbb/types';
-import { formatIDR } from '../../lib/utils';
+import { useQueryClient } from '@tanstack/react-query';
 import {
-  X,
-  Sparkles,
-  ShieldCheck,
+  AlertCircle,
   ArrowRight,
-  MessageSquareQuote,
   CheckCircle2,
   Lock,
-  User,
-  AlertCircle
+  MessageSquareQuote,
+  ShieldCheck,
+  X
 } from 'lucide-react';
-import { api } from '../../lib/api-client';
+import Link from 'next/link';
+import type React from 'react';
+import { useState } from 'react';
 import { useAuth } from '../../context/auth-context';
-import { useQueryClient } from '@tanstack/react-query';
+import { api } from '../../lib/api-client';
+import { formatIDR } from '../../lib/utils';
 
 interface MakeOfferModalProps {
   listing: Listing;
@@ -105,11 +104,13 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
             </div>
             <h3 className="text-xl font-black text-slate-900">Tawaran Berhasil Dikirim!</h3>
             <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-              Penjual (<strong className="text-slate-800">{listing.seller?.name}</strong>) telah menerima notifikasi tawaran Anda sebesar{' '}
+              Penjual (<strong className="text-slate-800">{listing.seller?.name}</strong>) telah
+              menerima notifikasi tawaran Anda sebesar{' '}
               <strong className="text-brand-700">{formatIDR(offerAmount)}</strong>.
             </p>
             <p className="text-[11px] text-slate-400 mt-2">
-              Jika penjual menyetujui, harga ini akan terkunci 24 jam khusus untuk akun Anda checkout.
+              Jika penjual menyetujui, harga ini akan terkunci 24 jam khusus untuk akun Anda
+              checkout.
             </p>
             <div className="mt-6 flex flex-col gap-2.5">
               <Link
@@ -136,7 +137,8 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
             <div>
               <h3 className="text-lg font-bold text-slate-900">Anda Pemilik Barang Ini</h3>
               <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-                Anda saat ini login sebagai <strong>{user.name}</strong> (penjual listing ini). Anda tidak dapat menawar barang milik sendiri.
+                Anda saat ini login sebagai <strong>{user.name}</strong> (penjual listing ini). Anda
+                tidak dapat menawar barang milik sendiri.
               </p>
             </div>
             <div className="pt-2">
@@ -184,7 +186,10 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
               </div>
               <h3 className="text-base font-bold text-slate-900 line-clamp-1">{listing.title}</h3>
               <div className="flex items-center justify-between text-xs text-slate-500 mt-1">
-                <span>Harga Pasang: <strong className="text-slate-900">{formatIDR(listing.price)}</strong></span>
+                <span>
+                  Harga Pasang:{' '}
+                  <strong className="text-slate-900">{formatIDR(listing.price)}</strong>
+                </span>
                 {listing.minOfferPrice && (
                   <span className="text-[11px] text-amber-800 font-semibold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
                     Batas Min: {formatIDR(listing.minOfferPrice)}
@@ -195,7 +200,9 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
 
             {/* Quick Discount Percent Chips */}
             <div className="mt-4">
-              <label className="text-[11px] font-bold text-slate-600">Pilih Cepat Persentase Nego:</label>
+              <label className="text-[11px] font-bold text-slate-600">
+                Pilih Cepat Persentase Nego:
+              </label>
               <div className="grid grid-cols-4 gap-2 mt-1.5">
                 {[5, 10, 15, 20].map((percent) => (
                   <button
@@ -224,9 +231,13 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
             {/* Form */}
             <form onSubmit={handleSubmit} className="mt-4 space-y-3.5">
               <div>
-                <label className="text-[11px] font-bold text-slate-700">Harga Tawaran Anda (Rp)</label>
+                <label className="text-[11px] font-bold text-slate-700">
+                  Harga Tawaran Anda (Rp)
+                </label>
                 <div className="relative mt-1">
-                  <span className="absolute left-3 top-2.5 text-sm font-bold text-slate-400">Rp</span>
+                  <span className="absolute left-3 top-2.5 text-sm font-bold text-slate-400">
+                    Rp
+                  </span>
                   <input
                     type="number"
                     min="1000"
@@ -239,13 +250,17 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
                 </div>
                 {discountAmount > 0 && (
                   <div className="mt-1 flex items-center justify-between text-[11px] text-brand-700 font-bold">
-                    <span>Hemat {formatIDR(discountAmount)} ({discountPercent}% lebih murah)</span>
+                    <span>
+                      Hemat {formatIDR(discountAmount)} ({discountPercent}% lebih murah)
+                    </span>
                   </div>
                 )}
               </div>
 
               <div>
-                <label className="text-[11px] font-bold text-slate-700">Catatan untuk Penjual (Opsional)</label>
+                <label className="text-[11px] font-bold text-slate-700">
+                  Catatan untuk Penjual (Opsional)
+                </label>
                 <textarea
                   rows={2}
                   placeholder="Contoh: Bisa COD Gandaria City besok siang gan? Siap langsung checkout rekber."
@@ -259,7 +274,8 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
               <div className="rounded-2xl bg-slate-50 p-3 text-[11px] text-slate-600 flex items-start gap-2 border border-slate-200">
                 <ShieldCheck className="h-4 w-4 text-brand-600 shrink-0 mt-0.5" />
                 <p>
-                  Jika penjual menyetujui, harga ini akan <strong>terkunci 24 jam</strong> khusus untuk Anda melakukan checkout via Rekber Peygo.
+                  Jika penjual menyetujui, harga ini akan <strong>terkunci 24 jam</strong> khusus
+                  untuk Anda melakukan checkout via Rekber Peygo.
                 </p>
               </div>
 

@@ -1,12 +1,12 @@
-import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
-import { eq, desc, sql } from 'drizzle-orm';
+import type { Offer, OfferStatus } from '@jbb/types';
 import { makeOfferSchema, respondOfferSchema } from '@jbb/validators';
-import type { AppEnv } from '../types/env';
+import { desc, eq, sql } from 'drizzle-orm';
+import { Hono } from 'hono';
 import { getDb, schema } from '../db';
-import { memoryStore } from '../services/store';
 import { authMiddleware } from '../middlewares/auth';
-import type { Offer } from '@jbb/types';
+import { memoryStore } from '../services/store';
+import type { AppEnv } from '../types/env';
 
 export const offerRoutes = new Hono<AppEnv>()
   .use('*', authMiddleware)
@@ -15,6 +15,7 @@ export const offerRoutes = new Hono<AppEnv>()
     const user = c.get('user')!;
     const { listingId, offeredPrice, message } = c.req.valid('json');
     const db = getDb(c.env.DB);
+    const now = new Date().toISOString();
 
     if (db) {
       const listingDb = await db.query.listings.findFirst({
@@ -23,19 +24,28 @@ export const offerRoutes = new Hono<AppEnv>()
       });
 
       if (!listingDb) {
-        return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Barang tidak ditemukan' } }, 404);
+        return c.json(
+          { success: false, error: { code: 'NOT_FOUND', message: 'Barang tidak ditemukan' } },
+          404
+        );
       }
 
       if (listingDb.sellerId === user.id) {
         return c.json(
-          { success: false, error: { code: 'INVALID_ACTION', message: 'Tidak bisa menawar barang milik sendiri' } },
+          {
+            success: false,
+            error: { code: 'INVALID_ACTION', message: 'Tidak bisa menawar barang milik sendiri' }
+          },
           400
         );
       }
 
       if (!listingDb.isNegotiable) {
         return c.json(
-          { success: false, error: { code: 'NOT_NEGOTIABLE', message: 'Penjual memasang harga pas (tidak nego)' } },
+          {
+            success: false,
+            error: { code: 'NOT_NEGOTIABLE', message: 'Penjual memasang harga pas (tidak nego)' }
+          },
           400
         );
       }
@@ -44,7 +54,11 @@ export const offerRoutes = new Hono<AppEnv>()
         return c.json(
           {
             success: false,
-            error: { code: 'INVALID_PRICE', message: 'Harga tawaran harus lebih rendah dari harga asli (atau gunakan Beli Langsung)' }
+            error: {
+              code: 'INVALID_PRICE',
+              message:
+                'Harga tawaran harus lebih rendah dari harga asli (atau gunakan Beli Langsung)'
+            }
           },
           400
         );
@@ -65,7 +79,6 @@ export const offerRoutes = new Hono<AppEnv>()
 
       const offerId = `offer-${Date.now()}`;
       const expiresAt = new Date(Date.now() + 24 * 3600 * 1000).toISOString();
-      const now = new Date().toISOString();
 
       await db.insert(schema.offers).values({
         id: offerId,
@@ -108,19 +121,28 @@ export const offerRoutes = new Hono<AppEnv>()
     // Memory Store Fallback
     const listing = memoryStore.listings.find((l) => l.id === listingId);
     if (!listing) {
-      return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Barang tidak ditemukan' } }, 404);
+      return c.json(
+        { success: false, error: { code: 'NOT_FOUND', message: 'Barang tidak ditemukan' } },
+        404
+      );
     }
 
     if (listing.sellerId === user.id) {
       return c.json(
-        { success: false, error: { code: 'INVALID_ACTION', message: 'Tidak bisa menawar barang milik sendiri' } },
+        {
+          success: false,
+          error: { code: 'INVALID_ACTION', message: 'Tidak bisa menawar barang milik sendiri' }
+        },
         400
       );
     }
 
     if (!listing.isNegotiable) {
       return c.json(
-        { success: false, error: { code: 'NOT_NEGOTIABLE', message: 'Penjual memasang harga pas (tidak nego)' } },
+        {
+          success: false,
+          error: { code: 'NOT_NEGOTIABLE', message: 'Penjual memasang harga pas (tidak nego)' }
+        },
         400
       );
     }
@@ -129,7 +151,10 @@ export const offerRoutes = new Hono<AppEnv>()
       return c.json(
         {
           success: false,
-          error: { code: 'INVALID_PRICE', message: 'Harga tawaran harus lebih rendah dari harga asli (atau gunakan Beli Langsung)' }
+          error: {
+            code: 'INVALID_PRICE',
+            message: 'Harga tawaran harus lebih rendah dari harga asli (atau gunakan Beli Langsung)'
+          }
         },
         400
       );
@@ -157,8 +182,8 @@ export const offerRoutes = new Hono<AppEnv>()
       message: message || null,
       status: 'PENDING',
       expiresAt: new Date(Date.now() + 24 * 3600 * 1000).toISOString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
       listing,
       buyer: user,
       seller: memoryStore.findUserById(listing.sellerId)
@@ -240,6 +265,7 @@ export const offerRoutes = new Hono<AppEnv>()
     const offerId = c.req.param('id');
     const { action, counterPrice, counterMessage } = c.req.valid('json');
     const db = getDb(c.env.DB);
+    const now = new Date().toISOString();
 
     if (db) {
       const offer = await db.query.offers.findFirst({
@@ -247,14 +273,23 @@ export const offerRoutes = new Hono<AppEnv>()
       });
 
       if (!offer) {
-        return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Tawaran tidak ditemukan' } }, 404);
+        return c.json(
+          { success: false, error: { code: 'NOT_FOUND', message: 'Tawaran tidak ditemukan' } },
+          404
+        );
       }
 
       if (offer.sellerId !== user.id) {
-        return c.json({ success: false, error: { code: 'FORBIDDEN', message: 'Hanya penjual yang bisa merespon tawaran' } }, 403);
+        return c.json(
+          {
+            success: false,
+            error: { code: 'FORBIDDEN', message: 'Hanya penjual yang bisa merespon tawaran' }
+          },
+          403
+        );
       }
 
-      let newStatus: any = 'PENDING';
+      let newStatus: OfferStatus = 'PENDING';
       if (action === 'ACCEPT') newStatus = 'ACCEPTED';
       if (action === 'REJECT') newStatus = 'REJECTED';
       if (action === 'COUNTER') newStatus = 'COUNTERED';
@@ -265,7 +300,7 @@ export const offerRoutes = new Hono<AppEnv>()
           status: newStatus,
           counterPrice: counterPrice || null,
           counterMessage: counterMessage || null,
-          updatedAt: new Date().toISOString()
+          updatedAt: now
         })
         .where(eq(schema.offers.id, offerId));
 
@@ -284,11 +319,20 @@ export const offerRoutes = new Hono<AppEnv>()
     // Memory Store Fallback
     const offer = memoryStore.offers.find((o) => o.id === offerId);
     if (!offer) {
-      return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Tawaran tidak ditemukan' } }, 404);
+      return c.json(
+        { success: false, error: { code: 'NOT_FOUND', message: 'Tawaran tidak ditemukan' } },
+        404
+      );
     }
 
     if (offer.sellerId !== user.id) {
-      return c.json({ success: false, error: { code: 'FORBIDDEN', message: 'Hanya penjual yang bisa merespon tawaran' } }, 403);
+      return c.json(
+        {
+          success: false,
+          error: { code: 'FORBIDDEN', message: 'Hanya penjual yang bisa merespon tawaran' }
+        },
+        403
+      );
     }
 
     if (action === 'ACCEPT') offer.status = 'ACCEPTED';
@@ -298,7 +342,7 @@ export const offerRoutes = new Hono<AppEnv>()
       offer.counterPrice = counterPrice;
       offer.counterMessage = counterMessage;
     }
-    offer.updatedAt = new Date().toISOString();
+    offer.updatedAt = now;
 
     return c.json({
       success: true,

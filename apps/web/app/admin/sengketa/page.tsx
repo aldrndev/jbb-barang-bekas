@@ -1,11 +1,9 @@
 'use client';
-
-import React from 'react';
-import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api-client';
 import { formatIDR, formatTimeAgo } from '@/lib/utils';
-import { AlertTriangle, CheckCircle2, ArrowRight } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { AlertTriangle, ArrowRight, CheckCircle2 } from 'lucide-react';
+import Link from 'next/link';
 
 const DEFAULT_DISPUTES = [
   {
@@ -22,7 +20,8 @@ const DEFAULT_DISPUTES = [
     deliveryMethod: 'KURIR_REGULER',
     courierName: 'JNE Express YES',
     trackingNumber: 'JNE-882910293',
-    disputeReason: 'Layar MacBook terdapat staingate baret tebal memanjang di area tengah yang tidak dicantumkan di deskripsi penjual. Mohon refund penuh ke rekening.',
+    disputeReason:
+      'Layar MacBook terdapat staingate baret tebal memanjang di area tengah yang tidak dicantumkan di deskripsi penjual. Mohon refund penuh ke rekening.',
     disputeEvidenceUrls: [
       'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&auto=format&fit=crop&q=80'
@@ -32,7 +31,8 @@ const DEFAULT_DISPUTES = [
       title: 'MacBook Pro 14 M1 Pro 16/512GB Space Grey Fullset Box',
       price: 16500000,
       condition: 'LIKE_NEW',
-      imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80'
+      imageUrl:
+        'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80'
     },
     buyer: {
       id: 'usr-buyer-1',
@@ -65,7 +65,8 @@ const DEFAULT_DISPUTES = [
     deliveryMethod: 'KURIR_REGULER',
     courierName: 'SiCepat BEST',
     trackingNumber: '002938491028',
-    disputeReason: 'Sensor kamera terdapat jamur/fungus tipis saat diuji pada aperture f/16, padahal di chat penjual menyatakan optik sensor 100% bening cling.',
+    disputeReason:
+      'Sensor kamera terdapat jamur/fungus tipis saat diuji pada aperture f/16, padahal di chat penjual menyatakan optik sensor 100% bening cling.',
     disputeEvidenceUrls: [
       'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&auto=format&fit=crop&q=80'
@@ -75,7 +76,8 @@ const DEFAULT_DISPUTES = [
       title: 'Sony Alpha A7 III Body Only SC Rendah 3.200 Fullset',
       price: 19800000,
       condition: 'LIGHTLY_USED',
-      imageUrl: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&auto=format&fit=crop&q=80'
+      imageUrl:
+        'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&auto=format&fit=crop&q=80'
     },
     buyer: {
       id: 'usr-buyer-2',
@@ -102,7 +104,8 @@ export default function AdminDisputesListPage() {
     queryFn: () => api.getAdminDisputes()
   });
 
-  const disputes = (disputesData?.data && disputesData.data.length > 0) ? disputesData.data : DEFAULT_DISPUTES;
+  const disputes =
+    disputesData?.data && disputesData.data.length > 0 ? disputesData.data : DEFAULT_DISPUTES;
 
   return (
     <div className="space-y-6 animate-in fade-in">
@@ -113,7 +116,8 @@ export default function AdminDisputesListPage() {
             <span>Pusat Mediasi Sengketa Transaksi</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
-            Daftar pesanan dengan komplain aktif yang menunggu investigasi dan putusan mediasi Rekber.
+            Daftar pesanan dengan komplain aktif yang menunggu investigasi dan putusan mediasi
+            Rekber.
           </p>
         </div>
         <span className="rounded-full bg-rose-100 text-rose-800 border border-rose-200 px-3.5 py-1 text-xs font-black w-fit">
@@ -125,14 +129,16 @@ export default function AdminDisputesListPage() {
         <div className="rounded-3xl border border-slate-200 bg-white p-12 text-center space-y-2">
           <CheckCircle2 className="h-10 w-10 text-emerald-500 mx-auto" />
           <h4 className="text-sm font-bold text-slate-800">Tidak Ada Sengketa Aktif</h4>
-          <p className="text-xs text-slate-400">Semua transaksi berjalan lancar tanpa perselisihan.</p>
+          <p className="text-xs text-slate-400">
+            Semua transaksi berjalan lancar tanpa perselisihan.
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
-          {disputes.map((d: any) => {
+          {disputes.map((d) => {
             const coverPhoto =
-              d.listing?.imageUrl ||
-              d.listing?.images?.[0]?.url ||
+              (d.listing && 'imageUrl' in d.listing && typeof d.listing.imageUrl === 'string' ? d.listing.imageUrl : undefined) ||
+              (d.listing && 'images' in d.listing && Array.isArray(d.listing.images) ? d.listing.images[0]?.url : undefined) ||
               d.disputeEvidenceUrls?.[0] ||
               'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&auto=format&fit=crop&q=80';
 
@@ -172,9 +178,13 @@ export default function AdminDisputesListPage() {
                         {formatIDR(d.totalAmount || d.amount || 16560000)}
                       </p>
                       <div className="flex items-center gap-2 text-[10px] text-slate-500 pt-0.5">
-                        <span className="truncate">👤 <strong>{d.buyer?.name}</strong></span>
+                        <span className="truncate">
+                          👤 <strong>{d.buyer?.name}</strong>
+                        </span>
                         <span>vs</span>
-                        <span className="truncate">🏪 <strong>{d.seller?.name}</strong></span>
+                        <span className="truncate">
+                          🏪 <strong>{d.seller?.name}</strong>
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -185,7 +195,10 @@ export default function AdminDisputesListPage() {
                       Keluhan Pembeli:
                     </span>
                     <p className="text-[11px] text-slate-700 font-medium line-clamp-2 leading-relaxed">
-                      "{d.disputeReason || 'Barang tidak sesuai dengan foto dan deskripsi yang dicantumkan penjual.'}"
+                      "
+                      {d.disputeReason ||
+                        'Barang tidak sesuai dengan foto dan deskripsi yang dicantumkan penjual.'}
+                      "
                     </p>
                   </div>
                 </div>

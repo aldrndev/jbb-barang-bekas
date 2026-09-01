@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useId } from 'react';
 import Link from 'next/link';
+import { useId } from 'react';
 
 interface PeygoLogoIconProps {
   className?: string;
@@ -21,7 +21,8 @@ export function PeygoLogoIcon({ className = '', size = 'md' }: PeygoLogoIconProp
     xl: 'h-14 w-14'
   };
 
-  const dimensionClass = typeof size === 'number' ? `h-[${size}px] w-[${size}px]` : sizeMap[size] || sizeMap.md;
+  const dimensionClass =
+    typeof size === 'number' ? `h-[${size}px] w-[${size}px]` : sizeMap[size] || sizeMap.md;
 
   return (
     <div
@@ -34,12 +35,26 @@ export function PeygoLogoIcon({ className = '', size = 'md' }: PeygoLogoIconProp
         className="w-full h-full drop-shadow-md transition-transform duration-300"
       >
         <defs>
-          <linearGradient id={gradId} x1="40" y1="30" x2="160" y2="170" gradientUnits="userSpaceOnUse">
+          <linearGradient
+            id={gradId}
+            x1="40"
+            y1="30"
+            x2="160"
+            y2="170"
+            gradientUnits="userSpaceOnUse"
+          >
             <stop offset="0%" stopColor="#10B981" />
             <stop offset="50%" stopColor="#06B6D4" />
             <stop offset="100%" stopColor="#0EA5E9" />
           </linearGradient>
-          <linearGradient id={bgGradId} x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+          <linearGradient
+            id={bgGradId}
+            x1="0"
+            y1="0"
+            x2="200"
+            y2="200"
+            gradientUnits="userSpaceOnUse"
+          >
             <stop offset="0%" stopColor="#0F172A" />
             <stop offset="50%" stopColor="#022C22" />
             <stop offset="100%" stopColor="#021A14" />
@@ -69,12 +84,7 @@ export function PeygoLogoIcon({ className = '', size = 'md' }: PeygoLogoIconProp
         />
 
         {/* 3. Left 'P' Spine */}
-        <path
-          d="M64 44 V156"
-          stroke={`url(#${gradId})`}
-          strokeWidth="22"
-          strokeLinecap="round"
-        />
+        <path d="M64 44 V156" stroke={`url(#${gradId})`} strokeWidth="22" strokeLinecap="round" />
 
         {/* 4. Glowing Cyan & Emerald Accents */}
         <circle cx="64" cy="80" r="7" fill="#06B6D4" />

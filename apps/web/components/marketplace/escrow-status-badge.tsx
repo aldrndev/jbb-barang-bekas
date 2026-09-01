@@ -1,15 +1,13 @@
 'use client';
-
-import React from 'react';
-import { EscrowStatus, EscrowStatusLabel } from '@jbb/types';
+import { type EscrowStatus, EscrowStatusLabel } from '@jbb/types';
 import {
-  Clock,
-  ShieldCheck,
-  Package,
-  Truck,
-  Eye,
-  CheckCircle2,
   AlertTriangle,
+  CheckCircle2,
+  Clock,
+  Eye,
+  Package,
+  ShieldCheck,
+  Truck,
   XCircle
 } from 'lucide-react';
 
@@ -35,42 +33,76 @@ export function EscrowStatusBadge({
       case 'WAITING_PAYMENT':
         return {
           containerClass: 'bg-amber-50 text-amber-900 border-amber-200/90',
-          icon: <Clock className={size === 'sm' ? 'h-3 w-3 text-amber-600' : 'h-3.5 w-3.5 text-amber-600'} />
+          icon: (
+            <Clock
+              className={size === 'sm' ? 'h-3 w-3 text-amber-600' : 'h-3.5 w-3.5 text-amber-600'}
+            />
+          )
         };
       case 'PAYMENT_CONFIRMED':
         return {
           containerClass: 'bg-brand-50 text-brand-900 border-brand-200/90',
-          icon: <ShieldCheck className={size === 'sm' ? 'h-3 w-3 text-brand-600' : 'h-3.5 w-3.5 text-brand-600'} />
+          icon: (
+            <ShieldCheck
+              className={size === 'sm' ? 'h-3 w-3 text-brand-600' : 'h-3.5 w-3.5 text-brand-600'}
+            />
+          )
         };
       case 'SELLER_PACKING':
         return {
           containerClass: 'bg-orange-50 text-orange-900 border-orange-200/90',
-          icon: <Package className={size === 'sm' ? 'h-3 w-3 text-orange-600' : 'h-3.5 w-3.5 text-orange-600'} />
+          icon: (
+            <Package
+              className={size === 'sm' ? 'h-3 w-3 text-orange-600' : 'h-3.5 w-3.5 text-orange-600'}
+            />
+          )
         };
       case 'IN_TRANSIT':
         return {
           containerClass: 'bg-blue-50 text-blue-900 border-blue-200/90',
-          icon: <Truck className={size === 'sm' ? 'h-3 w-3 text-blue-600' : 'h-3.5 w-3.5 text-blue-600'} />
+          icon: (
+            <Truck
+              className={size === 'sm' ? 'h-3 w-3 text-blue-600' : 'h-3.5 w-3.5 text-blue-600'}
+            />
+          )
         };
       case 'DELIVERED_INSPECTION':
         return {
           containerClass: 'bg-purple-50 text-purple-900 border-purple-200/90',
-          icon: <Eye className={size === 'sm' ? 'h-3 w-3 text-purple-600' : 'h-3.5 w-3.5 text-purple-600'} />
+          icon: (
+            <Eye
+              className={size === 'sm' ? 'h-3 w-3 text-purple-600' : 'h-3.5 w-3.5 text-purple-600'}
+            />
+          )
         };
       case 'COMPLETED':
         return {
           containerClass: 'bg-emerald-50 text-emerald-900 border-emerald-200/90',
-          icon: <CheckCircle2 className={size === 'sm' ? 'h-3 w-3 text-emerald-600' : 'h-3.5 w-3.5 text-emerald-600'} />
+          icon: (
+            <CheckCircle2
+              className={
+                size === 'sm' ? 'h-3 w-3 text-emerald-600' : 'h-3.5 w-3.5 text-emerald-600'
+              }
+            />
+          )
         };
       case 'DISPUTED':
         return {
           containerClass: 'bg-rose-50 text-rose-900 border-rose-200/90',
-          icon: <AlertTriangle className={size === 'sm' ? 'h-3 w-3 text-rose-600' : 'h-3.5 w-3.5 text-rose-600'} />
+          icon: (
+            <AlertTriangle
+              className={size === 'sm' ? 'h-3 w-3 text-rose-600' : 'h-3.5 w-3.5 text-rose-600'}
+            />
+          )
         };
       case 'CANCELLED':
         return {
           containerClass: 'bg-slate-100 text-slate-700 border-slate-200/90',
-          icon: <XCircle className={size === 'sm' ? 'h-3 w-3 text-slate-500' : 'h-3.5 w-3.5 text-slate-500'} />
+          icon: (
+            <XCircle
+              className={size === 'sm' ? 'h-3 w-3 text-slate-500' : 'h-3.5 w-3.5 text-slate-500'}
+            />
+          )
         };
       default:
         return {
@@ -97,9 +129,7 @@ export function EscrowStatusBadge({
         <span>{meta.label}</span>
       </span>
       {showDescription && meta.description && (
-        <p className="text-[11px] text-slate-500 max-w-sm leading-relaxed">
-          {meta.description}
-        </p>
+        <p className="text-[11px] text-slate-500 max-w-sm leading-relaxed">{meta.description}</p>
       )}
     </div>
   );

@@ -1,10 +1,10 @@
+import type { Listing, ListingCondition } from '@jbb/types';
+import { and, eq, inArray } from 'drizzle-orm';
 import { Hono } from 'hono';
-import { eq, and } from 'drizzle-orm';
-import type { AppEnv } from '../types/env';
 import { getDb, schema } from '../db';
 import { authMiddleware } from '../middlewares/auth';
 import { memoryStore } from '../services/store';
-import type { Listing } from '@jbb/types';
+import type { AppEnv } from '../types/env';
 
 export const wishlistRoutes = new Hono<AppEnv>()
   .use('*', authMiddleware)
@@ -14,7 +14,10 @@ export const wishlistRoutes = new Hono<AppEnv>()
     const user = c.get('user');
     if (!user) {
       return c.json(
-        { success: false, error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' } },
+        {
+          success: false,
+          error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' }
+        },
         401
       );
     }
@@ -23,7 +26,7 @@ export const wishlistRoutes = new Hono<AppEnv>()
     if (db) {
       try {
         const userWishlistEntries = await db
-          .select()
+          .select({ listingId: schema.wishlists.listingId })
           .from(schema.wishlists)
           .where(eq(schema.wishlists.userId, user.id));
 
@@ -31,9 +34,9 @@ export const wishlistRoutes = new Hono<AppEnv>()
           return c.json({ success: true, data: [] });
         }
 
-        const listingIds = new Set(userWishlistEntries.map((w) => w.listingId));
+        const listingIds = userWishlistEntries.map((w) => w.listingId);
         const dbListings = await db.query.listings.findMany({
-          where: eq(schema.listings.status, 'ACTIVE'),
+          where: and(eq(schema.listings.status, 'ACTIVE'), inArray(schema.listings.id, listingIds)),
           with: {
             images: true,
             seller: true,
@@ -41,31 +44,79 @@ export const wishlistRoutes = new Hono<AppEnv>()
           }
         });
 
-        const items: Listing[] = dbListings
-          .filter((l) => listingIds.has(l.id))
-          .map((l: any) => ({
-            ...l,
-            isNegotiable: Boolean(l.isNegotiable),
-            hasOriginalReceipt: Boolean(l.hasOriginalReceipt),
-            isCodAvailable: Boolean(l.isCodAvailable),
-            completeness: typeof l.completeness === 'string' ? JSON.parse(l.completeness) : l.completeness,
-            specs: l.specs ? (typeof l.specs === 'string' ? JSON.parse(l.specs) : l.specs) : null,
-            images: l.images || [],
-            seller: l.seller
-              ? {
-                  ...l.seller,
-                  isKycVerified: Boolean(l.seller.isKycVerified),
-                  isPhoneVerified: Boolean(l.seller.isPhoneVerified)
-                }
-              : undefined,
-            category: l.category
-          }));
+        const items: Listing[] = dbListings.map((l) => ({
+          id: l.id,
+          sellerId: l.sellerId,
+          categoryId: l.categoryId,
+          title: l.title,
+          slug: l.slug,
+          description: l.description,
+          price: l.price,
+          originalPrice: l.originalPrice,
+          isNegotiable: Boolean(l.isNegotiable),
+          minOfferPrice: l.minOfferPrice,
+          condition: l.condition as ListingCondition,
+          completeness:
+            typeof l.completeness === 'string' ? JSON.parse(l.completeness) : l.completeness,
+          purchaseYear: l.purchaseYear,
+          warrantyUntil: l.warrantyUntil,
+          hasOriginalReceipt: Boolean(l.hasOriginalReceipt),
+          status: l.status,
+          viewCount: l.viewCount,
+          offerCount: l.offerCount,
+          favoriteCount: l.favoriteCount,
+          province: l.province,
+          city: l.city,
+          district: l.district,
+          postalCode: l.postalCode,
+          isCodAvailable: Boolean(l.isCodAvailable),
+          codMeetingPoint: l.codMeetingPoint,
+          specs: l.specs ? (typeof l.specs === 'string' ? JSON.parse(l.specs) : l.specs) : null,
+          images: (l.images || []).map((img) => ({
+            id: img.id,
+            listingId: img.listingId,
+            url: img.url,
+            isPrimary: Boolean(img.isPrimary),
+            sortOrder: img.sortOrder
+          })),
+          seller: l.seller
+            ? {
+                id: l.seller.id,
+                name: l.seller.name,
+                email: l.seller.email,
+                phone: l.seller.phone,
+                avatarUrl: l.seller.avatarUrl,
+                role: l.seller.role,
+                isKycVerified: Boolean(l.seller.isKycVerified),
+                isPhoneVerified: Boolean(l.seller.isPhoneVerified),
+                trustScore: l.seller.trustScore,
+                totalTransactions: l.seller.totalTransactions,
+                ratingAverage: l.seller.ratingAverage,
+                ratingCount: l.seller.ratingCount,
+                city: l.seller.city,
+                province: l.seller.province,
+                bio: l.seller.bio,
+                createdAt: l.seller.createdAt
+              }
+            : undefined,
+          category: l.category
+            ? {
+                id: l.category.id,
+                name: l.category.name,
+                slug: l.category.slug,
+                icon: l.category.icon,
+                sortOrder: l.category.sortOrder
+              }
+            : undefined,
+          createdAt: l.createdAt,
+          updatedAt: l.updatedAt
+        }));
 
         return c.json({
           success: true,
           data: items
         });
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Wishlist DB Query Error:', err);
       }
     }
@@ -82,7 +133,10 @@ export const wishlistRoutes = new Hono<AppEnv>()
     const user = c.get('user');
     if (!user) {
       return c.json(
-        { success: false, error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' } },
+        {
+          success: false,
+          error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' }
+        },
         401
       );
     }
@@ -95,36 +149,31 @@ export const wishlistRoutes = new Hono<AppEnv>()
           .select()
           .from(schema.wishlists)
           .where(
-            and(
-              eq(schema.wishlists.userId, user.id),
-              eq(schema.wishlists.listingId, listingId)
-            )
+            and(eq(schema.wishlists.userId, user.id), eq(schema.wishlists.listingId, listingId))
           )
           .limit(1);
 
         if (existing) {
-          await db
-            .delete(schema.wishlists)
-            .where(eq(schema.wishlists.id, existing.id));
+          await db.delete(schema.wishlists).where(eq(schema.wishlists.id, existing.id));
 
           return c.json({
             success: true,
             data: { isWishlisted: false }
           });
-        } else {
-          await db.insert(schema.wishlists).values({
-            id: `wsh-${Date.now()}`,
-            userId: user.id,
-            listingId,
-            createdAt: new Date().toISOString()
-          });
-
-          return c.json({
-            success: true,
-            data: { isWishlisted: true }
-          });
         }
-      } catch (err: any) {
+
+        await db.insert(schema.wishlists).values({
+          id: `wsh-${Date.now()}`,
+          userId: user.id,
+          listingId,
+          createdAt: new Date().toISOString()
+        });
+
+        return c.json({
+          success: true,
+          data: { isWishlisted: true }
+        });
+      } catch (err: unknown) {
         console.error('Wishlist Toggle DB Error:', err);
       }
     }
@@ -141,7 +190,10 @@ export const wishlistRoutes = new Hono<AppEnv>()
     const user = c.get('user');
     if (!user) {
       return c.json(
-        { success: false, error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' } },
+        {
+          success: false,
+          error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' }
+        },
         401
       );
     }
@@ -153,14 +205,11 @@ export const wishlistRoutes = new Hono<AppEnv>()
         await db
           .delete(schema.wishlists)
           .where(
-            and(
-              eq(schema.wishlists.userId, user.id),
-              eq(schema.wishlists.listingId, listingId)
-            )
+            and(eq(schema.wishlists.userId, user.id), eq(schema.wishlists.listingId, listingId))
           );
 
         return c.json({ success: true, data: { success: true } });
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Wishlist Delete DB Error:', err);
       }
     }
@@ -174,7 +223,10 @@ export const wishlistRoutes = new Hono<AppEnv>()
     const user = c.get('user');
     if (!user) {
       return c.json(
-        { success: false, error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' } },
+        {
+          success: false,
+          error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' }
+        },
         401
       );
     }
@@ -182,12 +234,10 @@ export const wishlistRoutes = new Hono<AppEnv>()
 
     if (db) {
       try {
-        await db
-          .delete(schema.wishlists)
-          .where(eq(schema.wishlists.userId, user.id));
+        await db.delete(schema.wishlists).where(eq(schema.wishlists.userId, user.id));
 
         return c.json({ success: true, data: { success: true } });
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Wishlist Clear DB Error:', err);
       }
     }

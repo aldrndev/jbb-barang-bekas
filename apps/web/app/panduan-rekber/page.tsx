@@ -1,26 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import {
-  ShieldCheck,
-  CreditCard,
-  PackageCheck,
+  CheckCircle2,
+  ChevronDown,
   Clock,
   Coins,
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-  ArrowRight,
-  Sparkles,
-  Search,
-  PlusCircle,
-  MapPin,
+  CreditCard,
   Lock,
-  ChevronDown,
-  HelpCircle
+  PackageCheck,
+  PlusCircle,
+  Search,
+  ShieldCheck,
+  XCircle
 } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
+import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import { formatIDR } from '../../lib/utils';
 
 const STEPS = [
@@ -123,12 +118,7 @@ export default function PanduanRekberPage() {
   return (
     <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <Breadcrumbs
-          items={[
-            { label: 'Panduan Rekber' }
-          ]}
-          className="mb-6"
-        />
+        <Breadcrumbs items={[{ label: 'Panduan Rekber' }]} className="mb-6" />
 
         {/* Hero Banner */}
         <div className="rounded-3xl bg-linear-to-br from-slate-950 via-slate-900 to-emerald-950 p-6 sm:p-12 text-white shadow-2xl mb-12 relative overflow-hidden">
@@ -142,7 +132,9 @@ export default function PanduanRekberPage() {
               Beli Barang Bekas Bebas Was-Was dengan Rekber Peygo
             </h1>
             <p className="text-xs sm:text-base text-slate-300 leading-relaxed mb-6">
-              Platform rekening bersama nomor #1 di Indonesia untuk jual beli pre-loved. Dana pembayaran Anda aman 100% di penampungan bergaransi sampai barang Anda pegang dan uji selama 48 jam.
+              Platform rekening bersama nomor #1 di Indonesia untuk jual beli pre-loved. Dana
+              pembayaran Anda aman 100% di penampungan bergaransi sampai barang Anda pegang dan uji
+              selama 48 jam.
             </p>
             <div className="flex flex-wrap items-center gap-3 text-xs font-bold">
               <Link
@@ -173,7 +165,8 @@ export default function PanduanRekberPage() {
               5 Langkah Mudah & Aman Transaksi Rekber
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Setiap tahapan dirancang untuk melindungi hak pembeli sekaligus menjamin kepastian pembayaran bagi penjual.
+              Setiap tahapan dirancang untuk melindungi hak pembeli sekaligus menjamin kepastian
+              pembayaran bagi penjual.
             </p>
           </div>
 
@@ -194,7 +187,9 @@ export default function PanduanRekberPage() {
                         {step.badge}
                       </span>
                     </div>
-                    <div className={`h-11 w-11 rounded-2xl bg-linear-to-tr ${step.color} text-white flex items-center justify-center mb-4 shadow-xs`}>
+                    <div
+                      className={`h-11 w-11 rounded-2xl bg-linear-to-tr ${step.color} text-white flex items-center justify-center mb-4 shadow-xs`}
+                    >
                       <Icon className="h-5 w-5" />
                     </div>
                     <h3 className="text-xs sm:text-sm font-bold text-slate-900 mb-2 leading-snug">
@@ -221,7 +216,8 @@ export default function PanduanRekberPage() {
                 Transfer Langsung vs Rekber Peygo
               </h2>
               <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Jangan ambil risiko transfer uang muka (DP) langsung ke rekening asing tanpa perlindungan pihak ketiga.
+                Jangan ambil risiko transfer uang muka (DP) langsung ke rekening asing tanpa
+                perlindungan pihak ketiga.
               </p>
             </div>
 
@@ -229,9 +225,15 @@ export default function PanduanRekberPage() {
               <table className="w-full text-left border-collapse text-xs sm:text-sm">
                 <thead>
                   <tr className="border-b border-slate-200">
-                    <th className="py-3 px-4 font-black text-slate-900 bg-slate-50 rounded-tl-2xl">Fitur Perlindungan</th>
-                    <th className="py-3 px-4 font-black text-rose-700 bg-rose-50/70">Transfer Langsung (Direct TF)</th>
-                    <th className="py-3 px-4 font-black text-emerald-700 bg-emerald-50 rounded-tr-2xl">Rekber Resmi Peygo</th>
+                    <th className="py-3 px-4 font-black text-slate-900 bg-slate-50 rounded-tl-2xl">
+                      Fitur Perlindungan
+                    </th>
+                    <th className="py-3 px-4 font-black text-rose-700 bg-rose-50/70">
+                      Transfer Langsung (Direct TF)
+                    </th>
+                    <th className="py-3 px-4 font-black text-emerald-700 bg-emerald-50 rounded-tr-2xl">
+                      Rekber Resmi Peygo
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -266,7 +268,8 @@ export default function PanduanRekberPage() {
               Simulasi Biaya Proteksi Escrow
             </h2>
             <p className="text-xs text-slate-500 mb-6">
-              Hanya 1.5% (maksimal Rp 50.000) untuk jaminan ketenangan belanja barang bekas tanpa rasa takut tertipu.
+              Hanya 1.5% (maksimal Rp 50.000) untuk jaminan ketenangan belanja barang bekas tanpa
+              rasa takut tertipu.
             </p>
 
             <div className="space-y-4">
@@ -296,11 +299,15 @@ export default function PanduanRekberPage() {
                   <span className="text-slate-900 font-bold text-sm">{formatIDR(calcPrice)}</span>
                 </div>
                 <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200">
-                  <span className="text-emerald-600 block text-[10px] font-bold">Biaya Proteksi (1.5%)</span>
+                  <span className="text-emerald-600 block text-[10px] font-bold">
+                    Biaya Proteksi (1.5%)
+                  </span>
                   <span className="text-emerald-700 font-bold text-sm">{formatIDR(fee)}</span>
                 </div>
                 <div className="p-3.5 rounded-2xl bg-slate-900 text-white">
-                  <span className="text-slate-400 block text-[10px] font-bold">Total Pembeli Bayar</span>
+                  <span className="text-slate-400 block text-[10px] font-bold">
+                    Total Pembeli Bayar
+                  </span>
                   <span className="text-emerald-400 font-bold text-sm">{formatIDR(buyerPays)}</span>
                 </div>
               </div>
@@ -313,11 +320,10 @@ export default function PanduanRekberPage() {
                 <Lock className="h-4 w-4" />
                 <span>Garansi Uang Kembali 100%</span>
               </div>
-              <h3 className="text-lg font-black mb-3">
-                Uji Fisik & Fungsi 48 Jam
-              </h3>
+              <h3 className="text-lg font-black mb-3">Uji Fisik & Fungsi 48 Jam</h3>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Uang Anda tetap di rekening bersama sampai Anda puas dengan kondisi fisik barang. Jika ada kendala tersembunyi, ajukan klaim pengembalian dana dalam 1 klik.
+                Uang Anda tetap di rekening bersama sampai Anda puas dengan kondisi fisik barang.
+                Jika ada kendala tersembunyi, ajukan klaim pengembalian dana dalam 1 klik.
               </p>
             </div>
 
@@ -335,9 +341,7 @@ export default function PanduanRekberPage() {
         {/* FAQ Accordion */}
         <section className="mb-12">
           <div className="text-center max-w-2xl mx-auto mb-8">
-            <h2 className="text-2xl font-black text-slate-900">
-              Pertanyaan Seputar Rekber Peygo
-            </h2>
+            <h2 className="text-2xl font-black text-slate-900">Pertanyaan Seputar Rekber Peygo</h2>
             <p className="text-xs text-slate-500 mt-1">
               Jawaban lengkap seputar mekanisme transaksi, pencairan dana, dan penanganan sengketa.
             </p>

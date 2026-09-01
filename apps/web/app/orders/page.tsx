@@ -1,42 +1,35 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import type { Order } from '@jbb/types';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  Check,
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  Copy,
+  ExternalLink,
+  FileText,
+  Lock,
+  Search,
+  ShieldCheck,
+  ShoppingBag,
+  Tag,
+  Truck,
+  X
+} from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../lib/api-client';
-import { useAuth } from '../../context/auth-context';
-import { useToast } from '../../context/toast-context';
-import { formatIDR } from '../../lib/utils';
+import type React from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
 import { EscrowStatusBadge } from '../../components/marketplace/escrow-status-badge';
 import { EscrowTimeline } from '../../components/marketplace/escrow-timeline';
-import { Breadcrumbs } from '../../components/layout/breadcrumbs';
-import type { Order } from '@jbb/types';
-import {
-  ShoppingBag,
-  ShieldCheck,
-  Truck,
-  CheckCircle2,
-  Package,
-  Copy,
-  Search,
-  ExternalLink,
-  FileText,
-  X,
-  ChevronDown,
-  ChevronUp,
-  Tag,
-  Send,
-  Sparkles,
-  ArrowRight,
-  Clock,
-  AlertCircle,
-  Check,
-  Filter,
-  MessageSquare,
-  Lock
-} from 'lucide-react';
+import { useAuth } from '../../context/auth-context';
+import { useToast } from '../../context/toast-context';
+import { api } from '../../lib/api-client';
+import { formatIDR } from '../../lib/utils';
 
 function OrderHistoryContent() {
   const { user, openAuthModal } = useAuth();
@@ -68,7 +61,11 @@ function OrderHistoryContent() {
   const [disputeReasonInput, setDisputeReasonInput] = useState('');
   const [isSubmittingDispute, setIsSubmittingDispute] = useState(false);
 
-  const { data: orders = [], isLoading, refetch } = useQuery({
+  const {
+    data: orders = [],
+    isLoading,
+    refetch
+  } = useQuery({
     queryKey: ['my-orders'],
     queryFn: async () => {
       const res = await api.getOrders();
@@ -95,7 +92,9 @@ function OrderHistoryContent() {
             <ShoppingBag className="h-7 w-7" />
           </div>
           <div className="space-y-1">
-            <h2 className="text-base sm:text-lg font-black text-slate-900">Masuk untuk Melihat Riwayat Pesanan</h2>
+            <h2 className="text-base sm:text-lg font-black text-slate-900">
+              Masuk untuk Melihat Riwayat Pesanan
+            </h2>
             <p className="text-xs text-slate-500 max-w-xs mx-auto">
               Akses status escrow rekening bersama, pantau resi ekspedisi, dan konfirmasi barang.
             </p>
@@ -134,11 +133,13 @@ function OrderHistoryContent() {
 
     if (activeTab === 'all') return true;
     if (activeTab === 'pending_payment') return order.escrowStatus === 'WAITING_PAYMENT';
-    if (activeTab === 'packing') return order.escrowStatus === 'PAYMENT_CONFIRMED' || order.escrowStatus === 'SELLER_PACKING';
+    if (activeTab === 'packing')
+      return order.escrowStatus === 'PAYMENT_CONFIRMED' || order.escrowStatus === 'SELLER_PACKING';
     if (activeTab === 'shipped') return order.escrowStatus === 'IN_TRANSIT';
     if (activeTab === 'inspection') return order.escrowStatus === 'DELIVERED_INSPECTION';
     if (activeTab === 'completed') return order.escrowStatus === 'COMPLETED';
-    if (activeTab === 'disputed') return order.escrowStatus === 'DISPUTED' || order.escrowStatus === 'CANCELLED';
+    if (activeTab === 'disputed')
+      return order.escrowStatus === 'DISPUTED' || order.escrowStatus === 'CANCELLED';
     return true;
   });
 
@@ -161,7 +162,10 @@ function OrderHistoryContent() {
         queryClient.invalidateQueries({ queryKey: ['orders'] }),
         queryClient.invalidateQueries({ queryKey: ['my-listings'] })
       ]);
-      toast.success('Dana Berhasil Dicairkan', 'Terima kasih telah mengonfirmasi penerimaan barang. Transaksi selesai aman.');
+      toast.success(
+        'Dana Berhasil Dicairkan',
+        'Terima kasih telah mengonfirmasi penerimaan barang. Transaksi selesai aman.'
+      );
       setReleaseOrderId(null);
       refetch();
     } else {
@@ -180,7 +184,10 @@ function OrderHistoryContent() {
     setIsSubmittingDispute(true);
     const res = await api.disputeOrder(disputeOrderId, disputeReasonInput.trim(), []);
     if (res.success) {
-      toast.success('Komplain Terdaftar', 'Tim CS Rekber Bekasin akan menahan dana dan memediasi dengan penjual.');
+      toast.success(
+        'Komplain Terdaftar',
+        'Tim CS Rekber Bekasin akan menahan dana dan memediasi dengan penjual.'
+      );
       setDisputeOrderId(null);
       setDisputeReasonInput('');
       await Promise.all([
@@ -189,7 +196,10 @@ function OrderHistoryContent() {
       ]);
       refetch();
     } else {
-      toast.error('Gagal Mengajukan Komplain', res.error?.message || 'Terjadi kendala saat mengirim komplain.');
+      toast.error(
+        'Gagal Mengajukan Komplain',
+        res.error?.message || 'Terjadi kendala saat mengirim komplain.'
+      );
     }
     setIsSubmittingDispute(false);
   };
@@ -201,7 +211,10 @@ function OrderHistoryContent() {
     }
     const res = await api.updateShipping(orderId, courierNameInput, trackingNumberInput.trim());
     if (res.success) {
-      toast.success('Resi Pengiriman Disimpan', 'Pembeli telah menerima notifikasi nomor resi pengiriman.');
+      toast.success(
+        'Resi Pengiriman Disimpan',
+        'Pembeli telah menerima notifikasi nomor resi pengiriman.'
+      );
       setShippingOrderId(null);
       setTrackingNumberInput('');
       await Promise.all([
@@ -210,7 +223,10 @@ function OrderHistoryContent() {
       ]);
       refetch();
     } else {
-      toast.error('Gagal Mengupdate Resi', res.error?.message || 'Terjadi kesalahan saat menyimpan resi.');
+      toast.error(
+        'Gagal Mengupdate Resi',
+        res.error?.message || 'Terjadi kesalahan saat menyimpan resi.'
+      );
     }
   };
 
@@ -223,9 +239,7 @@ function OrderHistoryContent() {
         {/* Top Header Row: Breadcrumbs */}
         <div className="flex items-center justify-between gap-2 min-w-0">
           <Breadcrumbs
-            items={[
-              { label: orderMode === 'buyer' ? 'Belanjaan Saya' : 'Penjualan Saya' }
-            ]}
+            items={[{ label: orderMode === 'buyer' ? 'Belanjaan Saya' : 'Penjualan Saya' }]}
           />
         </div>
 
@@ -282,7 +296,11 @@ function OrderHistoryContent() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={orderMode === 'buyer' ? 'Cari nomor pesanan atau nama barang...' : 'Cari transaksi penjualan...'}
+                placeholder={
+                  orderMode === 'buyer'
+                    ? 'Cari nomor pesanan atau nama barang...'
+                    : 'Cari transaksi penjualan...'
+                }
                 className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 pl-9 pr-3.5 py-2.5 text-xs text-slate-800 focus:border-brand-500 focus:outline-none focus:bg-white transition-colors"
               />
               <Search className="absolute left-3 top-3 h-3.5 w-3.5 text-slate-400" />
@@ -304,11 +322,36 @@ function OrderHistoryContent() {
           <div className="border-t border-slate-100 pt-3 flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
             {[
               { id: 'all', label: 'Semua', count: modeOrders.length },
-              { id: 'packing', label: orderMode === 'seller' ? 'Perlu Dikirim' : 'Dikemas', count: modeOrders.filter((o) => o.escrowStatus === 'PAYMENT_CONFIRMED' || o.escrowStatus === 'SELLER_PACKING').length },
-              { id: 'shipped', label: 'Pengiriman', count: modeOrders.filter((o) => o.escrowStatus === 'IN_TRANSIT').length },
-              { id: 'inspection', label: 'Cek 48 Jam', count: modeOrders.filter((o) => o.escrowStatus === 'DELIVERED_INSPECTION').length },
-              { id: 'completed', label: 'Selesai & Cair', count: modeOrders.filter((o) => o.escrowStatus === 'COMPLETED').length },
-              { id: 'disputed', label: 'Komplain', count: modeOrders.filter((o) => o.escrowStatus === 'DISPUTED' || o.escrowStatus === 'CANCELLED').length }
+              {
+                id: 'packing',
+                label: orderMode === 'seller' ? 'Perlu Dikirim' : 'Dikemas',
+                count: modeOrders.filter(
+                  (o) =>
+                    o.escrowStatus === 'PAYMENT_CONFIRMED' || o.escrowStatus === 'SELLER_PACKING'
+                ).length
+              },
+              {
+                id: 'shipped',
+                label: 'Pengiriman',
+                count: modeOrders.filter((o) => o.escrowStatus === 'IN_TRANSIT').length
+              },
+              {
+                id: 'inspection',
+                label: 'Cek 48 Jam',
+                count: modeOrders.filter((o) => o.escrowStatus === 'DELIVERED_INSPECTION').length
+              },
+              {
+                id: 'completed',
+                label: 'Selesai & Cair',
+                count: modeOrders.filter((o) => o.escrowStatus === 'COMPLETED').length
+              },
+              {
+                id: 'disputed',
+                label: 'Komplain',
+                count: modeOrders.filter(
+                  (o) => o.escrowStatus === 'DISPUTED' || o.escrowStatus === 'CANCELLED'
+                ).length
+              }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -331,17 +374,26 @@ function OrderHistoryContent() {
         {isLoading ? (
           <div className="space-y-3.5">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-44 rounded-3xl bg-white border border-slate-200 p-5 shadow-2xs" />
+              <div
+                key={i}
+                className="h-44 rounded-3xl bg-white border border-slate-200 p-5 shadow-2xs"
+              />
             ))}
           </div>
         ) : filteredOrders.length === 0 ? (
           <div className="rounded-3xl border border-slate-200 bg-white p-8 sm:p-12 text-center shadow-xs space-y-4">
             <div className="mx-auto flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-3xl bg-slate-50 text-slate-400 border border-slate-200">
-              {orderMode === 'buyer' ? <ShoppingBag className="h-8 w-8 sm:h-10 sm:w-10" /> : <Tag className="h-8 w-8 sm:h-10 sm:w-10 text-amber-600" />}
+              {orderMode === 'buyer' ? (
+                <ShoppingBag className="h-8 w-8 sm:h-10 sm:w-10" />
+              ) : (
+                <Tag className="h-8 w-8 sm:h-10 sm:w-10 text-amber-600" />
+              )}
             </div>
             <div className="space-y-1">
               <h2 className="text-sm sm:text-base font-black text-slate-900">
-                {orderMode === 'buyer' ? 'Belum Ada Transaksi Pembelian' : 'Belum Ada Transaksi Penjualan'}
+                {orderMode === 'buyer'
+                  ? 'Belum Ada Transaksi Pembelian'
+                  : 'Belum Ada Transaksi Penjualan'}
               </h2>
               <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
                 {orderMode === 'buyer'
@@ -424,9 +476,14 @@ function OrderHistoryContent() {
 
                     <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <ConditionBadge condition={order.listing?.condition || 'LIKE_NEW'} size="sm" />
+                        <ConditionBadge
+                          condition={order.listing?.condition || 'LIKE_NEW'}
+                          size="sm"
+                        />
                         <span className="text-[10px] text-slate-500 font-bold bg-slate-100 px-2 py-0.2 rounded-md">
-                          {order.deliveryMethod === 'COD_KETEMUAN' ? '⚡ COD Ketemuan' : '📦 Kurir Kilat'}
+                          {order.deliveryMethod === 'COD_KETEMUAN'
+                            ? '⚡ COD Ketemuan'
+                            : '📦 Kurir Kilat'}
                         </span>
                       </div>
 
@@ -451,7 +508,10 @@ function OrderHistoryContent() {
                       <div className="flex items-center gap-2 min-w-0">
                         <Truck className="h-4 w-4 text-brand-600 shrink-0" />
                         <span className="text-[11px] text-slate-600 truncate">
-                          {order.courierName || 'JNE/J&T'}: <strong className="font-mono text-slate-900">{order.trackingNumber}</strong>
+                          {order.courierName || 'JNE/J&T'}:{' '}
+                          <strong className="font-mono text-slate-900">
+                            {order.trackingNumber}
+                          </strong>
                         </span>
                       </div>
                       <button
@@ -459,7 +519,11 @@ function OrderHistoryContent() {
                         onClick={() => handleCopyResi(order.trackingNumber!)}
                         className="flex items-center gap-1 text-[10px] font-bold text-brand-700 hover:text-brand-800 bg-white border border-slate-200 px-2 py-1 rounded-lg shrink-0 cursor-pointer shadow-2xs"
                       >
-                        {copiedResi === order.trackingNumber ? <Check className="h-3 w-3 text-emerald-600" /> : <Copy className="h-3 w-3" />}
+                        {copiedResi === order.trackingNumber ? (
+                          <Check className="h-3 w-3 text-emerald-600" />
+                        ) : (
+                          <Copy className="h-3 w-3" />
+                        )}
                         <span>{copiedResi === order.trackingNumber ? 'Tersalin' : 'Salin'}</span>
                       </button>
                     </div>
@@ -467,7 +531,10 @@ function OrderHistoryContent() {
                     <div className="rounded-2xl bg-slate-50 p-2.5 sm:p-3 border border-slate-200/80 flex items-center gap-2 text-[11px] text-slate-600">
                       <CheckCircle2 className="h-4 w-4 text-brand-600 shrink-0" />
                       <span className="truncate">
-                        Titik Temu COD: <strong className="text-slate-900">{order.shippingAddress || 'Area Publik Aman'}</strong>
+                        Titik Temu COD:{' '}
+                        <strong className="text-slate-900">
+                          {order.shippingAddress || 'Area Publik Aman'}
+                        </strong>
                       </span>
                     </div>
                   ) : null}
@@ -547,22 +614,28 @@ function OrderHistoryContent() {
                         className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-2.5 sm:px-3 py-1.5 text-xs font-bold text-slate-700 transition-colors cursor-pointer shadow-2xs"
                       >
                         <span>Alur</span>
-                        {isTimelineExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                        {isTimelineExpanded ? (
+                          <ChevronUp className="h-3 w-3" />
+                        ) : (
+                          <ChevronDown className="h-3 w-3" />
+                        )}
                       </button>
                     </div>
 
                     <div className="flex items-center gap-1.5 flex-wrap">
                       {/* Seller Action: Input Resi */}
-                      {isSeller && (order.escrowStatus === 'PAYMENT_CONFIRMED' || order.escrowStatus === 'SELLER_PACKING') && (
-                        <button
-                          type="button"
-                          onClick={() => setShippingOrderId(order.id)}
-                          className="flex items-center gap-1 rounded-xl bg-brand-600 hover:bg-brand-700 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition-colors cursor-pointer"
-                        >
-                          <Truck className="h-3.5 w-3.5" />
-                          <span>Input Resi</span>
-                        </button>
-                      )}
+                      {isSeller &&
+                        (order.escrowStatus === 'PAYMENT_CONFIRMED' ||
+                          order.escrowStatus === 'SELLER_PACKING') && (
+                          <button
+                            type="button"
+                            onClick={() => setShippingOrderId(order.id)}
+                            className="flex items-center gap-1 rounded-xl bg-brand-600 hover:bg-brand-700 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition-colors cursor-pointer"
+                          >
+                            <Truck className="h-3.5 w-3.5" />
+                            <span>Input Resi</span>
+                          </button>
+                        )}
 
                       {/* Buyer Actions: Confirm release or dispute */}
                       {isBuyer && order.escrowStatus === 'DELIVERED_INSPECTION' && (
@@ -614,8 +687,12 @@ function OrderHistoryContent() {
                     <ShieldCheck className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-slate-900">Bukti Transaksi Rekber Bekasin</h3>
-                    <p className="text-[10px] text-slate-400">Nomor Transaksi Resmi Terverifikasi</p>
+                    <h3 className="text-sm font-black text-slate-900">
+                      Bukti Transaksi Rekber Bekasin
+                    </h3>
+                    <p className="text-[10px] text-slate-400">
+                      Nomor Transaksi Resmi Terverifikasi
+                    </p>
                   </div>
                 </div>
                 <button
@@ -630,7 +707,9 @@ function OrderHistoryContent() {
               <div className="space-y-2.5 text-xs">
                 <div className="flex justify-between items-center py-1 border-b border-slate-100">
                   <span className="text-slate-500">Nomor Pesanan:</span>
-                  <span className="font-mono font-bold text-slate-900">{selectedInvoiceOrder.orderNumber}</span>
+                  <span className="font-mono font-bold text-slate-900">
+                    {selectedInvoiceOrder.orderNumber}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center py-1 border-b border-slate-100">
                   <span className="text-slate-500">Status Rekber:</span>
@@ -638,28 +717,40 @@ function OrderHistoryContent() {
                 </div>
                 <div className="flex justify-between items-center py-1 border-b border-slate-100">
                   <span className="text-slate-500">Nama Pembeli:</span>
-                  <span className="font-bold text-slate-900">{selectedInvoiceOrder.recipientName || user.name}</span>
+                  <span className="font-bold text-slate-900">
+                    {selectedInvoiceOrder.recipientName || user.name}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center py-1 border-b border-slate-100">
                   <span className="text-slate-500">Nama Penjual:</span>
-                  <span className="font-bold text-slate-900">{selectedInvoiceOrder.seller?.name || 'Penjual'}</span>
+                  <span className="font-bold text-slate-900">
+                    {selectedInvoiceOrder.seller?.name || 'Penjual'}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center py-1 border-b border-slate-100">
                   <span className="text-slate-500">Harga Barang:</span>
-                  <span className="font-bold text-slate-900">{formatIDR(selectedInvoiceOrder.amount)}</span>
+                  <span className="font-bold text-slate-900">
+                    {formatIDR(selectedInvoiceOrder.amount)}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center py-1 border-b border-slate-100">
                   <span className="text-slate-500">Biaya Proteksi Rekber (1%):</span>
-                  <span className="font-bold text-slate-900">{formatIDR(selectedInvoiceOrder.serviceFee)}</span>
+                  <span className="font-bold text-slate-900">
+                    {formatIDR(selectedInvoiceOrder.serviceFee)}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center py-1 pt-2 border-t border-slate-200 text-sm font-black text-slate-900">
                   <span>Total Dana Ditahan:</span>
-                  <span className="text-brand-700">{formatIDR(selectedInvoiceOrder.totalAmount)}</span>
+                  <span className="text-brand-700">
+                    {formatIDR(selectedInvoiceOrder.totalAmount)}
+                  </span>
                 </div>
               </div>
 
               <div className="rounded-2xl bg-brand-50/80 p-3.5 border border-brand-200 text-[11px] text-brand-900 leading-relaxed font-medium">
-                🛡️ <strong>Jaminan Rekber:</strong> Dana transaksi berada dalam rekening perantara resmi Bekasin dan baru akan dicairkan ke penjual setelah barang diterima dan melewati masa inspeksi fisik 48 jam.
+                🛡️ <strong>Jaminan Rekber:</strong> Dana transaksi berada dalam rekening perantara
+                resmi Bekasin dan baru akan dicairkan ke penjual setelah barang diterima dan
+                melewati masa inspeksi fisik 48 jam.
               </div>
 
               <button
@@ -683,7 +774,8 @@ function OrderHistoryContent() {
               <div className="text-center space-y-1">
                 <h3 className="text-base font-black text-slate-900">Konfirmasi Pelepasan Dana</h3>
                 <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                  Apakah barang yang Anda terima sudah diperiksa dan sesuai dengan deskripsi iklan? Dana akan langsung diteruskan ke saldo rekening penjual.
+                  Apakah barang yang Anda terima sudah diperiksa dan sesuai dengan deskripsi iklan?
+                  Dana akan langsung diteruskan ke saldo rekening penjual.
                 </p>
               </div>
               <div className="flex items-center gap-3 pt-2">
@@ -717,7 +809,9 @@ function OrderHistoryContent() {
                   <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-100">
                     <ShieldCheck className="h-4.5 w-4.5" />
                   </div>
-                  <h3 className="text-sm font-black text-slate-900">Pengajuan Komplain Garansi 48 Jam</h3>
+                  <h3 className="text-sm font-black text-slate-900">
+                    Pengajuan Komplain Garansi 48 Jam
+                  </h3>
                 </div>
                 <button
                   type="button"
@@ -729,7 +823,8 @@ function OrderHistoryContent() {
               </div>
 
               <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                Dana transaksi Anda akan <strong>otomatis dibekukan sementara</strong>. Tim Mediasi Bekasin akan menghubungi Anda dan penjual untuk verifikasi bukti kendala.
+                Dana transaksi Anda akan <strong>otomatis dibekukan sementara</strong>. Tim Mediasi
+                Bekasin akan menghubungi Anda dan penjual untuk verifikasi bukti kendala.
               </p>
 
               <form onSubmit={confirmSubmitDispute} className="space-y-3">
@@ -775,7 +870,13 @@ function OrderHistoryContent() {
 
 export default function OrderHistoryPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50 py-12 text-center text-xs text-slate-400">Memuat riwayat transaksi...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-50 py-12 text-center text-xs text-slate-400">
+          Memuat riwayat transaksi...
+        </div>
+      }
+    >
       <OrderHistoryContent />
     </Suspense>
   );

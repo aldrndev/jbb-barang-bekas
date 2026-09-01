@@ -1,21 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api-client';
 import { formatTimeAgo } from '@/lib/utils';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  UserCheck,
-  CheckCircle2,
-  Check,
-  X,
-  Shield,
-  Eye,
   AlertCircle,
+  Check,
+  CheckCircle2,
   Clock,
+  Eye,
+  Inbox,
   Search,
-  Inbox
+  UserCheck,
+  X
 } from 'lucide-react';
+import { useState } from 'react';
 
 const DEFAULT_KYC_QUEUE = [
   {
@@ -24,8 +23,10 @@ const DEFAULT_KYC_QUEUE = [
     email: 'rian.hidayat@example.com',
     phone: '081288991122',
     nik: '3273081903980002',
-    ktpImageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
-    selfieImageUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&auto=format&fit=crop&q=80',
+    ktpImageUrl:
+      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
+    selfieImageUrl:
+      'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&auto=format&fit=crop&q=80',
     isKycVerified: false,
     trustScore: 82,
     role: 'BUYER',
@@ -38,8 +39,10 @@ const DEFAULT_KYC_QUEUE = [
     email: 'siti.nurhaliza@example.com',
     phone: '081377889900',
     nik: '3175026708990004',
-    ktpImageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
-    selfieImageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80',
+    ktpImageUrl:
+      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
+    selfieImageUrl:
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80',
     isKycVerified: false,
     trustScore: 85,
     role: 'BUYER',
@@ -52,8 +55,10 @@ const DEFAULT_KYC_QUEUE = [
     email: 'ahmad.zaki@example.com',
     phone: '081900112233',
     nik: '3578011204940003',
-    ktpImageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
-    selfieImageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
+    ktpImageUrl:
+      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
+    selfieImageUrl:
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
     isKycVerified: false,
     trustScore: 80,
     role: 'BUYER',
@@ -66,8 +71,10 @@ const DEFAULT_KYC_QUEUE = [
     email: 'budi@example.com',
     phone: '081987654321',
     nik: '3174092801950001',
-    ktpImageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
-    selfieImageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&auto=format&fit=crop&q=80',
+    ktpImageUrl:
+      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
+    selfieImageUrl:
+      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&auto=format&fit=crop&q=80',
     isKycVerified: true,
     trustScore: 98,
     role: 'SELLER',
@@ -82,16 +89,22 @@ export default function AdminKycPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isProcessingAction, setIsProcessingAction] = useState(false);
   const [previewImage, setPreviewImage] = useState<{ url: string; title: string } | null>(null);
-  const [toast, setToast] = useState<{ type: 'success' | 'error'; title: string; message: string } | null>(null);
+  const [toast, setToast] = useState<{
+    type: 'success' | 'error';
+    title: string;
+    message: string;
+  } | null>(null);
 
   const { data: kycData } = useQuery({
     queryKey: ['admin-kyc'],
     queryFn: () => api.getAdminKycQueue()
   });
 
-  const [localOverrides, setLocalOverrides] = useState<Record<string, { status: 'APPROVED' | 'REJECTED' }>>({});
+  const [localOverrides, setLocalOverrides] = useState<
+    Record<string, { status: 'APPROVED' | 'REJECTED' }>
+  >({});
 
-  const rawQueue = (kycData?.data && kycData.data.length > 0) ? kycData.data : DEFAULT_KYC_QUEUE;
+  const rawQueue = kycData?.data && kycData.data.length > 0 ? kycData.data : DEFAULT_KYC_QUEUE;
   const kycQueue = rawQueue.map((u: any) => {
     const override = localOverrides[u.id];
     if (override) {
@@ -108,16 +121,18 @@ export default function AdminKycPage() {
   const pendingUsers = kycQueue.filter((u: any) => !u.isKycVerified);
   const approvedUsers = kycQueue.filter((u: any) => u.isKycVerified);
 
-  const displayedUsers = (activeTab === 'pending' ? pendingUsers : approvedUsers).filter((u: any) => {
-    if (!searchQuery.trim()) return true;
-    const q = searchQuery.toLowerCase();
-    return (
-      u.name?.toLowerCase().includes(q) ||
-      u.nik?.toLowerCase().includes(q) ||
-      u.email?.toLowerCase().includes(q) ||
-      u.phone?.toLowerCase().includes(q)
-    );
-  });
+  const displayedUsers = (activeTab === 'pending' ? pendingUsers : approvedUsers).filter(
+    (u: any) => {
+      if (!searchQuery.trim()) return true;
+      const q = searchQuery.toLowerCase();
+      return (
+        u.name?.toLowerCase().includes(q) ||
+        u.nik?.toLowerCase().includes(q) ||
+        u.email?.toLowerCase().includes(q) ||
+        u.phone?.toLowerCase().includes(q)
+      );
+    }
+  );
 
   const showToast = (type: 'success' | 'error', title: string, message: string) => {
     setToast({ type, title, message });
@@ -176,9 +191,7 @@ export default function AdminKycPage() {
         if (!old || !old.data) return old;
         return {
           ...old,
-          data: old.data.map((u: any) =>
-            u.id === userId ? { ...u, isKycVerified: false } : u
-          )
+          data: old.data.map((u: any) => (u.id === userId ? { ...u, isKycVerified: false } : u))
         };
       });
       await Promise.all([
@@ -215,7 +228,9 @@ export default function AdminKycPage() {
             )}
             <div className="space-y-1 flex-1 min-w-0">
               <h4 className="font-black text-xs text-white tracking-wide">{toast.title}</h4>
-              <p className="text-[11px] text-slate-300 leading-relaxed font-medium">{toast.message}</p>
+              <p className="text-[11px] text-slate-300 leading-relaxed font-medium">
+                {toast.message}
+              </p>
             </div>
             <button
               type="button"
@@ -236,7 +251,8 @@ export default function AdminKycPage() {
             <span>Manajemen Verifikasi KYC KTP Pengguna</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
-            Tinjau kecocokan nomor NIK, foto KTP asli, dan foto selfie pengguna sebelum mengesahkan akun penjual resmi.
+            Tinjau kecocokan nomor NIK, foto KTP asli, dan foto selfie pengguna sebelum mengesahkan
+            akun penjual resmi.
           </p>
         </div>
       </div>
@@ -316,22 +332,27 @@ export default function AdminKycPage() {
             {searchQuery
               ? 'Tidak Ditemukan Data yang Cocok'
               : activeTab === 'pending'
-              ? 'Semua Pengajuan KYC Telah Selesai Ditinjau! 🎉'
-              : 'Belum Ada Akun yang Disetujui'}
+                ? 'Semua Pengajuan KYC Telah Selesai Ditinjau! 🎉'
+                : 'Belum Ada Akun yang Disetujui'}
           </h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
             {searchQuery
               ? `Tidak ada hasil untuk pencarian "${searchQuery}". Coba kata kunci lainnya.`
               : activeTab === 'pending'
-              ? 'Saat ini tidak ada antrean verifikasi KTP yang menunggu validasi admin.'
-              : 'Akun yang telah disetujui akan diarsipkan dan muncul di tab ini.'}
+                ? 'Saat ini tidak ada antrean verifikasi KTP yang menunggu validasi admin.'
+                : 'Akun yang telah disetujui akan diarsipkan dan muncul di tab ini.'}
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {displayedUsers.map((u: any) => {
-            const ktpUrl = u.ktpImageUrl || 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80';
-            const selfieUrl = u.selfieImageUrl || u.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
+            const ktpUrl =
+              u.ktpImageUrl ||
+              'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80';
+            const selfieUrl =
+              u.selfieImageUrl ||
+              u.avatarUrl ||
+              'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
 
             return (
               <div
@@ -340,8 +361,8 @@ export default function AdminKycPage() {
                   u.isRejected
                     ? 'border-rose-300 bg-rose-50/25 ring-1 ring-rose-200'
                     : u.isKycVerified
-                    ? 'border-emerald-200 bg-emerald-50/15'
-                    : 'border-slate-200 bg-white'
+                      ? 'border-emerald-200 bg-emerald-50/15'
+                      : 'border-slate-200 bg-white'
                 }`}
               >
                 {/* 1. Header: Avatar, Name & Status */}
@@ -355,7 +376,9 @@ export default function AdminKycPage() {
                       />
                       <div className="min-w-0">
                         <h4 className="font-bold text-sm text-slate-900 truncate">{u.name}</h4>
-                        <span className="text-[11px] text-slate-500 block truncate">{u.email || u.phone || '-'}</span>
+                        <span className="text-[11px] text-slate-500 block truncate">
+                          {u.email || u.phone || '-'}
+                        </span>
                       </div>
                     </div>
 
@@ -380,7 +403,9 @@ export default function AdminKycPage() {
                   <div className="grid grid-cols-2 gap-2">
                     {/* Foto KTP */}
                     <div
-                      onClick={() => setPreviewImage({ url: ktpUrl, title: `Foto Fisik E-KTP - ${u.name}` })}
+                      onClick={() =>
+                        setPreviewImage({ url: ktpUrl, title: `Foto Fisik E-KTP - ${u.name}` })
+                      }
                       className="relative h-28 rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 group/ktp cursor-pointer"
                     >
                       <img
@@ -399,7 +424,12 @@ export default function AdminKycPage() {
 
                     {/* Foto Selfie Bersama KTP */}
                     <div
-                      onClick={() => setPreviewImage({ url: selfieUrl, title: `Foto Selfie Bersama KTP - ${u.name}` })}
+                      onClick={() =>
+                        setPreviewImage({
+                          url: selfieUrl,
+                          title: `Foto Selfie Bersama KTP - ${u.name}`
+                        })
+                      }
                       className="relative h-28 rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 group/selfie cursor-pointer"
                     >
                       <img
@@ -421,7 +451,9 @@ export default function AdminKycPage() {
                   <div className="space-y-1.5">
                     <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
                       <span className="text-slate-400 font-medium">NIK:</span>
-                      <strong className="font-mono text-slate-900 font-bold">{u.nik || '3273081903980002'}</strong>
+                      <strong className="font-mono text-slate-900 font-bold">
+                        {u.nik || '3273081903980002'}
+                      </strong>
                     </div>
                     <div className="flex items-center justify-between text-[11px] text-slate-400 px-1">
                       <span>HP: {u.phone || '-'}</span>
@@ -487,7 +519,10 @@ export default function AdminKycPage() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in"
           onClick={() => setPreviewImage(null)}
         >
-          <div className="relative max-w-2xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl p-2" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="relative max-w-2xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl p-2"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between p-3 border-b border-slate-200">
               <span className="text-xs font-bold text-slate-800">{previewImage.title}</span>
               <button

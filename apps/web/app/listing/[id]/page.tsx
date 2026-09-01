@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
+import { ListingDetailView } from '../../../components/marketplace/listing-detail-view';
 import { api } from '../../../lib/api-client';
 import { formatIDR } from '../../../lib/utils';
-import { ListingDetailView } from '../../../components/marketplace/listing-detail-view';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://peygo.id';
 
@@ -19,7 +19,8 @@ export async function generateMetadata({
       const formattedPrice = formatIDR(listing.price);
       const title = `${listing.title} - ${formattedPrice} (${listing.city})`;
       const description = `Beli ${listing.title} kondisi ${listing.condition}. Dijual seharga ${formattedPrice} di ${listing.city}. Transaksi aman dengan garansi rekening bersama 100% dan inspeksi 48 jam di Peygo.`;
-      const firstImg = Array.isArray(listing.images) && listing.images.length > 0 ? listing.images[0] : null;
+      const firstImg =
+        Array.isArray(listing.images) && listing.images.length > 0 ? listing.images[0] : null;
       const primaryImageUrl =
         typeof firstImg === 'string' ? firstImg : firstImg?.url || `${siteUrl}/og-image.jpg`;
 

@@ -1,21 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import { ArrowRight, Heart, Lock, ShieldCheck, ShoppingBag, Trash2 } from 'lucide-react';
 import Link from 'next/link';
-import { useWishlist } from '../../context/wishlist-context';
+import { useState } from 'react';
+import { Breadcrumbs } from '../../components/layout/breadcrumbs';
+import { ListingCard } from '../../components/marketplace/listing-card';
 import { useAuth } from '../../context/auth-context';
 import { useToast } from '../../context/toast-context';
-import { ListingCard } from '../../components/marketplace/listing-card';
-import { Breadcrumbs } from '../../components/layout/breadcrumbs';
+import { useWishlist } from '../../context/wishlist-context';
 import { formatIDR } from '../../lib/utils';
-import {
-  Heart,
-  ShoppingBag,
-  Trash2,
-  ArrowRight,
-  ShieldCheck,
-  Lock
-} from 'lucide-react';
 
 export default function WishlistPage() {
   const { user, openAuthModal } = useAuth();
@@ -28,7 +21,10 @@ export default function WishlistPage() {
   const confirmClear = () => {
     clearWishlist();
     setIsConfirmClearOpen(false);
-    toast.info('Wishlist Dikosongkan', 'Semua barang dari daftar wishlist favorit Anda telah dihapus.');
+    toast.info(
+      'Wishlist Dikosongkan',
+      'Semua barang dari daftar wishlist favorit Anda telah dihapus.'
+    );
   };
 
   if (!user) {
@@ -39,7 +35,9 @@ export default function WishlistPage() {
             <Heart className="h-7 w-7 fill-current" />
           </div>
           <div className="space-y-1">
-            <h2 className="text-base sm:text-lg font-black text-slate-900">Masuk untuk Melihat Wishlist</h2>
+            <h2 className="text-base sm:text-lg font-black text-slate-900">
+              Masuk untuk Melihat Wishlist
+            </h2>
             <p className="text-xs text-slate-500">
               Simpan dan pantau barang bekas favorit Anda yang tersimpan di akun Rekber Peygo.
             </p>
@@ -64,11 +62,7 @@ export default function WishlistPage() {
       <div className="mx-auto max-w-6xl space-y-4 sm:space-y-5">
         {/* Top Header Row: Breadcrumbs */}
         <div className="flex items-center justify-between gap-2 min-w-0">
-          <Breadcrumbs
-            items={[
-              { label: 'Wishlist & Favorit' }
-            ]}
-          />
+          <Breadcrumbs items={[{ label: 'Wishlist & Favorit' }]} />
 
           {wishlistCount > 0 && (
             <button
@@ -110,8 +104,12 @@ export default function WishlistPage() {
                   <span>Kosongkan</span>
                 </button>
                 <div className="text-right">
-                  <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-bold">Total Estimasi:</span>
-                  <span className="text-sm sm:text-base font-black text-brand-700">{formatIDR(totalValue)}</span>
+                  <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-bold">
+                    Total Estimasi:
+                  </span>
+                  <span className="text-sm sm:text-base font-black text-brand-700">
+                    {formatIDR(totalValue)}
+                  </span>
                 </div>
               </div>
             )}
@@ -129,7 +127,8 @@ export default function WishlistPage() {
                 Wishlist Anda Masih Kosong
               </h2>
               <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
-                Simpan barang bekas yang Anda incar dengan menekan ikon hati pada foto produk untuk memantau penurunan harga.
+                Simpan barang bekas yang Anda incar dengan menekan ikon hati pada foto produk untuk
+                memantau penurunan harga.
               </p>
             </div>
             <div className="pt-1">
@@ -161,7 +160,8 @@ export default function WishlistPage() {
                 Garansi Rekber & Perlindungan Pembeli Peygo
               </h3>
               <p className="text-[11px] text-brand-800 font-medium">
-                Setiap transaksi dari wishlist Anda dilindungi garansi inspeksi fisik 48 jam dan dana aman di perantara.
+                Setiap transaksi dari wishlist Anda dilindungi garansi inspeksi fisik 48 jam dan
+                dana aman di perantara.
               </p>
             </div>
           </div>

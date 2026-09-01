@@ -1,25 +1,24 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import Link from 'next/link';
-import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import {
+  ArrowRight,
+  ChevronDown,
+  Clock,
   HelpCircle,
-  Search,
-  UserCheck,
-  ShoppingBag,
-  Store,
-  Scale,
+  Mail,
   MapPin,
   MessageCircle,
-  Mail,
-  Clock,
-  ChevronDown,
-  ChevronRight,
+  Scale,
+  Search,
   ShieldCheck,
-  ArrowRight,
+  ShoppingBag,
+  Store,
+  UserCheck,
   X
 } from 'lucide-react';
+import Link from 'next/link';
+import { useMemo, useState } from 'react';
+import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 
 interface HelpArticle {
   id: string;
@@ -43,19 +42,22 @@ const ARTICLES: HelpArticle[] = [
     id: 'k-1',
     category: 'akun',
     question: 'Mengapa saya perlu melakukan verifikasi identitas (KYC)?',
-    answer: 'Verifikasi identitas bertujuan menjaga rasa aman di ekosistem Peygo. Akun terverifikasi mendapatkan lencana "Terverifikasi" yang meningkatkan kepercayaan calon pembeli hingga 3x lipat serta membuka limit penarikan saldo tanpa batas.'
+    answer:
+      'Verifikasi identitas bertujuan menjaga rasa aman di ekosistem Peygo. Akun terverifikasi mendapatkan lencana "Terverifikasi" yang meningkatkan kepercayaan calon pembeli hingga 3x lipat serta membuka limit penarikan saldo tanpa batas.'
   },
   {
     id: 'k-2',
     category: 'akun',
     question: 'Berapa lama proses persetujuan verifikasi KYC?',
-    answer: 'Tim Moderasi Peygo memverifikasi dokumen identitas maksimal dalam 1x24 jam kerja. Pastikan foto KTP terbaca jelas tanpa pantulan cahaya dan selfie wajah sesuai dengan identitas KTP.'
+    answer:
+      'Tim Moderasi Peygo memverifikasi dokumen identitas maksimal dalam 1x24 jam kerja. Pastikan foto KTP terbaca jelas tanpa pantulan cahaya dan selfie wajah sesuai dengan identitas KTP.'
   },
   {
     id: 'k-3',
     category: 'akun',
     question: 'Bagaimana cara mengubah nomor rekening bank pencairan?',
-    answer: 'Buka menu Profil > Pengaturan Akun > Rekening Bank. Anda dapat menambahkan rekening bank atas nama yang sama dengan nama KTP Anda untuk keamanan.'
+    answer:
+      'Buka menu Profil > Pengaturan Akun > Rekening Bank. Anda dapat menambahkan rekening bank atas nama yang sama dengan nama KTP Anda untuk keamanan.'
   },
 
   // Pembelian & Rekber
@@ -63,19 +65,22 @@ const ARTICLES: HelpArticle[] = [
     id: 'b-1',
     category: 'beli',
     question: 'Bagaimana cara kerja fitur Nego (Tawar Menawar)?',
-    answer: 'Di halaman produk yang bertanda "Bisa Nego", klik tombol "Ajukan Nego" dan masukkan harga tawaran Anda. Jika penjual menyetujui, harga promo tersebut akan terkunci untuk Anda selama 24 jam untuk segera di-checkout.'
+    answer:
+      'Di halaman produk yang bertanda "Bisa Nego", klik tombol "Ajukan Nego" dan masukkan harga tawaran Anda. Jika penjual menyetujui, harga promo tersebut akan terkunci untuk Anda selama 24 jam untuk segera di-checkout.'
   },
   {
     id: 'b-2',
     category: 'beli',
     question: 'Metode pembayaran apa saja yang didukung oleh Rekber Peygo?',
-    answer: 'Kami mendukung QRIS (Semua e-Wallet & M-Banking), Virtual Account BCA, Mandiri, BRI, BNI, Permata, serta transfer bank konfirmasi instan 24/7.'
+    answer:
+      'Kami mendukung QRIS (Semua e-Wallet & M-Banking), Virtual Account BCA, Mandiri, BRI, BNI, Permata, serta transfer bank konfirmasi instan 24/7.'
   },
   {
     id: 'b-3',
     category: 'beli',
     question: 'Kapan dana saya diteruskan ke penjual?',
-    answer: 'Dana Anda HANYA akan diteruskan ke penjual setelah Anda mengklik tombol "Konfirmasi Pesanan Selesai" atau setelah batas Masa Proteksi 48 jam berakhir tanpa adanya komplain sengketa.'
+    answer:
+      'Dana Anda HANYA akan diteruskan ke penjual setelah Anda mengklik tombol "Konfirmasi Pesanan Selesai" atau setelah batas Masa Proteksi 48 jam berakhir tanpa adanya komplain sengketa.'
   },
 
   // Penjualan & Saldo
@@ -83,19 +88,22 @@ const ARTICLES: HelpArticle[] = [
     id: 'j-1',
     category: 'jual',
     question: 'Berapa lama dana penjualan masuk ke saldo setelah pesanan selesai?',
-    answer: 'Dana langsung masuk secara realtime detik itu juga ke Saldo Dompet Peygo Anda begitu pembeli mengonfirmasi penerimaan barang.'
+    answer:
+      'Dana langsung masuk secara realtime detik itu juga ke Saldo Dompet Peygo Anda begitu pembeli mengonfirmasi penerimaan barang.'
   },
   {
     id: 'j-2',
     category: 'jual',
     question: 'Kapan saldo bisa dicairkan ke rekening bank pribadi?',
-    answer: 'Pencairan saldo dapat dilakukan kapan saja melalui menu Profil > Dompet Saldo > Tarik Dana. Proses transfer ke rekening bank diproses dalam waktu 15 menit hingga maksimal 1x24 jam kerja.'
+    answer:
+      'Pencairan saldo dapat dilakukan kapan saja melalui menu Profil > Dompet Saldo > Tarik Dana. Proses transfer ke rekening bank diproses dalam waktu 15 menit hingga maksimal 1x24 jam kerja.'
   },
   {
     id: 'j-3',
     category: 'jual',
     question: 'Apakah ada biaya untuk memasang iklan barang bekas?',
-    answer: '100% GRATIS! Anda dapat memasang iklan sebanyak-banyaknya di semua kategori barang bekas tanpa dipungut biaya pemasangan iklan.'
+    answer:
+      '100% GRATIS! Anda dapat memasang iklan sebanyak-banyaknya di semua kategori barang bekas tanpa dipungut biaya pemasangan iklan.'
   },
 
   // Sengketa & Refund
@@ -103,19 +111,22 @@ const ARTICLES: HelpArticle[] = [
     id: 's-1',
     category: 'sengketa',
     question: 'Apa yang harus dilakukan jika barang yang diterima rusak / tidak sesuai deskripsi?',
-    answer: 'Jangan klik "Pesanan Selesai". Buka detail Pesanan Anda, lalu klik tombol "Ajukan Sengketa / Komplain". Unggah bukti foto detail dan video unboxing saat membuka paket.'
+    answer:
+      'Jangan klik "Pesanan Selesai". Buka detail Pesanan Anda, lalu klik tombol "Ajukan Sengketa / Komplain". Unggah bukti foto detail dan video unboxing saat membuka paket.'
   },
   {
     id: 's-2',
     category: 'sengketa',
     question: 'Berapa lama proses mediasi sengketa oleh tim Peygo?',
-    answer: 'Tim Investigasi Sengketa Peygo akan menengahi dan memutuskan perkara dalam waktu 2x24 jam kerja berdasarkan bukti fisik, kesesuaian deskripsi iklan, dan histori chat.'
+    answer:
+      'Tim Investigasi Sengketa Peygo akan menengahi dan memutuskan perkara dalam waktu 2x24 jam kerja berdasarkan bukti fisik, kesesuaian deskripsi iklan, dan histori chat.'
   },
   {
     id: 's-3',
     category: 'sengketa',
     question: 'Bagaimana mekanisme pengembalian dana (refund) pembeli?',
-    answer: 'Jika klaim pengembalian disetujui, pembeli mengirimkan kembali barang ke penjual dengan resi terlacak. Setelah barang diterima kembali oleh penjual, dana escrow 100% langsung dikembalikan ke rekening/dompet pembeli.'
+    answer:
+      'Jika klaim pengembalian disetujui, pembeli mengirimkan kembali barang ke penjual dengan resi terlacak. Setelah barang diterima kembali oleh penjual, dana escrow 100% langsung dikembalikan ke rekening/dompet pembeli.'
   },
 
   // COD & Ekspedisi
@@ -123,13 +134,15 @@ const ARTICLES: HelpArticle[] = [
     id: 'c-1',
     category: 'cod',
     question: 'Bagaimana tips COD (Cash on Delivery) yang aman?',
-    answer: 'Selalu gunakan titik temu di tempat umum yang ramai dan terang (seperti lobby mall, minimarket, atau kedai kopi). Cek fungsi barang di depan penjual sebelum mengonfirmasi pelepasan dana.'
+    answer:
+      'Selalu gunakan titik temu di tempat umum yang ramai dan terang (seperti lobby mall, minimarket, atau kedai kopi). Cek fungsi barang di depan penjual sebelum mengonfirmasi pelepasan dana.'
   },
   {
     id: 'c-2',
     category: 'cod',
     question: 'Ekspedisi apa saja yang didukung untuk pengiriman paket?',
-    answer: 'Penjual dapat menggunakan JNE, J&T, SiCepat, Anteraja, Paxel, maupun kurir instan GoSend / GrabExpress. Nomor resi valid wajib diinput di aplikasi untuk melacak status pengiriman.'
+    answer:
+      'Penjual dapat menggunakan JNE, J&T, SiCepat, Anteraja, Paxel, maupun kurir instan GoSend / GrabExpress. Nomor resi valid wajib diinput di aplikasi untuk melacak status pengiriman.'
   }
 ];
 
@@ -152,12 +165,7 @@ export default function PusatBantuanPage() {
   return (
     <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <Breadcrumbs
-          items={[
-            { label: 'Pusat Bantuan' }
-          ]}
-          className="mb-6"
-        />
+        <Breadcrumbs items={[{ label: 'Pusat Bantuan' }]} className="mb-6" />
 
         {/* Hero Search Section */}
         <div className="rounded-3xl bg-linear-to-br from-slate-950 via-slate-900 to-emerald-950 p-6 sm:p-12 text-white shadow-xl mb-10 text-center relative overflow-hidden">
@@ -173,7 +181,8 @@ export default function PusatBantuanPage() {
               Ada yang Bisa Kami Bantu?
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 mb-6">
-              Cari panduan transaksi, verifikasi akun, rekber garansi, atau tips belanja aman di Peygo.
+              Cari panduan transaksi, verifikasi akun, rekber garansi, atau tips belanja aman di
+              Peygo.
             </p>
 
             {/* Live Search Bar */}
@@ -248,7 +257,8 @@ export default function PusatBantuanPage() {
                 <Search className="mx-auto h-10 w-10 text-slate-300 mb-3" />
                 <h3 className="text-sm font-bold text-slate-800">Tidak ada jawaban yang cocok</h3>
                 <p className="text-xs text-slate-400 mt-1">
-                  Coba gunakan kata kunci yang lebih umum atau hubungi Customer Support kami di samping.
+                  Coba gunakan kata kunci yang lebih umum atau hubungi Customer Support kami di
+                  samping.
                 </p>
               </div>
             ) : (
@@ -285,9 +295,7 @@ export default function PusatBantuanPage() {
           {/* Right Sidebar: Direct Support Channels */}
           <div className="space-y-4">
             <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs">
-              <h3 className="text-sm font-black text-slate-900 mb-1">
-                Butuh Bantuan Langsung?
-              </h3>
+              <h3 className="text-sm font-black text-slate-900 mb-1">Butuh Bantuan Langsung?</h3>
               <p className="text-xs text-slate-500 mb-5">
                 Tim Support Peygo siap mendampingi proses transaksi Anda setiap hari.
               </p>
@@ -334,9 +342,7 @@ export default function PusatBantuanPage() {
                 <ShieldCheck className="h-4 w-4" />
                 <span>Proteksi Transaksi</span>
               </div>
-              <h4 className="text-sm font-black mb-1">
-                Pelajari Cara Kerja Rekber
-              </h4>
+              <h4 className="text-sm font-black mb-1">Pelajari Cara Kerja Rekber</h4>
               <p className="text-[11px] text-slate-300 leading-relaxed mb-4">
                 Pahami hak inspeksi 48 jam dan garansi uang kembali 100% untuk pembeli dan penjual.
               </p>

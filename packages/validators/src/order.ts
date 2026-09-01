@@ -7,7 +7,9 @@ export const createOrderSchema = z.object({
   offerId: z.string().optional(),
   deliveryMethod: deliveryMethodSchema,
   recipientName: z.string().min(2, 'Nama penerima minimal 2 karakter'),
-  recipientPhone: z.string().regex(/^(\+62|62|0)8[1-9][0-9]{6,10}$/, 'Nomor WhatsApp penerima tidak valid'),
+  recipientPhone: z
+    .string()
+    .regex(/^(\+62|62|0)8[1-9][0-9]{6,10}$/, 'Nomor WhatsApp penerima tidak valid'),
   shippingAddress: z.string().min(10, 'Alamat pengiriman / titik temu COD minimal 10 karakter'),
   courierName: z.string().optional()
 });

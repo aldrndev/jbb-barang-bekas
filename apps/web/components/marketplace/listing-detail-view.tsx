@@ -1,51 +1,46 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import {
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  BadgeCheck,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Edit3,
+  Eye,
+  FileText,
+  Flame,
+  Heart,
+  MapPin,
+  Maximize2,
+  MessageCircle,
+  MessageSquareQuote,
+  Package,
+  Share2,
+  ShieldAlert,
+  ShieldCheck,
+  ShoppingBag,
+  Sparkles,
+  Star,
+  X,
+  Zap
+} from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '../../lib/api-client';
+import { Suspense, useEffect, useState } from 'react';
 import { useAuth } from '../../context/auth-context';
 import { useWishlist } from '../../context/wishlist-context';
+import { api } from '../../lib/api-client';
+import { getCategoryConfig } from '../../lib/category-spec-config';
 import { formatIDR, formatTimeAgo, toTitleCase } from '../../lib/utils';
+import { Breadcrumbs } from '../layout/breadcrumbs';
 import { ConditionBadge } from './condition-badge';
 import { ListingCard } from './listing-card';
 import { MakeOfferModal } from './make-offer-modal';
-import { Breadcrumbs } from '../layout/breadcrumbs';
-import { getCategoryConfig } from '../../lib/category-spec-config';
-import {
-  ShieldCheck,
-  Zap,
-  MapPin,
-  Calendar,
-  CheckCircle2,
-  Clock,
-  Flame,
-  Eye,
-  ShoppingBag,
-  MessageSquareQuote,
-  Star,
-  ChevronRight,
-  ChevronLeft,
-  Share2,
-  Heart,
-  Lock,
-  ArrowLeft,
-  AlertCircle,
-  BadgeCheck,
-  ShieldAlert,
-  Shield,
-  Maximize2,
-  X,
-  Sparkles,
-  MessageCircle,
-  Package,
-  FileText,
-  Truck,
-  Edit3,
-  ArrowRight,
-  Award
-} from 'lucide-react';
 
 function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
   const router = useRouter();
@@ -58,7 +53,11 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
   const [shareToast, setShareToast] = useState(false);
 
   // Fetch listing detail
-  const { data: listingData, isLoading, refetch } = useQuery({
+  const {
+    data: listingData,
+    isLoading,
+    refetch
+  } = useQuery({
     queryKey: ['listing', idOrSlug],
     queryFn: () => api.getListingDetail(idOrSlug),
     enabled: !!idOrSlug
@@ -82,9 +81,9 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
     queryFn: () => api.getFeaturedListings()
   });
 
-  const relatedListings = (featuredData?.data || []).filter(
-    (item) => item.id !== listing?.id
-  ).slice(0, 4);
+  const relatedListings = (featuredData?.data || [])
+    .filter((item) => item.id !== listing?.id)
+    .slice(0, 4);
 
   // Check if current user has an accepted offer for this listing
   const { data: sentOffersData } = useQuery({
@@ -141,7 +140,9 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
   }
 
   const images = listing.images || [];
-  const primaryImageUrl = images[activeImageIdx]?.url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&auto=format&fit=crop&q=80';
+  const primaryImageUrl =
+    images[activeImageIdx]?.url ||
+    'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&auto=format&fit=crop&q=80';
   const completenessList = Array.isArray(listing.completeness) ? listing.completeness : [];
   const specs = listing.specs || {};
   const categoryConfig = getCategoryConfig(listing.categoryId, listing.category?.slug);
@@ -161,11 +162,13 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
   const handleShare = () => {
     if (typeof window !== 'undefined') {
       if (navigator.share) {
-        navigator.share({
-          title: listing.title,
-          text: `Cek barang bekas berkualitas: ${listing.title} seharga ${formatIDR(effectivePrice)} di Rekber Peygo`,
-          url: window.location.href
-        }).catch(() => {});
+        navigator
+          .share({
+            title: listing.title,
+            text: `Cek barang bekas berkualitas: ${listing.title} seharga ${formatIDR(effectivePrice)} di Rekber Peygo`,
+            url: window.location.href
+          })
+          .catch(() => {});
       } else {
         navigator.clipboard.writeText(window.location.href);
         setShareToast(true);
@@ -174,24 +177,29 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
     }
   };
 
-  const productJsonLd = listing ? {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: listing.title,
-    image: Array.isArray(listing.images) ? listing.images : [],
-    description: listing.description,
-    itemCondition: 'https://schema.org/UsedCondition',
-    offers: {
-      '@type': 'Offer',
-      price: effectivePrice,
-      priceCurrency: 'IDR',
-      availability: listing.status === 'ACTIVE' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-      seller: {
-        '@type': 'Person',
-        name: listing.seller?.name || 'Penjual Peygo'
+  const productJsonLd = listing
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: listing.title,
+        image: Array.isArray(listing.images) ? listing.images : [],
+        description: listing.description,
+        itemCondition: 'https://schema.org/UsedCondition',
+        offers: {
+          '@type': 'Offer',
+          price: effectivePrice,
+          priceCurrency: 'IDR',
+          availability:
+            listing.status === 'ACTIVE'
+              ? 'https://schema.org/InStock'
+              : 'https://schema.org/OutOfStock',
+          seller: {
+            '@type': 'Person',
+            name: listing.seller?.name || 'Penjual Peygo'
+          }
+        }
       }
-    }
-  } : null;
+    : null;
 
   return (
     <div className="bg-slate-50 py-3 sm:py-6 px-3.5 sm:px-6 lg:px-8 pb-6 sm:pb-8">
@@ -207,7 +215,14 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
           <Breadcrumbs
             items={[
               { label: 'Katalog', href: '/cari' },
-              ...(listing.category ? [{ label: listing.category.name, href: `/cari?category=${listing.category.slug}` }] : []),
+              ...(listing.category
+                ? [
+                    {
+                      label: listing.category.name,
+                      href: `/cari?category=${listing.category.slug}`
+                    }
+                  ]
+                : []),
               { label: listing.title }
             ]}
           />
@@ -249,8 +264,12 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                 <Sparkles className="h-4 w-4" />
               </div>
               <div className="min-w-0">
-                <span className="font-bold text-slate-900 block truncate">Ini adalah barang yang Anda iklankan</span>
-                <span className="text-[11px] text-slate-500 block truncate">Anda dapat memperbarui harga, deskripsi, atau foto kapan saja</span>
+                <span className="font-bold text-slate-900 block truncate">
+                  Ini adalah barang yang Anda iklankan
+                </span>
+                <span className="text-[11px] text-slate-500 block truncate">
+                  Anda dapat memperbarui harga, deskripsi, atau foto kapan saja
+                </span>
               </div>
             </div>
             <Link
@@ -299,7 +318,9 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                       }`}
                       title="Wishlist"
                     >
-                      <Heart className={`h-4 w-4 ${wishlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
+                      <Heart
+                        className={`h-4 w-4 ${wishlisted ? 'fill-rose-500 text-rose-500' : ''}`}
+                      />
                     </button>
                     <button
                       type="button"
@@ -365,7 +386,8 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                     <span>TAWARAN NEGO ANDA DISETUJUI!</span>
                   </div>
                   <p className="text-[11px] text-emerald-800 font-medium leading-snug">
-                    Harga khusus sebesar <strong>{formatIDR(effectivePrice)}</strong> terkunci 24 jam untuk akun Anda.
+                    Harga khusus sebesar <strong>{formatIDR(effectivePrice)}</strong> terkunci 24
+                    jam untuk akun Anda.
                   </p>
                 </div>
               )}
@@ -441,7 +463,12 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
               {/* Verified Location */}
               <div className="flex items-center gap-2 text-xs text-slate-600 pt-0.5">
                 <MapPin className="h-4 w-4 text-brand-600 shrink-0" />
-                <span>Lokasi: <strong className="text-slate-900">{listing.district}, {listing.city}</strong></span>
+                <span>
+                  Lokasi:{' '}
+                  <strong className="text-slate-900">
+                    {listing.district}, {listing.city}
+                  </strong>
+                </span>
               </div>
             </div>
 
@@ -474,7 +501,10 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                     <div className="flex items-center gap-1.5 font-bold text-xs sm:text-sm text-slate-900">
                       <span className="truncate">{toTitleCase(listing.seller.name)}</span>
                       {listing.seller.isKycVerified ? (
-                        <span title="Penjual Terverifikasi" className="inline-flex items-center text-emerald-600">
+                        <span
+                          title="Penjual Terverifikasi"
+                          className="inline-flex items-center text-emerald-600"
+                        >
                           <BadgeCheck className="h-4 w-4 fill-emerald-100" />
                         </span>
                       ) : null}
@@ -488,7 +518,9 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                             <span className="text-slate-400">({listing.seller.ratingCount})</span>
                           </div>
                           <span>&bull;</span>
-                          <span className="font-semibold text-slate-700">{listing.seller.totalTransactions} transaksi</span>
+                          <span className="font-semibold text-slate-700">
+                            {listing.seller.totalTransactions} transaksi
+                          </span>
                         </>
                       ) : (
                         <span className="font-medium text-slate-500">
@@ -523,8 +555,12 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                     <ShieldCheck className="h-4 w-4" />
                   </div>
                   <div>
-                    <h3 className="text-xs sm:text-sm font-black text-slate-900">Inspeksi & Transparansi Fisik</h3>
-                    <p className="text-[10px] sm:text-[11px] text-slate-700 font-semibold">Kondisi riil unit terverifikasi penjual</p>
+                    <h3 className="text-xs sm:text-sm font-black text-slate-900">
+                      Inspeksi & Transparansi Fisik
+                    </h3>
+                    <p className="text-[10px] sm:text-[11px] text-slate-700 font-semibold">
+                      Kondisi riil unit terverifikasi penjual
+                    </p>
                   </div>
                 </div>
                 <ConditionBadge condition={listing.condition} size="sm" />
@@ -537,35 +573,45 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                   <Package className="h-4 w-4 text-brand-600 shrink-0" />
                   <div className="min-w-0">
                     <span className="text-[11px] sm:text-xs font-black text-slate-900 block truncate">
-                      {categoryConfig.completenessOptions.find((o) => completenessList.includes(o.id))?.label ||
+                      {categoryConfig.completenessOptions.find((o) =>
+                        completenessList.includes(o.id)
+                      )?.label ||
                         (completenessList.includes('FULLSET') ? 'Fullset Original' : 'Unit Saja')}
                     </span>
                     <span className="text-[10px] sm:text-[11px] text-slate-600 font-semibold block truncate">
-                      {categoryConfig.completenessOptions.find((o) => completenessList.includes(o.id))?.sublabel ||
-                        (completenessList.includes('FULLSET') ? 'Lengkap aksesoris' : 'Tanpa kemasan')}
+                      {categoryConfig.completenessOptions.find((o) =>
+                        completenessList.includes(o.id)
+                      )?.sublabel ||
+                        (completenessList.includes('FULLSET')
+                          ? 'Lengkap aksesoris'
+                          : 'Tanpa kemasan')}
                     </span>
                   </div>
                 </div>
 
                 {/* 2. Legalitas / Nota / Invoice Toko */}
                 <div className="flex items-center gap-2 rounded-2xl bg-slate-100/90 p-2.5 sm:p-3.5 border border-slate-200">
-                  <FileText className={`h-4 w-4 shrink-0 ${listing.hasOriginalReceipt ? 'text-brand-600' : 'text-slate-600'}`} />
+                  <FileText
+                    className={`h-4 w-4 shrink-0 ${listing.hasOriginalReceipt ? 'text-brand-600' : 'text-slate-600'}`}
+                  />
                   <div className="min-w-0">
                     <span className="text-[11px] sm:text-xs font-black text-slate-900 block truncate">
                       {listing.hasOriginalReceipt
                         ? categoryConfig.slug === 'fashion-sepatu'
                           ? 'Ada Invoice / Struk'
                           : categoryConfig.slug === 'motor-otomotif'
-                          ? 'Faktur / BPKB Sah'
-                          : 'Ada Nota Pembelian'
+                            ? 'Faktur / BPKB Sah'
+                            : 'Ada Nota Pembelian'
                         : categoryConfig.slug === 'fashion-sepatu'
-                        ? 'Tanpa Invoice Toko'
-                        : categoryConfig.slug === 'motor-otomotif'
-                        ? 'Tanpa Buku Servis'
-                        : 'Tanpa Nota Toko'}
+                          ? 'Tanpa Invoice Toko'
+                          : categoryConfig.slug === 'motor-otomotif'
+                            ? 'Tanpa Buku Servis'
+                            : 'Tanpa Nota Toko'}
                     </span>
                     <span className="text-[10px] sm:text-[11px] text-slate-600 font-semibold block truncate">
-                      {listing.hasOriginalReceipt ? 'Bukti pembelian resmi' : 'Verifikasi fisik Rekber'}
+                      {listing.hasOriginalReceipt
+                        ? 'Bukti pembelian resmi'
+                        : 'Verifikasi fisik Rekber'}
                     </span>
                   </div>
                 </div>
@@ -583,10 +629,10 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                       {listing.warrantyUntil
                         ? 'Garansi resmi aktif'
                         : categoryConfig.slug === 'fashion-sepatu'
-                        ? 'Tahun rilis/beli'
-                        : categoryConfig.slug === 'motor-otomotif'
-                        ? 'Tahun perakitan'
-                        : 'Tangan pertama'}
+                          ? 'Tahun rilis/beli'
+                          : categoryConfig.slug === 'motor-otomotif'
+                            ? 'Tahun perakitan'
+                            : 'Tangan pertama'}
                     </span>
                   </div>
                 </div>
@@ -609,7 +655,9 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
             {/* 5. Product Description & Technical Specs */}
             <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-4">
               <div>
-                <h3 className="text-xs sm:text-sm font-black text-slate-900 mb-2">Deskripsi Lengkap Penjual</h3>
+                <h3 className="text-xs sm:text-sm font-black text-slate-900 mb-2">
+                  Deskripsi Lengkap Penjual
+                </h3>
                 <p className="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line font-medium">
                   {listing.description}
                 </p>
@@ -623,11 +671,16 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                   </h4>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                     {Object.entries(specs).map(([key, val]) => (
-                      <div key={key} className="rounded-2xl bg-slate-100/90 p-2.5 border border-slate-200">
+                      <div
+                        key={key}
+                        className="rounded-2xl bg-slate-100/90 p-2.5 border border-slate-200"
+                      >
                         <span className="text-[9px] font-bold uppercase tracking-wider text-slate-600 block mb-0.5 truncate">
                           {key}
                         </span>
-                        <span className="font-black text-slate-900 text-xs truncate block">{String(val)}</span>
+                        <span className="font-black text-slate-900 text-xs truncate block">
+                          {String(val)}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -644,7 +697,8 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                     Alur Transaksi & Garansi Rekber Peygo 100%
                   </h4>
                   <p className="text-[10px] sm:text-[11px] text-brand-800 font-medium">
-                    Dana Anda ditahan aman di rekening perantara dan baru cair ke penjual setelah 48 jam inspeksi fisik.
+                    Dana Anda ditahan aman di rekening perantara dan baru cair ke penjual setelah 48
+                    jam inspeksi fisik.
                   </p>
                 </div>
               </div>
@@ -656,7 +710,9 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                   <div className="mx-auto flex h-7 w-7 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white shadow-xs">
                     1
                   </div>
-                  <p className="text-[10px] sm:text-xs font-bold text-slate-800 leading-tight">Bayar Rekber</p>
+                  <p className="text-[10px] sm:text-xs font-bold text-slate-800 leading-tight">
+                    Bayar Rekber
+                  </p>
                 </div>
 
                 {/* Arrow 1 -> 2 */}
@@ -669,7 +725,9 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                   <div className="mx-auto flex h-7 w-7 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-800 border border-brand-200">
                     2
                   </div>
-                  <p className="text-[10px] sm:text-xs font-bold text-slate-800 leading-tight">Kirim / COD</p>
+                  <p className="text-[10px] sm:text-xs font-bold text-slate-800 leading-tight">
+                    Kirim / COD
+                  </p>
                 </div>
 
                 {/* Arrow 2 -> 3 */}
@@ -682,7 +740,9 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                   <div className="mx-auto flex h-7 w-7 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-800 border border-brand-200">
                     3
                   </div>
-                  <p className="text-[10px] sm:text-xs font-bold text-slate-800 leading-tight">Cek 48 Jam</p>
+                  <p className="text-[10px] sm:text-xs font-bold text-slate-800 leading-tight">
+                    Cek 48 Jam
+                  </p>
                 </div>
 
                 {/* Arrow 3 -> 4 */}
@@ -695,7 +755,9 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                   <div className="mx-auto flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-800 border border-emerald-300">
                     4
                   </div>
-                  <p className="text-[10px] sm:text-xs font-bold text-slate-800 leading-tight">Dana Cair</p>
+                  <p className="text-[10px] sm:text-xs font-bold text-slate-800 leading-tight">
+                    Dana Cair
+                  </p>
                 </div>
               </div>
             </div>
@@ -712,7 +774,8 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                     <span>TAWARAN NEGO ANDA DISETUJUI PENJUAL!</span>
                   </div>
                   <p className="text-[11px] text-emerald-800 font-medium leading-snug">
-                    Harga khusus sebesar <strong>{formatIDR(effectivePrice)}</strong> telah terkunci selama 24 jam untuk akun Anda melakukan pembayaran Rekber.
+                    Harga khusus sebesar <strong>{formatIDR(effectivePrice)}</strong> telah terkunci
+                    selama 24 jam untuk akun Anda melakukan pembayaran Rekber.
                   </p>
                 </div>
               )}
@@ -805,8 +868,8 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                     {listing.isCodAvailable && listing.codMeetingPoint
                       ? `Titik Temu: ${listing.codMeetingPoint}`
                       : listing.isCodAvailable
-                      ? 'Mendukung COD di tempat umum & Kirim Kurir'
-                      : 'Pengiriman via Kurir Rekber'}
+                        ? 'Mendukung COD di tempat umum & Kirim Kurir'
+                        : 'Pengiriman via Kurir Rekber'}
                   </p>
                 </div>
               </div>
@@ -867,7 +930,10 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                       <div className="flex items-center gap-1.5 font-black text-sm text-slate-900">
                         <span className="truncate">{toTitleCase(listing.seller.name)}</span>
                         {listing.seller.isKycVerified && (
-                          <span title="Penjual Terverifikasi (KTP)" className="shrink-0 text-emerald-600">
+                          <span
+                            title="Penjual Terverifikasi (KTP)"
+                            className="shrink-0 text-emerald-600"
+                          >
                             <BadgeCheck className="h-4 w-4 fill-emerald-100" />
                           </span>
                         )}
@@ -883,7 +949,9 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                               </span>
                             </div>
                             <span>&bull;</span>
-                            <span className="font-bold text-slate-800">{listing.seller.totalTransactions} transaksi</span>
+                            <span className="font-bold text-slate-800">
+                              {listing.seller.totalTransactions} transaksi
+                            </span>
                           </>
                         ) : (
                           <span className="text-[11px] font-medium text-slate-500">
@@ -1066,7 +1134,9 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                   key={img.id}
                   onClick={() => setActiveImageIdx(idx)}
                   className={`h-2.5 rounded-full transition-all cursor-pointer ${
-                    activeImageIdx === idx ? 'w-8 bg-brand-400' : 'w-2.5 bg-white/40 hover:bg-white/70'
+                    activeImageIdx === idx
+                      ? 'w-8 bg-brand-400'
+                      : 'w-2.5 bg-white/40 hover:bg-white/70'
                   }`}
                   title={`Ke Foto ${idx + 1}`}
                 />
@@ -1091,7 +1161,13 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
 
 export function ListingDetailView({ idOrSlug }: { idOrSlug: string }) {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50 p-12 text-center text-xs text-slate-400">Memuat detail barang...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-50 p-12 text-center text-xs text-slate-400">
+          Memuat detail barang...
+        </div>
+      }
+    >
       <ListingDetailContent idOrSlug={idOrSlug} />
     </Suspense>
   );

@@ -1,25 +1,23 @@
 'use client';
 
-import React, { useState, use } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api-client';
-import { formatIDR, formatTimeAgo } from '@/lib/utils';
+import { formatIDR } from '@/lib/utils';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  ArrowLeft,
   AlertTriangle,
-  Clock,
-  User,
+  ArrowLeft,
   Building,
-  ShieldCheck,
-  RefreshCw,
   Check,
   CheckCircle2,
-  X,
-  CreditCard,
-  Truck
+  Clock,
+  RefreshCw,
+  ShieldCheck,
+  User,
+  X
 } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { use, useState } from 'react';
 
 const DEFAULT_DISPUTES = [
   {
@@ -36,7 +34,8 @@ const DEFAULT_DISPUTES = [
     deliveryMethod: 'KURIR_REGULER',
     courierName: 'JNE Express YES',
     trackingNumber: 'JNE-882910293',
-    disputeReason: 'Layar MacBook terdapat staingate baret tebal memanjang di area tengah yang tidak dicantumkan di deskripsi penjual. Mohon refund penuh ke rekening.',
+    disputeReason:
+      'Layar MacBook terdapat staingate baret tebal memanjang di area tengah yang tidak dicantumkan di deskripsi penjual. Mohon refund penuh ke rekening.',
     disputeEvidenceUrls: [
       'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&auto=format&fit=crop&q=80'
@@ -46,7 +45,8 @@ const DEFAULT_DISPUTES = [
       title: 'MacBook Pro 14 M1 Pro 16/512GB Space Grey Fullset Box',
       price: 16500000,
       condition: 'LIKE_NEW',
-      imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80'
+      imageUrl:
+        'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80'
     },
     buyer: {
       id: 'usr-buyer-1',
@@ -79,7 +79,8 @@ const DEFAULT_DISPUTES = [
     deliveryMethod: 'KURIR_REGULER',
     courierName: 'SiCepat BEST',
     trackingNumber: '002938491028',
-    disputeReason: 'Sensor kamera terdapat jamur/fungus tipis saat diuji pada aperture f/16, padahal di chat penjual menyatakan optik sensor 100% bening cling.',
+    disputeReason:
+      'Sensor kamera terdapat jamur/fungus tipis saat diuji pada aperture f/16, padahal di chat penjual menyatakan optik sensor 100% bening cling.',
     disputeEvidenceUrls: [
       'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&auto=format&fit=crop&q=80'
@@ -89,7 +90,8 @@ const DEFAULT_DISPUTES = [
       title: 'Sony Alpha A7 III Body Only SC Rendah 3.200 Fullset',
       price: 19800000,
       condition: 'LIGHTLY_USED',
-      imageUrl: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&auto=format&fit=crop&q=80'
+      imageUrl:
+        'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&auto=format&fit=crop&q=80'
     },
     buyer: {
       id: 'usr-buyer-2',
@@ -119,15 +121,22 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
   const [adminNotes, setAdminNotes] = useState('');
   const [isProcessingAction, setIsProcessingAction] = useState(false);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
-  const [confirmModal, setConfirmModal] = useState<'REFUND_BUYER' | 'RELEASE_TO_SELLER' | null>(null);
-  const [toast, setToast] = useState<{ type: 'success' | 'error'; title: string; message: string } | null>(null);
+  const [confirmModal, setConfirmModal] = useState<'REFUND_BUYER' | 'RELEASE_TO_SELLER' | null>(
+    null
+  );
+  const [toast, setToast] = useState<{
+    type: 'success' | 'error';
+    title: string;
+    message: string;
+  } | null>(null);
 
   const { data: disputesData } = useQuery({
     queryKey: ['admin-disputes'],
     queryFn: () => api.getAdminDisputes()
   });
 
-  const disputes = (disputesData?.data && disputesData.data.length > 0) ? disputesData.data : DEFAULT_DISPUTES;
+  const disputes =
+    disputesData?.data && disputesData.data.length > 0 ? disputesData.data : DEFAULT_DISPUTES;
   const dispute = disputes.find((d: any) => d.id === disputeId) || disputes[0];
 
   const executeResolve = async (action: 'REFUND_BUYER' | 'RELEASE_TO_SELLER') => {
@@ -196,7 +205,9 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
             )}
             <div className="space-y-1 flex-1 min-w-0">
               <h4 className="font-black text-xs text-white tracking-wide">{toast.title}</h4>
-              <p className="text-[11px] text-slate-300 leading-relaxed font-medium">{toast.message}</p>
+              <p className="text-[11px] text-slate-300 leading-relaxed font-medium">
+                {toast.message}
+              </p>
             </div>
             <button
               type="button"
@@ -238,7 +249,13 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div className="flex items-center gap-3.5">
             <img
-              src={dispute.listing?.imageUrl || dispute.disputeEvidenceUrls?.[0] || 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&auto=format&fit=crop&q=80'}
+              src={
+                (dispute.listing &&
+                  'images' in dispute.listing &&
+                  dispute.listing.images?.[0]?.url) ||
+                dispute.disputeEvidenceUrls?.[0] ||
+                'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&auto=format&fit=crop&q=80'
+              }
               alt={dispute.listing?.title || 'Barang'}
               className="h-16 w-16 rounded-2xl object-cover border border-slate-200 shadow-2xs shrink-0"
             />
@@ -270,14 +287,16 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
                 <User className="h-4 w-4 text-rose-600" />
                 <span>Pihak Penggugat (Pembeli)</span>
               </span>
-              <span className="font-bold text-[11px] text-rose-800">
-                {dispute.buyer?.name}
-              </span>
+              <span className="font-bold text-[11px] text-rose-800">{dispute.buyer?.name}</span>
             </div>
 
             <div className="space-y-1 text-slate-700">
-              <p>Email: <strong>{dispute.buyer?.email || '-'}</strong></p>
-              <p>WhatsApp: <strong>{dispute.buyer?.phone || '-'}</strong></p>
+              <p>
+                Email: <strong>{dispute.buyer?.email || '-'}</strong>
+              </p>
+              <p>
+                WhatsApp: <strong>{dispute.buyer?.phone || '-'}</strong>
+              </p>
             </div>
 
             <div className="space-y-1.5">
@@ -324,14 +343,16 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
                 <Building className="h-4 w-4 text-brand-600" />
                 <span>Pihak Tergugat (Penjual)</span>
               </span>
-              <span className="font-bold text-[11px] text-slate-800">
-                {dispute.seller?.name}
-              </span>
+              <span className="font-bold text-[11px] text-slate-800">{dispute.seller?.name}</span>
             </div>
 
             <div className="space-y-1 text-slate-700">
-              <p>WhatsApp: <strong>{dispute.seller?.phone || '-'}</strong></p>
-              <p>Email: <strong>{dispute.seller?.email || '-'}</strong></p>
+              <p>
+                WhatsApp: <strong>{dispute.seller?.phone || '-'}</strong>
+              </p>
+              <p>
+                Email: <strong>{dispute.seller?.email || '-'}</strong>
+              </p>
             </div>
 
             {/* Bank Details */}
@@ -353,11 +374,20 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
                 Log Pengiriman & Rekber:
               </span>
               <div className="space-y-1 text-[11px] text-slate-600">
-                <p>Kurir: <strong>{dispute.courierName || 'JNE Express'}</strong></p>
-                <p>No. Resi: <strong className="font-mono text-slate-900">{dispute.trackingNumber || 'JNE-882910293'}</strong></p>
+                <p>
+                  Kurir: <strong>{dispute.courierName || 'JNE Express'}</strong>
+                </p>
+                <p>
+                  No. Resi:{' '}
+                  <strong className="font-mono text-slate-900">
+                    {dispute.trackingNumber || 'JNE-882910293'}
+                  </strong>
+                </p>
                 <div className="pt-1.5 border-t border-slate-200 flex justify-between font-bold text-slate-900 text-xs">
                   <span>Total Nilai Sengketa:</span>
-                  <span className="text-brand-700">{formatIDR(dispute.totalAmount || dispute.amount || 16560000)}</span>
+                  <span className="text-brand-700">
+                    {formatIDR(dispute.totalAmount || dispute.amount || 16560000)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -372,7 +402,8 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
               <span>Panel Eksekusi Putusan Mediasi Petugas Rekber</span>
             </h4>
             <p className="text-[11px] text-slate-500 font-medium">
-              Putusan ini bersifat mengikat dan akan langsung memproses arus dana escrow ke rekening tujuan.
+              Putusan ini bersifat mengikat dan akan langsung memproses arus dana escrow ke rekening
+              tujuan.
             </p>
           </div>
 
@@ -498,9 +529,14 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in"
           onClick={() => setPreviewImageUrl(null)}
         >
-          <div className="relative max-w-3xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl p-2" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="relative max-w-3xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl p-2"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between p-3 border-b border-slate-200">
-              <span className="text-xs font-bold text-slate-800">Bukti Fisik / Unboxing Resolusi Penuh</span>
+              <span className="text-xs font-bold text-slate-800">
+                Bukti Fisik / Unboxing Resolusi Penuh
+              </span>
               <button
                 type="button"
                 onClick={() => setPreviewImageUrl(null)}

@@ -19,8 +19,13 @@ export const completenessEnum = z.enum([
 
 export const createListingSchema = z.object({
   categoryId: z.string().min(1, 'Kategori wajib dipilih'),
-  title: z.string().min(5, 'Judul barang minimal 5 karakter').max(120, 'Judul barang maksimal 120 karakter'),
-  description: z.string().min(20, 'Deskripsikan kondisi barang secara jujur dan jelas minimal 20 karakter'),
+  title: z
+    .string()
+    .min(5, 'Judul barang minimal 5 karakter')
+    .max(120, 'Judul barang maksimal 120 karakter'),
+  description: z
+    .string()
+    .min(20, 'Deskripsikan kondisi barang secara jujur dan jelas minimal 20 karakter'),
   price: z.number().positive('Harga harus lebih dari 0'),
   originalPrice: z.number().positive().optional(),
   isNegotiable: z.boolean().default(true),
@@ -30,7 +35,7 @@ export const createListingSchema = z.object({
   purchaseYear: z.number().int().min(2000).max(2027).optional(),
   warrantyUntil: z.string().optional(),
   hasOriginalReceipt: z.boolean().default(false),
-  
+
   // Location
   province: z.string().min(1, 'Provinsi wajib diisi'),
   city: z.string().min(1, 'Kota/Kabupaten wajib diisi'),
@@ -38,10 +43,13 @@ export const createListingSchema = z.object({
   postalCode: z.string().optional(),
   isCodAvailable: z.boolean().default(true),
   codMeetingPoint: z.string().max(200).optional(),
-  
+
   // Specs and images
   specs: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])).optional(),
-  imageUrls: z.array(z.url('URL gambar tidak valid')).min(1, 'Upload minimal 1 foto barang').max(10, 'Maksimal 10 foto barang')
+  imageUrls: z
+    .array(z.url('URL gambar tidak valid'))
+    .min(1, 'Upload minimal 1 foto barang')
+    .max(10, 'Maksimal 10 foto barang')
 });
 
 export const updateListingSchema = createListingSchema.partial().extend({

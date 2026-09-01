@@ -1,7 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
-import { CheckCircle2, AlertCircle, Info, AlertTriangle, X } from 'lucide-react';
+import { AlertCircle, AlertTriangle, CheckCircle2, Info, X } from 'lucide-react';
+import type React from 'react';
+import { createContext, useCallback, useContext, useState } from 'react';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
@@ -33,7 +34,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const showToast = useCallback(
-    (type: ToastType, title: string, description?: string, duration: number = 4000) => {
+    (type: ToastType, title: string, description?: string, duration = 4000) => {
       const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
       const newToast: ToastItem = { id, type, title, description, duration };
 

@@ -1,31 +1,29 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../lib/api-client';
-import { useAuth } from '../../context/auth-context';
-import { formatIDR, toTitleCase, cleanWhitespace } from '../../lib/utils';
-import { ConditionBadge } from '../../components/marketplace/condition-badge';
-import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import {
-  ShieldCheck,
-  Truck,
-  Zap,
+  AlertCircle,
   ArrowLeft,
   CheckCircle2,
-  AlertCircle,
-  Clock,
-  Sparkles,
-  MapPin,
+  HelpCircle,
   Lock,
-  Tag,
-  ChevronRight,
-  User,
+  MapPin,
   Phone,
-  HelpCircle
+  ShieldCheck,
+  Tag,
+  Truck,
+  User,
+  Zap
 } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import type React from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { Breadcrumbs } from '../../components/layout/breadcrumbs';
+import { ConditionBadge } from '../../components/marketplace/condition-badge';
+import { useAuth } from '../../context/auth-context';
+import { api } from '../../lib/api-client';
+import { cleanWhitespace, formatIDR, toTitleCase } from '../../lib/utils';
 
 function CheckoutContent() {
   const router = useRouter();
@@ -35,7 +33,9 @@ function CheckoutContent() {
   const listingIdOrSlug = searchParams.get('listingId');
   const queryOfferId = searchParams.get('offerId');
 
-  const [deliveryMethod, setDeliveryMethod] = useState<'COD_KETEMUAN' | 'KURIR_REGULER'>('KURIR_REGULER');
+  const [deliveryMethod, setDeliveryMethod] = useState<'COD_KETEMUAN' | 'KURIR_REGULER'>(
+    'KURIR_REGULER'
+  );
   const [recipientName, setRecipientName] = useState('');
   const [recipientPhone, setRecipientPhone] = useState('');
   const [shippingAddress, setShippingAddress] = useState('');
@@ -100,7 +100,10 @@ function CheckoutContent() {
 
     const trimmedName = toTitleCase(recipientName);
     const trimmedPhone = recipientPhone.trim();
-    const trimmedAddress = deliveryMethod === 'COD_KETEMUAN' ? toTitleCase(shippingAddress) : cleanWhitespace(shippingAddress);
+    const trimmedAddress =
+      deliveryMethod === 'COD_KETEMUAN'
+        ? toTitleCase(shippingAddress)
+        : cleanWhitespace(shippingAddress);
 
     if (!trimmedName || trimmedName.length < 2) {
       setErrorMessage('Nama penerima minimal 2 karakter');
@@ -119,12 +122,16 @@ function CheckoutContent() {
     }
 
     if (deliveryMethod === 'KURIR_REGULER' && trimmedAddress.length < 10) {
-      setErrorMessage('Alamat pengiriman lengkap wajib minimal 10 karakter (sertakan jalan, nomor rumah, atau patokan)');
+      setErrorMessage(
+        'Alamat pengiriman lengkap wajib minimal 10 karakter (sertakan jalan, nomor rumah, atau patokan)'
+      );
       return;
     }
 
     if (deliveryMethod === 'COD_KETEMUAN' && trimmedAddress.length < 5) {
-      setErrorMessage('Titik temu COD minimal 5 karakter (contoh: Starbucks Gandaria City jam 3 sore)');
+      setErrorMessage(
+        'Titik temu COD minimal 5 karakter (contoh: Starbucks Gandaria City jam 3 sore)'
+      );
       return;
     }
 
@@ -135,7 +142,11 @@ function CheckoutContent() {
       deliveryMethod,
       recipientName: trimmedName,
       recipientPhone: trimmedPhone,
-      shippingAddress: trimmedAddress || (deliveryMethod === 'COD_KETEMUAN' ? (listing.codMeetingPoint || listing.city) : 'Alamat Pengiriman'),
+      shippingAddress:
+        trimmedAddress ||
+        (deliveryMethod === 'COD_KETEMUAN'
+          ? listing.codMeetingPoint || listing.city
+          : 'Alamat Pengiriman'),
       courierName: deliveryMethod === 'COD_KETEMUAN' ? 'COD Langsung' : 'JNE Reguler'
     });
 
@@ -150,7 +161,10 @@ function CheckoutContent() {
         queryClient.invalidateQueries({ queryKey: ['my-listings'] })
       ]);
     } else {
-      setErrorMessage(res.error?.message || 'Gagal memproses pesanan Rekber. Silakan periksa kembali formulir Anda.');
+      setErrorMessage(
+        res.error?.message ||
+          'Gagal memproses pesanan Rekber. Silakan periksa kembali formulir Anda.'
+      );
     }
     setIsSubmitting(false);
   };
@@ -167,7 +181,8 @@ function CheckoutContent() {
             Masuk untuk Melanjutkan Checkout
           </h1>
           <p className="mt-2 text-xs sm:text-sm text-slate-500 leading-relaxed">
-            Demi keamanan rekening bersama dan perlindungan dana Anda, silakan masuk ke akun pembeli terlebih dahulu.
+            Demi keamanan rekening bersama dan perlindungan dana Anda, silakan masuk ke akun pembeli
+            terlebih dahulu.
           </p>
 
           <div className="mt-6 flex flex-col gap-2.5">
@@ -231,7 +246,8 @@ function CheckoutContent() {
           </div>
           <h2 className="text-2xl font-black text-slate-900">Pembayaran Rekber Sukses!</h2>
           <p className="text-xs text-slate-500 mt-1">
-            Nomor Pesanan: <strong className="text-slate-900 font-mono">{successOrder.orderNumber}</strong>
+            Nomor Pesanan:{' '}
+            <strong className="text-slate-900 font-mono">{successOrder.orderNumber}</strong>
           </p>
 
           <div className="mt-4 rounded-2xl bg-slate-50 p-4 border border-slate-200/80 text-left space-y-2 text-xs">
@@ -247,14 +263,17 @@ function CheckoutContent() {
             </div>
             <div className="flex justify-between border-t border-slate-200 pt-2 font-bold">
               <span className="text-slate-700">Total Dana Diamankan:</span>
-              <span className="text-brand-700 font-black text-sm">{formatIDR(successOrder.totalAmount)}</span>
+              <span className="text-brand-700 font-black text-sm">
+                {formatIDR(successOrder.totalAmount)}
+              </span>
             </div>
           </div>
 
           <div className="mt-4 rounded-2xl bg-brand-50 p-3.5 border border-brand-200 text-[11px] text-brand-900 text-left flex items-start gap-2.5">
             <ShieldCheck className="h-4 w-4 text-brand-600 shrink-0 mt-0.5" />
             <p>
-              Dana Anda telah <strong>terkunci aman di rekening bersama Rekber Bekasin</strong>. Penjual telah kami beri notifikasi untuk menyiapkan pengiriman / jadwal COD.
+              Dana Anda telah <strong>terkunci aman di rekening bersama Rekber Bekasin</strong>.
+              Penjual telah kami beri notifikasi untuk menyiapkan pengiriman / jadwal COD.
             </p>
           </div>
 
@@ -277,7 +296,9 @@ function CheckoutContent() {
     );
   }
 
-  const primaryImage = listing.images?.[0]?.url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400';
+  const primaryImage =
+    listing.images?.[0]?.url ||
+    'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400';
 
   return (
     <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8 pb-24">
@@ -299,7 +320,10 @@ function CheckoutContent() {
         </div>
 
         {/* Main 2-Column Checkout Layout */}
-        <form onSubmit={handleSubmitCheckout} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <form
+          onSubmit={handleSubmitCheckout}
+          className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
+        >
           {/* Left Column: Form Details (7 Cols) */}
           <div className="lg:col-span-7 space-y-6">
             {/* Error Banner */}
@@ -324,7 +348,9 @@ function CheckoutContent() {
                     TAWARAN NEGO ANDA DISETUJUI PENJUAL!
                   </div>
                   <p className="text-[11px] text-emerald-800 mt-0.5 font-medium">
-                    Harga khusus sebesar <strong>{formatIDR(effectivePrice)}</strong> (Hemat {formatIDR(listing.price - effectivePrice)}) telah diterapkan secara otomatis pada transaksi ini.
+                    Harga khusus sebesar <strong>{formatIDR(effectivePrice)}</strong> (Hemat{' '}
+                    {formatIDR(listing.price - effectivePrice)}) telah diterapkan secara otomatis
+                    pada transaksi ini.
                   </p>
                 </div>
               </div>
@@ -459,7 +485,8 @@ function CheckoutContent() {
                         : 'text-amber-600'
                     }`}
                   >
-                    {shippingAddress.trim().length} / {deliveryMethod === 'COD_KETEMUAN' ? '5 min' : '10 min karakter'}
+                    {shippingAddress.trim().length} /{' '}
+                    {deliveryMethod === 'COD_KETEMUAN' ? '5 min' : '10 min karakter'}
                   </span>
                 </div>
                 <textarea
@@ -476,7 +503,8 @@ function CheckoutContent() {
                     if (errorMessage) setErrorMessage(null);
                   }}
                   className={`w-full rounded-2xl border p-3.5 text-xs text-slate-800 focus:outline-none ${
-                    errorMessage && shippingAddress.trim().length < (deliveryMethod === 'COD_KETEMUAN' ? 5 : 10)
+                    errorMessage &&
+                    shippingAddress.trim().length < (deliveryMethod === 'COD_KETEMUAN' ? 5 : 10)
                       ? 'border-rose-400 focus:border-rose-500 bg-rose-50/30'
                       : 'border-slate-200 focus:border-brand-500'
                   }`}
@@ -507,15 +535,24 @@ function CheckoutContent() {
               <ul className="space-y-1.5 text-xs text-brand-900 font-medium">
                 <li className="flex items-start gap-2">
                   <span className="text-brand-600 font-bold">✓</span>
-                  <span><strong>Uang Ditahan Aman:</strong> Penjual tidak menerima dana sebelum Anda konfirmasi terima barang.</span>
+                  <span>
+                    <strong>Uang Ditahan Aman:</strong> Penjual tidak menerima dana sebelum Anda
+                    konfirmasi terima barang.
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-brand-600 font-bold">✓</span>
-                  <span><strong>Garansi Cek Fisik 48 Jam:</strong> Anda berhak memeriksa kelengkapan & fungsi unit selama 2x24 jam.</span>
+                  <span>
+                    <strong>Garansi Cek Fisik 48 Jam:</strong> Anda berhak memeriksa kelengkapan &
+                    fungsi unit selama 2x24 jam.
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-brand-600 font-bold">✓</span>
-                  <span><strong>Hak Komplain & Retur Penuh:</strong> Jika barang ada minus yang tidak sesuai deskripsi, dana dikembalikan 100%.</span>
+                  <span>
+                    <strong>Hak Komplain & Retur Penuh:</strong> Jika barang ada minus yang tidak
+                    sesuai deskripsi, dana dikembalikan 100%.
+                  </span>
                 </li>
               </ul>
             </div>
@@ -543,7 +580,9 @@ function CheckoutContent() {
                   </h4>
                   <div className="flex items-center gap-1 text-[11px] text-slate-500 mt-1">
                     <MapPin className="h-3 w-3 text-slate-400" />
-                    <span>{listing.city} &bull; Penjual: {listing.seller?.name}</span>
+                    <span>
+                      {listing.city} &bull; Penjual: {listing.seller?.name}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -565,7 +604,10 @@ function CheckoutContent() {
                 <div className="flex justify-between text-slate-600">
                   <div className="flex items-center gap-1">
                     <span>Biaya Perlindungan Rekber (1%)</span>
-                    <span title="Biaya keamanan penjaminan rekening bersama 48 jam" className="cursor-help">
+                    <span
+                      title="Biaya keamanan penjaminan rekening bersama 48 jam"
+                      className="cursor-help"
+                    >
                       <HelpCircle className="h-3 w-3 text-slate-400" />
                     </span>
                   </div>
@@ -587,18 +629,31 @@ function CheckoutContent() {
                 className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-brand-600/30 hover:bg-brand-700 hover:scale-101 transition-all disabled:opacity-50 cursor-pointer"
               >
                 <ShieldCheck className="h-5 w-5" />
-                <span>{isSubmitting ? 'Memproses Transaksi...' : `Bayar Aman ke Rekber (${formatIDR(totalPayment)})`}</span>
+                <span>
+                  {isSubmitting
+                    ? 'Memproses Transaksi...'
+                    : `Bayar Aman ke Rekber (${formatIDR(totalPayment)})`}
+                </span>
               </button>
 
               <p className="text-[10px] text-center text-slate-400 leading-relaxed font-medium">
                 Dengan melanjutkan, Anda menyetujui{' '}
-                <Link href="/panduan-rekber" target="_blank" className="underline hover:text-slate-600 font-bold">
+                <Link
+                  href="/panduan-rekber"
+                  target="_blank"
+                  className="underline hover:text-slate-600 font-bold"
+                >
                   Ketentuan Rekening Bersama
                 </Link>{' '}
                 &{' '}
-                <Link href="/syarat-ketentuan" target="_blank" className="underline hover:text-slate-600 font-bold">
+                <Link
+                  href="/syarat-ketentuan"
+                  target="_blank"
+                  className="underline hover:text-slate-600 font-bold"
+                >
                   Jaminan Perlindungan Pembeli Peygo
-                </Link>.
+                </Link>
+                .
               </p>
             </div>
           </div>
@@ -610,7 +665,13 @@ function CheckoutContent() {
 
 export default function CheckoutPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50 p-12 text-center text-xs text-slate-400">Memuat halaman checkout...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-50 p-12 text-center text-xs text-slate-400">
+          Memuat halaman checkout...
+        </div>
+      }
+    >
       <CheckoutContent />
     </Suspense>
   );

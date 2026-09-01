@@ -1,34 +1,28 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  Check,
+  Clock,
+  ExternalLink,
+  Inbox,
+  Lock,
+  MessageSquareQuote,
+  Send,
+  ShoppingBag,
+  User,
+  X,
+  Zap
+} from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../lib/api-client';
-import { useAuth } from '../../context/auth-context';
-import { useToast } from '../../context/toast-context';
-import { formatIDR, formatTimeAgo } from '../../lib/utils';
+import { Suspense, useEffect, useState } from 'react';
 import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
-import type { Offer } from '@jbb/types';
-import {
-  MessageSquareQuote,
-  ShieldCheck,
-  Check,
-  X,
-  ShoppingBag,
-  Clock,
-  Sparkles,
-  ArrowRight,
-  Send,
-  Inbox,
-  User,
-  MapPin,
-  ExternalLink,
-  Tag,
-  Zap,
-  Lock
-} from 'lucide-react';
+import { useAuth } from '../../context/auth-context';
+import { useToast } from '../../context/toast-context';
+import { api } from '../../lib/api-client';
+import { formatIDR, formatTimeAgo } from '../../lib/utils';
 
 function NegoDashboardContent() {
   const { user, openAuthModal } = useAuth();
@@ -66,7 +60,12 @@ function NegoDashboardContent() {
   const receivedOffers = receivedOffersData?.data || [];
   const sentOffers = sentOffersData?.data || [];
 
-  const handleRespond = async (offerId: string, action: 'ACCEPT' | 'REJECT' | 'COUNTER', counterPrice?: number, counterMessage?: string) => {
+  const handleRespond = async (
+    offerId: string,
+    action: 'ACCEPT' | 'REJECT' | 'COUNTER',
+    counterPrice?: number,
+    counterMessage?: string
+  ) => {
     const res = await api.respondOffer(offerId, action, counterPrice, counterMessage);
     if (res.success) {
       await Promise.all([
@@ -101,13 +100,29 @@ function NegoDashboardContent() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'ACCEPTED':
-        return <span className="rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 text-[10px] sm:text-xs font-bold">Disetujui</span>;
+        return (
+          <span className="rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 text-[10px] sm:text-xs font-bold">
+            Disetujui
+          </span>
+        );
       case 'REJECTED':
-        return <span className="rounded-full bg-rose-50 text-rose-800 border border-rose-200 px-2.5 py-0.5 text-[10px] sm:text-xs font-bold">Ditolak</span>;
+        return (
+          <span className="rounded-full bg-rose-50 text-rose-800 border border-rose-200 px-2.5 py-0.5 text-[10px] sm:text-xs font-bold">
+            Ditolak
+          </span>
+        );
       case 'COUNTERED':
-        return <span className="rounded-full bg-blue-50 text-blue-800 border border-blue-200 px-2.5 py-0.5 text-[10px] sm:text-xs font-bold">Ditawar Balik</span>;
+        return (
+          <span className="rounded-full bg-blue-50 text-blue-800 border border-blue-200 px-2.5 py-0.5 text-[10px] sm:text-xs font-bold">
+            Ditawar Balik
+          </span>
+        );
       default:
-        return <span className="rounded-full bg-amber-50 text-amber-900 border border-amber-200 px-2.5 py-0.5 text-[10px] sm:text-xs font-bold">Menunggu Respon</span>;
+        return (
+          <span className="rounded-full bg-amber-50 text-amber-900 border border-amber-200 px-2.5 py-0.5 text-[10px] sm:text-xs font-bold">
+            Menunggu Respon
+          </span>
+        );
     }
   };
 
@@ -119,9 +134,12 @@ function NegoDashboardContent() {
             <MessageSquareQuote className="h-7 w-7" />
           </div>
           <div className="space-y-1">
-            <h2 className="text-base sm:text-lg font-black text-slate-900">Masuk ke Pusat Tawar & Nego</h2>
+            <h2 className="text-base sm:text-lg font-black text-slate-900">
+              Masuk ke Pusat Tawar & Nego
+            </h2>
             <p className="text-xs text-slate-500">
-              Pantau tawaran masuk dari calon pembeli dan kelola penawaran harga Anda ke penjual secara aman.
+              Pantau tawaran masuk dari calon pembeli dan kelola penawaran harga Anda ke penjual
+              secara aman.
             </p>
           </div>
 
@@ -146,7 +164,10 @@ function NegoDashboardContent() {
         {/* Breadcrumb Navigation */}
         <Breadcrumbs
           items={[
-            { label: activeTab === 'received' ? 'Tawaran Masuk (Penjual)' : 'Tawaran Keluar (Pembeli)' }
+            {
+              label:
+                activeTab === 'received' ? 'Tawaran Masuk (Penjual)' : 'Tawaran Keluar (Pembeli)'
+            }
           ]}
         />
 
@@ -212,7 +233,8 @@ function NegoDashboardContent() {
                 <div className="space-y-1">
                   <h3 className="text-sm font-bold text-slate-800">Belum Ada Tawaran Masuk</h3>
                   <p className="text-xs text-slate-400 max-w-sm mx-auto font-medium">
-                    Penawaran harga dari calon pembeli yang menawar iklan barang bekas Anda akan otomatis tampil di sini.
+                    Penawaran harga dari calon pembeli yang menawar iklan barang bekas Anda akan
+                    otomatis tampil di sini.
                   </p>
                 </div>
               </div>
@@ -221,7 +243,8 @@ function NegoDashboardContent() {
                 const listing = offer.listing;
                 const originalPrice = listing?.price || offer.offeredPrice;
                 const discountAmount = originalPrice - offer.offeredPrice;
-                const discountPercent = originalPrice > 0 ? Math.round((discountAmount / originalPrice) * 100) : 0;
+                const discountPercent =
+                  originalPrice > 0 ? Math.round((discountAmount / originalPrice) * 100) : 0;
                 const primaryImg =
                   listing?.images?.find((i: any) => i.isPrimary)?.url ||
                   listing?.images?.[0]?.url ||
@@ -239,7 +262,11 @@ function NegoDashboardContent() {
                       <div className="flex items-center gap-1.5 min-w-0">
                         <div className="flex items-center gap-1 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-200 text-xs">
                           {offer.buyer?.avatarUrl ? (
-                            <img src={offer.buyer.avatarUrl} alt={offer.buyer.name} className="h-4 w-4 rounded-full object-cover" />
+                            <img
+                              src={offer.buyer.avatarUrl}
+                              alt={offer.buyer.name}
+                              className="h-4 w-4 rounded-full object-cover"
+                            />
                           ) : (
                             <User className="h-3 w-3 text-slate-400" />
                           )}
@@ -272,7 +299,9 @@ function NegoDashboardContent() {
                       />
                       <div className="min-w-0 flex-1 space-y-1">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          {listing?.condition && <ConditionBadge condition={listing.condition} size="sm" />}
+                          {listing?.condition && (
+                            <ConditionBadge condition={listing.condition} size="sm" />
+                          )}
                           {listing?.isCodAvailable && (
                             <span className="rounded-full bg-amber-50 text-amber-950 text-[9px] font-bold px-2 py-0.5 border border-amber-300 flex items-center gap-0.5">
                               <Zap className="h-2.5 w-2.5 text-amber-600 fill-amber-400" />
@@ -332,7 +361,9 @@ function NegoDashboardContent() {
                         <div className="space-y-2">
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             <div>
-                              <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Nominal Counter (Rp):</label>
+                              <label className="text-[10px] font-bold text-slate-500 block mb-0.5">
+                                Nominal Counter (Rp):
+                              </label>
                               <input
                                 type="number"
                                 value={counterPriceInput}
@@ -341,7 +372,9 @@ function NegoDashboardContent() {
                               />
                             </div>
                             <div>
-                              <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Pesan (Opsional):</label>
+                              <label className="text-[10px] font-bold text-slate-500 block mb-0.5">
+                                Pesan (Opsional):
+                              </label>
                               <input
                                 type="text"
                                 value={counterMessageInput}
@@ -356,7 +389,10 @@ function NegoDashboardContent() {
                           <div className="flex items-center gap-1.5 flex-wrap">
                             <span className="text-[10px] text-slate-500 font-medium">Preset:</span>
                             {[
-                              { label: 'Tengah', price: Math.round((originalPrice + offer.offeredPrice) / 2) },
+                              {
+                                label: 'Tengah',
+                                price: Math.round((originalPrice + offer.offeredPrice) / 2)
+                              },
                               { label: '-5%', price: Math.round(originalPrice * 0.95) },
                               { label: '-10%', price: Math.round(originalPrice * 0.9) }
                             ].map((preset, idx) => (
@@ -375,7 +411,14 @@ function NegoDashboardContent() {
                         <div className="flex justify-end pt-1">
                           <button
                             type="button"
-                            onClick={() => handleRespond(offer.id, 'COUNTER', counterPriceInput, counterMessageInput)}
+                            onClick={() =>
+                              handleRespond(
+                                offer.id,
+                                'COUNTER',
+                                counterPriceInput,
+                                counterMessageInput
+                              )
+                            }
                             className="w-full sm:w-auto rounded-xl bg-blue-600 hover:bg-blue-700 px-4 py-2 text-xs font-bold text-white shadow-xs transition-colors cursor-pointer text-center"
                           >
                             Kirim Tawar Balik
@@ -404,7 +447,9 @@ function NegoDashboardContent() {
                             type="button"
                             onClick={() => {
                               setSelectedOfferForCounter(isCountering ? null : offer.id);
-                              setCounterPriceInput(Math.round((originalPrice + offer.offeredPrice) / 2));
+                              setCounterPriceInput(
+                                Math.round((originalPrice + offer.offeredPrice) / 2)
+                              );
                             }}
                             className="flex items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 py-2 px-2.5 text-[11px] font-bold text-slate-700 transition-colors cursor-pointer shadow-2xs text-center"
                           >
@@ -449,7 +494,8 @@ function NegoDashboardContent() {
                 <div className="space-y-1">
                   <h3 className="text-sm font-bold text-slate-800">Belum Ada Tawaran Terkirim</h3>
                   <p className="text-xs text-slate-400 max-w-sm mx-auto font-medium">
-                    Tawaran harga yang Anda ajukan untuk barang bekas idaman akan terpantau statusnya di sini.
+                    Tawaran harga yang Anda ajukan untuk barang bekas idaman akan terpantau
+                    statusnya di sini.
                   </p>
                 </div>
                 <div className="pt-1">
@@ -466,7 +512,8 @@ function NegoDashboardContent() {
                 const listing = offer.listing;
                 const originalPrice = listing?.price || offer.offeredPrice;
                 const discountAmount = originalPrice - offer.offeredPrice;
-                const discountPercent = originalPrice > 0 ? Math.round((discountAmount / originalPrice) * 100) : 0;
+                const discountPercent =
+                  originalPrice > 0 ? Math.round((discountAmount / originalPrice) * 100) : 0;
                 const primaryImg =
                   listing?.images?.find((i: any) => i.isPrimary)?.url ||
                   listing?.images?.[0]?.url ||
@@ -508,7 +555,9 @@ function NegoDashboardContent() {
                         className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl object-cover border border-slate-200 shrink-0"
                       />
                       <div className="min-w-0 flex-1 space-y-1">
-                        {listing?.condition && <ConditionBadge condition={listing.condition} size="sm" />}
+                        {listing?.condition && (
+                          <ConditionBadge condition={listing.condition} size="sm" />
+                        )}
                         <h3 className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-1">
                           {listing?.title || 'Barang Bekas'}
                         </h3>
@@ -572,7 +621,11 @@ function NegoDashboardContent() {
 
 export default function NegoDashboardPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-xs text-slate-400">Memuat dashboard nego...</div>}>
+    <Suspense
+      fallback={
+        <div className="p-12 text-center text-xs text-slate-400">Memuat dashboard nego...</div>
+      }
+    >
       <NegoDashboardContent />
     </Suspense>
   );

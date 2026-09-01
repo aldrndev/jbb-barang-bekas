@@ -1,7 +1,5 @@
-import React from 'react';
 import type { ItemCondition } from '@jbb/types';
 import { getConditionMeta } from '../../lib/utils';
-import { Sparkles, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 interface ConditionBadgeProps {
   condition: ItemCondition;

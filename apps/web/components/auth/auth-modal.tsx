@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import { AlertCircle, Shield, Sparkles, X, Zap } from 'lucide-react';
 import Link from 'next/link';
-import { X, Zap, Shield, Sparkles, Lock, AlertCircle } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../context/auth-context';
 import { PeygoLogoIcon } from '../common/peygo-logo';
 
@@ -17,7 +17,7 @@ declare global {
             auto_select?: boolean;
             cancel_on_tap_outside?: boolean;
           }) => void;
-          prompt: (notification?: (notification: any) => void) => void;
+          prompt: (notification?: (notification: unknown) => void) => void;
           renderButton: (
             parent: HTMLElement,
             options: {
@@ -66,9 +66,7 @@ export function AuthModal() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const googleBtnContainerRef = useRef<HTMLDivElement>(null);
 
-  const googleClientId =
-    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
-    (typeof window !== 'undefined' ? (window as any).__GOOGLE_CLIENT_ID__ : '');
+  const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
 
   // Load Google Identity Services SDK
   useEffect(() => {
@@ -129,7 +127,7 @@ export function AuthModal() {
     } else {
       script.onload = initGoogleGsi;
     }
-  }, [isAuthModalOpen, googleClientId]);
+  }, [isAuthModalOpen, googleClientId, loginWithGoogle, closeAuthModal]);
 
   if (!isAuthModalOpen) return null;
 
@@ -139,41 +137,21 @@ export function AuthModal() {
     // If Google Client ID is configured, trigger Google GIS Prompt
     if (googleClientId && window.google?.accounts?.id) {
       setIsGoogleLoading(true);
-      window.google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          setIsGoogleLoading(false);
-        }
+      window.google.accounts.id.prompt(() => {
+        setIsGoogleLoading(false);
       });
       return;
     }
 
-    // Fallback: If Client ID is not yet entered in environment
-    setIsGoogleLoading(true);
-    try {
-      // Informs user that Google Client ID is required for production OAuth
-      const defaultGoogleUser = {
-        name: 'Pengguna Google Peygo',
-        email: 'user.google@gmail.com',
-        avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'
-      };
-
-      const result = await loginWithGoogle(defaultGoogleUser);
-      if (!result.success) {
-        setErrorMsg(result.error || 'Gagal login dengan Google.');
-      } else {
-        closeAuthModal();
-      }
-    } catch {
-      setErrorMsg('Gagal melakukan autentikasi Google.');
-    } finally {
-      setIsGoogleLoading(false);
-    }
+    // Inform user if Google Client ID is not configured
+    setErrorMsg(
+      'Google Client ID belum dikonfigurasi di environment. Silakan isi NEXT_PUBLIC_GOOGLE_CLIENT_ID.'
+    );
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md animate-in fade-in duration-200">
       <div className="relative w-full max-w-110 sm:max-w-130 overflow-hidden rounded-4xl border border-slate-300 bg-white shadow-2xl shadow-slate-950/25 animate-in zoom-in-95 duration-200">
-        
         {/* Close Button */}
         <button
           type="button"
@@ -191,9 +169,7 @@ export function AuthModal() {
               <PeygoLogoIcon size="lg" />
             </div>
 
-            <h3 className="text-2xl font-black text-slate-900 tracking-tight">
-              Masuk ke Peygo
-            </h3>
+            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Masuk ke Peygo</h3>
             <p className="text-xs sm:text-sm text-slate-700 font-semibold mt-1.5 leading-relaxed">
               Jual beli dan nego gadget & barang bekas aman terpercaya.
             </p>
@@ -224,9 +200,7 @@ export function AuthModal() {
                 className="w-full flex items-center justify-center gap-3 rounded-2xl border border-slate-300 bg-white hover:bg-slate-100 hover:border-slate-400 py-3.5 px-5 text-sm font-black text-slate-900 shadow-xs hover:shadow-sm transition-all cursor-pointer disabled:opacity-50 active:scale-98 group"
               >
                 <GoogleIcon className="h-5 w-5 shrink-0 group-hover:scale-105 transition-transform" />
-                <span>
-                  {isGoogleLoading ? 'Menghubungkan...' : 'Lanjutkan dengan Google'}
-                </span>
+                <span>{isGoogleLoading ? 'Menghubungkan...' : 'Lanjutkan dengan Google'}</span>
               </button>
             )}
 
@@ -246,7 +220,9 @@ export function AuthModal() {
                   <Zap className="h-3.5 w-3.5 stroke-2.5" />
                 </div>
                 <span className="text-[11px] font-black text-blue-950 block">1-Klik Masuk</span>
-                <span className="text-[10px] font-bold text-blue-700 block leading-tight">Instan</span>
+                <span className="text-[10px] font-bold text-blue-700 block leading-tight">
+                  Instan
+                </span>
               </div>
 
               {/* Pillar 2: Brand Indigo */}
@@ -255,7 +231,9 @@ export function AuthModal() {
                   <Shield className="h-3.5 w-3.5 stroke-2.5" />
                 </div>
                 <span className="text-[11px] font-black text-indigo-950 block">Garansi 48 Jam</span>
-                <span className="text-[10px] font-bold text-indigo-700 block leading-tight">Cek Fisik</span>
+                <span className="text-[10px] font-bold text-indigo-700 block leading-tight">
+                  Cek Fisik
+                </span>
               </div>
 
               {/* Pillar 3: Warm Amber */}
@@ -264,7 +242,9 @@ export function AuthModal() {
                   <Sparkles className="h-3.5 w-3.5 stroke-2.5" />
                 </div>
                 <span className="text-[11px] font-black text-amber-950 block">Nego Resmi</span>
-                <span className="text-[10px] font-bold text-amber-800 block leading-tight">Ke Penjual</span>
+                <span className="text-[10px] font-bold text-amber-800 block leading-tight">
+                  Ke Penjual
+                </span>
               </div>
             </div>
 

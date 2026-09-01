@@ -1,25 +1,23 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { PeygoLogoIcon } from '@/components/common/peygo-logo';
 import { useAuth } from '@/context/auth-context';
 import {
-  ShieldAlert,
   AlertTriangle,
-  UserCheck,
   CreditCard,
-  Package,
   LayoutDashboard,
   LogOut,
-  ExternalLink,
-  Store,
   Menu,
-  X,
-  Sparkles,
-  ChevronRight
+  Package,
+  ShieldAlert,
+  Store,
+  UserCheck,
+  X
 } from 'lucide-react';
-import { PeygoLogoIcon } from '@/components/common/peygo-logo';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import type React from 'react';
+import { useState } from 'react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -106,7 +104,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <PeygoLogoIcon size="sm" className="group-hover:scale-105 transition-transform" />
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-base font-black text-slate-900 tracking-tight">PEYGO.ADMIN</span>
+                <span className="text-base font-black text-slate-900 tracking-tight">
+                  PEYGO.ADMIN
+                </span>
                 <span className="rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-black px-1.5 py-0.2 border border-emerald-200">
                   PRO
                 </span>
@@ -137,7 +137,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <Icon className={`h-4 w-4 ${item.isActive ? 'text-brand-600 font-bold' : 'text-slate-400'}`} />
+                  <Icon
+                    className={`h-4 w-4 ${item.isActive ? 'text-brand-600 font-bold' : 'text-slate-400'}`}
+                  />
                   <span>{item.label}</span>
                 </div>
               </Link>
@@ -149,7 +151,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="p-4 border-t border-slate-200 space-y-3 bg-slate-50/80">
           <div className="flex items-center gap-2.5 px-1">
             <img
-              src={user.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
+              src={
+                user.avatarUrl ||
+                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+              }
               alt={user.name}
               className="h-8 w-8 rounded-xl object-cover ring-1 ring-slate-200 shrink-0"
             />
@@ -259,9 +264,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </header>
 
         {/* Page Content */}
-        <main className="p-4 sm:p-8 space-y-6 max-w-7xl w-full mx-auto">
-          {children}
-        </main>
+        <main className="p-4 sm:p-8 space-y-6 max-w-7xl w-full mx-auto">{children}</main>
       </div>
     </div>
   );

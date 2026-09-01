@@ -1,30 +1,26 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api-client';
 import { formatIDR, formatTimeAgo } from '@/lib/utils';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  CreditCard,
+  AlertCircle,
+  Building2,
   CheckCircle2,
   Clock,
-  Zap,
+  CreditCard,
   DollarSign,
-  Search,
   FileText,
-  Printer,
-  X,
-  Building2,
-  ArrowUpRight,
-  ShieldCheck,
-  TrendingUp,
-  AlertCircle,
   LayoutGrid,
   List,
-  ExternalLink,
-  Wallet,
-  ArrowRight
+  Printer,
+  Search,
+  ShieldCheck,
+  TrendingUp,
+  X,
+  Zap
 } from 'lucide-react';
+import { useState } from 'react';
 
 const DEFAULT_PAYOUTS = [
   {
@@ -163,16 +159,23 @@ export default function AdminPayoutsPage() {
   const [selectedBankFilter, setSelectedBankFilter] = useState('ALL');
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedReceipt, setSelectedReceipt] = useState<any | null>(null);
-  const [toast, setToast] = useState<{ type: 'success' | 'error'; title: string; message: string } | null>(null);
+  const [toast, setToast] = useState<{
+    type: 'success' | 'error';
+    title: string;
+    message: string;
+  } | null>(null);
 
   const { data: payoutsData } = useQuery({
     queryKey: ['admin-payouts'],
     queryFn: () => api.getAdminPayouts()
   });
 
-  const [localOverrides, setLocalOverrides] = useState<Record<string, { status: string; transferRef: string; completedAt: string }>>({});
+  const [localOverrides, setLocalOverrides] = useState<
+    Record<string, { status: string; transferRef: string; completedAt: string }>
+  >({});
 
-  const rawPayouts = (payoutsData?.data && payoutsData.data.length > 0) ? payoutsData.data : DEFAULT_PAYOUTS;
+  const rawPayouts =
+    payoutsData?.data && payoutsData.data.length > 0 ? payoutsData.data : DEFAULT_PAYOUTS;
   const payouts = rawPayouts.map((p: any) => {
     const override = localOverrides[p.id];
     if (override) {
@@ -185,25 +188,36 @@ export default function AdminPayoutsPage() {
   const completedPayouts = payouts.filter((p: any) => p.status === 'TRANSFERRED_SUCCESS');
 
   // Executive Metric Calculations
-  const totalCompletedAmount = completedPayouts.reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
-  const totalPendingAmount = pendingPayouts.reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
-  const totalPlatformFee = payouts.reduce((sum: number, p: any) => sum + (p.serviceFee || Math.round(p.amount * 0.015)), 0);
+  const totalCompletedAmount = completedPayouts.reduce(
+    (sum: number, p: any) => sum + (p.amount || 0),
+    0
+  );
+  const totalPendingAmount = pendingPayouts.reduce(
+    (sum: number, p: any) => sum + (p.amount || 0),
+    0
+  );
+  const totalPlatformFee = payouts.reduce(
+    (sum: number, p: any) => sum + (p.serviceFee || Math.round(p.amount * 0.015)),
+    0
+  );
 
   // Filtered List
-  const displayedPayouts = (activeTab === 'pending' ? pendingPayouts : completedPayouts).filter((p: any) => {
-    const matchesSearch =
-      !searchQuery.trim() ||
-      p.orderNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.sellerName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.listingTitle?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.payoutAccountNumber?.includes(searchQuery);
+  const displayedPayouts = (activeTab === 'pending' ? pendingPayouts : completedPayouts).filter(
+    (p: any) => {
+      const matchesSearch =
+        !searchQuery.trim() ||
+        p.orderNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.sellerName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.listingTitle?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.payoutAccountNumber?.includes(searchQuery);
 
-    const matchesBank =
-      selectedBankFilter === 'ALL' ||
-      p.payoutBank?.toLowerCase().includes(selectedBankFilter.toLowerCase());
+      const matchesBank =
+        selectedBankFilter === 'ALL' ||
+        p.payoutBank?.toLowerCase().includes(selectedBankFilter.toLowerCase());
 
-    return matchesSearch && matchesBank;
-  });
+      return matchesSearch && matchesBank;
+    }
+  );
 
   const showToast = (type: 'success' | 'error', title: string, message: string) => {
     setToast({ type, title, message });
@@ -314,7 +328,9 @@ export default function AdminPayoutsPage() {
             )}
             <div className="space-y-1 flex-1 min-w-0">
               <h4 className="font-black text-xs text-white tracking-wide">{toast.title}</h4>
-              <p className="text-[11px] text-slate-300 leading-relaxed font-medium">{toast.message}</p>
+              <p className="text-[11px] text-slate-300 leading-relaxed font-medium">
+                {toast.message}
+              </p>
             </div>
             <button
               type="button"
@@ -341,7 +357,8 @@ export default function AdminPayoutsPage() {
             </span>
           </div>
           <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
-            Eksekusi transfer dana penjualan ke rekening bank penjual setelah masa garansi inspeksi fisik 48 jam berakhir tanpa sengketa.
+            Eksekusi transfer dana penjualan ke rekening bank penjual setelah masa garansi inspeksi
+            fisik 48 jam berakhir tanpa sengketa.
           </p>
         </div>
 
@@ -363,7 +380,9 @@ export default function AdminPayoutsPage() {
         {/* Card 1: Total Dana Ditransfer */}
         <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Total Dana Ditransfer</span>
+            <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">
+              Total Dana Ditransfer
+            </span>
             <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100">
               <CheckCircle2 className="h-4.5 w-4.5" />
             </div>
@@ -382,7 +401,9 @@ export default function AdminPayoutsPage() {
         {/* Card 2: Antrean Siap Cair */}
         <div className="rounded-3xl border border-amber-200 bg-amber-50/30 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-black text-amber-800 uppercase tracking-wider">Antrean Siap Cair</span>
+            <span className="text-[11px] font-black text-amber-800 uppercase tracking-wider">
+              Antrean Siap Cair
+            </span>
             <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-amber-100 text-amber-700 border border-amber-200">
               <Clock className="h-4.5 w-4.5" />
             </div>
@@ -401,7 +422,9 @@ export default function AdminPayoutsPage() {
         {/* Card 3: Fee Layanan Rekber */}
         <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Fee Layanan Terkumpul</span>
+            <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">
+              Fee Layanan Terkumpul
+            </span>
             <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 border border-blue-100">
               <DollarSign className="h-4.5 w-4.5" />
             </div>
@@ -419,7 +442,9 @@ export default function AdminPayoutsPage() {
         {/* Card 4: Kecepatan SLA Gateway */}
         <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Kecepatan Settlement</span>
+            <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">
+              Kecepatan Settlement
+            </span>
             <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-purple-50 text-purple-600 border border-purple-100">
               <Zap className="h-4.5 w-4.5" />
             </div>
@@ -551,21 +576,25 @@ export default function AdminPayoutsPage() {
       {displayedPayouts.length === 0 ? (
         <div className="rounded-3xl border border-slate-200 bg-white p-12 text-center space-y-3">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
-            {activeTab === 'pending' ? <CheckCircle2 className="h-7 w-7 text-emerald-500" /> : <CreditCard className="h-7 w-7" />}
+            {activeTab === 'pending' ? (
+              <CheckCircle2 className="h-7 w-7 text-emerald-500" />
+            ) : (
+              <CreditCard className="h-7 w-7" />
+            )}
           </div>
           <h4 className="font-bold text-slate-900 text-base">
             {searchQuery || selectedBankFilter !== 'ALL'
               ? 'Tidak Ditemukan Data yang Cocok'
               : activeTab === 'pending'
-              ? 'Tidak Ada Antrean Pencairan Tertunda! 🎉'
-              : 'Belum Ada Riwayat Transfer'}
+                ? 'Tidak Ada Antrean Pencairan Tertunda! 🎉'
+                : 'Belum Ada Riwayat Transfer'}
           </h4>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
             {searchQuery || selectedBankFilter !== 'ALL'
               ? 'Coba sesuaikan kata kunci pencarian atau filter bank yang dipilih.'
               : activeTab === 'pending'
-              ? 'Semua dana transaksi penjualan yang telah melewati masa inspeksi 48 jam telah berhasil disettle ke rekening bank penjual.'
-              : 'Data pencairan yang berhasil akan tercatat otomatis di sini beserta bukti transfer resmi.'}
+                ? 'Semua dana transaksi penjualan yang telah melewati masa inspeksi 48 jam telah berhasil disettle ke rekening bank penjual.'
+                : 'Data pencairan yang berhasil akan tercatat otomatis di sini beserta bukti transfer resmi.'}
           </p>
         </div>
       ) : viewMode === 'grid' ? (
@@ -574,7 +603,7 @@ export default function AdminPayoutsPage() {
           {displayedPayouts.map((p: any) => {
             const isPending = p.status === 'PENDING_TRANSFER';
             const fee = p.serviceFee || Math.round(p.amount * 0.015);
-            const net = p.netAmount || (p.amount - fee);
+            const net = p.netAmount || p.amount - fee;
 
             return (
               <div
@@ -614,8 +643,12 @@ export default function AdminPayoutsPage() {
                 {/* 2. Bank Passbook Box */}
                 <div className="rounded-2xl bg-slate-50/80 border border-slate-200 p-3.5 space-y-2">
                   <div className="flex items-center justify-between gap-2">
-                    <span className={`px-2 py-0.5 rounded-md text-[10px] font-black border ${getBankBadgeStyle(p.payoutBank)}`}>
-                      {p.payoutBank?.split('(')[1]?.replace(')', '') || p.payoutBank?.split(' ')[1] || 'BANK'}
+                    <span
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-black border ${getBankBadgeStyle(p.payoutBank)}`}
+                    >
+                      {p.payoutBank?.split('(')[1]?.replace(')', '') ||
+                        p.payoutBank?.split(' ')[1] ||
+                        'BANK'}
                     </span>
                     <span className="text-[10px] text-slate-400 font-medium truncate">
                       {p.payoutBank}
@@ -623,7 +656,9 @@ export default function AdminPayoutsPage() {
                   </div>
 
                   <div>
-                    <span className="text-[10px] text-slate-400 block font-medium">Nomor Rekening:</span>
+                    <span className="text-[10px] text-slate-400 block font-medium">
+                      Nomor Rekening:
+                    </span>
                     <span className="font-mono font-black text-slate-900 text-sm tracking-wider block">
                       {p.payoutAccountNumber}
                     </span>
@@ -637,11 +672,15 @@ export default function AdminPayoutsPage() {
                 <div className="p-3 rounded-2xl bg-brand-50/50 border border-brand-200 space-y-1.5">
                   <div className="flex items-center justify-between text-[11px] text-slate-500">
                     <span>Harga Transaksi:</span>
-                    <span className="font-mono font-bold text-slate-800">{formatIDR(p.amount)}</span>
+                    <span className="font-mono font-bold text-slate-800">
+                      {formatIDR(p.amount)}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between text-[11px] text-slate-500">
                     <span>Fee Rekber (1.5%):</span>
-                    <span className="font-mono text-rose-600 font-semibold">- {formatIDR(fee)}</span>
+                    <span className="font-mono text-rose-600 font-semibold">
+                      - {formatIDR(fee)}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between pt-1.5 border-t border-brand-200 text-xs">
                     <span className="font-black text-brand-950">Bersih Dicairkan:</span>
@@ -703,12 +742,14 @@ export default function AdminPayoutsPage() {
                 {displayedPayouts.map((p: any) => {
                   const isPending = p.status === 'PENDING_TRANSFER';
                   const fee = p.serviceFee || Math.round(p.amount * 0.015);
-                  const net = p.netAmount || (p.amount - fee);
+                  const net = p.netAmount || p.amount - fee;
 
                   return (
                     <tr key={p.id} className="hover:bg-slate-50/80 transition-colors group">
                       <td className="p-4">
-                        <span className="font-mono font-black text-slate-900 block text-xs">{p.orderNumber}</span>
+                        <span className="font-mono font-black text-slate-900 block text-xs">
+                          {p.orderNumber}
+                        </span>
                         <span className="text-[11px] text-slate-600 font-medium max-w-xs block truncate mt-0.5">
                           {p.listingTitle}
                         </span>
@@ -716,12 +757,18 @@ export default function AdminPayoutsPage() {
                       <td className="p-4">
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-slate-900 text-xs">{p.sellerName}</span>
-                          <span className={`px-1.5 py-0.5 rounded text-[9px] font-black border ${getBankBadgeStyle(p.payoutBank)}`}>
-                            {p.payoutBank?.split('(')[1]?.replace(')', '') || p.payoutBank?.split(' ')[1] || 'BANK'}
+                          <span
+                            className={`px-1.5 py-0.5 rounded text-[9px] font-black border ${getBankBadgeStyle(p.payoutBank)}`}
+                          >
+                            {p.payoutBank?.split('(')[1]?.replace(')', '') ||
+                              p.payoutBank?.split(' ')[1] ||
+                              'BANK'}
                           </span>
                         </div>
                         <span className="text-[11px] text-slate-500 font-mono block mt-0.5">
-                          {p.payoutBank} • <strong className="text-slate-800">{p.payoutAccountNumber}</strong> (a.n {p.payoutAccountHolder})
+                          {p.payoutBank} •{' '}
+                          <strong className="text-slate-800">{p.payoutAccountNumber}</strong> (a.n{' '}
+                          {p.payoutAccountHolder})
                         </span>
                       </td>
                       <td className="p-4 font-mono font-bold text-slate-700">
@@ -797,7 +844,9 @@ export default function AdminPayoutsPage() {
                   </div>
                   <div>
                     <h3 className="font-black text-slate-900 text-sm">Bukti Settlement Resmi</h3>
-                    <span className="text-[10px] text-slate-400 font-mono">PT Bekasin Rekber Indonesia</span>
+                    <span className="text-[10px] text-slate-400 font-mono">
+                      PT Bekasin Rekber Indonesia
+                    </span>
                   </div>
                 </div>
               </div>
@@ -815,7 +864,8 @@ export default function AdminPayoutsPage() {
               <CheckCircle2 className="h-8 w-8 text-emerald-600 mx-auto" />
               <h4 className="font-black text-emerald-900 text-sm">SETTLEMENT BERHASIL</h4>
               <p className="text-[11px] text-emerald-700 font-medium">
-                Dana telah sukses dikreditkan ke rekening bank penerima via jaringan BI-FAST Realtime.
+                Dana telah sukses dikreditkan ke rekening bank penerima via jaringan BI-FAST
+                Realtime.
               </p>
             </div>
 
@@ -823,7 +873,9 @@ export default function AdminPayoutsPage() {
             <div className="space-y-2.5 text-xs">
               <div className="flex justify-between py-1 border-b border-slate-200">
                 <span className="text-slate-400">No. Referensi Transfer:</span>
-                <strong className="font-mono text-slate-900 font-bold">{selectedReceipt.transferRef || 'TRX-BIFAST-2026-881290'}</strong>
+                <strong className="font-mono text-slate-900 font-bold">
+                  {selectedReceipt.transferRef || 'TRX-BIFAST-2026-881290'}
+                </strong>
               </div>
               <div className="flex justify-between py-1 border-b border-slate-200">
                 <span className="text-slate-400">No. Pesanan Rekber:</span>
@@ -831,7 +883,9 @@ export default function AdminPayoutsPage() {
               </div>
               <div className="flex justify-between py-1 border-b border-slate-200">
                 <span className="text-slate-400">Barang:</span>
-                <span className="font-medium text-slate-800 text-right max-w-50 truncate">{selectedReceipt.listingTitle}</span>
+                <span className="font-medium text-slate-800 text-right max-w-50 truncate">
+                  {selectedReceipt.listingTitle}
+                </span>
               </div>
               <div className="flex justify-between py-1 border-b border-slate-200">
                 <span className="text-slate-400">Bank Tujuan:</span>
@@ -839,27 +893,41 @@ export default function AdminPayoutsPage() {
               </div>
               <div className="flex justify-between py-1 border-b border-slate-200">
                 <span className="text-slate-400">No. Rekening Penerima:</span>
-                <strong className="font-mono text-slate-900">{selectedReceipt.payoutAccountNumber}</strong>
+                <strong className="font-mono text-slate-900">
+                  {selectedReceipt.payoutAccountNumber}
+                </strong>
               </div>
               <div className="flex justify-between py-1 border-b border-slate-200">
                 <span className="text-slate-400">Nama Pemilik Rekening:</span>
-                <strong className="text-slate-900">{selectedReceipt.payoutAccountHolder || selectedReceipt.sellerName}</strong>
+                <strong className="text-slate-900">
+                  {selectedReceipt.payoutAccountHolder || selectedReceipt.sellerName}
+                </strong>
               </div>
 
               {/* Financial Breakdown */}
               <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5 mt-2">
                 <div className="flex justify-between text-slate-500 text-[11px]">
                   <span>Harga Transaksi Barang:</span>
-                  <span className="font-mono font-bold text-slate-800">{formatIDR(selectedReceipt.amount)}</span>
+                  <span className="font-mono font-bold text-slate-800">
+                    {formatIDR(selectedReceipt.amount)}
+                  </span>
                 </div>
                 <div className="flex justify-between text-slate-500 text-[11px]">
                   <span>Biaya Layanan Rekber (1.5%):</span>
-                  <span className="font-mono text-rose-600">- {formatIDR(selectedReceipt.serviceFee || Math.round(selectedReceipt.amount * 0.015))}</span>
+                  <span className="font-mono text-rose-600">
+                    -{' '}
+                    {formatIDR(
+                      selectedReceipt.serviceFee || Math.round(selectedReceipt.amount * 0.015)
+                    )}
+                  </span>
                 </div>
                 <div className="flex justify-between text-xs pt-1.5 border-t border-slate-200">
                   <span className="font-black text-slate-900">Total Bersih Dicairkan:</span>
                   <strong className="font-mono font-black text-brand-700 text-sm">
-                    {formatIDR(selectedReceipt.netAmount || (selectedReceipt.amount - Math.round(selectedReceipt.amount * 0.015)))}
+                    {formatIDR(
+                      selectedReceipt.netAmount ||
+                        selectedReceipt.amount - Math.round(selectedReceipt.amount * 0.015)
+                    )}
                   </strong>
                 </div>
               </div>

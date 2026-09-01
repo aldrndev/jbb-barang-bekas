@@ -6,12 +6,16 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "typecheck": "turbo typecheck",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
     "clean": "turbo clean",
     "db:generate": "pnpm --filter @jbb/database generate",
     "db:migrate:local": "pnpm --filter @jbb/api db:migrate:local",
     "db:seed:local": "pnpm --filter @jbb/api db:seed:local"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "turbo": "^2.4.4",
     "typescript": "^5.8.2"
   },

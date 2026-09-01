@@ -1,10 +1,11 @@
 'use client';
 
-import React, { createContext, useContext } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Listing } from '@jbb/types';
-import { useAuth } from './auth-context';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type React from 'react';
+import { createContext, useContext } from 'react';
 import { api } from '../lib/api-client';
+import { useAuth } from './auth-context';
 
 interface WishlistContextType {
   wishlistItems: Listing[];
@@ -164,4 +165,3 @@ export function useWishlist() {
   }
   return context;
 }
-

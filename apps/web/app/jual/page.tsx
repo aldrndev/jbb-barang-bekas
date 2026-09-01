@@ -1,48 +1,44 @@
 'use client';
 
-import React, { useState, useRef, useEffect, Suspense } from 'react';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import type { Completeness, ItemCondition } from '@jbb/types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../lib/api-client';
-import { useAuth } from '../../context/auth-context';
-import { useToast } from '../../context/toast-context';
-import { formatIDR, toTitleCase, cleanTitle, cleanWhitespace } from '../../lib/utils';
-import { ItemCondition, Completeness } from '@jbb/types';
-import { Breadcrumbs } from '../../components/layout/breadcrumbs';
-import { ConditionBadge } from '../../components/marketplace/condition-badge';
-import { getCategoryConfig } from '../../lib/category-spec-config';
-import { ALL_PROVINCES, getCitiesByProvince, getDistrictsByCity } from '../../lib/indonesia-locations';
 import {
-  Upload,
-  Plus,
-  Trash2,
-  Sparkles,
-  ShieldCheck,
-  Zap,
-  Info,
-  CheckCircle2,
   AlertCircle,
   ArrowRight,
-  Lock,
-  User,
-  MapPin,
-  HelpCircle,
-  Tag,
-  Eye,
-  Check,
-  Flame,
+  Calendar,
   Camera,
-  Layers,
+  Check,
+  CheckCircle2,
+  Edit3,
+  Eye,
   Image as ImageIcon,
   Loader2,
+  Lock,
+  MapPin,
+  Plus,
+  ShieldCheck,
+  Sparkles,
+  Tag,
+  Trash2,
   UploadCloud,
-  Edit3,
-  FileText,
-  Calendar,
-  Package,
-  Wrench
+  Wrench,
+  Zap
 } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import type React from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
+import { Breadcrumbs } from '../../components/layout/breadcrumbs';
+import { ConditionBadge } from '../../components/marketplace/condition-badge';
+import { useAuth } from '../../context/auth-context';
+import { useToast } from '../../context/toast-context';
+import { api } from '../../lib/api-client';
+import { getCategoryConfig } from '../../lib/category-spec-config';
+import {
+  ALL_PROVINCES,
+  getCitiesByProvince,
+  getDistrictsByCity
+} from '../../lib/indonesia-locations';
+import { cleanTitle, cleanWhitespace, formatIDR, toTitleCase } from '../../lib/utils';
 
 const QUICK_SPEC_SUGGESTIONS = [
   'Warna',
@@ -204,7 +200,10 @@ function JualBarangContent() {
       const uploadedUrls = await Promise.all(uploadPromises);
       setImageUrls((prev) => [...prev, ...uploadedUrls]);
     } catch (err: any) {
-      setErrorMsg(err.message || 'Gagal mengunggah foto barang. Pastikan file berupa gambar (JPG, PNG, WEBP) dan coba lagi.');
+      setErrorMsg(
+        err.message ||
+          'Gagal mengunggah foto barang. Pastikan file berupa gambar (JPG, PNG, WEBP) dan coba lagi.'
+      );
     } finally {
       setIsUploadingImage(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -316,7 +315,8 @@ function JualBarangContent() {
 
     const cleanedTitle = cleanTitle(title);
     const cleanedDescription = cleanWhitespace(description);
-    const cleanedMeetingPoint = isCodAvailable && codMeetingPoint ? toTitleCase(codMeetingPoint) : undefined;
+    const cleanedMeetingPoint =
+      isCodAvailable && codMeetingPoint ? toTitleCase(codMeetingPoint) : undefined;
     const cleanedDistrict = district ? toTitleCase(district) : '';
     const cleanedWarranty = warrantyUntil ? cleanTitle(warrantyUntil) : undefined;
 
@@ -385,7 +385,8 @@ function JualBarangContent() {
             {isEditMode ? 'Masuk untuk Mengedit Iklan' : 'Masuk untuk Jual Barang'}
           </h1>
           <p className="text-xs text-slate-500 leading-relaxed font-medium">
-            Demi keamanan bersama dan perlindungan anti-penipuan di ekosistem Rekber Peygo, Anda harus masuk sebagai penjual terdaftar.
+            Demi keamanan bersama dan perlindungan anti-penipuan di ekosistem Rekber Peygo, Anda
+            harus masuk sebagai penjual terdaftar.
           </p>
 
           <div className="pt-2">
@@ -529,7 +530,10 @@ function JualBarangContent() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start"
+        >
           {/* Left Column: Form Fields (7 Cols) */}
           <div className="lg:col-span-7 space-y-3.5 sm:space-y-5">
             {/* Section 1: Photos */}
@@ -573,7 +577,9 @@ function JualBarangContent() {
 
                 <div className="space-y-0.5">
                   <p className="text-xs font-bold text-slate-800">
-                    {isUploadingImage ? 'Mengunggah foto barang...' : 'Pilih Foto dari Galeri / Kamera'}
+                    {isUploadingImage
+                      ? 'Mengunggah foto barang...'
+                      : 'Pilih Foto dari Galeri / Kamera'}
                   </p>
                   <p className="text-[10px] text-slate-400 font-medium">
                     Mendukung JPG, PNG, WEBP (Maks 5 MB per foto)
@@ -589,7 +595,11 @@ function JualBarangContent() {
                       key={idx}
                       className="group relative aspect-square rounded-xl overflow-hidden border border-slate-200 bg-slate-100 shadow-2xs"
                     >
-                      <img src={url} alt={`Upload ${idx + 1}`} className="h-full w-full object-cover" />
+                      <img
+                        src={url}
+                        alt={`Upload ${idx + 1}`}
+                        className="h-full w-full object-cover"
+                      />
                       {idx === 0 && (
                         <span className="absolute bottom-1 left-1 rounded-md bg-brand-600 px-1.5 py-0.2 text-[8px] font-black text-white shadow-xs">
                           Utama
@@ -706,7 +716,9 @@ function JualBarangContent() {
                     </span>
                   </div>
 
-                  <div className={`grid grid-cols-1 ${categoryConfig.showWarrantyField ? 'sm:grid-cols-2' : ''} gap-2.5`}>
+                  <div
+                    className={`grid grid-cols-1 ${categoryConfig.showWarrantyField ? 'sm:grid-cols-2' : ''} gap-2.5`}
+                  >
                     <div>
                       <label className="text-[11px] font-bold text-slate-700 block mb-1">
                         {categoryConfig.yearLabel}
@@ -716,7 +728,9 @@ function JualBarangContent() {
                         onChange={(e) => setPurchaseYear(Number(e.target.value))}
                         className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 focus:border-brand-500 focus:outline-none cursor-pointer"
                       >
-                        {[2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015].map((yr) => (
+                        {[
+                          2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015
+                        ].map((yr) => (
                           <option key={yr} value={yr}>
                             Tahun {yr}
                           </option>
@@ -783,7 +797,9 @@ function JualBarangContent() {
 
                   {/* Quick Spec Presets */}
                   <div className="flex items-center gap-1 flex-wrap">
-                    <span className="text-[10px] font-bold text-slate-400">Preset Spek {categoryConfig.name}:</span>
+                    <span className="text-[10px] font-bold text-slate-400">
+                      Preset Spek {categoryConfig.name}:
+                    </span>
                     {categoryConfig.suggestedSpecs.map((s, idx) => (
                       <button
                         key={idx}
@@ -834,7 +850,9 @@ function JualBarangContent() {
                     <label className="text-xs font-bold text-slate-800">
                       Deskripsi & Kejujuran Fisik <span className="text-rose-500">*</span>
                     </label>
-                    <span className={`text-[10px] font-semibold ${description.trim().length >= 20 ? 'text-emerald-600' : 'text-slate-500'}`}>
+                    <span
+                      className={`text-[10px] font-semibold ${description.trim().length >= 20 ? 'text-emerald-600' : 'text-slate-500'}`}
+                    >
                       {description.trim().length}/20 karakter min.
                     </span>
                   </div>
@@ -875,12 +893,16 @@ function JualBarangContent() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-800">Harga Beli Baru (Opsional)</label>
+                    <label className="text-xs font-bold text-slate-800">
+                      Harga Beli Baru (Opsional)
+                    </label>
                     <input
                       type="number"
                       placeholder="Contoh: 21000000"
                       value={originalPrice || ''}
-                      onChange={(e) => setOriginalPrice(e.target.value ? Number(e.target.value) : undefined)}
+                      onChange={(e) =>
+                        setOriginalPrice(e.target.value ? Number(e.target.value) : undefined)
+                      }
                       className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs sm:text-sm text-slate-700 font-bold placeholder:font-normal placeholder:text-slate-400 mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
                     />
                   </div>
@@ -889,7 +911,9 @@ function JualBarangContent() {
                 {savings && (
                   <div className="rounded-2xl bg-emerald-50 p-2.5 border border-emerald-200 text-xs font-bold text-emerald-800 flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
-                    <span>Pembeli hemat {formatIDR(savings.discount)} ({savings.percent}% lebih murah)!</span>
+                    <span>
+                      Pembeli hemat {formatIDR(savings.discount)} ({savings.percent}% lebih murah)!
+                    </span>
                   </div>
                 )}
 
@@ -897,8 +921,12 @@ function JualBarangContent() {
                 <div className="rounded-2xl bg-slate-50 p-3 border border-slate-200 space-y-2">
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-xs font-bold text-slate-900 block">Izinkan Fitur Nego Rekber</span>
-                      <span className="text-[10px] text-slate-500">Calon pembeli bisa mengajukan tawaran</span>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        Izinkan Fitur Nego Rekber
+                      </span>
+                      <span className="text-[10px] text-slate-500">
+                        Calon pembeli bisa mengajukan tawaran
+                      </span>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
@@ -920,7 +948,9 @@ function JualBarangContent() {
                         type="number"
                         placeholder="Tawaran di bawah harga ini akan ditolak otomatis..."
                         value={minOfferPrice || ''}
-                        onChange={(e) => setMinOfferPrice(e.target.value ? Number(e.target.value) : undefined)}
+                        onChange={(e) =>
+                          setMinOfferPrice(e.target.value ? Number(e.target.value) : undefined)
+                        }
                         className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-900 placeholder:font-normal placeholder:text-slate-400 focus:border-brand-500 focus:outline-none"
                       />
                     </div>
@@ -947,7 +977,9 @@ function JualBarangContent() {
                     onChange={(e) => handleProvinceChange(e.target.value)}
                     className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold mt-0.5 focus:border-brand-500 focus:bg-white focus:outline-none cursor-pointer"
                   >
-                    <option value="" disabled>Pilih Provinsi...</option>
+                    <option value="" disabled>
+                      Pilih Provinsi...
+                    </option>
                     {ALL_PROVINCES.map((p) => (
                       <option key={p} value={p}>
                         {p}
@@ -967,7 +999,9 @@ function JualBarangContent() {
                     onChange={(e) => handleCityChange(e.target.value)}
                     className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold mt-0.5 focus:border-brand-500 focus:bg-white focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <option value="" disabled>{province ? 'Pilih Kota / Kab...' : 'Pilih Provinsi Dahulu'}</option>
+                    <option value="" disabled>
+                      {province ? 'Pilih Kota / Kab...' : 'Pilih Provinsi Dahulu'}
+                    </option>
                     {availableCities.map((c) => (
                       <option key={c} value={c}>
                         {c}
@@ -988,7 +1022,9 @@ function JualBarangContent() {
                       onChange={(e) => setDistrict(e.target.value)}
                       className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold mt-0.5 focus:border-brand-500 focus:bg-white focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <option value="" disabled>{city ? 'Pilih Kecamatan...' : 'Pilih Kota Dahulu'}</option>
+                      <option value="" disabled>
+                        {city ? 'Pilih Kecamatan...' : 'Pilih Kota Dahulu'}
+                      </option>
                       {availableDistricts.map((d) => (
                         <option key={d} value={d}>
                           {d}
@@ -1017,12 +1053,16 @@ function JualBarangContent() {
                     onChange={(e) => setIsCodAvailable(e.target.checked)}
                     className="h-4 w-4 rounded text-brand-600 focus:ring-brand-500"
                   />
-                  <span className="text-xs font-bold text-slate-900">Sedia COD Ketemuan Langsung (Area Publik Aman)</span>
+                  <span className="text-xs font-bold text-slate-900">
+                    Sedia COD Ketemuan Langsung (Area Publik Aman)
+                  </span>
                 </label>
 
                 {isCodAvailable && (
                   <div className="pt-2 border-t border-slate-200 space-y-1 animate-in fade-in">
-                    <label className="text-[10px] font-bold text-slate-700 block">Titik Temu COD:</label>
+                    <label className="text-[10px] font-bold text-slate-700 block">
+                      Titik Temu COD:
+                    </label>
                     <input
                       type="text"
                       placeholder="Contoh: Gandaria City / Starbucks Blok M Plaza"
@@ -1067,7 +1107,9 @@ function JualBarangContent() {
               <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
                 <div className="flex items-center gap-2">
                   <Eye className="h-4 w-4 text-brand-600" />
-                  <span className="text-xs font-black text-slate-900">Pratinjau Tampilan Iklan</span>
+                  <span className="text-xs font-black text-slate-900">
+                    Pratinjau Tampilan Iklan
+                  </span>
                 </div>
                 <span className="rounded-full bg-emerald-50 text-brand-800 border border-brand-200 px-2 py-0.5 text-[10px] font-bold">
                   Live Preview
@@ -1089,7 +1131,9 @@ function JualBarangContent() {
                         <ImageIcon className="h-5 w-5" />
                       </div>
                       <span className="text-[11px] font-bold text-slate-500">Belum ada foto</span>
-                      <span className="text-[9px] text-slate-400">Upload minimal 1 foto asli barang Anda</span>
+                      <span className="text-[9px] text-slate-400">
+                        Upload minimal 1 foto asli barang Anda
+                      </span>
                     </div>
                   )}
                   <div className="absolute top-2.5 left-2.5 z-10">
@@ -1151,15 +1195,24 @@ function JualBarangContent() {
               <ul className="space-y-1.5 text-brand-900 leading-relaxed text-[11px]">
                 <li className="flex items-start gap-1.5">
                   <span className="text-brand-600 font-bold">✓</span>
-                  <span><strong>Foto Asli & Jelas:</strong> Upload foto langsung dari kamera HP agar calon pembeli yakin barang real & original.</span>
+                  <span>
+                    <strong>Foto Asli & Jelas:</strong> Upload foto langsung dari kamera HP agar
+                    calon pembeli yakin barang real & original.
+                  </span>
                 </li>
                 <li className="flex items-start gap-1.5">
                   <span className="text-brand-600 font-bold">✓</span>
-                  <span><strong>Deskripsi & Nota:</strong> Cantumkan nota toko dan kelengkapan dus asli untuk meyakinkan calon pembeli.</span>
+                  <span>
+                    <strong>Deskripsi & Nota:</strong> Cantumkan nota toko dan kelengkapan dus asli
+                    untuk meyakinkan calon pembeli.
+                  </span>
                 </li>
                 <li className="flex items-start gap-1.5">
                   <span className="text-brand-600 font-bold">✓</span>
-                  <span><strong>Keamanan Rekber:</strong> Pembeli langsung membayar ke Rekber Peygo, dana Anda dijamin cair setelah barang tiba & dicek 48 jam.</span>
+                  <span>
+                    <strong>Keamanan Rekber:</strong> Pembeli langsung membayar ke Rekber Peygo,
+                    dana Anda dijamin cair setelah barang tiba & dicek 48 jam.
+                  </span>
                 </li>
               </ul>
             </div>
@@ -1172,7 +1225,13 @@ function JualBarangContent() {
 
 export default function JualBarangPage() {
   return (
-    <Suspense fallback={<div className="bg-slate-50 py-12 text-center text-xs text-slate-400">Memuat formulir iklan...</div>}>
+    <Suspense
+      fallback={
+        <div className="bg-slate-50 py-12 text-center text-xs text-slate-400">
+          Memuat formulir iklan...
+        </div>
+      }
+    >
       <JualBarangContent />
     </Suspense>
   );

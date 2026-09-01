@@ -1,24 +1,12 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { Filter, Loader2, Search, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
-import { api } from '../../lib/api-client';
-import { ListingCard } from '../../components/marketplace/listing-card';
+import React, { useState, Suspense } from 'react';
 import { Breadcrumbs } from '../../components/layout/breadcrumbs';
-import {
-  Search,
-  SlidersHorizontal,
-  MapPin,
-  Sparkles,
-  Filter,
-  ArrowUpDown,
-  X,
-  Zap,
-  Loader2,
-  ChevronDown
-} from 'lucide-react';
-import type { ItemCondition } from '@jbb/types';
+import { ListingCard } from '../../components/marketplace/listing-card';
+import { api } from '../../lib/api-client';
 
 function CariContent() {
   const router = useRouter();
@@ -29,7 +17,8 @@ function CariContent() {
   const queryCity = searchParams.get('city') || '';
   const queryIsCod = searchParams.get('isCod') === 'true';
   const queryIsNego = searchParams.get('isNego') === 'true';
-  const querySort = (searchParams.get('sortBy') as 'newest' | 'price_asc' | 'price_desc' | 'popular') || 'newest';
+  const querySort =
+    (searchParams.get('sortBy') as 'newest' | 'price_asc' | 'price_desc' | 'popular') || 'newest';
 
   const [q, setQ] = useState(queryQ);
   const [category, setCategory] = useState(queryCategory);
@@ -39,7 +28,9 @@ function CariContent() {
   const [city, setCity] = useState(queryCity);
   const [isCod, setIsCod] = useState(queryIsCod);
   const [isNego, setIsNego] = useState(queryIsNego);
-  const [sortBy, setSortBy] = useState<'newest' | 'price_asc' | 'price_desc' | 'popular'>(querySort);
+  const [sortBy, setSortBy] = useState<'newest' | 'price_asc' | 'price_desc' | 'popular'>(
+    querySort
+  );
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   const { data: categoriesData } = useQuery({
@@ -56,7 +47,11 @@ function CariContent() {
     fetchNextPage,
     hasNextPage
   } = useInfiniteQuery({
-    queryKey: ['listings', 'infinite', { q, category, condition, minPrice, maxPrice, city, isCod, isNego, sortBy }],
+    queryKey: [
+      'listings',
+      'infinite',
+      { q, category, condition, minPrice, maxPrice, city, isCod, isNego, sortBy }
+    ],
     queryFn: ({ pageParam }) =>
       api.getListings({
         q: q.trim() || undefined,
@@ -109,7 +104,11 @@ function CariContent() {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const activeCategory = categories.find((c) => c.slug === category || c.id === category);
-  const activeCategoryName = activeCategory?.name || (category && category !== 'all' ? category.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) : null);
+  const activeCategoryName =
+    activeCategory?.name ||
+    (category && category !== 'all'
+      ? category.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())
+      : null);
 
   return (
     <div className="min-h-screen bg-slate-50 py-6 px-4 sm:px-6 lg:px-8">
@@ -117,7 +116,10 @@ function CariContent() {
         {/* Breadcrumb Navigation */}
         <Breadcrumbs
           items={[
-            { label: 'Katalog Barang', href: (category && category !== 'all') || q ? '/cari' : undefined },
+            {
+              label: 'Katalog Barang',
+              href: (category && category !== 'all') || q ? '/cari' : undefined
+            },
             ...(activeCategoryName && category !== 'all'
               ? [{ label: activeCategoryName, href: q ? `/cari?category=${category}` : undefined }]
               : []),
@@ -130,10 +132,15 @@ function CariContent() {
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
-              {activeCategoryName && category !== 'all' ? activeCategoryName : 'Eksplor Barang Bekas'}
+              {activeCategoryName && category !== 'all'
+                ? activeCategoryName
+                : 'Eksplor Barang Bekas'}
             </h1>
             <p className="text-xs text-slate-500 mt-1">
-              Menampilkan {total} barang bekas {activeCategoryName && category !== 'all' ? `kategori ${activeCategoryName}` : 'terverifikasi siap transaksi'}
+              Menampilkan {total} barang bekas{' '}
+              {activeCategoryName && category !== 'all'
+                ? `kategori ${activeCategoryName}`
+                : 'terverifikasi siap transaksi'}
             </p>
           </div>
 
@@ -187,7 +194,9 @@ function CariContent() {
 
               {/* Sort by */}
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1.5">Urutkan Berdasarkan</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                  Urutkan Berdasarkan
+                </label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as any)}
@@ -219,7 +228,9 @@ function CariContent() {
 
               {/* Condition */}
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1.5">Kondisi Fisik</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                  Kondisi Fisik
+                </label>
                 <select
                   value={condition}
                   onChange={(e) => setCondition(e.target.value)}
@@ -236,14 +247,18 @@ function CariContent() {
 
               {/* Price Range */}
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1.5">Rentang Harga (Rp)</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                  Rentang Harga (Rp)
+                </label>
                 <div className="space-y-2">
                   <input
                     type="number"
                     step="any"
                     placeholder="Harga Minimum"
                     value={minPrice || ''}
-                    onChange={(e) => setMinPrice(e.target.value ? Number(e.target.value) : undefined)}
+                    onChange={(e) =>
+                      setMinPrice(e.target.value ? Number(e.target.value) : undefined)
+                    }
                     className="w-full rounded-xl border border-slate-200 p-2 text-xs focus:border-brand-500 focus:outline-none"
                   />
                   <input
@@ -251,7 +266,9 @@ function CariContent() {
                     step="any"
                     placeholder="Harga Maksimum"
                     value={maxPrice || ''}
-                    onChange={(e) => setMaxPrice(e.target.value ? Number(e.target.value) : undefined)}
+                    onChange={(e) =>
+                      setMaxPrice(e.target.value ? Number(e.target.value) : undefined)
+                    }
                     className="w-full rounded-xl border border-slate-200 p-2 text-xs focus:border-brand-500 focus:outline-none"
                   />
                 </div>
@@ -259,7 +276,9 @@ function CariContent() {
 
               {/* Location */}
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1.5">Wilayah Kota</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                  Wilayah Kota
+                </label>
                 <select
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
@@ -315,7 +334,10 @@ function CariContent() {
             {isLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[1, 2, 3, 4, 5, 6].map((n) => (
-                  <div key={n} className="h-72 rounded-3xl bg-white border border-slate-200 shadow-2xs" />
+                  <div
+                    key={n}
+                    className="h-72 rounded-3xl bg-white border border-slate-200 shadow-2xs"
+                  />
                 ))}
               </div>
             ) : listings.length === 0 ? (
@@ -335,7 +357,10 @@ function CariContent() {
                 </div>
 
                 {/* Automatic Infinite Scroll Sentinel & Status */}
-                <div ref={loadMoreRef} className="mt-8 pt-6 border-t border-slate-200 text-center min-h-15 flex items-center justify-center">
+                <div
+                  ref={loadMoreRef}
+                  className="mt-8 pt-6 border-t border-slate-200 text-center min-h-15 flex items-center justify-center"
+                >
                   {isFetchingNextPage ? (
                     <div className="flex items-center gap-2 text-xs font-bold text-brand-600">
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -343,7 +368,8 @@ function CariContent() {
                     </div>
                   ) : hasNextPage ? (
                     <div className="text-[11px] font-medium text-slate-400">
-                      Scroll ke bawah untuk memuat barang lainnya ({listings.length} dari {total} barang)
+                      Scroll ke bawah untuk memuat barang lainnya ({listings.length} dari {total}{' '}
+                      barang)
                     </div>
                   ) : (
                     <p className="text-xs font-medium text-slate-400">
@@ -362,7 +388,13 @@ function CariContent() {
 
 export default function CariPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50 py-12 text-center text-xs text-slate-400">Memuat pencarian...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-50 py-12 text-center text-xs text-slate-400">
+          Memuat pencarian...
+        </div>
+      }
+    >
       <CariContent />
     </Suspense>
   );

@@ -1,5 +1,5 @@
-import { drizzle } from 'drizzle-orm/d1';
 import * as schema from '@jbb/database';
+import { drizzle } from 'drizzle-orm/d1';
 
 export function getDb(d1?: D1Database) {
   if (!d1) {

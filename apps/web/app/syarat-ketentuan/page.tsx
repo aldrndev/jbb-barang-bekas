@@ -1,19 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import { ArrowRight, FileText } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
 import { Breadcrumbs } from '../../components/layout/breadcrumbs';
-import {
-  FileText,
-  ShieldCheck,
-  AlertTriangle,
-  Scale,
-  CreditCard,
-  Ban,
-  CheckCircle2,
-  HelpCircle,
-  ArrowRight
-} from 'lucide-react';
 
 const SECTIONS = [
   { id: 'definisi', title: '1. Definisi & Ruang Lingkup' },
@@ -42,12 +32,7 @@ export default function SyaratKetentuanPage() {
   return (
     <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <Breadcrumbs
-          items={[
-            { label: 'Syarat & Ketentuan' }
-          ]}
-          className="mb-6"
-        />
+        <Breadcrumbs items={[{ label: 'Syarat & Ketentuan' }]} className="mb-6" />
 
         {/* Hero Header */}
         <div className="rounded-3xl bg-linear-to-br from-slate-900 via-slate-800 to-emerald-950 p-6 sm:p-10 text-white shadow-xl mb-8 relative overflow-hidden">
@@ -61,7 +46,8 @@ export default function SyaratKetentuanPage() {
               Syarat & Ketentuan Layanan Peygo
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Terakhir diperbarui: 1 September 2026. Harap membaca seluruh syarat dan ketentuan berikut dengan teliti sebelum menggunakan platform Rekber Peygo.
+              Terakhir diperbarui: 1 September 2026. Harap membaca seluruh syarat dan ketentuan
+              berikut dengan teliti sebelum menggunakan platform Rekber Peygo.
             </p>
           </div>
         </div>
@@ -107,63 +93,110 @@ export default function SyaratKetentuanPage() {
             {/* 1. Definisi */}
             <section id="definisi" className="scroll-mt-24">
               <h2 className="text-lg font-black text-slate-900 pb-2 border-b border-slate-100 mb-4 flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">1</span>
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">
+                  1
+                </span>
                 Definisi & Ruang Lingkup
               </h2>
               <p className="mb-3 text-xs sm:text-sm">
-                Selamat datang di <strong>Peygo</strong> (dioperasikan oleh PT Peygo Rekber Indonesia). Platform ini menyediakan ekosistem jual beli barang bekas (pre-loved / second-hand) dengan proteksi Rekening Bersama (Escrow) terintegrasi di seluruh Indonesia.
+                Selamat datang di <strong>Peygo</strong> (dioperasikan oleh PT Peygo Rekber
+                Indonesia). Platform ini menyediakan ekosistem jual beli barang bekas (pre-loved /
+                second-hand) dengan proteksi Rekening Bersama (Escrow) terintegrasi di seluruh
+                Indonesia.
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
-                <li><strong>"Pengguna"</strong> mengacu pada pembeli, penjual, ataupun pengunjung terdaftar.</li>
-                <li><strong>"Rekber Peygo"</strong> adalah sistem perantara penampungan dana pembayaran yang aman hingga barang diterima dan disetujui oleh Pembeli.</li>
-                <li><strong>"Masa Proteksi / Inspeksi"</strong> adalah batas waktu 48 jam bagi Pembeli untuk mengecek keaslian dan kondisi fisik barang setelah status terkirim.</li>
+                <li>
+                  <strong>"Pengguna"</strong> mengacu pada pembeli, penjual, ataupun pengunjung
+                  terdaftar.
+                </li>
+                <li>
+                  <strong>"Rekber Peygo"</strong> adalah sistem perantara penampungan dana
+                  pembayaran yang aman hingga barang diterima dan disetujui oleh Pembeli.
+                </li>
+                <li>
+                  <strong>"Masa Proteksi / Inspeksi"</strong> adalah batas waktu 48 jam bagi Pembeli
+                  untuk mengecek keaslian dan kondisi fisik barang setelah status terkirim.
+                </li>
               </ul>
             </section>
 
             {/* 2. Akun & KYC */}
             <section id="akun" className="scroll-mt-24">
               <h2 className="text-lg font-black text-slate-900 pb-2 border-b border-slate-100 mb-4 flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">2</span>
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">
+                  2
+                </span>
                 Pendaftaran Akun & Verifikasi Identitas (KYC)
               </h2>
               <p className="mb-3 text-xs sm:text-sm">
-                Untuk menjaga keamanan ekosistem dan mencegah penipuan barang bekas, pengguna wajib mematuhi ketentuan pendaftaran:
+                Untuk menjaga keamanan ekosistem dan mencegah penipuan barang bekas, pengguna wajib
+                mematuhi ketentuan pendaftaran:
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
-                <li>Pengguna minimal berusia 18 tahun atau memiliki KTP/kartu identitas yang sah di Republik Indonesia.</li>
-                <li>Penjual yang ingin mencairkan saldo hasil penjualan di atas batas nominal tertentu wajib melengkapi verifikasi identitas (KYC) berupa foto KTP dan selfie.</li>
-                <li>Satu pengguna hanya diperbolehkan memiliki satu akun utama. Penyalahgunaan akun ganda untuk manipulasi rating atau harga akan dikenakan sanksi pemblokiran permanen.</li>
+                <li>
+                  Pengguna minimal berusia 18 tahun atau memiliki KTP/kartu identitas yang sah di
+                  Republik Indonesia.
+                </li>
+                <li>
+                  Penjual yang ingin mencairkan saldo hasil penjualan di atas batas nominal tertentu
+                  wajib melengkapi verifikasi identitas (KYC) berupa foto KTP dan selfie.
+                </li>
+                <li>
+                  Satu pengguna hanya diperbolehkan memiliki satu akun utama. Penyalahgunaan akun
+                  ganda untuk manipulasi rating atau harga akan dikenakan sanksi pemblokiran
+                  permanen.
+                </li>
               </ul>
             </section>
 
             {/* 3. Iklan */}
             <section id="iklan" className="scroll-mt-24">
               <h2 className="text-lg font-black text-slate-900 pb-2 border-b border-slate-100 mb-4 flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">3</span>
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">
+                  3
+                </span>
                 Aturan Pemasangan Iklan & Kejujuran Kondisi
               </h2>
               <p className="mb-3 text-xs sm:text-sm">
                 Nilai utama Peygo adalah transparansi kondisi barang bekas:
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
-                <li>Foto barang wajib merupakan <strong>foto asli (real picture)</strong> barang yang dijual saat ini, bukan foto katalog internet pihak ketiga tanpa izin.</li>
-                <li>Penjual wajib mencantumkan segala bentuk minus, lecet fisik, penurunan performa baterai, atau kelengkapan secara jujur di kolom deskripsi.</li>
-                <li>Barang dengan indikasi penipuan kondisi dapat menjadi dasar mutlak bagi pembeli untuk mengajukan klaim pengembalian dana 100%.</li>
+                <li>
+                  Foto barang wajib merupakan <strong>foto asli (real picture)</strong> barang yang
+                  dijual saat ini, bukan foto katalog internet pihak ketiga tanpa izin.
+                </li>
+                <li>
+                  Penjual wajib mencantumkan segala bentuk minus, lecet fisik, penurunan performa
+                  baterai, atau kelengkapan secara jujur di kolom deskripsi.
+                </li>
+                <li>
+                  Barang dengan indikasi penipuan kondisi dapat menjadi dasar mutlak bagi pembeli
+                  untuk mengajukan klaim pengembalian dana 100%.
+                </li>
               </ul>
             </section>
 
             {/* 4. Larangan */}
             <section id="barang-larangan" className="scroll-mt-24">
               <h2 className="text-lg font-black text-rose-600 pb-2 border-b border-slate-100 mb-4 flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-rose-100 text-rose-700 text-xs font-black">4</span>
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-rose-100 text-rose-700 text-xs font-black">
+                  4
+                </span>
                 Barang yang Dilarang Diperjualbelikan
               </h2>
               <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 mb-3 text-xs text-rose-800">
-                <strong>Perhatian:</strong> Peygo melarang keras penjualan barang-barang ilegal dan melanggar hukum hukum Republik Indonesia.
+                <strong>Perhatian:</strong> Peygo melarang keras penjualan barang-barang ilegal dan
+                melanggar hukum hukum Republik Indonesia.
               </div>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
-                <li>Barang curian, barang hasil tindak kejahatan, atau barang curian (stolen property).</li>
-                <li>Barang tiruan/KW/palsu yang diiklankan sebagai barang original (Replica/Counterfeit).</li>
+                <li>
+                  Barang curian, barang hasil tindak kejahatan, atau barang curian (stolen
+                  property).
+                </li>
+                <li>
+                  Barang tiruan/KW/palsu yang diiklankan sebagai barang original
+                  (Replica/Counterfeit).
+                </li>
                 <li>Senjata api, senjata tajam tanpa izin, bahan peledak, dan zat berbahaya.</li>
                 <li>Obat-obatan terlarang, narkotika, dan obat keras tanpa resep dokter.</li>
                 <li>Akun digital bajakan, software bajakan, data pribadi, atau dokumen ilegal.</li>
@@ -173,86 +206,141 @@ export default function SyaratKetentuanPage() {
             {/* 5. Rekber */}
             <section id="rekber" className="scroll-mt-24">
               <h2 className="text-lg font-black text-slate-900 pb-2 border-b border-slate-100 mb-4 flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">5</span>
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">
+                  5
+                </span>
                 Ketentuan Rekening Bersama (Escrow Guarantee)
               </h2>
               <p className="mb-3 text-xs sm:text-sm">
                 Mekanisme pembayaran di Peygo diatur melalui alur escrow bergaransi:
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
-                <li>Dana pembayaran pembeli disimpan aman di rekening penampung resmi Peygo dan tidak akan diserahkan ke penjual sebelum pembeli mengonfirmasi pesanan.</li>
-                <li>Pembeli memiliki waktu <strong>48 jam (Masa Proteksi)</strong> sejak barang diterima untuk memeriksa fisik dan fungsi barang.</li>
-                <li>Jika dalam 48 jam pembeli tidak melakukan konfirmasi maupun komplain sengketa, sistem secara otomatis akan merilis dana ke dompet penjual.</li>
+                <li>
+                  Dana pembayaran pembeli disimpan aman di rekening penampung resmi Peygo dan tidak
+                  akan diserahkan ke penjual sebelum pembeli mengonfirmasi pesanan.
+                </li>
+                <li>
+                  Pembeli memiliki waktu <strong>48 jam (Masa Proteksi)</strong> sejak barang
+                  diterima untuk memeriksa fisik dan fungsi barang.
+                </li>
+                <li>
+                  Jika dalam 48 jam pembeli tidak melakukan konfirmasi maupun komplain sengketa,
+                  sistem secara otomatis akan merilis dana ke dompet penjual.
+                </li>
               </ul>
             </section>
 
             {/* 6. COD */}
             <section id="cod" className="scroll-mt-24">
               <h2 className="text-lg font-black text-slate-900 pb-2 border-b border-slate-100 mb-4 flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">6</span>
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">
+                  6
+                </span>
                 Panduan Transaksi Siap COD (Cash On Delivery)
               </h2>
               <p className="mb-3 text-xs sm:text-sm">
                 Peygo memfasilitasi janji temu COD yang aman:
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
-                <li>Janjian COD wajib dilakukan di tempat umum yang ramai dan terang (seperti mall, cafe, atau pos keamanan).</li>
-                <li>Pembeli berhak memeriksa kondisi fisik barang secara teliti sebelum menyelesaikan pembayaran.</li>
-                <li>Dilarang mentransfer uang muka (DP) di luar aplikasi sebelum bertemu secara fisik untuk menghindari risiko penipuan luar sistem.</li>
+                <li>
+                  Janjian COD wajib dilakukan di tempat umum yang ramai dan terang (seperti mall,
+                  cafe, atau pos keamanan).
+                </li>
+                <li>
+                  Pembeli berhak memeriksa kondisi fisik barang secara teliti sebelum menyelesaikan
+                  pembayaran.
+                </li>
+                <li>
+                  Dilarang mentransfer uang muka (DP) di luar aplikasi sebelum bertemu secara fisik
+                  untuk menghindari risiko penipuan luar sistem.
+                </li>
               </ul>
             </section>
 
             {/* 7. Sengketa */}
             <section id="sengketa" className="scroll-mt-24">
               <h2 className="text-lg font-black text-slate-900 pb-2 border-b border-slate-100 mb-4 flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">7</span>
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">
+                  7
+                </span>
                 Resolusi Sengketa & Kebijakan Pengembalian Dana (Refund)
               </h2>
               <p className="mb-3 text-xs sm:text-sm">
-                Jika barang tidak sesuai deskripsi, cacat tersembunyi yang tidak diinformasikan, atau hilang saat pengiriman:
+                Jika barang tidak sesuai deskripsi, cacat tersembunyi yang tidak diinformasikan,
+                atau hilang saat pengiriman:
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
-                <li>Pembeli wajib mengunggah bukti video unboxing tanpa jeda dan foto detail kendala saat mengajukan tombol <strong>"Ajukan Komplain / Sengketa"</strong>.</li>
-                <li>Tim Moderasi & Sengketa Peygo akan meninjau bukti kedua belah pihak dalam waktu maksimal 2x24 jam kerja secara netral dan adil.</li>
-                <li>Jika klaim disetujui, pembeli wajib mengirimkan kembali barang ke alamat penjual, dan dana escrow akan dikembalikan 100% ke pembeli.</li>
+                <li>
+                  Pembeli wajib mengunggah bukti video unboxing tanpa jeda dan foto detail kendala
+                  saat mengajukan tombol <strong>"Ajukan Komplain / Sengketa"</strong>.
+                </li>
+                <li>
+                  Tim Moderasi & Sengketa Peygo akan meninjau bukti kedua belah pihak dalam waktu
+                  maksimal 2x24 jam kerja secara netral dan adil.
+                </li>
+                <li>
+                  Jika klaim disetujui, pembeli wajib mengirimkan kembali barang ke alamat penjual,
+                  dan dana escrow akan dikembalikan 100% ke pembeli.
+                </li>
               </ul>
             </section>
 
             {/* 8. Biaya */}
             <section id="biaya" className="scroll-mt-24">
               <h2 className="text-lg font-black text-slate-900 pb-2 border-b border-slate-100 mb-4 flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">8</span>
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">
+                  8
+                </span>
                 Biaya Layanan & Penarikan Dana (Withdrawal)
               </h2>
               <p className="mb-3 text-xs sm:text-sm">
                 Peygo menerapkan transparansi biaya tanpa potongan tersembunyi:
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
-                <li>Pemasangan iklan barang bekas adalah <strong>100% Gratis</strong> tanpa batas kuota iklan aktif.</li>
-                <li>Biaya proteksi garansi Rekber dikenakan sebesar 1.5% - 2.5% per transaksi sukses untuk mendanai sistem keamanan dan asuransi sengketa.</li>
-                <li>Penarikan saldo penjualan ke rekening bank nasional diproses otomatis dalam 1x24 jam kerja tanpa biaya admin tambahan (khusus BCA, Mandiri, BRI, BNI).</li>
+                <li>
+                  Pemasangan iklan barang bekas adalah <strong>100% Gratis</strong> tanpa batas
+                  kuota iklan aktif.
+                </li>
+                <li>
+                  Biaya proteksi garansi Rekber dikenakan sebesar 1.5% - 2.5% per transaksi sukses
+                  untuk mendanai sistem keamanan dan asuransi sengketa.
+                </li>
+                <li>
+                  Penarikan saldo penjualan ke rekening bank nasional diproses otomatis dalam 1x24
+                  jam kerja tanpa biaya admin tambahan (khusus BCA, Mandiri, BRI, BNI).
+                </li>
               </ul>
             </section>
 
             {/* 9. Tanggung Jawab */}
             <section id="tanggung-jawab" className="scroll-mt-24">
               <h2 className="text-lg font-black text-slate-900 pb-2 border-b border-slate-100 mb-4 flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">9</span>
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">
+                  9
+                </span>
                 Batasan Tanggung Jawab
               </h2>
               <p className="text-xs sm:text-sm text-slate-600">
-                Peygo bertindak sebagai platform perantara teknologi dan penyedia proteksi transaksi escrow. Transaksi yang dilakukan di luar rekening penampung resmi Peygo (transaksi direct transfer langsung antar pengguna) berada di luar tanggung jawab proteksi sistem Peygo.
+                Peygo bertindak sebagai platform perantara teknologi dan penyedia proteksi transaksi
+                escrow. Transaksi yang dilakukan di luar rekening penampung resmi Peygo (transaksi
+                direct transfer langsung antar pengguna) berada di luar tanggung jawab proteksi
+                sistem Peygo.
               </p>
             </section>
 
             {/* 10. Perubahan */}
             <section id="perubahan" className="scroll-mt-24">
               <h2 className="text-lg font-black text-slate-900 pb-2 border-b border-slate-100 mb-4 flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">10</span>
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">
+                  10
+                </span>
                 Perubahan Syarat & Ketentuan
               </h2>
               <p className="text-xs sm:text-sm text-slate-600">
-                Peygo berhak memperbarui dokumen syarat dan ketentuan ini sewaktu-waktu guna mematuhi regulasi perundang-undangan Republik Indonesia dan meningkatkan keamanan layanan. Pengguna akan mendapatkan notifikasi berkala apabila terdapat perubahan signifikan.
+                Peygo berhak memperbarui dokumen syarat dan ketentuan ini sewaktu-waktu guna
+                mematuhi regulasi perundang-undangan Republik Indonesia dan meningkatkan keamanan
+                layanan. Pengguna akan mendapatkan notifikasi berkala apabila terdapat perubahan
+                signifikan.
               </p>
             </section>
           </main>

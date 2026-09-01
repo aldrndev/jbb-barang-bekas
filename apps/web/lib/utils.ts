@@ -1,6 +1,6 @@
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import type { ItemCondition } from '@jbb/types';
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -127,5 +127,8 @@ export function cleanTitle(str: string): string {
  */
 export function cleanWhitespace(str: string): string {
   if (!str) return '';
-  return str.trim().replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n');
+  return str
+    .trim()
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n');
 }

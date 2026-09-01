@@ -1,22 +1,22 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
 import {
-  Search,
-  Plus,
-  ShieldCheck,
-  MessageSquareText,
-  User,
-  LogOut,
+  BadgeCheck,
   ChevronDown,
   Heart,
-  ShoppingBag,
+  LogOut,
+  MessageSquareText,
   Package,
+  Plus,
+  Search,
   ShieldAlert,
-  BadgeCheck
+  ShoppingBag,
+  User
 } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import type React from 'react';
+import { useState } from 'react';
 import { useAuth } from '../../context/auth-context';
 import { useWishlist } from '../../context/wishlist-context';
 import { toTitleCase } from '../../lib/utils';
@@ -69,7 +69,9 @@ export function Navbar() {
             className="relative flex h-9 w-9 items-center justify-center rounded-full text-slate-600 hover:text-rose-600 hover:bg-rose-50/70 transition-colors"
             title="Wishlist"
           >
-            <Heart className={`h-4.5 w-4.5 ${wishlistCount > 0 ? 'text-rose-500 fill-rose-500' : 'text-slate-600'}`} />
+            <Heart
+              className={`h-4.5 w-4.5 ${wishlistCount > 0 ? 'text-rose-500 fill-rose-500' : 'text-slate-600'}`}
+            />
             {wishlistCount > 0 && (
               <span className="absolute top-1 right-0.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-rose-500 px-0.5 text-[8px] font-black text-white ring-1.5 ring-white">
                 {wishlistCount}
@@ -94,10 +96,7 @@ export function Navbar() {
         <PeygoLogo href="/" size="md" />
 
         {/* Global Search Bar */}
-        <form
-          onSubmit={handleSearchSubmit}
-          className="relative flex-1 max-w-lg items-center"
-        >
+        <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-lg items-center">
           <Search className="absolute left-3.5 h-4 w-4 text-slate-400" />
           <input
             type="text"
@@ -125,7 +124,9 @@ export function Navbar() {
             title="Wishlist & Favorit"
           >
             <div className="relative">
-              <Heart className={`h-5 w-5 ${wishlistCount > 0 ? 'text-rose-500 fill-rose-500' : 'text-slate-600'}`} />
+              <Heart
+                className={`h-5 w-5 ${wishlistCount > 0 ? 'text-rose-500 fill-rose-500' : 'text-slate-600'}`}
+              />
               {wishlistCount > 0 && (
                 <span className="absolute -top-1.5 -right-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[9px] font-black text-white ring-2 ring-white">
                   {wishlistCount}

@@ -1,8 +1,8 @@
-import { Hono } from 'hono';
 import { eq } from 'drizzle-orm';
-import type { AppEnv } from '../types/env';
+import { Hono } from 'hono';
 import { getDb, schema } from '../db';
 import { memoryStore } from '../services/store';
+import type { AppEnv } from '../types/env';
 
 export const categoryRoutes = new Hono<AppEnv>()
   .get('/', async (c) => {

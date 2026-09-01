@@ -80,7 +80,8 @@ export const seedUsers = [
     email: 'budi.gadget@example.com',
     passwordHash: 'argon2_or_bcrypt_mock_hash',
     phone: '081288991122',
-    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
     role: 'SELLER' as const,
     isKycVerified: true,
     isPhoneVerified: true,
@@ -100,7 +101,8 @@ export const seedUsers = [
     email: 'rian.tech@example.com',
     passwordHash: 'argon2_or_bcrypt_mock_hash',
     phone: '081399887766',
-    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
     role: 'SELLER' as const,
     isKycVerified: true,
     isPhoneVerified: true,
@@ -120,7 +122,8 @@ export const seedUsers = [
     email: 'dimas.ardi@example.com',
     passwordHash: 'argon2_or_bcrypt_mock_hash',
     phone: '082155443322',
-    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
     role: 'SELLER' as const,
     isKycVerified: true,
     isPhoneVerified: true,
@@ -140,7 +143,8 @@ export const seedUsers = [
     email: 'siti.nur@example.com',
     passwordHash: 'argon2_or_bcrypt_mock_hash',
     phone: '081233445566',
-    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
     role: 'SELLER' as const,
     isKycVerified: true,
     isPhoneVerified: true,
@@ -160,7 +164,8 @@ export const seedUsers = [
     email: 'ahmad.fauzi@example.com',
     passwordHash: 'argon2_or_bcrypt_mock_hash',
     phone: '081977665544',
-    avatarUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80',
     role: 'SELLER' as const,
     isKycVerified: true,
     isPhoneVerified: true,
@@ -180,7 +185,8 @@ export const seedUsers = [
     email: 'dewi.lestari@example.com',
     passwordHash: 'argon2_or_bcrypt_mock_hash',
     phone: '081322119988',
-    avatarUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
     role: 'SELLER' as const,
     isKycVerified: true,
     isPhoneVerified: true,
@@ -200,7 +206,8 @@ export const seedUsers = [
     email: 'bayu.setiawan@example.com',
     passwordHash: 'argon2_or_bcrypt_mock_hash',
     phone: '085611223344',
-    avatarUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80',
     role: 'SELLER' as const,
     isKycVerified: true,
     isPhoneVerified: true,
@@ -220,7 +227,8 @@ export const seedUsers = [
     email: 'reza.sound@example.com',
     passwordHash: 'argon2_or_bcrypt_mock_hash',
     phone: '081788776655',
-    avatarUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
     role: 'SELLER' as const,
     isKycVerified: true,
     isPhoneVerified: true,
@@ -240,7 +248,8 @@ export const seedUsers = [
     email: 'nadia.safitri@example.com',
     passwordHash: 'argon2_or_bcrypt_mock_hash',
     phone: '082266778899',
-    avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
     role: 'SELLER' as const,
     isKycVerified: true,
     isPhoneVerified: true,
@@ -260,7 +269,8 @@ export const seedUsers = [
     email: 'hendro.wijaya@example.com',
     passwordHash: 'argon2_or_bcrypt_mock_hash',
     phone: '081199882233',
-    avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
     role: 'SELLER' as const,
     isKycVerified: true,
     isPhoneVerified: true,
@@ -284,7 +294,8 @@ export const seedListings = [
     categoryId: 'cat-gadget',
     title: 'iPhone 13 Pro 128GB Sierra Blue Resmi iBox Mulus 96%',
     slug: 'iphone-13-pro-128gb-sierra-blue-resmi-ibox-mulus-96',
-    description: 'Dijual iPhone 13 Pro 128GB warna Sierra Blue garansi resmi iBox (PA/A). Kondisi fisik mulus terawat 96%, selalu pakai case dan tempered glass sejak hari pertama. Battery Health 87% original belum pernah servis/bongkar. Face ID, True Tone, 3uTools 100% hijau semua normal. Kelengkapan fullset dus original, kabel type-c original bawaan, sticker apple.',
+    description:
+      'Dijual iPhone 13 Pro 128GB warna Sierra Blue garansi resmi iBox (PA/A). Kondisi fisik mulus terawat 96%, selalu pakai case dan tempered glass sejak hari pertama. Battery Health 87% original belum pernah servis/bongkar. Face ID, True Tone, 3uTools 100% hijau semua normal. Kelengkapan fullset dus original, kabel type-c original bawaan, sticker apple.',
     price: 9850000,
     originalPrice: 18499000,
     isNegotiable: true,
@@ -313,9 +324,27 @@ export const seedListings = [
       trueTone: 'Active'
     }),
     images: [
-      { id: 'img-1-1', listingId: 'item-1', url: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
-      { id: 'img-1-2', listingId: 'item-1', url: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 },
-      { id: 'img-1-3', listingId: 'item-1', url: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 3 }
+      {
+        id: 'img-1-1',
+        listingId: 'item-1',
+        url: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-1-2',
+        listingId: 'item-1',
+        url: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80',
+        isPrimary: false,
+        sortOrder: 2
+      },
+      {
+        id: 'img-1-3',
+        listingId: 'item-1',
+        url: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80',
+        isPrimary: false,
+        sortOrder: 3
+      }
     ],
     createdAt: '2026-08-30T14:30:00Z',
     updatedAt: '2026-08-30T14:30:00Z'
@@ -327,7 +356,8 @@ export const seedListings = [
     categoryId: 'cat-gadget',
     title: 'iPhone 14 Pro 256GB Deep Purple Resmi iBox Baterai 91%',
     slug: 'iphone-14-pro-256gb-deep-purple-resmi-ibox-baterai-91',
-    description: 'Dijual iPhone 14 Pro 256GB warna Deep Purple garansi resmi Indonesia. Pemakaian pribadi perempuan, bodi no dent no baret, Dynamic Island dan kamera 48MP berfungsi sempurna. Baterai health 91% masih awet seharian. Fullset dus original.',
+    description:
+      'Dijual iPhone 14 Pro 256GB warna Deep Purple garansi resmi Indonesia. Pemakaian pribadi perempuan, bodi no dent no baret, Dynamic Island dan kamera 48MP berfungsi sempurna. Baterai health 91% masih awet seharian. Fullset dus original.',
     price: 13900000,
     originalPrice: 21999000,
     isNegotiable: true,
@@ -354,8 +384,20 @@ export const seedListings = [
       screen: '6.1 Super Retina XDR 120Hz'
     }),
     images: [
-      { id: 'img-2-1', listingId: 'item-2', url: 'https://images.unsplash.com/photo-1663499482523-1c0c1bae4ce1?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
-      { id: 'img-2-2', listingId: 'item-2', url: 'https://images.unsplash.com/photo-1663499482512-c5101031d277?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+      {
+        id: 'img-2-1',
+        listingId: 'item-2',
+        url: 'https://images.unsplash.com/photo-1663499482523-1c0c1bae4ce1?w=800&auto=format&fit=crop&q=80',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-2-2',
+        listingId: 'item-2',
+        url: 'https://images.unsplash.com/photo-1663499482512-c5101031d277?w=800&auto=format&fit=crop&q=80',
+        isPrimary: false,
+        sortOrder: 2
+      }
     ],
     createdAt: '2026-08-29T11:00:00Z',
     updatedAt: '2026-08-29T11:00:00Z'
@@ -367,7 +409,8 @@ export const seedListings = [
     categoryId: 'cat-gadget',
     title: 'Samsung Galaxy S23 Ultra 5G 12GB / 512GB Phantom Black SEIN',
     slug: 'samsung-galaxy-s23-ultra-5g-12gb-512gb-phantom-black-sein',
-    description: 'Dijual flagship Samsung Galaxy S23 Ultra 5G RAM 12GB internal lega 512GB garansi resmi SEIN Indonesia. Kamera 200MP dan zoom 100x sangat jernih. S-Pen mulus responsif, layar Dynamic AMOLED 2X no shadow no green line. Lengkap dus dan kabel data ori.',
+    description:
+      'Dijual flagship Samsung Galaxy S23 Ultra 5G RAM 12GB internal lega 512GB garansi resmi SEIN Indonesia. Kamera 200MP dan zoom 100x sangat jernih. S-Pen mulus responsif, layar Dynamic AMOLED 2X no shadow no green line. Lengkap dus dan kabel data ori.',
     price: 12800000,
     originalPrice: 21999000,
     isNegotiable: true,
@@ -394,8 +437,20 @@ export const seedListings = [
       color: 'Phantom Black'
     }),
     images: [
-      { id: 'img-3-1', listingId: 'item-3', url: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
-      { id: 'img-3-2', listingId: 'item-3', url: 'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+      {
+        id: 'img-3-1',
+        listingId: 'item-3',
+        url: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop&q=80',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-3-2',
+        listingId: 'item-3',
+        url: 'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80',
+        isPrimary: false,
+        sortOrder: 2
+      }
     ],
     createdAt: '2026-08-28T16:00:00Z',
     updatedAt: '2026-08-28T16:00:00Z'
@@ -407,7 +462,8 @@ export const seedListings = [
     categoryId: 'cat-laptop',
     title: 'MacBook Pro 14" M1 Pro 16GB / 512GB Space Grey Fullset Garansi Habis',
     slug: 'macbook-pro-14-m1-pro-16gb-512gb-space-grey-fullset',
-    description: 'MacBook Pro 14 inci M1 Pro (8-Core CPU, 14-Core GPU, 16GB Unified RAM, 512GB SSD). Pemakaian harian untuk koding. Bodi 94% mulus tidak ada dent/penyok, hanya baret halus di bawah. Layar Liquid Retina XDR mulus no dead pixel/staingate. Cycle Count 165 (Normal). Fullset dus, charger MagSafe 3 67W asli bawaan.',
+    description:
+      'MacBook Pro 14 inci M1 Pro (8-Core CPU, 14-Core GPU, 16GB Unified RAM, 512GB SSD). Pemakaian harian untuk koding. Bodi 94% mulus tidak ada dent/penyok, hanya baret halus di bawah. Layar Liquid Retina XDR mulus no dead pixel/staingate. Cycle Count 165 (Normal). Fullset dus, charger MagSafe 3 67W asli bawaan.',
     price: 18200000,
     originalPrice: 28999000,
     isNegotiable: true,
@@ -435,8 +491,20 @@ export const seedListings = [
       screenSize: '14.2 Inch Liquid Retina XDR'
     }),
     images: [
-      { id: 'img-6-1', listingId: 'item-6', url: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
-      { id: 'img-6-2', listingId: 'item-6', url: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+      {
+        id: 'img-6-1',
+        listingId: 'item-6',
+        url: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-6-2',
+        listingId: 'item-6',
+        url: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&auto=format&fit=crop&q=80',
+        isPrimary: false,
+        sortOrder: 2
+      }
     ],
     createdAt: '2026-08-29T10:00:00Z',
     updatedAt: '2026-08-30T10:00:00Z'
@@ -448,7 +516,8 @@ export const seedListings = [
     categoryId: 'cat-kamera',
     title: 'Sony Alpha A6400 Body + Lensa Sigma 30mm F1.4 DC DN Shutter Count 4.2k',
     slug: 'sony-alpha-a6400-body-lensa-sigma-30mm-f14',
-    description: 'Dijual sepaket kamera mirrorless Sony A6400 + Lensa bokeh tajam Sigma 30mm f/1.4. Shutter count baru 4.200 (sangat rendah). Karet kencang, sensor bersih no jamur/debu, autofokus super cepat. Bonus filter UV Hoya, baterai cadangan Kingma 2 pcs + dual charger.',
+    description:
+      'Dijual sepaket kamera mirrorless Sony A6400 + Lensa bokeh tajam Sigma 30mm f/1.4. Shutter count baru 4.200 (sangat rendah). Karet kencang, sensor bersih no jamur/debu, autofokus super cepat. Bonus filter UV Hoya, baterai cadangan Kingma 2 pcs + dual charger.',
     price: 13500000,
     originalPrice: 17800000,
     isNegotiable: true,
@@ -475,8 +544,20 @@ export const seedListings = [
       autofocus: 'Real-time Eye AF'
     }),
     images: [
-      { id: 'img-10-1', listingId: 'item-10', url: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
-      { id: 'img-10-2', listingId: 'item-10', url: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+      {
+        id: 'img-10-1',
+        listingId: 'item-10',
+        url: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&auto=format&fit=crop&q=80',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-10-2',
+        listingId: 'item-10',
+        url: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&auto=format&fit=crop&q=80',
+        isPrimary: false,
+        sortOrder: 2
+      }
     ],
     createdAt: '2026-08-28T09:15:00Z',
     updatedAt: '2026-08-28T09:15:00Z'
@@ -488,7 +569,8 @@ export const seedListings = [
     categoryId: 'cat-otomotif',
     title: 'Vespa Sprint 150 i-Get ABS 2022 Matt Grey Km Rendah 4.800 Pajak Hidup',
     slug: 'vespa-sprint-150-i-get-abs-2022-matt-grey',
-    description: 'Dijual Vespa Sprint 150 i-Get ABS tahun 2022 warna favorit Grey Titanio (Matt Grey). Odometer baru 4.800 km asli bukan putaran. Servis rutin berkala di bengkel resmi Piaggio Vespa. Kunci master coklat & kunci biru lengkap. Surat-surat lengkap BPKB, STNK, Faktur. Pajak hidup panjang sampai akhir tahun.',
+    description:
+      'Dijual Vespa Sprint 150 i-Get ABS tahun 2022 warna favorit Grey Titanio (Matt Grey). Odometer baru 4.800 km asli bukan putaran. Servis rutin berkala di bengkel resmi Piaggio Vespa. Kunci master coklat & kunci biru lengkap. Surat-surat lengkap BPKB, STNK, Faktur. Pajak hidup panjang sampai akhir tahun.',
     price: 43500000,
     originalPrice: 54800000,
     isNegotiable: true,
@@ -515,8 +597,20 @@ export const seedListings = [
       odometer: '4.800 km'
     }),
     images: [
-      { id: 'img-14-1', listingId: 'item-14', url: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
-      { id: 'img-14-2', listingId: 'item-14', url: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+      {
+        id: 'img-14-1',
+        listingId: 'item-14',
+        url: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&auto=format&fit=crop&q=80',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-14-2',
+        listingId: 'item-14',
+        url: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&auto=format&fit=crop&q=80',
+        isPrimary: false,
+        sortOrder: 2
+      }
     ],
     createdAt: '2026-08-29T13:00:00Z',
     updatedAt: '2026-08-29T13:00:00Z'
@@ -528,7 +622,8 @@ export const seedListings = [
     categoryId: 'cat-otomotif',
     title: 'Helm Arai RX-7X Spencer 30th Anniversary Size L Original Mulus 97%',
     slug: 'helm-arai-rx-7x-spencer-30th-anniversary-size-l',
-    description: 'Helm premium Arai RX-7X motif legendaris Freddie Spencer 30th Anniversary size L (59-60 cm). Kondisi 97% mulus sangat terawat tidak pernah jatuh/kejedot. Busa pipi dan interior wangi kencang dicuci berkala. Kelengkapan sarung helm asli Arai, buku panduan, pelumas silikon, dan dus original.',
+    description:
+      'Helm premium Arai RX-7X motif legendaris Freddie Spencer 30th Anniversary size L (59-60 cm). Kondisi 97% mulus sangat terawat tidak pernah jatuh/kejedot. Busa pipi dan interior wangi kencang dicuci berkala. Kelengkapan sarung helm asli Arai, buku panduan, pelumas silikon, dan dus original.',
     price: 8700000,
     originalPrice: 12500000,
     isNegotiable: true,
@@ -554,8 +649,20 @@ export const seedListings = [
       shellMaterial: 'PB-SNC2 Structural Net Composite'
     }),
     images: [
-      { id: 'img-16-1', listingId: 'item-16', url: 'https://images.unsplash.com/photo-1558980664-769d59546b3d?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
-      { id: 'img-16-2', listingId: 'item-16', url: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+      {
+        id: 'img-16-1',
+        listingId: 'item-16',
+        url: 'https://images.unsplash.com/photo-1558980664-769d59546b3d?w=800&auto=format&fit=crop&q=80',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-16-2',
+        listingId: 'item-16',
+        url: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&auto=format&fit=crop&q=80',
+        isPrimary: false,
+        sortOrder: 2
+      }
     ],
     createdAt: '2026-08-27T15:00:00Z',
     updatedAt: '2026-08-27T15:00:00Z'
@@ -567,7 +674,8 @@ export const seedListings = [
     categoryId: 'cat-game',
     title: 'PlayStation 5 (PS5) Digital Edition CFI-1200 + 2 Stik DualSense Ori',
     slug: 'ps5-digital-edition-cfi-1200-2-stik-dualsense',
-    description: 'Dijual PS5 Digital CFI-1200 (seri dingin & hening). Kondisi 98% like new jarang dimainkan karena sibuk kantor. Termasuk 2 Controller DualSense Original no drift sama sekali. Dus buku kabel HDMI ultra high speed lengkap.',
+    description:
+      'Dijual PS5 Digital CFI-1200 (seri dingin & hening). Kondisi 98% like new jarang dimainkan karena sibuk kantor. Termasuk 2 Controller DualSense Original no drift sama sekali. Dus buku kabel HDMI ultra high speed lengkap.',
     price: 6400000,
     originalPrice: 8500000,
     isNegotiable: true,
@@ -593,8 +701,20 @@ export const seedListings = [
       controller: '2x DualSense Wireless'
     }),
     images: [
-      { id: 'img-18-1', listingId: 'item-18', url: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
-      { id: 'img-18-2', listingId: 'item-18', url: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+      {
+        id: 'img-18-1',
+        listingId: 'item-18',
+        url: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-18-2',
+        listingId: 'item-18',
+        url: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800&auto=format&fit=crop&q=80',
+        isPrimary: false,
+        sortOrder: 2
+      }
     ],
     createdAt: '2026-08-27T16:00:00Z',
     updatedAt: '2026-08-27T16:00:00Z'
@@ -606,7 +726,8 @@ export const seedListings = [
     categoryId: 'cat-fashion',
     title: 'Nike Dunk Low Retro White Black "Panda" Size 42.5 / US 9 Original',
     slug: 'nike-dunk-low-retro-panda-size-42-5-original',
-    description: 'Sepatu Nike Dunk Low Panda original beli di Hoops Point. Kondisi 88% pemakaian terawat, outsole bintang masih tebal, insole logo Nike masih utuh, toebox minim crease karena pakai crease protector. Replace box Nike original.',
+    description:
+      'Sepatu Nike Dunk Low Panda original beli di Hoops Point. Kondisi 88% pemakaian terawat, outsole bintang masih tebal, insole logo Nike masih utuh, toebox minim crease karena pakai crease protector. Replace box Nike original.',
     price: 1150000,
     originalPrice: 1899000,
     isNegotiable: true,
@@ -632,8 +753,20 @@ export const seedListings = [
       authenticity: '100% Original Verified'
     }),
     images: [
-      { id: 'img-22-1', listingId: 'item-22', url: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
-      { id: 'img-22-2', listingId: 'item-22', url: 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+      {
+        id: 'img-22-1',
+        listingId: 'item-22',
+        url: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&auto=format&fit=crop&q=80',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-22-2',
+        listingId: 'item-22',
+        url: 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=800&auto=format&fit=crop&q=80',
+        isPrimary: false,
+        sortOrder: 2
+      }
     ],
     createdAt: '2026-08-26T11:20:00Z',
     updatedAt: '2026-08-26T11:20:00Z'
@@ -645,7 +778,8 @@ export const seedListings = [
     categoryId: 'cat-audio',
     title: 'Sony WH-1000XM5 Wireless Noise Cancelling Silver Mulus Garansi Sony',
     slug: 'sony-wh-1000xm5-wireless-noise-cancelling-silver',
-    description: 'Headphone flagship peredam bising terbaik Sony WH-1000XM5 warna Silver Platinum. Suara vokal jernih bass bulat empuk, active noise cancelling nomor 1 di dunia. Bantal telinga kulit sintesis sangat lembut no sobek no kelupas. Fullset hardcase magnetik, kabel aux, kabel charger.',
+    description:
+      'Headphone flagship peredam bising terbaik Sony WH-1000XM5 warna Silver Platinum. Suara vokal jernih bass bulat empuk, active noise cancelling nomor 1 di dunia. Bantal telinga kulit sintesis sangat lembut no sobek no kelupas. Fullset hardcase magnetik, kabel aux, kabel charger.',
     price: 3850000,
     originalPrice: 5999000,
     isNegotiable: true,
@@ -671,8 +805,20 @@ export const seedListings = [
       codec: 'LDAC, AAC, SBC with Hi-Res Audio Wireless'
     }),
     images: [
-      { id: 'img-27-1', listingId: 'item-27', url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
-      { id: 'img-27-2', listingId: 'item-27', url: 'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+      {
+        id: 'img-27-1',
+        listingId: 'item-27',
+        url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-27-2',
+        listingId: 'item-27',
+        url: 'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&auto=format&fit=crop&q=80',
+        isPrimary: false,
+        sortOrder: 2
+      }
     ],
     createdAt: '2026-08-28T14:00:00Z',
     updatedAt: '2026-08-28T14:00:00Z'
@@ -684,7 +830,8 @@ export const seedListings = [
     categoryId: 'cat-elektronik',
     title: 'Dyson V12 Detect Slim Total Clean Cordless Vacuum Cleaner Laser Fluffy',
     slug: 'dyson-v12-detect-slim-total-clean-laser-fluffy',
-    description: 'Vacuum cleaner nirkabel premium Dyson V12 Detect Slim Total Clean. Dilengkapi laser optic hijau yang menerangi debu kasat mata di lantai dan sensor piezo pengukur partikel debu. Bobot ringan 2.2 kg, baterai tahan 60 menit. Semua 5 kepala nozzle lengkap dalam kondisi mulus.',
+    description:
+      'Vacuum cleaner nirkabel premium Dyson V12 Detect Slim Total Clean. Dilengkapi laser optic hijau yang menerangi debu kasat mata di lantai dan sensor piezo pengukur partikel debu. Bobot ringan 2.2 kg, baterai tahan 60 menit. Semua 5 kepala nozzle lengkap dalam kondisi mulus.',
     price: 7900000,
     originalPrice: 12999000,
     isNegotiable: true,
@@ -710,8 +857,20 @@ export const seedListings = [
       weight: '2.2 Kg'
     }),
     images: [
-      { id: 'img-31-1', listingId: 'item-31', url: 'https://images.unsplash.com/photo-1558317374-067fb5f30001?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
-      { id: 'img-31-2', listingId: 'item-31', url: 'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+      {
+        id: 'img-31-1',
+        listingId: 'item-31',
+        url: 'https://images.unsplash.com/photo-1558317374-067fb5f30001?w=800&auto=format&fit=crop&q=80',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-31-2',
+        listingId: 'item-31',
+        url: 'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=800&auto=format&fit=crop&q=80',
+        isPrimary: false,
+        sortOrder: 2
+      }
     ],
     createdAt: '2026-08-28T15:30:00Z',
     updatedAt: '2026-08-28T15:30:00Z'

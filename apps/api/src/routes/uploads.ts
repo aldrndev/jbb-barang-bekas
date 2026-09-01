@@ -1,6 +1,13 @@
 import { Hono } from 'hono';
-import type { AppEnv } from '../types/env';
 import { authMiddleware } from '../middlewares/auth';
+import type { AppEnv } from '../types/env';
+
+const ALLOWED_MIME_TYPES: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'image/heic': 'heic'
+};
 
 export const uploadRoutes = new Hono<AppEnv>()
   .use('*', authMiddleware)
@@ -8,7 +15,7 @@ export const uploadRoutes = new Hono<AppEnv>()
   .post('/', async (c) => {
     try {
       const body = await c.req.parseBody();
-      const file = body['file'];
+      const file = body.file;
 
       if (!file || !(file instanceof File)) {
         return c.json(
@@ -23,15 +30,14 @@ export const uploadRoutes = new Hono<AppEnv>()
         );
       }
 
-      // Check file type
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/heic'];
-      if (!allowedTypes.includes(file.type)) {
+      const ext = ALLOWED_MIME_TYPES[file.type.toLowerCase()];
+      if (!ext) {
         return c.json(
           {
             success: false,
             error: {
               code: 'UNSUPPORTED_TYPE',
-              message: 'Hanya format JPG, PNG, WEBP yang didukung'
+              message: 'Hanya format JPG, PNG, WEBP, dan HEIC yang didukung'
             }
           },
           400
@@ -52,8 +58,8 @@ export const uploadRoutes = new Hono<AppEnv>()
         );
       }
 
-      const fileExt = file.name.split('.').pop() || 'jpg';
-      const key = `listings/${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+      const randomHash = crypto.randomUUID().replace(/-/g, '').slice(0, 12);
+      const key = `listings/${Date.now()}-${randomHash}.${ext}`;
 
       // Upload to Cloudflare R2 bucket if available
       if (c.env.STORAGE) {
@@ -69,11 +75,17 @@ export const uploadRoutes = new Hono<AppEnv>()
         });
       }
 
-      // Fallback preview URL / mock for local dev
+      // Fallback preview data URI for local dev
       const arrayBuffer = await file.arrayBuffer();
-      const base64 = btoa(
-        new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
-      );
+      const bytes = new Uint8Array(arrayBuffer);
+      let binary = '';
+      for (let i = 0; i < bytes.byteLength; i++) {
+        const b = bytes[i];
+        if (b !== undefined) {
+          binary += String.fromCharCode(b);
+        }
+      }
+      const base64 = btoa(binary);
       const dataUri = `data:${file.type};base64,${base64}`;
 
       return c.json({
@@ -81,13 +93,14 @@ export const uploadRoutes = new Hono<AppEnv>()
         message: 'Upload berhasil',
         data: { url: dataUri, key }
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Gagal mengupload file';
       return c.json(
         {
           success: false,
           error: {
             code: 'UPLOAD_FAILED',
-            message: err.message || 'Gagal mengupload file'
+            message: errorMessage
           }
         },
         500
