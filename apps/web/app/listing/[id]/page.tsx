@@ -233,12 +233,6 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                 <div className="flex items-center justify-between pb-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <ConditionBadge condition={listing.condition} size="md" />
-                    {listing.isCodAvailable && (
-                      <span className="rounded-full bg-amber-50 text-amber-950 border border-amber-300 px-2.5 py-0.5 text-xs font-bold shadow-2xs flex items-center gap-1">
-                        <Zap className="h-3 w-3 text-amber-600 fill-amber-400" />
-                        <span>Siap COD</span>
-                      </span>
-                    )}
                     <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-700 border border-slate-200">
                       📷 {activeImageIdx + 1}/{images.length || 1}
                     </span>
