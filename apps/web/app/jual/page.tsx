@@ -34,7 +34,11 @@ import {
   Image as ImageIcon,
   Loader2,
   UploadCloud,
-  Edit3
+  Edit3,
+  FileText,
+  Calendar,
+  Package,
+  Wrench
 } from 'lucide-react';
 
 const PRESET_DEMO_PHOTOS = [
@@ -72,6 +76,17 @@ const PRESET_DEMO_PHOTOS = [
   }
 ];
 
+const QUICK_SPEC_SUGGESTIONS = [
+  'Warna',
+  'Kapasitas / Storage',
+  'RAM',
+  'Battery Health',
+  'Garansi',
+  'Kelengkapan',
+  'Kondisi Layar',
+  'Shutter Count'
+];
+
 function JualBarangContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -91,8 +106,15 @@ function JualBarangContent() {
   const [originalPrice, setOriginalPrice] = useState<number | undefined>(undefined);
   const [isNegotiable, setIsNegotiable] = useState(true);
   const [minOfferPrice, setMinOfferPrice] = useState<number | undefined>(undefined);
-  const [purchaseYear, setPurchaseYear] = useState<number>(2023);
-  const [hasOriginalReceipt, setHasOriginalReceipt] = useState(false);
+  const [purchaseYear, setPurchaseYear] = useState<number>(2024);
+  const [hasOriginalReceipt, setHasOriginalReceipt] = useState(true);
+  const [warrantyUntil, setWarrantyUntil] = useState('');
+
+  // Dynamic Specs
+  const [specsList, setSpecsList] = useState<{ key: string; value: string }[]>([
+    { key: 'Warna', value: 'Space Grey' },
+    { key: 'Kapasitas / Storage', value: '256 GB' }
+  ]);
 
   // Location
   const [province, setProvince] = useState('DKI Jakarta');
@@ -105,7 +127,6 @@ function JualBarangContent() {
   const [imageUrls, setImageUrls] = useState<string[]>([
     'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80'
   ]);
-  const [newImageUrl, setNewImageUrl] = useState('');
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [showMobilePreview, setShowMobilePreview] = useState(false);
@@ -143,8 +164,9 @@ function JualBarangContent() {
       setOriginalPrice(item.originalPrice || undefined);
       setIsNegotiable(Boolean(item.isNegotiable));
       setMinOfferPrice(item.minOfferPrice || undefined);
-      setPurchaseYear(item.purchaseYear || 2023);
+      setPurchaseYear(item.purchaseYear || 2024);
       setHasOriginalReceipt(Boolean(item.hasOriginalReceipt));
+      setWarrantyUntil(item.warrantyUntil || '');
       setProvince(item.province || 'DKI Jakarta');
       setCity(item.city || 'Jakarta Selatan');
       setDistrict(item.district || 'Kebayoran Baru');
@@ -152,6 +174,15 @@ function JualBarangContent() {
       setCodMeetingPoint(item.codMeetingPoint || '');
       if (item.images && item.images.length > 0) {
         setImageUrls(item.images.map((img) => img.url));
+      }
+      if (item.specs && typeof item.specs === 'object') {
+        const loadedSpecs = Object.entries(item.specs).map(([k, v]) => ({
+          key: k,
+          value: String(v)
+        }));
+        if (loadedSpecs.length > 0) {
+          setSpecsList(loadedSpecs);
+        }
       }
       setIsDataLoaded(true);
     }
@@ -217,10 +248,26 @@ function JualBarangContent() {
 
   const toggleCompleteness = (val: Completeness) => {
     if (completeness.includes(val)) {
-      setCompleteness(completeness.filter((c) => c !== val));
+      if (completeness.length > 1) {
+        setCompleteness(completeness.filter((c) => c !== val));
+      }
     } else {
       setCompleteness([...completeness, val]);
     }
+  };
+
+  const handleAddSpecRow = (defaultKey = '') => {
+    setSpecsList([...specsList, { key: defaultKey, value: '' }]);
+  };
+
+  const handleRemoveSpecRow = (idx: number) => {
+    setSpecsList(specsList.filter((_, i) => i !== idx));
+  };
+
+  const handleUpdateSpec = (idx: number, field: 'key' | 'value', text: string) => {
+    const updated = [...specsList];
+    updated[idx][field] = text;
+    setSpecsList(updated);
   };
 
   const calculateDiscount = () => {
@@ -256,6 +303,14 @@ function JualBarangContent() {
       return;
     }
 
+    // Convert specsList to record
+    const specsRecord: Record<string, string> = {};
+    specsList.forEach((s) => {
+      if (s.key.trim() && s.value.trim()) {
+        specsRecord[s.key.trim()] = s.value.trim();
+      }
+    });
+
     setErrorMsg(null);
     setIsSubmitting(true);
 
@@ -271,11 +326,13 @@ function JualBarangContent() {
       minOfferPrice: isNegotiable && minOfferPrice ? minOfferPrice : undefined,
       purchaseYear: purchaseYear || undefined,
       hasOriginalReceipt,
+      warrantyUntil: warrantyUntil.trim() || undefined,
       province,
       city,
       district,
       isCodAvailable,
       codMeetingPoint: isCodAvailable ? codMeetingPoint || undefined : undefined,
+      specs: Object.keys(specsRecord).length > 0 ? specsRecord : undefined,
       imageUrls
     };
 
@@ -607,22 +664,26 @@ function JualBarangContent() {
                       onChange={(e) => setCondition(e.target.value as ItemCondition)}
                       className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs sm:text-sm text-slate-800 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none cursor-pointer"
                     >
-                      <option value="LIKE_NEW">Sangat Mulus (95-99%)</option>
-                      <option value="LIGHTLY_USED">Mulus Terawat (85-94%)</option>
-                      <option value="WELL_USED">Pemakaian Wajar (70-84%)</option>
-                      <option value="HEAVILY_USED">Kondisi Minus / Batangan</option>
+                      <option value="NEW">Baru (BNOB / Segel 100%)</option>
+                      <option value="LIKE_NEW">Seperti Baru / Like New (96% Mulus)</option>
+                      <option value="USED_EXCELLENT">Bekas Sangat Mulus (90% Mulus)</option>
+                      <option value="USED_GOOD">Bekas Mulus Terawat (80% Mulus)</option>
+                      <option value="USED_FAIR">Pemakaian Wajar / Ada Lecet (65%)</option>
+                      <option value="PARTS_ONLY">Kondisi Minus / Kanibalan / Sparepart</option>
                     </select>
                   </div>
                 </div>
 
+                {/* Completeness Section (Aligned with domain enum) */}
                 <div>
-                  <label className="text-xs font-bold text-slate-800">Kelengkapan Paket</label>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 mt-1">
+                  <label className="text-xs font-bold text-slate-800">Kelengkapan Paket Unit</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2 mt-1">
                     {[
-                      { id: 'FULLSET', label: 'Fullset Dus' },
-                      { id: 'UNIT_ONLY', label: 'Unit Saja' },
-                      { id: 'CHARGER', label: 'Charger Asli' },
-                      { id: 'BOX', label: 'Dus / Box' }
+                      { id: 'FULLSET', label: 'Fullset Dus & Box' },
+                      { id: 'UNIT_ONLY', label: 'Batangan (Hanya Unit)' },
+                      { id: 'BOX_UNIT', label: 'Unit + Dus Saja' },
+                      { id: 'WITH_RECEIPT', label: 'Ada Nota Asli' },
+                      { id: 'ACTIVE_WARRANTY', label: 'Garansi Resmi Aktif' }
                     ].map((comp) => {
                       const isChecked = completeness.includes(comp.id as Completeness);
                       return (
@@ -641,6 +702,124 @@ function JualBarangContent() {
                       );
                     })}
                   </div>
+                </div>
+
+                {/* Purchase Year, Invoice Receipt & Warranty Sub-section */}
+                <div className="rounded-2xl bg-slate-50 p-3 sm:p-3.5 border border-slate-200 space-y-3">
+                  <div className="flex items-center gap-2 border-b border-slate-200/80 pb-2">
+                    <Calendar className="h-4 w-4 text-brand-600 shrink-0" />
+                    <span className="text-xs font-bold text-slate-900">Riwayat Pembelian & Keaslian Unit</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                        Tahun Pembelian:
+                      </label>
+                      <select
+                        value={purchaseYear}
+                        onChange={(e) => setPurchaseYear(Number(e.target.value))}
+                        className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 focus:border-brand-500 focus:outline-none cursor-pointer"
+                      >
+                        {[2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018].map((yr) => (
+                          <option key={yr} value={yr}>
+                            Tahun {yr}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                        Sisa Masa Garansi (Opsional):
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Contoh: Desember 2025 / iBox"
+                        value={warrantyUntil}
+                        onChange={(e) => setWarrantyUntil(e.target.value)}
+                        className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 focus:border-brand-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Has Original Receipt Toggle */}
+                  <label className="flex items-center gap-2.5 cursor-pointer pt-1 border-t border-slate-200/80">
+                    <input
+                      type="checkbox"
+                      checked={hasOriginalReceipt}
+                      onChange={(e) => setHasOriginalReceipt(e.target.checked)}
+                      className="h-4 w-4 rounded text-brand-600 focus:ring-brand-500"
+                    />
+                    <div className="text-xs">
+                      <span className="font-bold text-slate-900 block">Menyertakan Nota / Struk Pembelian Asli</span>
+                      <span className="text-[10px] text-slate-500">Struk resmi toko fisik atau invoice resmi digital</span>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Technical Specs Editor (Key-Value Dynamic Specs) */}
+                <div className="rounded-2xl bg-slate-50 p-3 sm:p-3.5 border border-slate-200 space-y-2.5">
+                  <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
+                    <div className="flex items-center gap-2">
+                      <Wrench className="h-4 w-4 text-brand-600 shrink-0" />
+                      <span className="text-xs font-bold text-slate-900">Spesifikasi Teknis Tambahan</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleAddSpecRow()}
+                      className="flex items-center gap-1 rounded-lg bg-white border border-slate-200 px-2 py-0.5 text-[11px] font-bold text-brand-700 hover:bg-brand-50 transition-colors cursor-pointer shadow-2xs"
+                    >
+                      <Plus className="h-3 w-3" />
+                      <span>Tambah Baris</span>
+                    </button>
+                  </div>
+
+                  {/* Quick Spec Presets */}
+                  <div className="flex items-center gap-1 flex-wrap">
+                    <span className="text-[10px] font-bold text-slate-400">Preset Cepat:</span>
+                    {QUICK_SPEC_SUGGESTIONS.map((s, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => handleAddSpecRow(s)}
+                        className="rounded-lg border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-bold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer shadow-2xs"
+                      >
+                        + {s}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Specs Input Rows */}
+                  {specsList.length > 0 && (
+                    <div className="space-y-2 pt-1">
+                      {specsList.map((spec, idx) => (
+                        <div key={idx} className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            placeholder="Nama Spek (ex: RAM)"
+                            value={spec.key}
+                            onChange={(e) => handleUpdateSpec(idx, 'key', e.target.value)}
+                            className="w-1/2 rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 focus:border-brand-500 focus:outline-none"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Nilai (ex: 16 GB)"
+                            value={spec.value}
+                            onChange={(e) => handleUpdateSpec(idx, 'value', e.target.value)}
+                            className="w-1/2 rounded-xl border border-slate-300 bg-white p-2 text-xs font-medium text-slate-800 focus:border-brand-500 focus:outline-none"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSpecRow(idx)}
+                            className="flex h-8 w-8 items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-200 transition-colors shrink-0 cursor-pointer shadow-2xs"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -913,7 +1092,7 @@ function JualBarangContent() {
                 </li>
                 <li className="flex items-start gap-1.5">
                   <span className="text-brand-600 font-bold">✓</span>
-                  <span><strong>Deskripsi Jujur:</strong> Tulis minus lecet secara transparan untuk menjaga reputasi Trust Score 5.0.</span>
+                  <span><strong>Deskripsi & Nota:</strong> Cantumkan nota toko dan kelengkapan dus asli untuk meyakinkan calon pembeli.</span>
                 </li>
                 <li className="flex items-start gap-1.5">
                   <span className="text-brand-600 font-bold">✓</span>
