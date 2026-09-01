@@ -47,8 +47,21 @@ export function ListingCard({ listing, showRemoveFromWishlist = false }: Listing
         )}
       </Link>
 
-      {/* Floating Wishlist Heart Button (Browsing mode) */}
-      {!showRemoveFromWishlist && (
+      {/* Floating Wishlist Heart / Trash Button */}
+      {showRemoveFromWishlist ? (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleWishlist(listing);
+          }}
+          className="absolute top-2.5 right-2.5 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-white/95 text-rose-600 hover:bg-rose-500 hover:text-white border border-rose-200 backdrop-blur-md transition-all cursor-pointer shadow-xs"
+          title="Hapus dari Wishlist"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      ) : (
         <button
           type="button"
           onClick={(e) => {
@@ -107,24 +120,6 @@ export function ListingCard({ listing, showRemoveFromWishlist = false }: Listing
           </div>
         </div>
       </Link>
-
-      {/* Explicit Bottom Action on Wishlist Page */}
-      {showRemoveFromWishlist && (
-        <div className="border-t border-slate-100 p-2 bg-slate-50/60">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              toggleWishlist(listing);
-            }}
-            className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-rose-200 bg-white hover:bg-rose-50 py-1.5 text-[11px] font-bold text-rose-600 transition-colors cursor-pointer shadow-2xs"
-          >
-            <Trash2 className="h-3 w-3 text-rose-500" />
-            <span>Hapus</span>
-          </button>
-        </div>
-      )}
     </div>
   );
 }
