@@ -80,13 +80,13 @@ export function Breadcrumbs({ items, className = '' }: BreadcrumbsProps) {
               {item.href && !isLast ? (
                 <Link
                   href={item.href}
-                  className="hover:text-brand-600 transition-colors truncate max-w-[100px] sm:max-w-[180px] p-1 rounded-md hover:bg-slate-100/70"
+                  className="hover:text-brand-600 transition-colors truncate max-w-25 sm:max-w-45 p-1 rounded-md hover:bg-slate-100/70"
                 >
                   {item.label}
                 </Link>
               ) : (
                 <span
-                  className="font-bold text-slate-900 truncate max-w-[130px] sm:max-w-[280px] md:max-w-md"
+                  className="font-bold text-slate-900 truncate max-w-32.5 sm:max-w-70 md:max-w-md"
                   aria-current={isLast ? 'page' : undefined}
                 >
                   {item.label}

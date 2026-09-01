@@ -243,7 +243,7 @@ function CheckoutContent() {
           <div className="mt-4 rounded-2xl bg-slate-50 p-4 border border-slate-200/80 text-left space-y-2 text-xs">
             <div className="flex justify-between">
               <span className="text-slate-500">Barang:</span>
-              <span className="font-bold text-slate-900 truncate max-w-[200px]">{listing.title}</span>
+              <span className="font-bold text-slate-900 truncate max-w-50">{listing.title}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-500">Metode Transaksi:</span>

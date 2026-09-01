@@ -65,7 +65,7 @@ export function ListingCard({ listing }: ListingCardProps) {
       </button>
 
       {/* Card Content */}
-      <Link href={`/listing/${listing.slug || listing.id}`} className="flex flex-1 flex-col p-4 block">
+      <Link href={`/listing/${listing.slug || listing.id}`} className="flex flex-1 flex-col p-4">
         {/* Title */}
         <h3 className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-2 leading-snug group-hover:text-brand-600 transition-colors">
           {listing.title}
