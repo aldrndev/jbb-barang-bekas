@@ -263,26 +263,29 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
 
               {/* Bottom Section: Docked Thumbnail Tray */}
               {images.length > 1 && (
-                <div className="border-t border-slate-200/90 bg-slate-50/80 px-3.5 sm:px-6 py-2.5 sm:py-3">
-                  <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto py-1 px-1 hide-scrollbar">
-                    {images.map((img, idx) => (
-                      <button
-                        key={img.id}
-                        type="button"
-                        onClick={() => setActiveImageIdx(idx)}
-                        className={`relative h-14 w-14 sm:h-18 sm:w-18 shrink-0 overflow-hidden rounded-xl sm:rounded-2xl transition-all cursor-pointer bg-white ${
-                          activeImageIdx === idx
-                            ? 'ring-2 ring-brand-600 ring-offset-2 ring-offset-slate-50 scale-103 shadow-sm'
-                            : 'border border-slate-200/90 opacity-60 hover:opacity-100 hover:border-slate-300'
-                        }`}
-                      >
-                        <img
-                          src={img.url}
-                          alt={`Thumbnail ${idx + 1}`}
-                          className="h-full w-full object-cover"
-                        />
-                      </button>
-                    ))}
+                <div className="border-t border-slate-200/90 bg-slate-50/80 px-3.5 sm:px-6 py-3">
+                  <div className="flex items-center gap-2.5 sm:gap-3 overflow-x-auto py-1 px-1 hide-scrollbar">
+                    {images.map((img, idx) => {
+                      const isActive = activeImageIdx === idx;
+                      return (
+                        <button
+                          key={img.id}
+                          type="button"
+                          onClick={() => setActiveImageIdx(idx)}
+                          className={`relative h-14 w-14 sm:h-16 sm:w-16 shrink-0 rounded-2xl p-0.5 transition-all cursor-pointer bg-white ${
+                            isActive
+                              ? 'border-2 border-brand-600 shadow-md shadow-brand-600/15'
+                              : 'border border-slate-200 opacity-60 hover:opacity-100 hover:border-slate-400'
+                          }`}
+                        >
+                          <img
+                            src={img.url}
+                            alt={`Thumbnail ${idx + 1}`}
+                            className="h-full w-full object-cover rounded-[13px]"
+                          />
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
