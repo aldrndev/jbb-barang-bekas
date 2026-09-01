@@ -323,7 +323,7 @@ export default function MyListingsPage() {
                   <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span
-                        className={`rounded-full px-2 py-0.2 text-[9px] sm:text-[10px] font-extrabold border ${
+                        className={`rounded-full px-2.5 py-0.5 text-[9px] sm:text-[10px] font-bold border ${
                           item.status === 'ACTIVE'
                             ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                             : item.status === 'IN_NEGO'
@@ -336,19 +336,19 @@ export default function MyListingsPage() {
                         }`}
                       >
                         {item.status === 'ACTIVE'
-                          ? '🟢 Aktif'
+                          ? 'Aktif'
                           : item.status === 'IN_NEGO'
-                          ? '💬 Sedang Nego'
+                          ? 'Sedang Nego'
                           : item.status === 'RESERVED'
-                          ? '🔒 Dibooking'
+                          ? 'Dibooking'
                           : item.status === 'SOLD'
-                          ? '✓ Terjual'
+                          ? 'Terjual'
                           : 'Draf'}
                       </span>
 
                       {item.isCodAvailable && (
-                        <span className="rounded-full bg-slate-100 text-slate-600 text-[9px] font-bold px-1.5 py-0.2 border border-slate-200">
-                          ⚡ COD
+                        <span className="rounded-full bg-slate-100 text-slate-600 text-[9px] font-bold px-2 py-0.5 border border-slate-200">
+                          COD
                         </span>
                       )}
                     </div>
@@ -409,11 +409,11 @@ export default function MyListingsPage() {
                         onChange={(e) => handleUpdateStatus(item.id, e.target.value)}
                         className="rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-800 focus:border-brand-500 focus:outline-none cursor-pointer"
                       >
-                        <option value="ACTIVE">🟢 Aktif Dijual</option>
-                        <option value="IN_NEGO">💬 Sedang Nego</option>
-                        <option value="RESERVED">🔒 Dibooking</option>
-                        <option value="SOLD">✓ Terjual</option>
-                        <option value="ARCHIVED">⚪ Arsipkan</option>
+                        <option value="ACTIVE">Aktif Dijual</option>
+                        <option value="IN_NEGO">Sedang Nego</option>
+                        <option value="RESERVED">Dibooking</option>
+                        <option value="SOLD">Terjual</option>
+                        <option value="ARCHIVED">Arsipkan</option>
                       </select>
                     </div>
 
