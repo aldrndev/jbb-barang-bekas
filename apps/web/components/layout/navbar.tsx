@@ -51,14 +51,14 @@ export function Navbar() {
         <PeygoLogo href="/" size="sm" showSubtitle={false} />
 
         {/* Inline Mobile Search Pill */}
-        <form onSubmit={handleSearchSubmit} className="relative flex-1 min-w-0 mx-1">
-          <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-400" />
+        <form onSubmit={handleSearchSubmit} className="relative flex-1 min-w-0 mx-1 flex items-center">
+          <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
           <input
             type="text"
             placeholder="Cari iPhone, laptop, kamera..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-9 pl-8 pr-3 rounded-full border border-slate-200 bg-slate-50 text-xs text-slate-800 placeholder-slate-400 font-medium focus:bg-white focus:border-brand-500 focus:outline-none transition-all shadow-2xs"
+            className="w-full h-9 pl-8.5 pr-3 rounded-full border border-slate-200 bg-slate-50 text-xs text-slate-800 placeholder-slate-400 font-medium focus:bg-white focus:border-brand-500 focus:outline-none transition-all shadow-2xs"
           />
         </form>
 
@@ -96,19 +96,19 @@ export function Navbar() {
         <PeygoLogo href="/" size="md" />
 
         {/* Global Search Bar */}
-        <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-lg items-center">
-          <Search className="absolute left-3.5 h-4 w-4 text-slate-400" />
+        <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-lg flex items-center">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari iPhone, MacBook, Sony A6400, PS5..."
-            className="w-full rounded-full border border-slate-200 bg-slate-50/80 py-2 pl-10 pr-16 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:bg-white focus:outline-none transition-all shadow-2xs"
+            className="w-full h-10 rounded-full border border-slate-200 bg-slate-50/80 pl-10 pr-16 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:bg-white focus:outline-none transition-all shadow-2xs"
           />
           {searchQuery && (
             <button
               type="submit"
-              className="absolute right-2 px-3 py-1 bg-brand-600 text-white rounded-full text-xs font-bold hover:bg-brand-700 transition-colors cursor-pointer"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 px-3 py-1 bg-brand-600 text-white rounded-full text-xs font-bold hover:bg-brand-700 transition-colors cursor-pointer"
             >
               Cari
             </button>

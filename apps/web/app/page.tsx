@@ -280,7 +280,7 @@ export default function HomePage() {
                       placeholder="Cari iPhone, MacBook, Sony, PS5..."
                       className="w-full rounded-xl bg-slate-50/90 px-3 py-2 pl-8.5 text-xs text-slate-800 placeholder-slate-400 border border-slate-200 hover:border-slate-300 focus:outline-none focus:bg-white focus:border-brand-500 transition-colors"
                     />
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
+                    <Search className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                   </div>
 
                   {/* City Select */}

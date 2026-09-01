@@ -303,7 +303,7 @@ function OrderHistoryContent() {
                 }
                 className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 pl-9 pr-3.5 py-2.5 text-xs text-slate-800 focus:border-brand-500 focus:outline-none focus:bg-white transition-colors"
               />
-              <Search className="absolute left-3 top-3 h-3.5 w-3.5 text-slate-400" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
             </div>
 
             {orderMode === 'seller' && (

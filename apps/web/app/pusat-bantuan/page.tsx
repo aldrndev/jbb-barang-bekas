@@ -186,8 +186,8 @@ export default function PusatBantuanPage() {
             </p>
 
             {/* Live Search Bar */}
-            <div className="relative max-w-xl mx-auto">
-              <Search className="absolute left-4 top-3.5 h-5 w-5 text-slate-400" />
+            <div className="relative max-w-xl mx-auto flex items-center">
+              <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
               <input
                 type="text"
                 placeholder="Ketik pertanyaan (misal: rekber, KYC KTP, refund, nego)..."
@@ -199,7 +199,7 @@ export default function PusatBantuanPage() {
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 cursor-pointer"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
                 >
                   <X className="h-4 w-4" />
                 </button>
