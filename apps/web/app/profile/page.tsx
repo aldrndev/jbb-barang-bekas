@@ -334,7 +334,7 @@ export default function ProfilePage() {
                   {user.isKycVerified ? (
                     <span className="inline-flex items-center gap-1 rounded-full bg-brand-50 px-2.5 py-0.5 text-[10px] font-extrabold text-brand-900 border border-brand-200">
                       <ShieldCheck className="h-3 w-3 text-brand-600" />
-                      <span>Terverifikasi KYC</span>
+                      <span>Terverifikasi</span>
                     </span>
                   ) : user.nik ? (
                     <button

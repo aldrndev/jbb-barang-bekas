@@ -43,7 +43,7 @@ const ARTICLES: HelpArticle[] = [
     id: 'k-1',
     category: 'akun',
     question: 'Mengapa saya perlu melakukan verifikasi identitas (KYC)?',
-    answer: 'Verifikasi KTP (KYC) bertujuan menjaga rasa aman di ekosistem Peygo. Akun terverifikasi mendapatkan lencana "Terverifikasi KTP" yang meningkatkan kepercayaan calon pembeli hingga 3x lipat serta membuka limit penarikan saldo tanpa batas.'
+    answer: 'Verifikasi identitas bertujuan menjaga rasa aman di ekosistem Peygo. Akun terverifikasi mendapatkan lencana "Terverifikasi" yang meningkatkan kepercayaan calon pembeli hingga 3x lipat serta membuka limit penarikan saldo tanpa batas.'
   },
   {
     id: 'k-2',

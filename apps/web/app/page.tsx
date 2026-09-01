@@ -491,7 +491,7 @@ export default function HomePage() {
                           </>
                         ) : (
                           <>
-                            {isRealSpotlight && spotlightListing?.seller?.isKycVerified ? '🛡️ Terverifikasi KYC' : '🛡️ Garansi Rekber'}
+                            {isRealSpotlight && spotlightListing?.seller?.isKycVerified ? '🛡️ Terverifikasi' : '🛡️ Garansi Rekber'}
                           </>
                         )}
                       </div>

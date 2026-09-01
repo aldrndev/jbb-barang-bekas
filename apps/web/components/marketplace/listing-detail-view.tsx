@@ -474,7 +474,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                     <div className="flex items-center gap-1.5 font-bold text-xs sm:text-sm text-slate-900">
                       <span className="truncate">{toTitleCase(listing.seller.name)}</span>
                       {listing.seller.isKycVerified ? (
-                        <span title="Penjual Terverifikasi (KTP)" className="inline-flex items-center text-emerald-600">
+                        <span title="Penjual Terverifikasi" className="inline-flex items-center text-emerald-600">
                           <BadgeCheck className="h-4 w-4 fill-emerald-100" />
                         </span>
                       ) : null}
@@ -901,7 +901,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                     {listing.seller.isKycVerified ? (
                       <span className="inline-flex items-center gap-1 font-bold text-emerald-800 bg-emerald-100/80 border border-emerald-200 px-2 py-0.5 rounded-md">
                         <BadgeCheck className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                        <span>KTP Terverifikasi</span>
+                        <span>Terverifikasi</span>
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 font-bold text-slate-600 bg-slate-200/70 border border-slate-300 px-2 py-0.5 rounded-md">
