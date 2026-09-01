@@ -6,7 +6,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 import { formatIDR, formatTimeAgo } from '../../lib/utils';
-import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
 import {
   ShieldAlert,
@@ -35,10 +34,15 @@ import {
   Activity,
   Layers,
   FileText,
-  User
+  User,
+  Menu,
+  Home,
+  LogOut,
+  SlidersHorizontal,
+  Clock
 } from 'lucide-react';
 
-export default function AdminPortalPage() {
+export default function StandaloneAdminDashboard() {
   const queryClient = useQueryClient();
   const { user, loginAsDemoAdmin, loginAsDemoSeller, loginAsDemoBuyer, logout } = useAuth();
   const isAdmin = user?.role === 'ADMIN';
@@ -48,6 +52,7 @@ export default function AdminPortalPage() {
   const [adminNotes, setAdminNotes] = useState('');
   const [isProcessingAction, setIsProcessingAction] = useState(false);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   // Queries
   const { data: statsData, refetch: refetchStats } = useQuery({
@@ -129,7 +134,7 @@ export default function AdminPortalPage() {
   const handleResolveDispute = async (orderId: string, action: 'REFUND_BUYER' | 'RELEASE_TO_SELLER') => {
     const confirmText =
       action === 'REFUND_BUYER'
-        ? 'Apakah Anda yakin ingin ME-REFUND DANA PENUH ke pembeli? Status pesanan akan menjadi REFUNDED.'
+        ? 'Apakah Anda yakin ingin ME-REFUND DANA PENUH ke pembeli? Status pesanan akan menjadi CANCELLED/REFUNDED.'
         : 'Apakah Anda yakin ingin MENCAIRKAN DANA KE PENJUAL? Sengketa akan ditutup dan status menjadi COMPLETED.';
 
     if (!confirm(confirmText)) return;
@@ -166,31 +171,35 @@ export default function AdminPortalPage() {
   // Auth Guard for Non-Admin
   if (!isAdmin) {
     return (
-      <div className="min-h-[70vh] bg-slate-50 py-12 px-4 flex items-center justify-center">
-        <div className="max-w-md w-full rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 text-center shadow-xs space-y-4">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-rose-50 text-rose-600 border border-rose-100 shadow-xs">
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-4">
+        <div className="max-w-md w-full rounded-3xl border border-slate-800 bg-slate-900/90 backdrop-blur-xl p-6 sm:p-8 text-center shadow-2xl space-y-5">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-inner">
             <Lock className="h-8 w-8" />
           </div>
-          <div className="space-y-1">
-            <h1 className="text-lg sm:text-xl font-black text-slate-900">Portal Admin & Mediasi Rekber</h1>
-            <p className="text-xs text-slate-500 leading-relaxed font-medium">
-              Halaman ini khusus untuk Tim Kepatuhan, Petugas Mediasi Sengketa, dan Administrator Keuangan Rekber JBB.
+          <div className="space-y-1.5">
+            <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 px-2.5 py-1 rounded-full border border-amber-400/20">
+              Restricted Area
+            </span>
+            <h1 className="text-xl font-black text-white">JBB Escrow Back-Office</h1>
+            <p className="text-xs text-slate-400 leading-relaxed font-medium">
+              Portal administrasi khusus petugas kepatuhan mediasi sengketa dan keuangan Rekber JBB.
             </p>
           </div>
 
-          <div className="pt-2 space-y-2">
+          <div className="pt-2 space-y-2.5">
             <button
               onClick={loginAsDemoAdmin}
-              className="w-full flex items-center justify-center gap-2 rounded-full bg-slate-900 hover:bg-black px-6 py-3 text-xs font-bold text-white shadow-md transition-all cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 rounded-2xl bg-brand-500 hover:bg-brand-600 px-6 py-3.5 text-xs font-bold text-white shadow-lg shadow-brand-500/25 transition-all cursor-pointer"
             >
-              <Sparkles className="h-4 w-4 text-amber-400" />
-              <span>Masuk Sebagai Demo Admin (Master)</span>
+              <Sparkles className="h-4 w-4 text-amber-200" />
+              <span>Masuk Sebagai Master Administrator</span>
             </button>
             <Link
               href="/"
-              className="w-full flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 px-6 py-2.5 text-xs font-bold text-slate-700 transition-colors"
+              className="w-full flex items-center justify-center gap-2 rounded-2xl border border-slate-800 bg-slate-800/60 hover:bg-slate-800 px-6 py-3 text-xs font-bold text-slate-300 transition-colors"
             >
-              Kembali ke Beranda
+              <ArrowRight className="h-3.5 w-3.5 rotate-180" />
+              <span>Kembali ke Marketplace Publik</span>
             </Link>
           </div>
         </div>
@@ -198,577 +207,665 @@ export default function AdminPortalPage() {
     );
   }
 
+  const navItems = [
+    {
+      id: 'overview',
+      label: 'Ringkasan & Brankas',
+      icon: Activity,
+      badge: null
+    },
+    {
+      id: 'disputes',
+      label: 'Pusat Mediasi Sengketa',
+      icon: AlertTriangle,
+      badge: disputes.length > 0 ? `${disputes.length}` : null,
+      badgeColor: 'bg-rose-500 text-white'
+    },
+    {
+      id: 'kyc',
+      label: 'Verifikasi KYC KTP',
+      icon: UserCheck,
+      badge: kycQueue.filter((u) => !u.isKycVerified).length > 0 ? `${kycQueue.filter((u) => !u.isKycVerified).length}` : null,
+      badgeColor: 'bg-amber-500 text-slate-950 font-black'
+    },
+    {
+      id: 'payouts',
+      label: 'Pencairan Bank Penjual',
+      icon: CreditCard,
+      badge: null
+    },
+    {
+      id: 'listings',
+      label: 'Moderasi Iklan & Katalog',
+      icon: Package,
+      badge: `${listings.length}`
+    }
+  ];
+
   return (
-    <div className="bg-slate-50 py-3 sm:py-6 px-3.5 sm:px-6 lg:px-8 pb-6 sm:pb-8">
-      <div className="mx-auto max-w-7xl space-y-4 sm:space-y-6">
-        {/* Breadcrumb & Demo Switcher Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 pb-3">
-          <div>
-            <Breadcrumbs items={[{ label: 'Portal Admin Rekber' }]} />
-            <h1 className="text-base sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2 mt-1">
-              <ShieldAlert className="h-5 w-5 text-brand-600 shrink-0" />
-              <span>Back-Office & Escrow Resolution Center</span>
-            </h1>
-            <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
-              Pusat kendali mediasi sengketa transaksi, persetujuan KYC KTP, dan pemantauan brankas Rekber.
-            </p>
-          </div>
-
-          {/* Quick Role Switcher */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-[10px] font-bold text-slate-400">Mode Switcher:</span>
-            <button
-              onClick={loginAsDemoAdmin}
-              className="rounded-full bg-slate-900 text-white px-2.5 py-1 text-[10px] font-bold shadow-xs cursor-pointer"
-            >
-              👑 Admin (Aktif)
-            </button>
-            <button
-              onClick={loginAsDemoSeller}
-              className="rounded-full bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 px-2.5 py-1 text-[10px] font-bold cursor-pointer"
-            >
-              Penjual (Budi)
-            </button>
-            <button
-              onClick={loginAsDemoBuyer}
-              className="rounded-full bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 px-2.5 py-1 text-[10px] font-bold cursor-pointer"
-            >
-              Pembeli (Dimas)
-            </button>
-          </div>
-        </div>
-
-        {/* 4 Key Financial & Operational Metric Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <div className="rounded-3xl border border-brand-200 bg-white p-4 sm:p-5 shadow-xs space-y-1 relative overflow-hidden">
-            <div className="flex items-center justify-between text-slate-400 text-[10px] sm:text-xs font-bold">
-              <span>Saldo Escrow Ditahan</span>
-              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            </div>
-            <p className="text-base sm:text-2xl font-black text-brand-700">
-              {formatIDR(stats.escrowHoldingTotal)}
-            </p>
-            <span className="text-[10px] text-slate-500 font-medium block">
-              Dana aman dalam perlindungan Rekber
-            </span>
-          </div>
-
-          <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs space-y-1">
-            <span className="text-slate-400 text-[10px] sm:text-xs font-bold block">
-              Total Pencairan Sukses
-            </span>
-            <p className="text-base sm:text-2xl font-black text-slate-900">
-              {formatIDR(stats.completedPayoutTotal)}
-            </p>
-            <span className="text-[10px] text-emerald-600 font-bold block">
-              ✓ Telah ditransfer ke rekening penjual
-            </span>
-          </div>
-
-          <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs space-y-1">
-            <div className="flex items-center justify-between text-slate-400 text-[10px] sm:text-xs font-bold">
-              <span>Sengketa / Komplain</span>
-              {stats.activeDisputesCount > 0 && (
-                <span className="rounded-full bg-rose-100 text-rose-800 text-[9px] font-black px-1.5 py-0.2">
-                  {stats.activeDisputesCount} Kasus
-                </span>
-              )}
-            </div>
-            <p className="text-base sm:text-2xl font-black text-rose-600">
-              {stats.activeDisputesCount} Pesanan
-            </p>
-            <span className="text-[10px] text-slate-500 font-medium block">
-              Butuh investigasi & putusan mediasi
-            </span>
-          </div>
-
-          <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs space-y-1">
-            <span className="text-slate-400 text-[10px] sm:text-xs font-bold block">
-              Antrean Verifikasi KYC
-            </span>
-            <p className="text-base sm:text-2xl font-black text-amber-600">
-              {stats.pendingKycCount} Akun
-            </p>
-            <span className="text-[10px] text-slate-500 font-medium block">
-              Menunggu validasi KTP & NIK
-            </span>
-          </div>
-        </div>
-
-        {/* Tab Selection */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar">
-          <button
-            type="button"
-            onClick={() => setActiveTab('overview')}
-            className={`flex items-center gap-1.5 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all shrink-0 cursor-pointer ${
-              activeTab === 'overview'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
-            }`}
-          >
-            <Activity className="h-3.5 w-3.5 text-brand-500" />
-            <span>1. Ringkasan & Brankas Escrow</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab('disputes')}
-            className={`flex items-center gap-1.5 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all shrink-0 cursor-pointer relative ${
-              activeTab === 'disputes'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
-            }`}
-          >
-            <AlertTriangle className="h-3.5 w-3.5 text-rose-500" />
-            <span>2. Pusat Mediasi Sengketa ({disputes.length})</span>
-            {disputes.length > 0 && (
-              <span className="h-2 w-2 rounded-full bg-rose-500 animate-ping absolute top-1 right-1" />
-            )}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab('kyc')}
-            className={`flex items-center gap-1.5 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all shrink-0 cursor-pointer ${
-              activeTab === 'kyc'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
-            }`}
-          >
-            <UserCheck className="h-3.5 w-3.5 text-amber-500" />
-            <span>3. Moderasi KYC KTP ({kycQueue.filter((u) => !u.isKycVerified).length})</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab('payouts')}
-            className={`flex items-center gap-1.5 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all shrink-0 cursor-pointer ${
-              activeTab === 'payouts'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
-            }`}
-          >
-            <CreditCard className="h-3.5 w-3.5 text-emerald-500" />
-            <span>4. Riwayat Pencairan Bank ({payouts.length})</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab('listings')}
-            className={`flex items-center gap-1.5 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all shrink-0 cursor-pointer ${
-              activeTab === 'listings'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
-            }`}
-          >
-            <Package className="h-3.5 w-3.5 text-blue-500" />
-            <span>5. Moderasi Iklan ({listings.length})</span>
-          </button>
-        </div>
-
-        {/* Tab 1: Overview & Escrow Vault */}
-        {activeTab === 'overview' && (
-          <div className="space-y-4 sm:space-y-6">
-            <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <div>
-                  <h3 className="text-sm sm:text-base font-black text-slate-900">Arsitektur Perlindungan Rekber JBB</h3>
-                  <p className="text-[11px] sm:text-xs text-slate-500 font-medium">Status operasional gerbang escrow dan sistem perlindungan 48 jam.</p>
-                </div>
-                <span className="rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 text-xs font-bold flex items-center gap-1">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>Escrow Gateway 100% Online</span>
-                </span>
+    <div className="min-h-screen bg-slate-100 flex flex-col lg:flex-row antialiased text-slate-900">
+      {/* 1. STANDALONE ADMIN SIDEBAR (Desktop & Mobile Drawer) */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-slate-950 text-slate-300 flex flex-col justify-between border-r border-slate-800/80 transition-transform duration-300 lg:translate-x-0 ${
+          isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <div className="p-5 space-y-6">
+          {/* Brand Logo & Back-Office Badge */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-600 text-white font-black shadow-md shadow-brand-600/30">
+                <ShieldCheck className="h-6 w-6" />
               </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200/80 space-y-2">
-                  <div className="flex items-center gap-2 font-bold text-slate-800">
-                    <Building className="h-4 w-4 text-brand-600" />
-                    <span>Rekening Penampung Rekber</span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
-                    Dana pembeli dienkripsi dan ditampung di Escrow Pool Bank Central Asia (BCA) & Virtual Account Mandiri.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200/80 space-y-2">
-                  <div className="flex items-center gap-2 font-bold text-slate-800">
-                    <ShieldCheck className="h-4 w-4 text-brand-600" />
-                    <span>Garansi Inspeksi 48 Jam</span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
-                    Timer otomatis menghitung mundur setelah pembeli menerima paket. Dana terkunci rapat jika ada komplain.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200/80 space-y-2">
-                  <div className="flex items-center gap-2 font-bold text-slate-800">
-                    <CreditCard className="h-4 w-4 text-brand-600" />
-                    <span>Pencairan Otomatis (Settlement)</span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
-                    Setelah 48 jam tanpa sengketa, sistem langsung mengirim instruksi transfer ke rekening bank terdaftar penjual.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Tab 2: Dispute Resolution Center */}
-        {activeTab === 'disputes' && (
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs space-y-5">
-            <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
               <div>
-                <h3 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4 text-rose-600" />
-                  <span>Pusat Mediasi Sengketa Transaksi ({disputes.length} Kasus)</span>
-                </h3>
-                <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
-                  Tinjau bukti unboxing dan klaim pembeli untuk memutuskan arah pengembalian dana atau pencairan.
-                </p>
+                <span className="font-black text-sm text-white tracking-wider block">JBB.ADMIN</span>
+                <span className="text-[10px] text-brand-400 font-bold uppercase tracking-wider block">
+                  Escrow Control Center
+                </span>
               </div>
             </div>
 
-            {disputes.length === 0 ? (
-              <div className="py-12 text-center space-y-2">
-                <CheckCircle2 className="h-10 w-10 text-emerald-500 mx-auto" />
-                <h4 className="text-sm font-bold text-slate-800">Tidak Ada Sengketa Aktif</h4>
-                <p className="text-xs text-slate-400">Semua transaksi berjalan lancar tanpa perselisihan.</p>
+            <button
+              onClick={() => setIsMobileSidebarOpen(false)}
+              className="lg:hidden p-1.5 rounded-xl bg-slate-900 text-slate-400 hover:text-white"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Navigation Menu Items */}
+          <nav className="space-y-1 text-xs">
+            <span className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
+              Modul Operasional
+            </span>
+
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
+
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setActiveTab(item.id as any);
+                    setIsMobileSidebarOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-2xl font-bold transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-brand-600 text-white shadow-md shadow-brand-600/25'
+                      : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Icon className={`h-4 w-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                    <span>{item.label}</span>
+                  </div>
+
+                  {item.badge && (
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                        item.badgeColor || 'bg-slate-800 text-slate-300'
+                      }`}
+                    >
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Sidebar Bottom: Role Switcher & Back to Marketplace */}
+        <div className="p-5 border-t border-slate-800/80 space-y-3 bg-slate-950/50">
+          <div className="space-y-1.5">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+              Quick Role Switcher:
+            </span>
+            <div className="grid grid-cols-3 gap-1 text-[10px] font-bold">
+              <button
+                onClick={loginAsDemoAdmin}
+                className="bg-brand-600 text-white py-1.5 rounded-xl text-center cursor-pointer shadow-xs"
+              >
+                👑 Admin
+              </button>
+              <button
+                onClick={loginAsDemoSeller}
+                className="bg-slate-900 hover:bg-slate-800 text-slate-300 py-1.5 rounded-xl text-center cursor-pointer"
+              >
+                🛍️ Penjual
+              </button>
+              <button
+                onClick={loginAsDemoBuyer}
+                className="bg-slate-900 hover:bg-slate-800 text-slate-300 py-1.5 rounded-xl text-center cursor-pointer"
+              >
+                🛒 Pembeli
+              </button>
+            </div>
+          </div>
+
+          <Link
+            href="/"
+            className="flex items-center justify-between w-full px-3 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-850 text-xs font-bold text-slate-300 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <Home className="h-4 w-4 text-slate-400" />
+              <span>Buka Marketplace Publik</span>
+            </div>
+            <ExternalLink className="h-3.5 w-3.5 text-slate-500" />
+          </Link>
+        </div>
+      </aside>
+
+      {/* Backdrop for Mobile Sidebar */}
+      {isMobileSidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs lg:hidden"
+          onClick={() => setIsMobileSidebarOpen(false)}
+        />
+      )}
+
+      {/* 2. MAIN CONTENT AREA */}
+      <div className="flex-1 lg:pl-72 flex flex-col min-w-0">
+        {/* Topbar Admin Header */}
+        <header className="sticky top-0 z-30 h-16 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 sm:px-8 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsMobileSidebarOpen(true)}
+              className="lg:hidden p-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+
+            <div>
+              <h2 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
+                <span>{navItems.find((n) => n.id === activeTab)?.label}</span>
+              </h2>
+            </div>
+          </div>
+
+          {/* System Status & Admin Profile */}
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-[11px] font-bold text-emerald-800">
+              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Escrow Vault Engine: Active</span>
+            </div>
+
+            <div className="flex items-center gap-2.5 pl-2 border-l border-slate-200">
+              <div className="text-right hidden sm:block">
+                <span className="text-xs font-black text-slate-900 block">{user.name}</span>
+                <span className="text-[10px] font-extrabold text-brand-600 uppercase tracking-wider block">
+                  Master Admin
+                </span>
               </div>
-            ) : (
-              <div className="space-y-4">
-                {disputes.map((d: any) => (
-                  <div
-                    key={d.id}
-                    className="rounded-2xl border-2 border-rose-200 bg-rose-50/30 p-4 sm:p-5 space-y-4 transition-all"
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-rose-200/80 pb-3">
-                      <div>
-                        <span className="text-[10px] font-black uppercase tracking-wider text-rose-700 bg-rose-100 px-2 py-0.5 rounded-full border border-rose-200">
-                          {d.orderNumber}
-                        </span>
-                        <h4 className="font-bold text-sm text-slate-900 mt-1">
-                          {d.listing?.title || 'Barang Sengketa'}
-                        </h4>
-                      </div>
-                      <span className="text-base font-black text-brand-700">
-                        {formatIDR(d.totalAmount || d.itemPrice)}
-                      </span>
+              <img
+                src={user.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
+                alt={user.name}
+                className="h-9 w-9 rounded-xl object-cover ring-2 ring-brand-500/20"
+              />
+            </div>
+          </div>
+        </header>
+
+        {/* Dashboard Workspace */}
+        <main className="p-4 sm:p-8 space-y-6 max-w-7xl w-full mx-auto">
+          {/* Key Metric Cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+            <div className="rounded-3xl border border-brand-200 bg-white p-4 sm:p-6 shadow-xs space-y-1.5 relative overflow-hidden">
+              <div className="flex items-center justify-between text-slate-400 text-[10px] sm:text-xs font-bold">
+                <span>Dana Ditahan Rekber</span>
+                <div className="h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
+              </div>
+              <p className="text-base sm:text-2xl font-black text-brand-700">
+                {formatIDR(stats.escrowHoldingTotal)}
+              </p>
+              <span className="text-[10px] text-slate-500 font-medium block">
+                Dana aman dalam perlindungan Rekber JBB
+              </span>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-1.5">
+              <span className="text-slate-400 text-[10px] sm:text-xs font-bold block">
+                Total Pencairan Selesai
+              </span>
+              <p className="text-base sm:text-2xl font-black text-slate-900">
+                {formatIDR(stats.completedPayoutTotal)}
+              </p>
+              <span className="text-[10px] text-emerald-600 font-bold block">
+                ✓ Telah ditransfer ke rekening penjual
+              </span>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-1.5">
+              <div className="flex items-center justify-between text-slate-400 text-[10px] sm:text-xs font-bold">
+                <span>Sengketa / Komplain</span>
+                {stats.activeDisputesCount > 0 && (
+                  <span className="rounded-full bg-rose-100 text-rose-800 text-[9px] font-black px-1.5 py-0.2">
+                    {stats.activeDisputesCount} Kasus
+                  </span>
+                )}
+              </div>
+              <p className="text-base sm:text-2xl font-black text-rose-600">
+                {stats.activeDisputesCount} Pesanan
+              </p>
+              <span className="text-[10px] text-slate-500 font-medium block">
+                Butuh investigasi & putusan mediasi
+              </span>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-1.5">
+              <span className="text-slate-400 text-[10px] sm:text-xs font-bold block">
+                Antrean Verifikasi KYC
+              </span>
+              <p className="text-base sm:text-2xl font-black text-amber-600">
+                {stats.pendingKycCount} Akun
+              </p>
+              <span className="text-[10px] text-slate-500 font-medium block">
+                Menunggu validasi KTP & NIK
+              </span>
+            </div>
+          </div>
+
+          {/* TAB CONTENT MODULES */}
+          {activeTab === 'overview' && (
+            <div className="space-y-5">
+              <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
+                  <div>
+                    <h3 className="text-sm sm:text-base font-black text-slate-900">Arsitektur Perlindungan Rekber JBB</h3>
+                    <p className="text-[11px] sm:text-xs text-slate-500 font-medium">Status operasional gerbang escrow dan sistem perlindungan 48 jam.</p>
+                  </div>
+                  <span className="rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 text-xs font-bold flex items-center gap-1">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                    <span>Escrow Gateway 100% Online</span>
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                  <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200/80 space-y-2">
+                    <div className="flex items-center gap-2 font-bold text-slate-800">
+                      <Building className="h-4 w-4 text-brand-600" />
+                      <span>Rekening Penampung Rekber</span>
                     </div>
+                    <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                      Dana pembeli dienkripsi dan ditampung di Escrow Pool Bank Central Asia (BCA) & Virtual Account Mandiri.
+                    </p>
+                  </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                      {/* Buyer claim & reason */}
-                      <div className="rounded-xl bg-white p-3.5 border border-rose-200 space-y-2 shadow-2xs">
-                        <span className="font-bold text-rose-900 block flex items-center gap-1.5">
-                          <User className="h-3.5 w-3.5 text-rose-600" />
-                          <span>Klaim & Alasan Komplain Pembeli ({d.buyer?.name}):</span>
+                  <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200/80 space-y-2">
+                    <div className="flex items-center gap-2 font-bold text-slate-800">
+                      <ShieldCheck className="h-4 w-4 text-brand-600" />
+                      <span>Garansi Inspeksi 48 Jam</span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                      Timer otomatis menghitung mundur setelah pembeli menerima paket. Dana terkunci rapat jika ada komplain.
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200/80 space-y-2">
+                    <div className="flex items-center gap-2 font-bold text-slate-800">
+                      <CreditCard className="h-4 w-4 text-brand-600" />
+                      <span>Pencairan Otomatis (Settlement)</span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                      Setelah 48 jam tanpa sengketa, sistem langsung mengirim instruksi transfer ke rekening bank terdaftar penjual.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'disputes' && (
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs space-y-5">
+              <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-rose-600" />
+                    <span>Pusat Mediasi Sengketa Transaksi ({disputes.length} Kasus)</span>
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
+                    Tinjau bukti unboxing dan klaim pembeli untuk memutuskan arah pengembalian dana atau pencairan.
+                  </p>
+                </div>
+              </div>
+
+              {disputes.length === 0 ? (
+                <div className="py-12 text-center space-y-2">
+                  <CheckCircle2 className="h-10 w-10 text-emerald-500 mx-auto" />
+                  <h4 className="text-sm font-bold text-slate-800">Tidak Ada Sengketa Aktif</h4>
+                  <p className="text-xs text-slate-400">Semua transaksi berjalan lancar tanpa perselisihan.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {disputes.map((d: any) => (
+                    <div
+                      key={d.id}
+                      className="rounded-2xl border-2 border-rose-200 bg-rose-50/30 p-4 sm:p-5 space-y-4 transition-all"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-rose-200/80 pb-3">
+                        <div>
+                          <span className="text-[10px] font-black uppercase tracking-wider text-rose-700 bg-rose-100 px-2 py-0.5 rounded-full border border-rose-200">
+                            {d.orderNumber}
+                          </span>
+                          <h4 className="font-bold text-sm text-slate-900 mt-1">
+                            {d.listing?.title || 'Barang Sengketa'}
+                          </h4>
+                        </div>
+                        <span className="text-base font-black text-brand-700">
+                          {formatIDR(d.totalAmount || d.amount || 16560000)}
                         </span>
-                        <p className="text-slate-800 leading-relaxed font-medium bg-rose-50/50 p-2.5 rounded-lg border border-rose-100">
-                          "{d.disputeReason || 'Barang tidak sesuai dengan foto dan deskripsi yang dicantumkan penjual.'}"
-                        </p>
-
-                        {/* Evidence Photos */}
-                        {d.disputeEvidenceUrls && d.disputeEvidenceUrls.length > 0 && (
-                          <div className="space-y-1 pt-1">
-                            <span className="text-[10px] font-bold text-slate-500 block">Foto Bukti Kerusakan:</span>
-                            <div className="flex gap-2 flex-wrap">
-                              {d.disputeEvidenceUrls.map((imgUrl: string, idx: number) => (
-                                <img
-                                  key={idx}
-                                  src={imgUrl}
-                                  alt="Evidence"
-                                  onClick={() => setPreviewImageUrl(imgUrl)}
-                                  className="h-16 w-16 rounded-lg object-cover border border-slate-200 cursor-pointer hover:scale-105 transition-transform"
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        )}
                       </div>
 
-                      {/* Seller & Payout Details */}
-                      <div className="rounded-xl bg-white p-3.5 border border-slate-200 space-y-2 shadow-2xs">
-                        <span className="font-bold text-slate-900 block flex items-center gap-1.5">
-                          <Building className="h-3.5 w-3.5 text-brand-600" />
-                          <span>Informasi Penjual ({d.seller?.name}):</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                        {/* Buyer claim & reason */}
+                        <div className="rounded-xl bg-white p-3.5 border border-rose-200 space-y-2 shadow-2xs">
+                          <span className="font-bold text-rose-900 block flex items-center gap-1.5">
+                            <User className="h-3.5 w-3.5 text-rose-600" />
+                            <span>Klaim & Alasan Komplain Pembeli ({d.buyer?.name}):</span>
+                          </span>
+                          <p className="text-slate-800 leading-relaxed font-medium bg-rose-50/50 p-2.5 rounded-lg border border-rose-100">
+                            "{d.disputeReason || 'Barang tidak sesuai dengan foto dan deskripsi yang dicantumkan penjual.'}"
+                          </p>
+
+                          {/* Evidence Photos */}
+                          {d.disputeEvidenceUrls && d.disputeEvidenceUrls.length > 0 && (
+                            <div className="space-y-1 pt-1">
+                              <span className="text-[10px] font-bold text-slate-500 block">Foto Bukti Kerusakan:</span>
+                              <div className="flex gap-2 flex-wrap">
+                                {d.disputeEvidenceUrls.map((imgUrl: string, idx: number) => (
+                                  <img
+                                    key={idx}
+                                    src={imgUrl}
+                                    alt="Evidence"
+                                    onClick={() => setPreviewImageUrl(imgUrl)}
+                                    className="h-16 w-16 rounded-lg object-cover border border-slate-200 cursor-pointer hover:scale-105 transition-transform"
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Seller & Payout Details */}
+                        <div className="rounded-xl bg-white p-3.5 border border-slate-200 space-y-2 shadow-2xs">
+                          <span className="font-bold text-slate-900 block flex items-center gap-1.5">
+                            <Building className="h-3.5 w-3.5 text-brand-600" />
+                            <span>Informasi Penjual ({d.seller?.name}):</span>
+                          </span>
+                          <div className="space-y-1 text-slate-600">
+                            <p>WhatsApp: <strong>{d.seller?.phone || '081987654321'}</strong></p>
+                            <p>Rekening Tujuan: <strong>{d.seller?.bankName || 'BCA'} - {d.seller?.bankAccountNumber || '8271029384'}</strong></p>
+                            <p>Kurir / Resi: <strong>{d.courierName || 'JNE'} ({d.trackingNumber || 'JNE-882910293'})</strong></p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Admin Action Bar */}
+                      <div className="rounded-xl bg-white p-3.5 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <span className="text-xs font-bold text-slate-700">
+                          Eksekusi Putusan Mediasi Admin:
                         </span>
-                        <div className="space-y-1 text-slate-600">
-                          <p>WhatsApp: <strong>{d.seller?.phone || '081987654321'}</strong></p>
-                          <p>Rekening Tujuan: <strong>{d.seller?.bankName || 'BCA'} - {d.seller?.bankAccountNumber || '8271029384'}</strong></p>
-                          <p>Kurir / Resi: <strong>{d.courierName || 'JNE'} ({d.trackingNumber || 'JNE-882910293'})</strong></p>
+                        <div className="flex items-center gap-2 w-full sm:w-auto">
+                          <button
+                            type="button"
+                            disabled={isProcessingAction}
+                            onClick={() => handleResolveDispute(d.id, 'REFUND_BUYER')}
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 rounded-full bg-rose-600 hover:bg-rose-700 px-4 py-2 text-xs font-bold text-white shadow-xs cursor-pointer disabled:opacity-50"
+                          >
+                            <RefreshCw className="h-3.5 w-3.5" />
+                            <span>🔄 Refund Penuh ke Pembeli</span>
+                          </button>
+                          <button
+                            type="button"
+                            disabled={isProcessingAction}
+                            onClick={() => handleResolveDispute(d.id, 'RELEASE_TO_SELLER')}
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-xs cursor-pointer disabled:opacity-50"
+                          >
+                            <Check className="h-3.5 w-3.5" />
+                            <span>💰 Cairkan Dana ke Penjual</span>
+                          </button>
                         </div>
                       </div>
                     </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
-                    {/* Admin Action Bar */}
-                    <div className="rounded-xl bg-white p-3.5 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
-                      <span className="text-xs font-bold text-slate-700">
-                        Eksekusi Putusan Mediasi Admin:
-                      </span>
-                      <div className="flex items-center gap-2 w-full sm:w-auto">
-                        <button
-                          type="button"
-                          disabled={isProcessingAction}
-                          onClick={() => handleResolveDispute(d.id, 'REFUND_BUYER')}
-                          className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 rounded-full bg-rose-600 hover:bg-rose-700 px-4 py-2 text-xs font-bold text-white shadow-xs cursor-pointer disabled:opacity-50"
+          {activeTab === 'kyc' && (
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs space-y-5">
+              <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
+                    <UserCheck className="h-4 w-4 text-amber-600" />
+                    <span>Daftar Pengajuan Verifikasi KYC KTP</span>
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
+                    Validasi kesesuaian NIK, foto KTP, dan foto selfie pengguna sebelum memberikan lencana resmi.
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {kycQueue.map((u: any) => (
+                  <div
+                    key={u.id}
+                    className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="relative shrink-0">
+                        <img
+                          src={u.selfieImageUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
+                          alt={u.name}
+                          className="h-12 w-12 rounded-2xl object-cover border border-slate-200"
+                        />
+                        {u.isKycVerified && (
+                          <BadgeCheck className="h-4 w-4 text-brand-600 fill-brand-100 absolute -bottom-1 -right-1" />
+                        )}
+                      </div>
+
+                      <div className="space-y-0.5 min-w-0 text-xs">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-slate-900 text-sm truncate">{u.name}</span>
+                          {u.isKycVerified ? (
+                            <span className="rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 px-2 py-0.2 text-[9px] font-bold">
+                              ✓ Terverifikasi
+                            </span>
+                          ) : (
+                            <span className="rounded-full bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.2 text-[9px] font-bold">
+                              Menunggu Persetujuan
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-slate-500 font-mono text-[11px]">NIK: {u.nik || '3174092801950001'}</p>
+                        <p className="text-slate-400 text-[10px]">Email: {u.email} &bull; WA: {u.phone || '-'}</p>
+                      </div>
+                    </div>
+
+                    {/* KTP Image Preview & Actions */}
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <div className="flex items-center gap-2">
+                        <div
+                          onClick={() => setPreviewImageUrl(u.ktpImageUrl)}
+                          className="relative h-12 w-20 rounded-xl overflow-hidden border border-slate-300 bg-white cursor-pointer hover:ring-2 hover:ring-brand-500 transition-all"
+                          title="Klik untuk perbesar KTP"
                         >
-                          <RefreshCw className="h-3.5 w-3.5" />
-                          <span>🔄 Refund Penuh ke Pembeli</span>
-                        </button>
-                        <button
-                          type="button"
-                          disabled={isProcessingAction}
-                          onClick={() => handleResolveDispute(d.id, 'RELEASE_TO_SELLER')}
-                          className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-xs cursor-pointer disabled:opacity-50"
+                          <img src={u.ktpImageUrl} alt="KTP" className="h-full w-full object-cover" />
+                          <span className="absolute bottom-0 inset-x-0 bg-slate-900/80 text-white text-[8px] text-center font-bold">
+                            Foto KTP
+                          </span>
+                        </div>
+
+                        <div
+                          onClick={() => setPreviewImageUrl(u.selfieImageUrl)}
+                          className="relative h-12 w-12 rounded-xl overflow-hidden border border-slate-300 bg-white cursor-pointer hover:ring-2 hover:ring-brand-500 transition-all"
+                          title="Klik untuk perbesar Selfie"
                         >
-                          <Check className="h-3.5 w-3.5" />
-                          <span>💰 Cairkan Dana ke Penjual</span>
-                        </button>
+                          <img src={u.selfieImageUrl} alt="Selfie" className="h-full w-full object-cover" />
+                          <span className="absolute bottom-0 inset-x-0 bg-slate-900/80 text-white text-[8px] text-center font-bold">
+                            Selfie
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5">
+                        {!u.isKycVerified ? (
+                          <>
+                            <button
+                              type="button"
+                              disabled={isProcessingAction}
+                              onClick={() => handleApproveKyc(u.id)}
+                              className="flex items-center gap-1 rounded-full bg-emerald-600 hover:bg-emerald-700 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs cursor-pointer disabled:opacity-50"
+                            >
+                              <Check className="h-3.5 w-3.5" />
+                              <span>Setujui (Approve)</span>
+                            </button>
+                            <button
+                              type="button"
+                              disabled={isProcessingAction}
+                              onClick={() => handleRejectKyc(u.id)}
+                              className="flex items-center gap-1 rounded-full bg-slate-200 hover:bg-rose-50 hover:text-rose-700 px-3 py-1.5 text-xs font-bold text-slate-700 cursor-pointer disabled:opacity-50"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                              <span>Tolak</span>
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            type="button"
+                            disabled={isProcessingAction}
+                            onClick={() => handleRejectKyc(u.id)}
+                            className="rounded-xl border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-slate-600 hover:text-rose-600 cursor-pointer"
+                          >
+                            Cabut Verifikasi
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
-            )}
-          </div>
-        )}
-
-        {/* Tab 3: KYC Moderation Queue */}
-        {activeTab === 'kyc' && (
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs space-y-5">
-            <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
-              <div>
-                <h3 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
-                  <UserCheck className="h-4 w-4 text-amber-600" />
-                  <span>Daftar Pengajuan Verifikasi KYC KTP</span>
-                </h3>
-                <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
-                  Validasi kesesuaian NIK, foto KTP, dan foto selfie pengguna sebelum memberikan lencana resmi.
-                </p>
-              </div>
             </div>
+          )}
 
-            <div className="space-y-3">
-              {kycQueue.map((u: any) => (
-                <div
-                  key={u.id}
-                  className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="relative shrink-0">
-                      <img
-                        src={u.selfieImageUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
-                        alt={u.name}
-                        className="h-12 w-12 rounded-2xl object-cover border border-slate-200"
-                      />
-                      {u.isKycVerified && (
-                        <BadgeCheck className="h-4 w-4 text-brand-600 fill-brand-100 absolute -bottom-1 -right-1" />
-                      )}
-                    </div>
-
-                    <div className="space-y-0.5 min-w-0 text-xs">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-slate-900 text-sm truncate">{u.name}</span>
-                        {u.isKycVerified ? (
-                          <span className="rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 px-2 py-0.2 text-[9px] font-bold">
-                            ✓ Terverifikasi
-                          </span>
-                        ) : (
-                          <span className="rounded-full bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.2 text-[9px] font-bold">
-                            Menunggu Persetujuan
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-slate-500 font-mono text-[11px]">NIK: {u.nik || '3174092801950001'}</p>
-                      <p className="text-slate-400 text-[10px]">Email: {u.email} &bull; WA: {u.phone || '-'}</p>
-                    </div>
-                  </div>
-
-                  {/* KTP Image Preview & Actions */}
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <div className="flex items-center gap-2">
-                      <div
-                        onClick={() => setPreviewImageUrl(u.ktpImageUrl)}
-                        className="relative h-12 w-20 rounded-xl overflow-hidden border border-slate-300 bg-white cursor-pointer hover:ring-2 hover:ring-brand-500 transition-all"
-                        title="Klik untuk perbesar KTP"
-                      >
-                        <img src={u.ktpImageUrl} alt="KTP" className="h-full w-full object-cover" />
-                        <span className="absolute bottom-0 inset-x-0 bg-slate-900/80 text-white text-[8px] text-center font-bold">
-                          Foto KTP
-                        </span>
-                      </div>
-
-                      <div
-                        onClick={() => setPreviewImageUrl(u.selfieImageUrl)}
-                        className="relative h-12 w-12 rounded-xl overflow-hidden border border-slate-300 bg-white cursor-pointer hover:ring-2 hover:ring-brand-500 transition-all"
-                        title="Klik untuk perbesar Selfie"
-                      >
-                        <img src={u.selfieImageUrl} alt="Selfie" className="h-full w-full object-cover" />
-                        <span className="absolute bottom-0 inset-x-0 bg-slate-900/80 text-white text-[8px] text-center font-bold">
-                          Selfie
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-1.5">
-                      {!u.isKycVerified ? (
-                        <>
-                          <button
-                            type="button"
-                            disabled={isProcessingAction}
-                            onClick={() => handleApproveKyc(u.id)}
-                            className="flex items-center gap-1 rounded-full bg-emerald-600 hover:bg-emerald-700 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs cursor-pointer disabled:opacity-50"
-                          >
-                            <Check className="h-3.5 w-3.5" />
-                            <span>Setujui (Approve)</span>
-                          </button>
-                          <button
-                            type="button"
-                            disabled={isProcessingAction}
-                            onClick={() => handleRejectKyc(u.id)}
-                            className="flex items-center gap-1 rounded-full bg-slate-200 hover:bg-rose-50 hover:text-rose-700 px-3 py-1.5 text-xs font-bold text-slate-700 cursor-pointer disabled:opacity-50"
-                          >
-                            <X className="h-3.5 w-3.5" />
-                            <span>Tolak</span>
-                          </button>
-                        </>
-                      ) : (
-                        <button
-                          type="button"
-                          disabled={isProcessingAction}
-                          onClick={() => handleRejectKyc(u.id)}
-                          className="rounded-xl border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-slate-600 hover:text-rose-600 cursor-pointer"
-                        >
-                          Cabut Verifikasi
-                        </button>
-                      )}
-                    </div>
-                  </div>
+          {activeTab === 'payouts' && (
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs space-y-5">
+              <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
+                    <CreditCard className="h-4 w-4 text-emerald-600" />
+                    <span>Riwayat Transfer Pencairan Dana Rekber ke Penjual</span>
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
+                    Log transfer otomatis settlement ke rekening bank setelah 48 jam masa garansi selesai.
+                  </p>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Tab 4: Payouts History */}
-        {activeTab === 'payouts' && (
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs space-y-5">
-            <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
-              <div>
-                <h3 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
-                  <CreditCard className="h-4 w-4 text-emerald-600" />
-                  <span>Riwayat Transfer Pencairan Dana Rekber ke Penjual</span>
-                </h3>
-                <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
-                  Log transfer otomatis settlement ke rekening bank setelah 48 jam masa garansi selesai.
-                </p>
               </div>
-            </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead>
-                  <tr className="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    <th className="pb-2.5">No Pesanan & Barang</th>
-                    <th className="pb-2.5">Penjual</th>
-                    <th className="pb-2.5">Rekening Bank Tujuan</th>
-                    <th className="pb-2.5">Jumlah Dana</th>
-                    <th className="pb-2.5">Status Transfer</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                  {payouts.map((p: any) => (
-                    <tr key={p.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-3 pr-3">
-                        <span className="font-mono font-bold text-slate-900 block text-[11px]">{p.orderNumber}</span>
-                        <span className="text-slate-500 text-[11px] block truncate max-w-xs">{p.listingTitle}</span>
-                      </td>
-                      <td className="py-3 pr-3 font-bold text-slate-900">{p.sellerName}</td>
-                      <td className="py-3 pr-3">
-                        <span className="font-bold text-slate-900 block">{p.payoutBank}</span>
-                        <span className="font-mono text-slate-500 text-[11px] block">{p.payoutAccountNumber} (a.n {p.payoutAccountHolder})</span>
-                      </td>
-                      <td className="py-3 pr-3 font-black text-brand-700 text-sm">
-                        {formatIDR(p.amount)}
-                      </td>
-                      <td className="py-3">
-                        <span className="rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 px-2.5 py-0.5 text-[10px] font-bold inline-flex items-center gap-1">
-                          <Check className="h-3 w-3" />
-                          <span>Berhasil Ditransfer</span>
-                        </span>
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      <th className="pb-2.5">No Pesanan & Barang</th>
+                      <th className="pb-2.5">Penjual</th>
+                      <th className="pb-2.5">Rekening Bank Tujuan</th>
+                      <th className="pb-2.5">Jumlah Dana</th>
+                      <th className="pb-2.5">Status Transfer</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* Tab 5: Listings Moderation */}
-        {activeTab === 'listings' && (
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs space-y-5">
-            <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
-              <div>
-                <h3 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
-                  <Package className="h-4 w-4 text-blue-600" />
-                  <span>Manajemen & Moderasi Iklan Barang ({listings.length})</span>
-                </h3>
-                <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
-                  Takedown iklan yang melanggar aturan atau aktifkan kembali listing.
-                </p>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                    {payouts.map((p: any) => (
+                      <tr key={p.id} className="hover:bg-slate-50/80 transition-colors">
+                        <td className="py-3 pr-3">
+                          <span className="font-mono font-bold text-slate-900 block text-[11px]">{p.orderNumber}</span>
+                          <span className="text-slate-500 text-[11px] block truncate max-w-xs">{p.listingTitle}</span>
+                        </td>
+                        <td className="py-3 pr-3 font-bold text-slate-900">{p.sellerName}</td>
+                        <td className="py-3 pr-3">
+                          <span className="font-bold text-slate-900 block">{p.payoutBank}</span>
+                          <span className="font-mono text-slate-500 text-[11px] block">{p.payoutAccountNumber} (a.n {p.payoutAccountHolder})</span>
+                        </td>
+                        <td className="py-3 pr-3 font-black text-brand-700 text-sm">
+                          {formatIDR(p.amount)}
+                        </td>
+                        <td className="py-3">
+                          <span className="rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 px-2.5 py-0.5 text-[10px] font-bold inline-flex items-center gap-1">
+                            <Check className="h-3 w-3" />
+                            <span>Berhasil Ditransfer</span>
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
+          )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {listings.map((item: any) => (
-                <div
-                  key={item.id}
-                  className="rounded-2xl border border-slate-200/80 p-3.5 bg-white flex gap-3 items-center justify-between"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <img
-                      src={item.images?.[0]?.url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300&auto=format&fit=crop&q=80'}
-                      alt={item.title}
-                      className="h-14 w-14 rounded-xl object-cover border border-slate-100 shrink-0"
-                    />
-                    <div className="space-y-0.5 min-w-0 text-xs">
-                      <h4 className="font-bold text-slate-900 truncate">{item.title}</h4>
-                      <p className="font-black text-brand-700">{formatIDR(item.price)}</p>
-                      <span className="text-[10px] text-slate-400 block">
-                        Penjual: {item.seller?.name || 'User'} &bull; Status: <strong>{item.status}</strong>
-                      </span>
+          {activeTab === 'listings' && (
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs space-y-5">
+              <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
+                    <Package className="h-4 w-4 text-blue-600" />
+                    <span>Manajemen & Moderasi Iklan Barang ({listings.length})</span>
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
+                    Takedown iklan yang melanggar aturan atau aktifkan kembali listing.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {listings.map((item: any) => (
+                  <div
+                    key={item.id}
+                    className="rounded-2xl border border-slate-200/80 p-3.5 bg-white flex gap-3 items-center justify-between"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <img
+                        src={item.images?.[0]?.url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300&auto=format&fit=crop&q=80'}
+                        alt={item.title}
+                        className="h-14 w-14 rounded-xl object-cover border border-slate-100 shrink-0"
+                      />
+                      <div className="space-y-0.5 min-w-0 text-xs">
+                        <h4 className="font-bold text-slate-900 truncate">{item.title}</h4>
+                        <p className="font-black text-brand-700">{formatIDR(item.price)}</p>
+                        <span className="text-[10px] text-slate-400 block">
+                          Penjual: {item.seller?.name || 'User'} &bull; Status: <strong>{item.status}</strong>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Link
+                        href={`/listing/${item.slug || item.id}`}
+                        target="_blank"
+                        className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
+                        title="Lihat Iklan"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => handleToggleListingStatus(item.id, item.status)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
+                          item.status === 'ACTIVE'
+                            ? 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200'
+                            : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
+                        }`}
+                      >
+                        {item.status === 'ACTIVE' ? 'Takedown' : 'Aktifkan'}
+                      </button>
                     </div>
                   </div>
-
-                  <div className="flex items-center gap-2 shrink-0">
-                    <Link
-                      href={`/listing/${item.slug || item.id}`}
-                      target="_blank"
-                      className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
-                      title="Lihat Iklan"
-                    >
-                      <ExternalLink className="h-3.5 w-3.5" />
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => handleToggleListingStatus(item.id, item.status)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
-                        item.status === 'ACTIVE'
-                          ? 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200'
-                          : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
-                      }`}
-                    >
-                      {item.status === 'ACTIVE' ? 'Takedown' : 'Aktifkan'}
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </main>
       </div>
 
       {/* Fullscreen Image Preview Modal */}

@@ -1,8 +1,16 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ShieldCheck, Lock, RefreshCw, Zap, Heart } from 'lucide-react';
 
 export function Footer() {
+  const pathname = usePathname();
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <footer className="border-t border-slate-200 bg-white pt-6 sm:pt-10 pb-20 md:pb-12 text-slate-600">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">

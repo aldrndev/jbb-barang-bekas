@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import {
   Search,
   Plus,
@@ -21,10 +21,15 @@ import { useWishlist } from '../../context/wishlist-context';
 
 export function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, openAuthModal, logout } = useAuth();
   const { wishlistCount } = useWishlist();
   const [searchQuery, setSearchQuery] = useState('');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
