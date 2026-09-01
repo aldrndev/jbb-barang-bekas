@@ -31,14 +31,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // Navigation Items
   const navItems = [
     {
-      label: 'Ringkasan & Brankas',
+      label: 'Dashboard',
       href: '/admin',
       icon: LayoutDashboard,
       badge: null,
       isActive: pathname === '/admin'
     },
     {
-      label: 'Pusat Mediasi Sengketa',
+      label: 'Sengketa',
       href: '/admin/sengketa',
       icon: AlertTriangle,
       badge: '2 Kasus',
@@ -46,7 +46,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       isActive: pathname.startsWith('/admin/sengketa')
     },
     {
-      label: 'Verifikasi KYC KTP',
+      label: 'Verifikasi KYC',
       href: '/admin/kyc',
       icon: UserCheck,
       badge: '3 Baru',
@@ -54,14 +54,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       isActive: pathname.startsWith('/admin/kyc')
     },
     {
-      label: 'Pencairan Bank Penjual',
+      label: 'Pencairan Bank',
       href: '/admin/pencairan',
       icon: CreditCard,
       badge: null,
       isActive: pathname.startsWith('/admin/pencairan')
     },
     {
-      label: 'Moderasi Iklan & Katalog',
+      label: 'Moderasi Iklan',
       href: '/admin/moderasi',
       icon: Package,
       badge: null,
@@ -109,11 +109,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen bg-slate-50 flex">
       {/* 1. STANDALONE LIGHT SIDEBAR (DESKTOP) */}
-      <aside className="hidden lg:flex w-72 flex-col bg-white border-r border-slate-200 sticky top-0 h-screen z-40 shadow-xs">
+      <aside className="hidden lg:flex w-64 flex-col bg-white border-r border-slate-200 sticky top-0 h-screen z-40 shadow-xs">
         {/* Brand Header */}
-        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+        <div className="p-5 border-b border-slate-100 flex items-center justify-between">
           <Link href="/admin" className="flex items-center gap-2.5 group">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600 text-white font-black text-lg shadow-sm shadow-brand-600/25 group-hover:scale-105 transition-transform">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white font-black text-base shadow-sm shadow-brand-600/25 group-hover:scale-105 transition-transform">
               J
             </div>
             <div>
@@ -131,9 +131,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Navigation Menu */}
-        <div className="flex-1 overflow-y-auto px-4 py-5 space-y-1.5">
+        <div className="flex-1 overflow-y-auto px-3.5 py-5 space-y-1">
           <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 px-3 block mb-2">
-            Modul Operasional
+            Menu Utama
           </span>
 
           {navItems.map((item) => {
@@ -142,13 +142,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.href}
                 href={item.href}
-                className={`w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
                   item.isActive
                     ? 'bg-brand-50 text-brand-700 border border-brand-200/80 shadow-2xs'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
                 }`}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <Icon className={`h-4 w-4 ${item.isActive ? 'text-brand-600 font-bold' : 'text-slate-400'}`} />
                   <span>{item.label}</span>
                 </div>
@@ -162,47 +162,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </div>
 
-        {/* Bottom Switcher & User Profile */}
+        {/* Bottom User Profile & Navigation */}
         <div className="p-4 border-t border-slate-100 space-y-3 bg-slate-50/50">
-          {/* 1-Click Role Switcher */}
-          <div className="space-y-1.5">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block px-1">
-              Ganti Role Simulasi (Demo):
-            </span>
-            <div className="grid grid-cols-3 gap-1">
-              <button
-                type="button"
-                onClick={() => loginAsDemoAdmin()}
-                className={`py-1 px-1.5 rounded-lg text-[10px] font-black border transition-all cursor-pointer ${
-                  user.role === 'ADMIN'
-                    ? 'bg-brand-600 text-white border-brand-700 shadow-2xs'
-                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-                }`}
-              >
-                👑 Admin
-              </button>
-              <button
-                type="button"
-                onClick={() => loginAsDemoSeller()}
-                className={`py-1 px-1.5 rounded-lg text-[10px] font-black border transition-all cursor-pointer ${
-                  user.role === 'SELLER'
-                    ? 'bg-brand-600 text-white border-brand-700 shadow-2xs'
-                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-                }`}
-              >
-                🏪 Penjual
-              </button>
-              <button
-                type="button"
-                onClick={() => loginAsDemoBuyer()}
-                className={`py-1 px-1.5 rounded-lg text-[10px] font-black border transition-all cursor-pointer ${
-                  user.role === 'BUYER'
-                    ? 'bg-brand-600 text-white border-brand-700 shadow-2xs'
-                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-                }`}
-              >
-                🛒 Pembeli
-              </button>
+          <div className="flex items-center gap-2.5 px-1">
+            <img
+              src={user.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
+              alt={user.name}
+              className="h-8 w-8 rounded-xl object-cover ring-1 ring-slate-200 shrink-0"
+            />
+            <div className="min-w-0 flex-1">
+              <span className="text-xs font-black text-slate-900 truncate block">{user.name}</span>
+              <span className="text-[10px] font-bold text-brand-600 block">Master Admin</span>
             </div>
           </div>
 
@@ -212,7 +182,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               className="flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-brand-600 transition-colors"
             >
               <Store className="h-3.5 w-3.5" />
-              <span>Lihat Marketplace</span>
+              <span>Marketplace</span>
             </Link>
 
             <button
