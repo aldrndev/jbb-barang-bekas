@@ -25,15 +25,16 @@ import {
   Tag,
   ShieldCheck,
   Sparkles,
-  ShoppingBag
+  ShoppingBag,
+  TrendingUp,
+  Filter
 } from 'lucide-react';
 
 export default function MyListingsPage() {
-  const { user, openAuthModal } = useAuth();
+  const { user, openAuthModal, loginAsDemoSeller, loginAsDemoBuyer } = useAuth();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedStatusUpdatingId, setSelectedStatusUpdatingId] = useState<string | null>(null);
 
   const { data: myListings = [], isLoading, refetch } = useQuery({
     queryKey: ['my-listings'],
@@ -50,7 +51,7 @@ export default function MyListingsPage() {
   if (!user) {
     return (
       <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-        <div className="max-w-md w-full rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-xs space-y-4">
+        <div className="max-w-md w-full rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 text-center shadow-xs space-y-4">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-brand-50 text-brand-600 border border-brand-100">
             <Package className="h-8 w-8" />
           </div>
@@ -60,13 +61,22 @@ export default function MyListingsPage() {
               Pantau status iklan barang bekas Anda, tawaran nego masuk, dan statistik pengunjung.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={openAuthModal}
-            className="w-full rounded-full bg-brand-600 hover:bg-brand-700 py-3 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
-          >
-            Masuk / Daftar Akun
-          </button>
+          <div className="space-y-2 pt-2">
+            <button
+              type="button"
+              onClick={loginAsDemoSeller}
+              className="w-full rounded-full bg-brand-600 hover:bg-brand-700 py-3 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
+            >
+              Masuk Demo Penjual (Budi Santoso)
+            </button>
+            <button
+              type="button"
+              onClick={openAuthModal}
+              className="w-full rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 py-2.5 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
+            >
+              Masuk Akun Lain
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -100,7 +110,6 @@ export default function MyListingsPage() {
         queryClient.invalidateQueries({ queryKey: ['listing'] })
       ]);
       refetch();
-      setSelectedStatusUpdatingId(null);
     } else {
       alert(res.error?.message || 'Gagal mengubah status iklan');
     }
@@ -131,87 +140,117 @@ export default function MyListingsPage() {
     .reduce((acc, curr) => acc + (curr.price || 0), 0);
 
   return (
-    <div className="min-h-screen bg-slate-50 py-6 px-4 sm:px-6 lg:px-8 pb-24">
-      <div className="mx-auto max-w-6xl space-y-4">
-        {/* Breadcrumb Navigation */}
-        <Breadcrumbs
-          items={[
-            { label: 'Penjualan Saya', href: '/orders?role=seller' },
-            { label: 'Barang yang Dijual' }
-          ]}
-        />
+    <div className="bg-slate-50 py-3 sm:py-6 px-3.5 sm:px-6 lg:px-8 pb-6 sm:pb-8">
+      <div className="mx-auto max-w-5xl space-y-4 sm:space-y-5">
+        {/* Top Header Row: Breadcrumbs & Quick Role Switcher */}
+        <div className="flex items-center justify-between gap-2 min-w-0">
+          <Breadcrumbs
+            items={[
+              { label: 'Penjualan Saya', href: '/orders?role=seller' },
+              { label: 'Barang yang Dijual' }
+            ]}
+          />
 
-        {/* Main Dashboard Header Card */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3.5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 border border-brand-100 shadow-xs">
-                <Package className="h-6 w-6" />
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              type="button"
+              onClick={loginAsDemoSeller}
+              className={`rounded-full px-2.5 py-1 text-[10px] font-bold border transition-colors cursor-pointer ${
+                user?.role === 'SELLER'
+                  ? 'bg-brand-50 border-brand-300 text-brand-800'
+                  : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              Demo Penjual
+            </button>
+            <button
+              type="button"
+              onClick={loginAsDemoBuyer}
+              className={`rounded-full px-2.5 py-1 text-[10px] font-bold border transition-colors cursor-pointer ${
+                user?.role === 'BUYER'
+                  ? 'bg-brand-50 border-brand-300 text-brand-800'
+                  : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              Demo Pembeli
+            </button>
+          </div>
+        </div>
+
+        {/* 1. Main Dashboard Header & Metrics Card */}
+        <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-4">
+          {/* Header Title & CTA Actions */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 border border-brand-100 shadow-xs shrink-0">
+                <Package className="h-5 w-5" />
               </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                  Daftar Barang yang Dijual
+              <div className="min-w-0">
+                <h1 className="text-base sm:text-xl font-black text-slate-900 tracking-tight truncate">
+                  Barang yang Dijual ({myListings.length})
                 </h1>
-                <p className="text-xs text-slate-500 font-medium mt-0.5">
-                  Kelola inventaris iklan barang bekas Anda, pantau jumlah tawaran, dan tandai barang yang telah terjual
+                <p className="text-[11px] sm:text-xs text-slate-500 font-medium truncate">
+                  Kelola status barang dan pantau tawaran nego dari calon pembeli
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <Link
-                href="/orders"
-                className="flex items-center gap-1.5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100 px-4 py-2 text-xs font-bold text-slate-700 transition-colors"
+                href="/orders?role=seller"
+                className="flex items-center gap-1.5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 transition-colors"
               >
-                <ShoppingBag className="h-4 w-4 text-slate-500" />
-                <span>Riwayat Penjualan</span>
+                <ShoppingBag className="h-3.5 w-3.5 text-slate-500" />
+                <span className="hidden sm:inline">Riwayat Penjualan</span>
+                <span className="sm:hidden">Pesanan</span>
               </Link>
               <Link
                 href="/jual"
-                className="flex items-center gap-1.5 rounded-2xl bg-brand-600 hover:bg-brand-700 px-4.5 py-2 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
+                className="flex items-center gap-1 rounded-2xl bg-brand-600 hover:bg-brand-700 px-3.5 sm:px-4 py-2 text-xs font-bold text-white shadow-xs transition-colors cursor-pointer"
               >
-                <Plus className="h-4 w-4 stroke-3" />
-                <span>Pasang Iklan Baru</span>
+                <Plus className="h-3.5 w-3.5 stroke-3" />
+                <span>Pasang Iklan</span>
               </Link>
             </div>
           </div>
 
-          {/* Quick Metrics Bar */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-slate-200">
-            <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200">
-              <span className="text-[11px] font-bold text-slate-400 block">Iklan Aktif</span>
-              <span className="text-xl font-black text-slate-900 mt-1 block">{totalActive} Barang</span>
+          {/* Quick Metrics Bar (Mobile-Friendly 4 Grid) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 pt-3 border-t border-slate-100">
+            <div className="rounded-2xl bg-slate-50 p-2.5 sm:p-3 border border-slate-200/80">
+              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Iklan Aktif</span>
+              <span className="text-base sm:text-lg font-black text-slate-900 mt-0.5 block">{totalActive} Barang</span>
             </div>
-            <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200">
-              <span className="text-[11px] font-bold text-slate-400 block">Total Dilihat Calon Pembeli</span>
-              <span className="text-xl font-black text-brand-700 mt-1 block">{totalViews.toLocaleString('id-ID')}x</span>
+            <div className="rounded-2xl bg-slate-50 p-2.5 sm:p-3 border border-slate-200/80">
+              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Dilihat Pembeli</span>
+              <span className="text-base sm:text-lg font-black text-brand-700 mt-0.5 block">{totalViews.toLocaleString('id-ID')}x</span>
             </div>
-            <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200">
-              <span className="text-[11px] font-bold text-slate-400 block">Tawaran Masuk</span>
-              <span className="text-xl font-black text-amber-600 mt-1 block">{totalOffers} Tawaran</span>
+            <div className="rounded-2xl bg-slate-50 p-2.5 sm:p-3 border border-slate-200/80">
+              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Tawaran Nego</span>
+              <span className="text-base sm:text-lg font-black text-amber-600 mt-0.5 block">{totalOffers} Tawaran</span>
             </div>
-            <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200">
-              <span className="text-[11px] font-bold text-slate-400 block">Nilai Total Barang Aktif</span>
-              <span className="text-base sm:text-lg font-black text-slate-900 mt-1 block truncate">
+            <div className="rounded-2xl bg-slate-50 p-2.5 sm:p-3 border border-slate-200/80">
+              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Nilai Aset Aktif</span>
+              <span className="text-base sm:text-lg font-black text-slate-900 mt-0.5 block truncate">
                 {formatIDR(totalAssetValue)}
               </span>
             </div>
           </div>
 
-          {/* Search bar & Filter Tabs */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-            <div className="relative w-full sm:w-80">
+          {/* Search bar & Status Filter Tabs */}
+          <div className="space-y-2.5 pt-1">
+            <div className="relative w-full">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari judul barang yang dijual..."
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 pl-9 pr-3.5 py-2 text-xs text-slate-800 focus:border-brand-500 focus:outline-none focus:bg-white"
+                placeholder="Cari judul barang yang sedang Anda jual..."
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/80 pl-9 pr-3.5 py-2 text-xs text-slate-800 focus:border-brand-500 focus:outline-none focus:bg-white transition-colors"
               />
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-400" />
             </div>
 
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 w-full sm:w-auto hide-scrollbar">
+            {/* Status Filter Horizontal Pills */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
               {[
                 { id: 'all', label: 'Semua Iklan', count: myListings.length },
                 { id: 'active', label: 'Aktif Dijual', count: myListings.filter((i) => i.status === 'ACTIVE').length },
@@ -223,10 +262,10 @@ export default function MyListingsPage() {
                   key={tab.id}
                   type="button"
                   onClick={() => setActiveTab(tab.id)}
-                  className={`rounded-xl px-3.5 py-1.5 text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                  className={`rounded-2xl px-3 py-1.5 text-xs font-bold whitespace-nowrap transition-all shrink-0 cursor-pointer ${
                     activeTab === tab.id
                       ? 'bg-slate-900 text-white shadow-xs'
-                      : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 hover:text-slate-900'
+                      : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'
                   }`}
                 >
                   <span>{tab.label}</span>
@@ -237,38 +276,38 @@ export default function MyListingsPage() {
           </div>
         </div>
 
-        {/* Listings List */}
+        {/* 2. Listings List Cards (Mobile-Optimized) */}
         {isLoading ? (
-          <div className="space-y-4">
+          <div className="space-y-3.5">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-44 rounded-3xl bg-white border border-slate-200 p-6 animate-pulse" />
+              <div key={i} className="h-40 rounded-3xl bg-white border border-slate-200 p-5 animate-pulse" />
             ))}
           </div>
         ) : filteredListings.length === 0 ? (
-          <div className="rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-xs space-y-4">
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-slate-50 text-slate-400 border border-slate-200">
-              <Package className="h-10 w-10" />
+          <div className="rounded-3xl border border-slate-200 bg-white p-8 sm:p-12 text-center shadow-xs space-y-4">
+            <div className="mx-auto flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-3xl bg-slate-50 text-slate-400 border border-slate-200">
+              <Package className="h-8 w-8 sm:h-10 sm:w-10" />
             </div>
             <div className="space-y-1">
-              <h2 className="text-base sm:text-lg font-black text-slate-900">
+              <h2 className="text-sm sm:text-base font-black text-slate-900">
                 Belum Ada Iklan di Kategori Ini
               </h2>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
                 Pasang barang bekas Anda yang sudah tidak terpakai dengan proteksi rekber aman dan cepat laku.
               </p>
             </div>
-            <div className="pt-2">
+            <div className="pt-1">
               <Link
                 href="/jual"
-                className="inline-flex items-center gap-2 rounded-full bg-brand-600 hover:bg-brand-700 px-6 py-2.5 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-full bg-brand-600 hover:bg-brand-700 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
               >
-                <Plus className="h-4 w-4 stroke-3" />
+                <Plus className="h-3.5 w-3.5 stroke-3" />
                 <span>Pasang Iklan Sekarang</span>
               </Link>
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3.5 sm:space-y-4">
             {filteredListings.map((item) => {
               const primaryImg =
                 item.images?.find((img) => img.isPrimary)?.url ||
@@ -278,103 +317,97 @@ export default function MyListingsPage() {
               return (
                 <div
                   key={item.id}
-                  className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs space-y-4 hover:border-slate-300 transition-colors"
+                  className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-3.5 hover:border-slate-300 transition-colors"
                 >
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    {/* Item Image & Title */}
-                    <div className="flex items-start gap-4">
-                      <img
-                        src={primaryImg}
-                        alt={item.title}
-                        className="h-22 w-22 rounded-2xl object-cover border border-slate-200 shrink-0"
-                      />
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <ConditionBadge condition={item.condition} size="sm" />
-                          <span
-                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-extrabold border ${
-                              item.status === 'ACTIVE'
-                                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                                : item.status === 'IN_NEGO'
-                                ? 'bg-amber-50 text-amber-900 border-amber-200'
-                                : item.status === 'RESERVED'
-                                ? 'bg-blue-50 text-blue-900 border-blue-200'
-                                : item.status === 'SOLD'
-                                ? 'bg-purple-50 text-purple-900 border-purple-200'
-                                : 'bg-slate-100 text-slate-700 border-slate-200'
-                            }`}
-                          >
-                            {item.status === 'ACTIVE'
-                              ? '🟢 Aktif Dijual'
-                              : item.status === 'IN_NEGO'
-                              ? '💬 Sedang Nego'
-                              : item.status === 'RESERVED'
-                              ? '🔒 Dibooking'
-                              : item.status === 'SOLD'
-                              ? '✓ Terjual'
-                              : 'Arsip / Draf'}
-                          </span>
-                          {item.isCodAvailable && (
-                            <span className="rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-bold px-2 py-0.5 flex items-center gap-1">
-                              <Zap className="h-2.5 w-2.5 text-brand-600" />
-                              <span>Siap COD</span>
-                            </span>
-                          )}
-                        </div>
+                  {/* Top Status & Quick Stats Header */}
+                  <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span
+                        className={`rounded-full px-2 py-0.2 text-[9px] sm:text-[10px] font-extrabold border ${
+                          item.status === 'ACTIVE'
+                            ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                            : item.status === 'IN_NEGO'
+                            ? 'bg-amber-50 text-amber-900 border-amber-200'
+                            : item.status === 'RESERVED'
+                            ? 'bg-blue-50 text-blue-900 border-blue-200'
+                            : item.status === 'SOLD'
+                            ? 'bg-purple-50 text-purple-900 border-purple-200'
+                            : 'bg-slate-100 text-slate-700 border-slate-200'
+                        }`}
+                      >
+                        {item.status === 'ACTIVE'
+                          ? '🟢 Aktif'
+                          : item.status === 'IN_NEGO'
+                          ? '💬 Sedang Nego'
+                          : item.status === 'RESERVED'
+                          ? '🔒 Dibooking'
+                          : item.status === 'SOLD'
+                          ? '✓ Terjual'
+                          : 'Draf'}
+                      </span>
 
-                        <h3 className="text-sm sm:text-base font-bold text-slate-900 line-clamp-1">
-                          {item.title}
-                        </h3>
-
-                        <div className="flex items-baseline gap-2">
-                          <span className="text-base font-black text-brand-700">
-                            {formatIDR(item.price)}
-                          </span>
-                          {item.originalPrice && (
-                            <span className="text-xs text-slate-400 line-through">
-                              {formatIDR(item.originalPrice)}
-                            </span>
-                          )}
-                        </div>
-                      </div>
+                      {item.isCodAvailable && (
+                        <span className="rounded-full bg-slate-100 text-slate-600 text-[9px] font-bold px-1.5 py-0.2 border border-slate-200">
+                          ⚡ COD
+                        </span>
+                      )}
                     </div>
 
-                    {/* Performance Metrics Badges */}
-                    <div className="flex items-center gap-3 bg-slate-50 p-2.5 sm:p-3 rounded-2xl border border-slate-200 text-xs text-slate-600 shrink-0">
-                      <div className="text-center px-2">
-                        <span className="flex items-center justify-center gap-1 font-bold text-slate-900">
-                          <Eye className="h-3.5 w-3.5 text-slate-400" />
-                          {item.viewCount || 0}
+                    {/* Stats Strip */}
+                    <div className="flex items-center gap-2.5 text-[11px] text-slate-500 font-medium">
+                      <span className="flex items-center gap-1">
+                        <Eye className="h-3 w-3 text-slate-400" />
+                        <span>{item.viewCount || 0}</span>
+                      </span>
+                      <span>&bull;</span>
+                      <span className="flex items-center gap-1 text-amber-600 font-bold">
+                        <MessageSquareQuote className="h-3 w-3" />
+                        <span>{item.offerCount || 0}</span>
+                      </span>
+                      <span>&bull;</span>
+                      <span className="flex items-center gap-1 text-rose-500 font-bold">
+                        <Heart className="h-3 w-3 fill-rose-500" />
+                        <span>{item.favoriteCount || 0}</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Product Body */}
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <img
+                      src={primaryImg}
+                      alt={item.title}
+                      className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl object-cover border border-slate-200 shrink-0"
+                    />
+
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <ConditionBadge condition={item.condition} size="sm" />
+
+                      <h3 className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-2 leading-snug">
+                        {item.title}
+                      </h3>
+
+                      <div className="flex items-baseline gap-2 pt-0.5">
+                        <span className="text-sm sm:text-base font-black text-brand-700">
+                          {formatIDR(item.price)}
                         </span>
-                        <span className="text-[10px] text-slate-400 block">Dilihat</span>
-                      </div>
-                      <div className="h-6 w-px bg-slate-200" />
-                      <div className="text-center px-2">
-                        <span className="flex items-center justify-center gap-1 font-bold text-amber-700">
-                          <MessageSquareQuote className="h-3.5 w-3.5 text-amber-500" />
-                          {item.offerCount || 0}
-                        </span>
-                        <span className="text-[10px] text-slate-400 block">Tawaran</span>
-                      </div>
-                      <div className="h-6 w-px bg-slate-200" />
-                      <div className="text-center px-2">
-                        <span className="flex items-center justify-center gap-1 font-bold text-rose-600">
-                          <Heart className="h-3.5 w-3.5 text-rose-500" />
-                          {item.favoriteCount || 0}
-                        </span>
-                        <span className="text-[10px] text-slate-400 block">Favorit</span>
+                        {item.originalPrice && (
+                          <span className="text-[11px] text-slate-400 line-through">
+                            {formatIDR(item.originalPrice)}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
 
                   {/* Actions & Status Changer Toolbar */}
-                  <div className="pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="text-slate-500 font-medium">Ubah Status:</span>
+                  <div className="pt-2.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[11px] text-slate-400 font-medium">Status:</span>
                       <select
                         value={item.status}
                         onChange={(e) => handleUpdateStatus(item.id, e.target.value)}
-                        className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 font-bold text-slate-800 focus:border-brand-500 focus:outline-none cursor-pointer"
+                        className="rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-800 focus:border-brand-500 focus:outline-none cursor-pointer"
                       >
                         <option value="ACTIVE">🟢 Aktif Dijual</option>
                         <option value="IN_NEGO">💬 Sedang Nego</option>
@@ -384,27 +417,27 @@ export default function MyListingsPage() {
                       </select>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <Link
                         href={`/nego?tab=received`}
-                        className="flex items-center gap-1 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 font-bold text-amber-900 transition-colors"
+                        className="flex items-center gap-1 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 px-2.5 sm:px-3 py-1 text-xs font-bold text-amber-900 transition-colors shadow-2xs"
                       >
-                        <MessageSquareQuote className="h-3.5 w-3.5 text-amber-600" />
-                        <span>Cek Tawaran ({item.offerCount || 0})</span>
+                        <MessageSquareQuote className="h-3.5 w-3.5 text-amber-700" />
+                        <span>Nego ({item.offerCount || 0})</span>
                       </Link>
 
                       <Link
                         href={`/listing/${item.slug || item.id}`}
-                        className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-3 py-1.5 font-bold text-slate-700 transition-colors"
+                        className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-2.5 sm:px-3 py-1 text-xs font-bold text-slate-700 transition-colors shadow-2xs"
                       >
-                        <span>Lihat Iklan</span>
-                        <ExternalLink className="h-3.5 w-3.5 text-slate-400" />
+                        <span>Lihat</span>
+                        <ExternalLink className="h-3 w-3 text-slate-400" />
                       </Link>
 
                       <button
                         type="button"
                         onClick={() => handleDeleteListing(item.id, item.title)}
-                        className="flex items-center gap-1 rounded-xl border border-rose-200 bg-white hover:bg-rose-50 px-2.5 py-1.5 font-bold text-rose-600 transition-colors cursor-pointer"
+                        className="flex items-center justify-center h-7 w-7 rounded-xl border border-rose-200 bg-rose-50/50 hover:bg-rose-100 text-rose-600 transition-colors cursor-pointer"
                         title="Hapus Iklan"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
