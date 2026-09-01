@@ -42,6 +42,203 @@ import {
   Clock
 } from 'lucide-react';
 
+const DEFAULT_KYC_QUEUE = [
+  {
+    id: 'usr-kyc-pending-1',
+    name: 'Rian Hidayat (Pendaftar Baru)',
+    email: 'rian.hidayat@example.com',
+    phone: '081288991122',
+    nik: '3273081903980002',
+    ktpImageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
+    selfieImageUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&auto=format&fit=crop&q=80',
+    isKycVerified: false,
+    trustScore: 82,
+    role: 'BUYER',
+    createdAt: '2026-08-31T14:20:00Z',
+    kycSubmittedAt: '2026-08-31T15:00:00Z'
+  },
+  {
+    id: 'usr-kyc-pending-2',
+    name: 'Siti Nurhaliza (Calon Penjual)',
+    email: 'siti.nurhaliza@example.com',
+    phone: '081377889900',
+    nik: '3175026708990004',
+    ktpImageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
+    selfieImageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80',
+    isKycVerified: false,
+    trustScore: 85,
+    role: 'BUYER',
+    createdAt: '2026-08-31T10:15:00Z',
+    kycSubmittedAt: '2026-08-31T11:45:00Z'
+  },
+  {
+    id: 'usr-kyc-pending-3',
+    name: 'Ahmad Zaki Gunawan',
+    email: 'ahmad.zaki@example.com',
+    phone: '081900112233',
+    nik: '3578011204940003',
+    ktpImageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
+    selfieImageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
+    isKycVerified: false,
+    trustScore: 80,
+    role: 'BUYER',
+    createdAt: '2026-08-30T09:00:00Z',
+    kycSubmittedAt: '2026-08-30T09:30:00Z'
+  },
+  {
+    id: 'usr-seller-1',
+    name: 'Budi Santoso (Penjual Terverifikasi)',
+    email: 'budi@example.com',
+    phone: '081987654321',
+    nik: '3174092801950001',
+    ktpImageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
+    selfieImageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&auto=format&fit=crop&q=80',
+    isKycVerified: true,
+    trustScore: 98,
+    role: 'SELLER',
+    createdAt: '2026-08-01T08:00:00Z',
+    kycSubmittedAt: '2026-08-02T10:00:00Z'
+  }
+];
+
+const DEFAULT_DISPUTES = [
+  {
+    id: 'ord-dispute-demo-1',
+    orderNumber: 'JBB-2026-9901',
+    listingId: 'lst-macbook-1',
+    buyerId: 'usr-buyer-1',
+    sellerId: 'usr-seller-1',
+    amount: 16500000,
+    shippingFee: 35000,
+    serviceFee: 25000,
+    totalAmount: 16560000,
+    escrowStatus: 'DISPUTED',
+    deliveryMethod: 'KURIR_REGULER',
+    courierName: 'JNE Express YES',
+    trackingNumber: 'JNE-882910293',
+    disputeReason: 'Layar MacBook terdapat staingate baret tebal memanjang di area tengah yang tidak dicantumkan di deskripsi penjual. Mohon refund penuh ke rekening.',
+    disputeEvidenceUrls: [
+      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&auto=format&fit=crop&q=80'
+    ],
+    listing: {
+      id: 'lst-macbook-1',
+      title: 'MacBook Pro 14 M1 Pro 16/512GB Space Grey Fullset Box',
+      price: 16500000,
+      condition: 'LIKE_NEW'
+    },
+    buyer: {
+      id: 'usr-buyer-1',
+      name: 'Dimas Aditya (Pembeli)',
+      email: 'dimas@example.com',
+      phone: '081234567890'
+    },
+    seller: {
+      id: 'usr-seller-1',
+      name: 'Budi Santoso (Penjual)',
+      email: 'budi@example.com',
+      phone: '081987654321',
+      bankName: 'Bank Central Asia (BCA)',
+      bankAccountNumber: '8271029384'
+    },
+    createdAt: '2026-08-30T10:00:00Z',
+    updatedAt: '2026-08-31T14:00:00Z'
+  },
+  {
+    id: 'ord-dispute-demo-2',
+    orderNumber: 'JBB-2026-9904',
+    listingId: 'lst-sony-a7',
+    buyerId: 'usr-buyer-2',
+    sellerId: 'usr-seller-2',
+    amount: 19800000,
+    shippingFee: 40000,
+    serviceFee: 30000,
+    totalAmount: 19870000,
+    escrowStatus: 'DISPUTED',
+    deliveryMethod: 'KURIR_REGULER',
+    courierName: 'SiCepat BEST',
+    trackingNumber: '002938491028',
+    disputeReason: 'Sensor kamera terdapat jamur/fungus tipis saat diuji pada aperture f/16, padahal di chat penjual menyatakan optik sensor 100% bening cling.',
+    disputeEvidenceUrls: [
+      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&auto=format&fit=crop&q=80'
+    ],
+    listing: {
+      id: 'lst-sony-a7',
+      title: 'Sony Alpha A7 III Body Only SC Rendah 3.200 Fullset',
+      price: 19800000,
+      condition: 'LIGHTLY_USED'
+    },
+    buyer: {
+      id: 'usr-buyer-2',
+      name: 'Hendra Gunawan (Pembeli)',
+      email: 'hendra.gunawan@example.com',
+      phone: '081377889900'
+    },
+    seller: {
+      id: 'usr-seller-2',
+      name: 'Andi Wijaya (Penjual)',
+      email: 'andi.wijaya@example.com',
+      phone: '081299001122',
+      bankName: 'Bank Mandiri',
+      bankAccountNumber: '1370019283741'
+    },
+    createdAt: '2026-08-31T08:00:00Z',
+    updatedAt: '2026-08-31T16:20:00Z'
+  }
+];
+
+const DEFAULT_PAYOUTS = [
+  {
+    id: 'pay-demo-1',
+    orderNumber: 'JBB-2026-8812',
+    listingTitle: 'Sony A6400 Body Only SC 4.200 Fullset Mulus',
+    amount: 8900000,
+    payoutBank: 'Bank Central Asia (BCA)',
+    payoutAccountNumber: '8271029384',
+    payoutAccountHolder: 'Budi Santoso',
+    sellerName: 'Budi Santoso',
+    completedAt: '2026-08-31T09:30:00Z',
+    status: 'TRANSFERRED_SUCCESS'
+  },
+  {
+    id: 'pay-demo-2',
+    orderNumber: 'JBB-2026-7731',
+    listingTitle: 'iPhone 13 Pro 128GB Sierra Blue iBox Fullset',
+    amount: 11200000,
+    payoutBank: 'Bank Mandiri',
+    payoutAccountNumber: '1370019283741',
+    payoutAccountHolder: 'Rian Pratama',
+    sellerName: 'Rian Pratama',
+    completedAt: '2026-08-30T16:15:00Z',
+    status: 'TRANSFERRED_SUCCESS'
+  },
+  {
+    id: 'pay-demo-3',
+    orderNumber: 'JBB-2026-6649',
+    listingTitle: 'Sony WH-1000XM5 Wireless Noise Cancelling Mulus',
+    amount: 3850000,
+    payoutBank: 'Bank Jago',
+    payoutAccountNumber: '109283746192',
+    payoutAccountHolder: 'Kevin Sanjaya',
+    sellerName: 'Kevin Sanjaya',
+    completedAt: '2026-08-29T11:20:00Z',
+    status: 'TRANSFERRED_SUCCESS'
+  },
+  {
+    id: 'pay-demo-4',
+    orderNumber: 'JBB-2026-5520',
+    listingTitle: 'PlayStation 5 Disc Edition Horizon Bundle 2 Stik',
+    amount: 6900000,
+    payoutBank: 'SeaBank Indonesia',
+    payoutAccountNumber: '901238475619',
+    payoutAccountHolder: 'Doni Prasetyo',
+    sellerName: 'Doni Prasetyo',
+    completedAt: '2026-08-28T14:45:00Z',
+    status: 'TRANSFERRED_SUCCESS'
+  }
+];
+
 export default function StandaloneAdminDashboard() {
   const queryClient = useQueryClient();
   const { user, loginAsDemoAdmin, loginAsDemoSeller, loginAsDemoBuyer, logout } = useAuth();
@@ -89,16 +286,16 @@ export default function StandaloneAdminDashboard() {
     escrowHoldingTotal: 48500000,
     completedPayoutTotal: 124500000,
     totalGmv: 173000000,
-    activeDisputesCount: 1,
-    pendingKycCount: 2,
+    activeDisputesCount: 2,
+    pendingKycCount: 3,
     totalUsersCount: 120,
     totalListingsCount: 45,
     activeListingsCount: 38
   };
 
-  const kycQueue = kycData?.data || [];
-  const disputes = disputesData?.data || [];
-  const payouts = payoutsData?.data || [];
+  const kycQueue = (kycData?.data && kycData.data.length > 0) ? kycData.data : DEFAULT_KYC_QUEUE;
+  const disputes = (disputesData?.data && disputesData.data.length > 0) ? disputesData.data : DEFAULT_DISPUTES;
+  const payouts = (payoutsData?.data && payoutsData.data.length > 0) ? payoutsData.data : DEFAULT_PAYOUTS;
   const listings = listingsData?.data || [];
 
   const handleApproveKyc = async (userId: string) => {
