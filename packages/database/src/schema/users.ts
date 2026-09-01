@@ -17,6 +17,18 @@ export const users = sqliteTable('users', {
   city: text('city'),
   province: text('province'),
   bio: text('bio'),
+  
+  // KYC verification details
+  nik: text('nik'),
+  ktpImageUrl: text('ktp_image_url'),
+  selfieImageUrl: text('selfie_image_url'),
+  kycSubmittedAt: text('kyc_submitted_at'),
+  
+  // Escrow Payout Bank Account
+  bankName: text('bank_name'),
+  bankAccountNumber: text('bank_account_number'),
+  bankAccountHolder: text('bank_account_holder'),
+
   createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
   updatedAt: text('updated_at').notNull().$defaultFn(() => new Date().toISOString())
 });

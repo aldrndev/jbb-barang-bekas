@@ -82,6 +82,24 @@ export const api = {
 
   getMe: () => request<UserProfile>('/api/auth/me'),
 
+  updateProfile: (data: Partial<UserProfile>) =>
+    request<UserProfile>('/api/auth/profile', {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    }),
+
+  submitKyc: (data: { nik: string; ktpImageUrl: string; selfieImageUrl: string }) =>
+    request<UserProfile>('/api/auth/kyc', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+
+  updateBankPayout: (data: { bankName: string; bankAccountNumber: string; bankAccountHolder: string }) =>
+    request<UserProfile>('/api/auth/bank-payout', {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    }),
+
   // Categories
   getCategories: () => request<Category[]>('/api/categories'),
 

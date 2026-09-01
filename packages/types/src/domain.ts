@@ -155,6 +155,13 @@ export interface UserProfile {
   city?: string | null;
   province?: string | null;
   bio?: string | null;
+  nik?: string | null;
+  ktpImageUrl?: string | null;
+  selfieImageUrl?: string | null;
+  kycSubmittedAt?: string | null;
+  bankName?: string | null;
+  bankAccountNumber?: string | null;
+  bankAccountHolder?: string | null;
   createdAt: string;
 }
 

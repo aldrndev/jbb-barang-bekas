@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { eq } from 'drizzle-orm';
-import { loginSchema, registerSchema, updateProfileSchema } from '@jbb/validators';
+import { loginSchema, registerSchema, updateProfileSchema, submitKycSchema, updateBankPayoutSchema } from '@jbb/validators';
 import type { AppEnv } from '../types/env';
 import { getDb, schema } from '../db';
 import { memoryStore } from '../services/store';
@@ -205,4 +205,79 @@ export const authRoutes = new Hono<AppEnv>()
       message: 'Profil berhasil diperbarui',
       data: user
     });
+  })
+
+  .post('/kyc', authMiddleware, zValidator('json', submitKycSchema), async (c) => {
+    const user = c.get('user');
+    if (!user) {
+      return c.json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Unauthorized' } }, 401);
+    }
+
+    const { nik, ktpImageUrl, selfieImageUrl } = c.req.valid('json');
+    const db = getDb(c.env.DB);
+    const now = new Date().toISOString();
+
+    if (db) {
+      await db
+        .update(schema.users)
+        .set({
+          nik,
+          ktpImageUrl,
+          selfieImageUrl,
+          kycSubmittedAt: now,
+          isKycVerified: true,
+          role: user.role === 'BUYER' ? 'SELLER' : user.role,
+          trustScore: Math.max(user.trustScore || 80, 96),
+          updatedAt: now
+        })
+        .where(eq(schema.users.id, user.id));
+    }
+
+    user.nik = nik;
+    user.ktpImageUrl = ktpImageUrl;
+    user.selfieImageUrl = selfieImageUrl;
+    user.kycSubmittedAt = now;
+    user.isKycVerified = true;
+    user.trustScore = Math.max(user.trustScore || 80, 96);
+    if (user.role === 'BUYER') user.role = 'SELLER';
+
+    return c.json({
+      success: true,
+      message: 'Verifikasi KYC KTP berhasil disetujui! Status akun kini Terverifikasi Resmi.',
+      data: user
+    });
+  })
+
+  .put('/bank-payout', authMiddleware, zValidator('json', updateBankPayoutSchema), async (c) => {
+    const user = c.get('user');
+    if (!user) {
+      return c.json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Unauthorized' } }, 401);
+    }
+
+    const { bankName, bankAccountNumber, bankAccountHolder } = c.req.valid('json');
+    const db = getDb(c.env.DB);
+    const now = new Date().toISOString();
+
+    if (db) {
+      await db
+        .update(schema.users)
+        .set({
+          bankName,
+          bankAccountNumber,
+          bankAccountHolder,
+          updatedAt: now
+        })
+        .where(eq(schema.users.id, user.id));
+    }
+
+    user.bankName = bankName;
+    user.bankAccountNumber = bankAccountNumber;
+    user.bankAccountHolder = bankAccountHolder;
+
+    return c.json({
+      success: true,
+      message: 'Rekening pencairan dana berhasil disimpan!',
+      data: user
+    });
   });
+
