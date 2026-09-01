@@ -27,7 +27,8 @@ import {
   Sparkles,
   ShoppingBag,
   TrendingUp,
-  Filter
+  Filter,
+  Edit3
 } from 'lucide-react';
 
 export default function MyListingsPage() {
@@ -417,7 +418,15 @@ export default function MyListingsPage() {
                       </select>
                     </div>
 
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <Link
+                        href={`/jual?editId=${item.id}`}
+                        className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-2.5 sm:px-3 py-1 text-xs font-bold text-slate-700 transition-colors shadow-2xs"
+                      >
+                        <Edit3 className="h-3 w-3 text-slate-500" />
+                        <span>Edit</span>
+                      </Link>
+
                       <Link
                         href={`/nego?tab=received`}
                         className="flex items-center gap-1 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 px-2.5 sm:px-3 py-1 text-xs font-bold text-amber-900 transition-colors shadow-2xs"

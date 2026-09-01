@@ -136,6 +136,12 @@ export const api = {
       body: JSON.stringify(payload)
     }),
 
+  updateListing: (id: string, payload: any) =>
+    request<Listing>(`/api/listings/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(payload)
+    }),
+
   // Offers
   makeOffer: (listingId: string, offeredPrice: number, message?: string) =>
     request<Offer>('/api/offers', {

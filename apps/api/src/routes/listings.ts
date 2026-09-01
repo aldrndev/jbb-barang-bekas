@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { eq, desc, asc, and, gte, lte, or, sql } from 'drizzle-orm';
-import { createListingSchema, listingQuerySchema } from '@jbb/validators';
+import { createListingSchema, updateListingSchema, listingQuerySchema } from '@jbb/validators';
 import type { AppEnv } from '../types/env';
 import { getDb, schema } from '../db';
 import { memoryStore } from '../services/store';
@@ -247,6 +247,104 @@ export const listingRoutes = new Hono<AppEnv>()
       listing.updatedAt = new Date().toISOString();
     }
     return c.json({ success: true, message: 'Status iklan berhasil diperbarui' });
+  })
+
+  .put('/:id', authMiddleware, zValidator('json', updateListingSchema), async (c) => {
+    const user = c.get('user')!;
+    const id = c.req.param('id');
+    const payload = c.req.valid('json');
+    const db = getDb(c.env.DB);
+
+    if (db) {
+      const existing = await db.query.listings.findFirst({
+        where: and(eq(schema.listings.id, id), eq(schema.listings.sellerId, user.id))
+      });
+
+      if (!existing) {
+        return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Iklan tidak ditemukan atau Anda bukan pemilik iklan ini' } }, 404);
+      }
+
+      await db.update(schema.listings)
+        .set({
+          ...(payload.title ? { title: payload.title } : {}),
+          ...(payload.description ? { description: payload.description } : {}),
+          ...(payload.categoryId ? { categoryId: payload.categoryId } : {}),
+          ...(payload.price !== undefined ? { price: payload.price } : {}),
+          ...(payload.originalPrice !== undefined ? { originalPrice: payload.originalPrice } : {}),
+          ...(payload.isNegotiable !== undefined ? { isNegotiable: payload.isNegotiable } : {}),
+          ...(payload.minOfferPrice !== undefined ? { minOfferPrice: payload.minOfferPrice } : {}),
+          ...(payload.condition ? { condition: payload.condition } : {}),
+          ...(payload.completeness ? { completeness: JSON.stringify(payload.completeness) } : {}),
+          ...(payload.purchaseYear !== undefined ? { purchaseYear: payload.purchaseYear } : {}),
+          ...(payload.warrantyUntil !== undefined ? { warrantyUntil: payload.warrantyUntil } : {}),
+          ...(payload.hasOriginalReceipt !== undefined ? { hasOriginalReceipt: payload.hasOriginalReceipt } : {}),
+          ...(payload.province ? { province: payload.province } : {}),
+          ...(payload.city ? { city: payload.city } : {}),
+          ...(payload.district ? { district: payload.district } : {}),
+          ...(payload.isCodAvailable !== undefined ? { isCodAvailable: payload.isCodAvailable } : {}),
+          ...(payload.codMeetingPoint !== undefined ? { codMeetingPoint: payload.codMeetingPoint } : {}),
+          ...(payload.specs ? { specs: JSON.stringify(payload.specs) } : {}),
+          updatedAt: new Date().toISOString()
+        })
+        .where(eq(schema.listings.id, id));
+
+      if (payload.imageUrls && payload.imageUrls.length > 0) {
+        await db.delete(schema.listingImages).where(eq(schema.listingImages.listingId, id));
+        await db.insert(schema.listingImages).values(
+          payload.imageUrls.map((url: string, idx: number) => ({
+            id: `img-${Date.now()}-${idx}`,
+            listingId: id,
+            url,
+            isPrimary: idx === 0,
+            sortOrder: idx + 1,
+            createdAt: new Date().toISOString()
+          }))
+        );
+      }
+
+      const updated = await db.query.listings.findFirst({
+        where: eq(schema.listings.id, id),
+        with: { images: true, seller: true, category: true }
+      });
+
+      return c.json({ success: true, message: 'Iklan berhasil diperbarui!', data: updated });
+    }
+
+    // Memory store fallback
+    const listing = memoryStore.listings.find((l) => l.id === id);
+    if (!listing) {
+      return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Iklan tidak ditemukan' } }, 404);
+    }
+
+    if (payload.title) listing.title = payload.title;
+    if (payload.description) listing.description = payload.description;
+    if (payload.categoryId) listing.categoryId = payload.categoryId;
+    if (payload.price !== undefined) listing.price = payload.price;
+    if (payload.originalPrice !== undefined) listing.originalPrice = payload.originalPrice;
+    if (payload.isNegotiable !== undefined) listing.isNegotiable = payload.isNegotiable;
+    if (payload.minOfferPrice !== undefined) listing.minOfferPrice = payload.minOfferPrice;
+    if (payload.condition) listing.condition = payload.condition;
+    if (payload.completeness) listing.completeness = payload.completeness;
+    if (payload.purchaseYear !== undefined) listing.purchaseYear = payload.purchaseYear;
+    if (payload.hasOriginalReceipt !== undefined) listing.hasOriginalReceipt = payload.hasOriginalReceipt;
+    if (payload.province) listing.province = payload.province;
+    if (payload.city) listing.city = payload.city;
+    if (payload.district) listing.district = payload.district;
+    if (payload.isCodAvailable !== undefined) listing.isCodAvailable = payload.isCodAvailable;
+    if (payload.codMeetingPoint !== undefined) listing.codMeetingPoint = payload.codMeetingPoint;
+    if (payload.specs) listing.specs = payload.specs;
+    if (payload.imageUrls && payload.imageUrls.length > 0) {
+      listing.images = payload.imageUrls.map((url, idx) => ({
+        id: `img-${Date.now()}-${idx}`,
+        listingId: id,
+        url,
+        isPrimary: idx === 0,
+        sortOrder: idx + 1
+      }));
+    }
+    listing.updatedAt = new Date().toISOString();
+
+    return c.json({ success: true, message: 'Iklan berhasil diperbarui!', data: listing });
   })
 
   .delete('/:id', authMiddleware, async (c) => {
