@@ -275,26 +275,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           </div>
 
-          {/* Right Profile & Badge */}
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Escrow Gateway 100% Online</span>
-            </div>
-
-            <div className="flex items-center gap-2.5 pl-2 border-l border-slate-200">
-              <div className="text-right hidden sm:block">
-                <span className="text-xs font-black text-slate-900 block">{user.name}</span>
-                <span className="text-[10px] font-extrabold text-brand-600 uppercase tracking-wider block">
-                  Master Admin
-                </span>
-              </div>
-              <img
-                src={user.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
-                alt={user.name}
-                className="h-9 w-9 rounded-xl object-cover ring-2 ring-brand-500/20"
-              />
-            </div>
+          {/* Right Status Badge */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Escrow Gateway 100% Online</span>
           </div>
         </header>
 
