@@ -209,7 +209,7 @@ function OrderHistoryContent() {
   const sellerCount = orders.filter((o) => o.sellerId === user.id).length;
 
   return (
-    <div className="min-h-screen bg-slate-50 py-3 sm:py-6 px-3.5 sm:px-6 lg:px-8 pb-16">
+    <div className="bg-slate-50 py-3 sm:py-6 px-3.5 sm:px-6 lg:px-8 pb-6 sm:pb-8">
       <div className="mx-auto max-w-5xl space-y-4 sm:space-y-5">
         {/* Top Header Row: Breadcrumbs & Quick Role Switcher */}
         <div className="flex items-center justify-between gap-2 min-w-0">
