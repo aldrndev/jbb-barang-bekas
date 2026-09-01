@@ -24,6 +24,7 @@ import {
   UserCheck
 } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/context/auth-context';
 import { useState } from 'react';
 
 const DEFAULT_KYC_QUEUE = [
@@ -97,6 +98,7 @@ const DEFAULT_DISPUTES = [
 ];
 
 export default function AdminOverviewPage() {
+  const { user } = useAuth();
   const [activeChartRange, setActiveChartRange] = useState<'7d' | '30d'>('7d');
 
   const {
@@ -105,17 +107,20 @@ export default function AdminOverviewPage() {
     refetch
   } = useQuery({
     queryKey: ['admin-stats'],
-    queryFn: () => api.getAdminStats()
+    queryFn: () => api.getAdminStats(),
+    enabled: user?.role === 'ADMIN'
   });
 
   const { data: disputesData } = useQuery({
     queryKey: ['admin-disputes'],
-    queryFn: () => api.getAdminDisputes()
+    queryFn: () => api.getAdminDisputes(),
+    enabled: user?.role === 'ADMIN'
   });
 
   const { data: kycData } = useQuery({
     queryKey: ['admin-kyc'],
-    queryFn: () => api.getAdminKycQueue()
+    queryFn: () => api.getAdminKycQueue(),
+    enabled: user?.role === 'ADMIN'
   });
 
   const stats = statsData?.data || {

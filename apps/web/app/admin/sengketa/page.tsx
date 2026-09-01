@@ -1,5 +1,6 @@
 'use client';
 import { api } from '@/lib/api-client';
+import { useAuth } from '@/context/auth-context';
 import { formatIDR, formatTimeAgo } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, ArrowRight, CheckCircle2 } from 'lucide-react';
@@ -99,9 +100,11 @@ const DEFAULT_DISPUTES = [
 ];
 
 export default function AdminDisputesListPage() {
+  const { user } = useAuth();
   const { data: disputesData } = useQuery({
     queryKey: ['admin-disputes'],
-    queryFn: () => api.getAdminDisputes()
+    queryFn: () => api.getAdminDisputes(),
+    enabled: user?.role === 'ADMIN'
   });
 
   const disputes =

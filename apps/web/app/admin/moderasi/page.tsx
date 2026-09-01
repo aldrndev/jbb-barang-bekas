@@ -22,6 +22,7 @@ import {
   X
 } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/context/auth-context';
 import { useState } from 'react';
 
 const DEFAULT_LISTINGS = [
@@ -166,6 +167,7 @@ const DEFAULT_LISTINGS = [
 ];
 
 export default function AdminModerationPage() {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<'ACTIVE' | 'ARCHIVED' | 'SOLD' | 'ALL'>('ACTIVE');
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
@@ -184,7 +186,8 @@ export default function AdminModerationPage() {
 
   const { data: listingsData } = useQuery({
     queryKey: ['admin-listings'],
-    queryFn: () => api.getAdminListings()
+    queryFn: () => api.getAdminListings(),
+    enabled: user?.role === 'ADMIN'
   });
 
   const [localOverrides, setLocalOverrides] = useState<

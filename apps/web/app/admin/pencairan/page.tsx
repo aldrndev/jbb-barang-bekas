@@ -20,6 +20,7 @@ import {
   X,
   Zap
 } from 'lucide-react';
+import { useAuth } from '@/context/auth-context';
 import { useState } from 'react';
 
 const DEFAULT_PAYOUTS = [
@@ -152,6 +153,7 @@ const DEFAULT_PAYOUTS = [
 ];
 
 export default function AdminPayoutsPage() {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<'pending' | 'completed'>('pending');
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
@@ -167,7 +169,8 @@ export default function AdminPayoutsPage() {
 
   const { data: payoutsData } = useQuery({
     queryKey: ['admin-payouts'],
-    queryFn: () => api.getAdminPayouts()
+    queryFn: () => api.getAdminPayouts(),
+    enabled: user?.role === 'ADMIN'
   });
 
   const [localOverrides, setLocalOverrides] = useState<

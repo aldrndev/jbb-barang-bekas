@@ -22,7 +22,7 @@ import { useState } from 'react';
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, openAuthModal, logout } = useAuth();
+  const { user, openAuthModal, logout, isLoading } = useAuth();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const isAdmin = user?.role === 'ADMIN';
@@ -60,6 +60,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       isActive: pathname.startsWith('/admin/moderasi')
     }
   ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4">
+        <div className="flex flex-col items-center gap-3 animate-pulse">
+          <div className="h-12 w-12 rounded-2xl bg-brand-600/20 flex items-center justify-center border border-brand-500/30 text-white">
+            <PeygoLogoIcon size="sm" />
+          </div>
+          <span className="text-xs font-bold text-slate-400 tracking-wide">Memverifikasi Hak Akses Admin...</span>
+        </div>
+      </div>
+    );
+  }
 
   if (!user || !isAdmin) {
     return (

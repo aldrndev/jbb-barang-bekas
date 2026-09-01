@@ -14,6 +14,7 @@ import {
   UserCheck,
   X
 } from 'lucide-react';
+import { useAuth } from '@/context/auth-context';
 import { useState } from 'react';
 
 const DEFAULT_KYC_QUEUE = [
@@ -84,6 +85,7 @@ const DEFAULT_KYC_QUEUE = [
 ];
 
 export default function AdminKycPage() {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<'pending' | 'approved'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
@@ -97,7 +99,8 @@ export default function AdminKycPage() {
 
   const { data: kycData } = useQuery({
     queryKey: ['admin-kyc'],
-    queryFn: () => api.getAdminKycQueue()
+    queryFn: () => api.getAdminKycQueue(),
+    enabled: user?.role === 'ADMIN'
   });
 
   const [localOverrides, setLocalOverrides] = useState<
