@@ -748,18 +748,38 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
         </div>
       </div>
 
-      {/* Floating Bottom Sticky Action Bar (Mobile Only with Safe Area) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200/90 bg-white/95 backdrop-blur-md p-3 sm:p-4 md:hidden shadow-2xl safe-area-pb">
+      {/* Floating Bottom Sticky Action Bar (Mobile & Tablet View) */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white/95 backdrop-blur-md px-4 py-3 lg:hidden shadow-2xl">
         <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">
-          <div className="min-w-0">
-            <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">
-              {acceptedOffer ? 'Harga Nego Deal' : 'Harga Barang'}
-            </span>
-            <span className="text-lg font-black text-brand-700 truncate block">
-              {formatIDR(effectivePrice)}
-            </span>
+          {/* Price Preview & Chat Button */}
+          <div className="flex items-center gap-2.5 min-w-0">
+            <button
+              type="button"
+              onClick={() => {
+                if (!user) {
+                  openAuthModal();
+                } else {
+                  setIsNegoModalOpen(true);
+                }
+              }}
+              className="flex flex-col items-center justify-center h-10 w-10 rounded-2xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 shrink-0 cursor-pointer shadow-2xs"
+              title="Chat Penjual"
+            >
+              <MessageCircle className="h-4.5 w-4.5 text-brand-600" />
+              <span className="text-[9px] font-bold text-slate-500">Chat</span>
+            </button>
+
+            <div className="min-w-0">
+              <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider leading-none">
+                {acceptedOffer ? 'Harga Nego Deal' : 'Harga Barang'}
+              </span>
+              <span className="text-base sm:text-lg font-black text-brand-700 truncate block mt-0.5">
+                {formatIDR(effectivePrice)}
+              </span>
+            </div>
           </div>
 
+          {/* Action Buttons */}
           <div className="flex items-center gap-2 shrink-0">
             {listing.isNegotiable && !acceptedOffer && (
               <button

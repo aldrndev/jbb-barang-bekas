@@ -10,6 +10,12 @@ export function MobileBottomBar() {
   const pathname = usePathname();
   const { user, openAuthModal } = useAuth();
 
+  // Hide global navigation bottom bar on product detail and checkout pages
+  // so the dedicated transaction & checkout action bar is visible
+  if (pathname.startsWith('/listing') || pathname.startsWith('/checkout')) {
+    return null;
+  }
+
   const navItems = [
     { href: '/', label: 'Beranda', icon: Home },
     { href: '/cari', label: 'Eksplor', icon: Search },
