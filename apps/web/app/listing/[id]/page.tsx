@@ -233,6 +233,12 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                 <div className="flex items-center justify-between pb-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <ConditionBadge condition={listing.condition} size="md" />
+                    {listing.isCodAvailable && (
+                      <span className="rounded-full bg-brand-50 text-brand-800 border border-brand-200 px-2.5 py-0.5 text-xs font-bold shadow-2xs flex items-center gap-1">
+                        <Zap className="h-3 w-3 text-brand-600" />
+                        <span>Siap COD</span>
+                      </span>
+                    )}
                     <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-700 border border-slate-200">
                       📷 {activeImageIdx + 1}/{images.length || 1}
                     </span>
@@ -332,7 +338,13 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
               {/* Title & Status Badges */}
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-brand-800 border border-brand-200">
+                  {listing.isCodAvailable && (
+                    <span className="flex items-center gap-1 rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-bold text-brand-800 border border-brand-200">
+                      <Zap className="h-3 w-3 text-brand-600" />
+                      <span>Siap COD</span>
+                    </span>
+                  )}
+                  <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-800 border border-emerald-200">
                     <Clock className="h-3 w-3" />
                     <span>Aktif</span>
                   </span>
@@ -674,14 +686,26 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
               </div>
 
               {/* Verified Location Box */}
-              <div className="flex items-center gap-3 rounded-2xl bg-slate-50 p-3.5 border border-slate-200/80">
-                <MapPin className="h-4.5 w-4.5 text-brand-600 shrink-0" />
-                <div className="min-w-0 flex-1">
-                  <span className="font-bold text-xs text-slate-900 block truncate">
-                    {listing.district}, {listing.city}
-                  </span>
-                  <p className="text-[10px] text-slate-500 truncate">
-                    {listing.isCodAvailable ? 'Mendukung COD di tempat umum & Kirim Kurir' : 'Pengiriman via Kurir Rekber'}
+              <div className="flex items-start gap-3 rounded-2xl bg-slate-50 p-3.5 border border-slate-200/80">
+                <MapPin className="h-4.5 w-4.5 text-brand-600 shrink-0 mt-0.5" />
+                <div className="min-w-0 flex-1 space-y-0.5">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <span className="font-bold text-xs text-slate-900 block truncate">
+                      {listing.district}, {listing.city}
+                    </span>
+                    {listing.isCodAvailable && (
+                      <span className="rounded-full bg-brand-100/80 text-brand-900 px-2 py-0.2 text-[9px] font-black border border-brand-200 flex items-center gap-1 shrink-0">
+                        <Zap className="h-2.5 w-2.5 text-brand-600" />
+                        <span>Siap COD</span>
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-slate-500">
+                    {listing.isCodAvailable && listing.codMeetingPoint
+                      ? `Titik Temu: ${listing.codMeetingPoint}`
+                      : listing.isCodAvailable
+                      ? 'Mendukung COD di tempat umum & Kirim Kurir'
+                      : 'Pengiriman via Kurir Rekber'}
                   </p>
                 </div>
               </div>

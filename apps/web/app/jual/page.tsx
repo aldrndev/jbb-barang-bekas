@@ -792,14 +792,15 @@ function JualBarangContent() {
                     alt="Preview"
                     className="h-full w-full object-cover transition-transform duration-300"
                   />
-                  <div className="absolute top-2.5 left-2.5 flex flex-col gap-1">
+                  <div className="absolute top-2.5 left-2.5 z-10">
                     <ConditionBadge condition={condition} size="sm" />
-                    {isCodAvailable && (
-                      <span className="rounded-full bg-slate-900/80 backdrop-blur-xs text-white text-[9px] font-bold px-2 py-0.5 shadow-xs">
-                        ⚡ COD
-                      </span>
-                    )}
                   </div>
+                  {isCodAvailable && (
+                    <div className="absolute bottom-2 left-2 z-10 rounded-full bg-white/95 px-2.5 py-0.5 text-[9px] font-bold text-brand-700 border border-brand-200/90 backdrop-blur-md shadow-2xs flex items-center gap-1">
+                      <Zap className="h-2.5 w-2.5 text-brand-600" />
+                      <span>Siap COD</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="p-3.5 space-y-2">
