@@ -171,17 +171,17 @@ export default function StandaloneAdminDashboard() {
   // Auth Guard for Non-Admin
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-4">
-        <div className="max-w-md w-full rounded-3xl border border-slate-800 bg-slate-900/90 backdrop-blur-xl p-6 sm:p-8 text-center shadow-2xl space-y-5">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-inner">
+      <div className="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center p-4">
+        <div className="max-w-md w-full rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 text-center shadow-xs space-y-5">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-amber-50 text-amber-600 border border-amber-200 shadow-2xs">
             <Lock className="h-8 w-8" />
           </div>
           <div className="space-y-1.5">
-            <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 px-2.5 py-1 rounded-full border border-amber-400/20">
-              Restricted Area
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-200">
+              Akses Terbatas
             </span>
-            <h1 className="text-xl font-black text-white">JBB Escrow Back-Office</h1>
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
+            <h1 className="text-xl font-black text-slate-900">JBB Escrow Back-Office</h1>
+            <p className="text-xs text-slate-500 leading-relaxed font-medium">
               Portal administrasi khusus petugas kepatuhan mediasi sengketa dan keuangan Rekber JBB.
             </p>
           </div>
@@ -189,14 +189,14 @@ export default function StandaloneAdminDashboard() {
           <div className="pt-2 space-y-2.5">
             <button
               onClick={loginAsDemoAdmin}
-              className="w-full flex items-center justify-center gap-2 rounded-2xl bg-brand-500 hover:bg-brand-600 px-6 py-3.5 text-xs font-bold text-white shadow-lg shadow-brand-500/25 transition-all cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 hover:bg-brand-700 px-6 py-3 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
             >
               <Sparkles className="h-4 w-4 text-amber-200" />
               <span>Masuk Sebagai Master Administrator</span>
             </button>
             <Link
               href="/"
-              className="w-full flex items-center justify-center gap-2 rounded-2xl border border-slate-800 bg-slate-800/60 hover:bg-slate-800 px-6 py-3 text-xs font-bold text-slate-300 transition-colors"
+              className="w-full flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 px-6 py-2.5 text-xs font-bold text-slate-700 transition-colors"
             >
               <ArrowRight className="h-3.5 w-3.5 rotate-180" />
               <span>Kembali ke Marketplace Publik</span>
@@ -219,14 +219,14 @@ export default function StandaloneAdminDashboard() {
       label: 'Pusat Mediasi Sengketa',
       icon: AlertTriangle,
       badge: disputes.length > 0 ? `${disputes.length}` : null,
-      badgeColor: 'bg-rose-500 text-white'
+      badgeColor: 'bg-rose-100 text-rose-800 border border-rose-200'
     },
     {
       id: 'kyc',
       label: 'Verifikasi KYC KTP',
       icon: UserCheck,
       badge: kycQueue.filter((u) => !u.isKycVerified).length > 0 ? `${kycQueue.filter((u) => !u.isKycVerified).length}` : null,
-      badgeColor: 'bg-amber-500 text-slate-950 font-black'
+      badgeColor: 'bg-amber-100 text-amber-900 border border-amber-200 font-extrabold'
     },
     {
       id: 'payouts',
@@ -238,15 +238,16 @@ export default function StandaloneAdminDashboard() {
       id: 'listings',
       label: 'Moderasi Iklan & Katalog',
       icon: Package,
-      badge: `${listings.length}`
+      badge: `${listings.length}`,
+      badgeColor: 'bg-slate-100 text-slate-600 border border-slate-200'
     }
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col lg:flex-row antialiased text-slate-900">
-      {/* 1. STANDALONE ADMIN SIDEBAR (Desktop & Mobile Drawer) */}
+    <div className="min-h-screen bg-slate-50 flex flex-col lg:flex-row antialiased text-slate-900">
+      {/* 1. STANDALONE LIGHT ADMIN SIDEBAR (Desktop & Mobile Drawer) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-72 bg-slate-950 text-slate-300 flex flex-col justify-between border-r border-slate-800/80 transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white text-slate-700 flex flex-col justify-between border-r border-slate-200/80 shadow-2xs transition-transform duration-300 lg:translate-x-0 ${
           isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -254,12 +255,12 @@ export default function StandaloneAdminDashboard() {
           {/* Brand Logo & Back-Office Badge */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-600 text-white font-black shadow-md shadow-brand-600/30">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 border border-brand-200 shadow-2xs">
                 <ShieldCheck className="h-6 w-6" />
               </div>
               <div>
-                <span className="font-black text-sm text-white tracking-wider block">JBB.ADMIN</span>
-                <span className="text-[10px] text-brand-400 font-bold uppercase tracking-wider block">
+                <span className="font-black text-sm text-slate-900 tracking-wider block">JBB.ADMIN</span>
+                <span className="text-[10px] text-brand-700 font-bold uppercase tracking-wider block">
                   Escrow Control Center
                 </span>
               </div>
@@ -267,14 +268,14 @@ export default function StandaloneAdminDashboard() {
 
             <button
               onClick={() => setIsMobileSidebarOpen(false)}
-              className="lg:hidden p-1.5 rounded-xl bg-slate-900 text-slate-400 hover:text-white"
+              className="lg:hidden p-1.5 rounded-xl bg-slate-100 text-slate-500 hover:text-slate-900"
             >
               <X className="h-5 w-5" />
             </button>
           </div>
 
           {/* Navigation Menu Items */}
-          <nav className="space-y-1 text-xs">
+          <nav className="space-y-1.5 text-xs">
             <span className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
               Modul Operasional
             </span>
@@ -290,21 +291,21 @@ export default function StandaloneAdminDashboard() {
                     setActiveTab(item.id as any);
                     setIsMobileSidebarOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-2xl font-bold transition-all cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl font-bold transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-brand-600 text-white shadow-md shadow-brand-600/25'
-                      : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+                      ? 'bg-brand-50 text-brand-800 border border-brand-200 shadow-2xs'
+                      : 'text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 border border-transparent'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon className={`h-4 w-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                    <Icon className={`h-4 w-4 ${isActive ? 'text-brand-600' : 'text-slate-400'}`} />
                     <span>{item.label}</span>
                   </div>
 
                   {item.badge && (
                     <span
                       className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                        item.badgeColor || 'bg-slate-800 text-slate-300'
+                        item.badgeColor || 'bg-slate-100 text-slate-600 border border-slate-200'
                       }`}
                     >
                       {item.badge}
@@ -317,7 +318,7 @@ export default function StandaloneAdminDashboard() {
         </div>
 
         {/* Sidebar Bottom: Role Switcher & Back to Marketplace */}
-        <div className="p-5 border-t border-slate-800/80 space-y-3 bg-slate-950/50">
+        <div className="p-4 border-t border-slate-100 space-y-3 bg-slate-50/60">
           <div className="space-y-1.5">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
               Quick Role Switcher:
@@ -331,13 +332,13 @@ export default function StandaloneAdminDashboard() {
               </button>
               <button
                 onClick={loginAsDemoSeller}
-                className="bg-slate-900 hover:bg-slate-800 text-slate-300 py-1.5 rounded-xl text-center cursor-pointer"
+                className="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 py-1.5 rounded-xl text-center cursor-pointer shadow-2xs"
               >
                 🛍️ Penjual
               </button>
               <button
                 onClick={loginAsDemoBuyer}
-                className="bg-slate-900 hover:bg-slate-800 text-slate-300 py-1.5 rounded-xl text-center cursor-pointer"
+                className="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 py-1.5 rounded-xl text-center cursor-pointer shadow-2xs"
               >
                 🛒 Pembeli
               </button>
@@ -346,13 +347,13 @@ export default function StandaloneAdminDashboard() {
 
           <Link
             href="/"
-            className="flex items-center justify-between w-full px-3 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-850 text-xs font-bold text-slate-300 transition-colors"
+            className="flex items-center justify-between w-full px-3 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 hover:text-brand-700 text-xs font-bold text-slate-700 transition-colors shadow-2xs"
           >
             <div className="flex items-center gap-2">
               <Home className="h-4 w-4 text-slate-400" />
-              <span>Buka Marketplace Publik</span>
+              <span>Buka Marketplace</span>
             </div>
-            <ExternalLink className="h-3.5 w-3.5 text-slate-500" />
+            <ExternalLink className="h-3.5 w-3.5 text-slate-400" />
           </Link>
         </div>
       </aside>
@@ -360,7 +361,7 @@ export default function StandaloneAdminDashboard() {
       {/* Backdrop for Mobile Sidebar */}
       {isMobileSidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs lg:hidden"
           onClick={() => setIsMobileSidebarOpen(false)}
         />
       )}
