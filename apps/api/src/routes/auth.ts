@@ -14,6 +14,9 @@ import { signJwt } from '../utils/auth';
 import { authMiddleware } from '../middlewares/auth';
 import type { UserProfile } from '@jbb/types';
 
+// Designated platform super administrator accounts
+const SUPER_ADMIN_EMAILS = ['aldrn.dev@gmail.com', 'admin.rekber@peygo.id'];
+
 interface GoogleTokenInfo {
   email?: string;
   email_verified?: string | boolean;
@@ -87,6 +90,7 @@ export const authRoutes = new Hono<AppEnv>()
         );
       }
 
+      const isSuperAdmin = SUPER_ADMIN_EMAILS.includes(googleUser.email.toLowerCase().trim());
       const db = getDb(c.env.DB);
       const now = new Date().toISOString();
 
@@ -105,17 +109,17 @@ export const authRoutes = new Hono<AppEnv>()
             email: googleUser.email,
             passwordHash: null,
             phone: null,
-            role: 'BUYER' as const,
+            role: (isSuperAdmin ? 'ADMIN' : 'BUYER') as const,
             avatarUrl: googleUser.avatarUrl,
-            isKycVerified: false,
-            isPhoneVerified: false,
-            trustScore: 0,
+            isKycVerified: isSuperAdmin,
+            isPhoneVerified: isSuperAdmin,
+            trustScore: isSuperAdmin ? 100 : 0,
             totalTransactions: 0,
-            ratingAverage: 0,
+            ratingAverage: isSuperAdmin ? 5.0 : 0,
             ratingCount: 0,
             city: null,
             province: null,
-            bio: null,
+            bio: isSuperAdmin ? 'Master Administrator Platform Rekber Peygo' : null,
             nik: null,
             ktpImageUrl: null,
             selfieImageUrl: null,
@@ -142,12 +146,30 @@ export const authRoutes = new Hono<AppEnv>()
             }
           }
           existingUser = newUserRecord;
-        } else if (googleUser.avatarUrl && existingUser.avatarUrl !== googleUser.avatarUrl) {
-          await db
-            .update(schema.users)
-            .set({ avatarUrl: googleUser.avatarUrl, updatedAt: now })
-            .where(eq(schema.users.id, existingUser.id));
-          existingUser.avatarUrl = googleUser.avatarUrl;
+        } else {
+          const updates: Record<string, unknown> = {};
+
+          if (isSuperAdmin && existingUser.role !== 'ADMIN') {
+            updates.role = 'ADMIN';
+            updates.isKycVerified = true;
+            updates.trustScore = 100;
+            existingUser.role = 'ADMIN';
+            existingUser.isKycVerified = true;
+            existingUser.trustScore = 100;
+          }
+
+          if (googleUser.avatarUrl && existingUser.avatarUrl !== googleUser.avatarUrl) {
+            updates.avatarUrl = googleUser.avatarUrl;
+            existingUser.avatarUrl = googleUser.avatarUrl;
+          }
+
+          if (Object.keys(updates).length > 0) {
+            updates.updatedAt = now;
+            await db
+              .update(schema.users)
+              .set(updates)
+              .where(eq(schema.users.id, existingUser.id));
+          }
         }
 
         const userProfile: UserProfile = {
@@ -193,19 +215,23 @@ export const authRoutes = new Hono<AppEnv>()
           name: googleUser.name,
           email: googleUser.email,
           phone: null,
-          role: 'BUYER',
+          role: isSuperAdmin ? 'ADMIN' : 'BUYER',
           avatarUrl:
             googleUser.avatarUrl ||
             `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(googleUser.name)}`,
-          isKycVerified: false,
-          isPhoneVerified: false,
-          trustScore: 0,
+          isKycVerified: isSuperAdmin,
+          isPhoneVerified: isSuperAdmin,
+          trustScore: isSuperAdmin ? 100 : 0,
           totalTransactions: 0,
-          ratingAverage: 0,
+          ratingAverage: isSuperAdmin ? 5.0 : 0,
           ratingCount: 0,
           createdAt: now
         };
         memoryStore.addUser(user);
+      } else if (isSuperAdmin && user.role !== 'ADMIN') {
+        user.role = 'ADMIN';
+        user.isKycVerified = true;
+        user.trustScore = 100;
       }
 
       const token = await signJwt(user, secret);
