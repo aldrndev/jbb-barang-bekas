@@ -108,6 +108,7 @@ function JualBarangContent() {
   const [newImageUrl, setNewImageUrl] = useState('');
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [showMobilePreview, setShowMobilePreview] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -121,7 +122,7 @@ function JualBarangContent() {
   const categories = categoriesData?.data || [];
 
   // Fetch listing if in edit mode
-  const { data: editListingData, isLoading: isLoadingEditData } = useQuery({
+  const { data: editListingData } = useQuery({
     queryKey: ['edit-listing', editId],
     queryFn: () => api.getListingDetail(editId!),
     enabled: isEditMode
@@ -204,13 +205,6 @@ function JualBarangContent() {
     e.preventDefault();
     setIsDragging(false);
     handleFileUpload(e.dataTransfer.files);
-  };
-
-  const handleAddImage = () => {
-    if (newImageUrl.trim()) {
-      setImageUrls([...imageUrls, newImageUrl.trim()]);
-      setNewImageUrl('');
-    }
   };
 
   const handleRemoveImage = (idx: number) => {
@@ -319,19 +313,19 @@ function JualBarangContent() {
 
   if (!user) {
     return (
-      <div className="min-h-[75vh] flex items-center justify-center bg-slate-50 px-4 py-12">
+      <div className="bg-slate-50 px-4 py-12 flex items-center justify-center">
         <div className="mx-auto max-w-md w-full rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 text-center shadow-xs space-y-4">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 border border-brand-100 shadow-xs">
-            <Lock className="h-8 w-8" />
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 border border-brand-100 shadow-xs">
+            <Lock className="h-7 w-7" />
           </div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900">
+          <h1 className="text-lg sm:text-xl font-black text-slate-900">
             {isEditMode ? 'Masuk untuk Mengedit Iklan' : 'Masuk untuk Jual Barang'}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-medium">
+          <p className="text-xs text-slate-500 leading-relaxed font-medium">
             Demi keamanan bersama dan perlindungan anti-penipuan di ekosistem Rekber JBB, Anda harus masuk sebagai penjual terdaftar.
           </p>
 
-          <div className="pt-2 space-y-2.5">
+          <div className="pt-2 space-y-2">
             <button
               onClick={loginAsDemoSeller}
               className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 px-6 py-3 text-xs font-bold text-white shadow-md shadow-brand-600/25 hover:bg-brand-700 transition-all cursor-pointer"
@@ -368,9 +362,9 @@ function JualBarangContent() {
         />
 
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 pb-3.5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 pb-3">
           <div className="min-w-0">
-            <h1 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <h1 className="text-base sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
               {isEditMode ? (
                 <>
                   <Edit3 className="h-5 w-5 text-brand-600 shrink-0" />
@@ -385,29 +379,93 @@ function JualBarangContent() {
             </h1>
             <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5">
               {isEditMode
-                ? 'Perbarui spesifikasi, foto, harga, atau lokasi titik temu COD barang Anda'
-                : 'Isi detail barang secara jujur dan transparan untuk meningkatkan kepercayaan calon pembeli'}
+                ? 'Perbarui spesifikasi, foto, harga, atau lokasi titik temu COD'
+                : 'Isi detail barang secara jujur untuk meningkatkan kepercayaan calon pembeli'}
             </p>
           </div>
 
-          <div className="flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-800 border border-brand-200 shrink-0 self-start sm:self-auto">
-            <ShieldCheck className="h-3.5 w-3.5 text-brand-600" />
-            <span>Garansi Rekber JBB 48 Jam Aktif</span>
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              type="button"
+              onClick={() => setShowMobilePreview(!showMobilePreview)}
+              className="lg:hidden flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700 border border-slate-200 shadow-2xs cursor-pointer"
+            >
+              <Eye className="h-3.5 w-3.5 text-brand-600" />
+              <span>{showMobilePreview ? 'Tutup Pratinjau' : 'Lihat Pratinjau Iklan'}</span>
+            </button>
+
+            <div className="flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-[11px] sm:text-xs font-bold text-brand-800 border border-brand-200 shrink-0">
+              <ShieldCheck className="h-3.5 w-3.5 text-brand-600" />
+              <span>Garansi Rekber JBB</span>
+            </div>
           </div>
         </div>
 
         {errorMsg && (
-          <div className="rounded-2xl bg-rose-50 p-3.5 text-xs font-bold text-rose-700 border border-rose-200 flex items-center gap-2 animate-in fade-in">
+          <div className="rounded-2xl bg-rose-50 p-3 text-xs font-bold text-rose-700 border border-rose-200 flex items-center gap-2 animate-in fade-in">
             <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
             <span>{errorMsg}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
+        {/* Mobile Expandable Live Preview */}
+        {showMobilePreview && (
+          <div className="lg:hidden rounded-3xl border border-brand-200 bg-white p-4 shadow-xs space-y-3 animate-in fade-in">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+              <span className="text-xs font-black text-slate-900 flex items-center gap-1.5">
+                <Eye className="h-4 w-4 text-brand-600" />
+                <span>Pratinjau Tampilan Iklan di Mobile</span>
+              </span>
+              <span className="rounded-full bg-emerald-50 text-brand-800 border border-brand-200 px-2 py-0.5 text-[9px] font-bold">
+                Live
+              </span>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white shadow-2xs max-w-sm mx-auto">
+              <div className="relative aspect-4/3 w-full bg-slate-100 overflow-hidden">
+                <img
+                  src={primaryImagePreview}
+                  alt="Preview"
+                  className="h-full w-full object-cover"
+                />
+                <div className="absolute top-2.5 left-2.5 z-10">
+                  <ConditionBadge condition={condition} size="sm" />
+                </div>
+                {isCodAvailable && (
+                  <div className="absolute bottom-2 left-2 z-10 rounded-full bg-amber-50/95 px-2.5 py-0.5 text-[9px] font-bold text-amber-950 border border-amber-300 backdrop-blur-md shadow-2xs flex items-center gap-1">
+                    <Zap className="h-2.5 w-2.5 text-amber-600 fill-amber-400" />
+                    <span>Siap COD</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="p-3 space-y-1.5">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
+                  {selectedCategoryName}
+                </span>
+                <h3 className="font-bold text-slate-900 text-xs line-clamp-2 leading-snug">
+                  {title || 'Judul Barang Bekas Anda'}
+                </h3>
+                <div className="flex items-baseline justify-between gap-2 pt-1 border-t border-slate-100">
+                  <span className="text-sm font-black text-brand-700">
+                    {price > 0 ? formatIDR(price) : 'Rp 0'}
+                  </span>
+                  {isNegotiable && (
+                    <span className="rounded bg-amber-50 text-amber-900 border border-amber-200 px-1.5 py-0.2 text-[9px] font-bold">
+                      Bisa Nego
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
           {/* Left Column: Form Fields (7 Cols) */}
-          <div className="lg:col-span-7 space-y-4 sm:space-y-5">
+          <div className="lg:col-span-7 space-y-3.5 sm:space-y-5">
             {/* Section 1: Photos */}
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-4">
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-3.5">
               <div className="flex items-center justify-between">
                 <h2 className="text-xs sm:text-sm font-black text-slate-900 flex items-center gap-2">
                   <Camera className="h-4 w-4 text-brand-600" />
@@ -422,7 +480,7 @@ function JualBarangContent() {
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-6 text-center cursor-pointer transition-all ${
+                className={`relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-4 sm:p-6 text-center cursor-pointer transition-all ${
                   isDragging
                     ? 'border-brand-500 bg-brand-50/60 scale-101'
                     : 'border-slate-300 bg-slate-50/70 hover:border-brand-400 hover:bg-slate-50'
@@ -437,27 +495,27 @@ function JualBarangContent() {
                   className="hidden"
                 />
 
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-xs text-brand-600 border border-slate-200 mb-2.5">
+                <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-white shadow-xs text-brand-600 border border-slate-200 mb-2">
                   {isUploadingImage ? (
-                    <Loader2 className="h-6 w-6 animate-spin text-brand-600" />
+                    <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin text-brand-600" />
                   ) : (
-                    <UploadCloud className="h-6 w-6" />
+                    <UploadCloud className="h-5 w-5 sm:h-6 sm:w-6" />
                   )}
                 </div>
 
                 <div className="space-y-0.5">
                   <p className="text-xs font-bold text-slate-800">
-                    {isUploadingImage ? 'Mengupload ke Cloudflare Storage...' : 'Klik atau Tarik Foto Barang ke Sini'}
+                    {isUploadingImage ? 'Mengupload ke Cloudflare Storage...' : 'Pilih Foto dari Galeri / Kamera'}
                   </p>
                   <p className="text-[10px] text-slate-400 font-medium">
-                    Mendukung JPG, PNG, WEBP (Maks 5 MB per file)
+                    Mendukung JPG, PNG, WEBP (Maks 5 MB per foto)
                   </p>
                 </div>
               </div>
 
               {/* Image Previews Grid */}
               {imageUrls.length > 0 && (
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5 pt-2">
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-1">
                   {imageUrls.map((url, idx) => (
                     <div
                       key={idx}
@@ -466,7 +524,7 @@ function JualBarangContent() {
                       <img src={url} alt={`Upload ${idx + 1}`} className="h-full w-full object-cover" />
                       {idx === 0 && (
                         <span className="absolute bottom-1 left-1 rounded-md bg-brand-600 px-1.5 py-0.2 text-[8px] font-black text-white shadow-xs">
-                          Foto Utama
+                          Utama
                         </span>
                       )}
                       <button
@@ -475,9 +533,9 @@ function JualBarangContent() {
                           e.stopPropagation();
                           handleRemoveImage(idx);
                         }}
-                        className="absolute top-1 right-1 flex h-6 w-6 items-center justify-center rounded-full bg-slate-900/75 text-white hover:bg-rose-600 transition-colors shadow-xs"
+                        className="absolute top-1 right-1 flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full bg-slate-900/75 text-white hover:bg-rose-600 transition-colors shadow-xs"
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Trash2 className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                       </button>
                     </div>
                   ))}
@@ -485,17 +543,17 @@ function JualBarangContent() {
               )}
 
               {/* Demo Photos Quick Preset */}
-              <div className="pt-2 border-t border-slate-100 space-y-1.5">
+              <div className="pt-2 border-t border-slate-100 space-y-1">
                 <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
                   Foto Demo Cepat:
                 </span>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1">
                   {PRESET_DEMO_PHOTOS.map((preset, idx) => (
                     <button
                       key={idx}
                       type="button"
                       onClick={() => handleSetPreset(preset.urls)}
-                      className="rounded-xl border border-slate-200 bg-slate-50 hover:bg-brand-50 hover:border-brand-200 hover:text-brand-700 px-2.5 py-1 text-[11px] font-bold text-slate-600 transition-colors cursor-pointer"
+                      className="rounded-xl border border-slate-200 bg-slate-50 hover:bg-brand-50 hover:border-brand-200 hover:text-brand-700 px-2 py-0.5 text-[10px] sm:text-[11px] font-bold text-slate-600 transition-colors cursor-pointer shadow-2xs"
                     >
                       + {preset.name}
                     </button>
@@ -505,7 +563,7 @@ function JualBarangContent() {
             </div>
 
             {/* Section 2: Info & Category */}
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-4">
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-3.5">
               <h2 className="text-xs sm:text-sm font-black text-slate-900 flex items-center gap-2">
                 <Tag className="h-4 w-4 text-brand-600" />
                 <span>2. Informasi & Spesifikasi Barang</span>
@@ -522,17 +580,17 @@ function JualBarangContent() {
                     placeholder="Contoh: MacBook Pro 14 M1 Pro 16/512GB Space Grey Fullset"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs text-slate-900 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs sm:text-sm text-slate-900 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   <div>
                     <label className="text-xs font-bold text-slate-800">Kategori</label>
                     <select
                       value={categoryId}
                       onChange={(e) => setCategoryId(e.target.value)}
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs text-slate-800 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none cursor-pointer"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs sm:text-sm text-slate-800 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none cursor-pointer"
                     >
                       {categories.map((c) => (
                         <option key={c.id} value={c.id}>
@@ -547,7 +605,7 @@ function JualBarangContent() {
                     <select
                       value={condition}
                       onChange={(e) => setCondition(e.target.value as ItemCondition)}
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs text-slate-800 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none cursor-pointer"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs sm:text-sm text-slate-800 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none cursor-pointer"
                     >
                       <option value="LIKE_NEW">Sangat Mulus (95-99%)</option>
                       <option value="LIGHTLY_USED">Mulus Terawat (85-94%)</option>
@@ -559,7 +617,7 @@ function JualBarangContent() {
 
                 <div>
                   <label className="text-xs font-bold text-slate-800">Kelengkapan Paket</label>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-1.5">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 mt-1">
                     {[
                       { id: 'FULLSET', label: 'Fullset Dus' },
                       { id: 'UNIT_ONLY', label: 'Unit Saja' },
@@ -595,21 +653,21 @@ function JualBarangContent() {
                     placeholder="Jelaskan kondisi barang, riwayat pemakaian, minus baret halus bila ada, battery health, dll..."
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-3 text-xs text-slate-900 mt-1 focus:border-brand-500 focus:bg-white focus:outline-none leading-relaxed"
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 sm:p-3 text-xs text-slate-900 mt-1 focus:border-brand-500 focus:bg-white focus:outline-none leading-relaxed"
                   />
                 </div>
               </div>
             </div>
 
             {/* Section 3: Pricing & Nego */}
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-4">
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-3.5">
               <h2 className="text-xs sm:text-sm font-black text-slate-900 flex items-center gap-2">
                 <Tag className="h-4 w-4 text-brand-600" />
                 <span>3. Harga Jual & Pengaturan Nego</span>
               </h2>
 
               <div className="space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   <div>
                     <label className="text-xs font-bold text-slate-800">
                       Harga Jual (Rp) <span className="text-rose-500">*</span>
@@ -621,18 +679,18 @@ function JualBarangContent() {
                       placeholder="Contoh: 15500000"
                       value={price || ''}
                       onChange={(e) => setPrice(Number(e.target.value))}
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-sm text-brand-700 font-black mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-sm sm:text-base text-brand-700 font-black mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-800">Harga Beli Baru / Pasaran (Opsional)</label>
+                    <label className="text-xs font-bold text-slate-800">Harga Beli Baru (Opsional)</label>
                     <input
                       type="number"
                       placeholder="Contoh: 21000000"
                       value={originalPrice || ''}
                       onChange={(e) => setOriginalPrice(e.target.value ? Number(e.target.value) : undefined)}
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs text-slate-700 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs sm:text-sm text-slate-700 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
                     />
                   </div>
                 </div>
@@ -640,16 +698,16 @@ function JualBarangContent() {
                 {savings && (
                   <div className="rounded-2xl bg-emerald-50 p-2.5 border border-emerald-200 text-xs font-bold text-emerald-800 flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
-                    <span>Pembeli hemat {formatIDR(savings.discount)} ({savings.percent}% lebih murah dari harga baru)!</span>
+                    <span>Pembeli hemat {formatIDR(savings.discount)} ({savings.percent}% lebih murah)!</span>
                   </div>
                 )}
 
                 {/* Nego Switcher */}
-                <div className="rounded-2xl bg-slate-50 p-3.5 border border-slate-200 space-y-2.5">
+                <div className="rounded-2xl bg-slate-50 p-3 border border-slate-200 space-y-2">
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-xs font-bold text-slate-900 block">Izinkan Fitur Nego Rekber</span>
-                      <span className="text-[10px] text-slate-500">Calon pembeli bisa mengajukan penawaran harga</span>
+                      <span className="text-[10px] text-slate-500">Calon pembeli bisa mengajukan tawaran</span>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
@@ -663,8 +721,8 @@ function JualBarangContent() {
                   </div>
 
                   {isNegotiable && (
-                    <div className="pt-2 border-t border-slate-200 space-y-1.5 animate-in fade-in">
-                      <label className="text-[11px] font-bold text-slate-700 block">
+                    <div className="pt-2 border-t border-slate-200 space-y-1 animate-in fade-in">
+                      <label className="text-[10px] font-bold text-slate-700 block">
                         Batas Harga Nego Minimal (Opsional)
                       </label>
                       <input
@@ -681,46 +739,46 @@ function JualBarangContent() {
             </div>
 
             {/* Section 4: Location & COD */}
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-4">
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-3.5">
               <h2 className="text-xs sm:text-sm font-black text-slate-900 flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-brand-600" />
                 <span>4. Lokasi & Titik Temu COD</span>
               </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <div>
-                  <label className="text-[11px] font-bold text-slate-700">Provinsi</label>
+                  <label className="text-[10px] font-bold text-slate-700">Provinsi</label>
                   <input
                     type="text"
                     required
                     value={province}
                     onChange={(e) => setProvince(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold mt-0.5 focus:border-brand-500 focus:bg-white focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-bold text-slate-700">Kota / Kabupaten</label>
+                  <label className="text-[10px] font-bold text-slate-700">Kota / Kabupaten</label>
                   <input
                     type="text"
                     required
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold mt-0.5 focus:border-brand-500 focus:bg-white focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-bold text-slate-700">Kecamatan</label>
+                  <label className="text-[10px] font-bold text-slate-700">Kecamatan</label>
                   <input
                     type="text"
                     required
                     value={district}
                     onChange={(e) => setDistrict(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold mt-0.5 focus:border-brand-500 focus:bg-white focus:outline-none"
                   />
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-slate-50 p-3.5 border border-slate-200 space-y-2.5">
+              <div className="rounded-2xl bg-slate-50 p-3 border border-slate-200 space-y-2">
                 <label className="flex items-center gap-2.5 cursor-pointer">
                   <input
                     type="checkbox"
@@ -733,7 +791,7 @@ function JualBarangContent() {
 
                 {isCodAvailable && (
                   <div className="pt-2 border-t border-slate-200 space-y-1 animate-in fade-in">
-                    <label className="text-[11px] font-bold text-slate-700 block">Titik Temu COD:</label>
+                    <label className="text-[10px] font-bold text-slate-700 block">Titik Temu COD:</label>
                     <input
                       type="text"
                       placeholder="Contoh: Gandaria City / Starbucks Blok M Plaza"
@@ -770,8 +828,8 @@ function JualBarangContent() {
             </button>
           </div>
 
-          {/* Right Column: Sticky Live Preview & Seller Tips (5 Cols) */}
-          <div className="lg:col-span-5 space-y-4 sm:space-y-5 lg:sticky lg:top-24">
+          {/* Right Column: Sticky Live Preview & Seller Tips (Desktop 5 Cols) */}
+          <div className="hidden lg:block lg:col-span-5 space-y-4 sm:space-y-5 lg:sticky lg:top-24">
             {/* Live Preview Card */}
             <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs space-y-3.5">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
@@ -851,7 +909,7 @@ function JualBarangContent() {
               <ul className="space-y-1.5 text-brand-900 leading-relaxed text-[11px]">
                 <li className="flex items-start gap-1.5">
                   <span className="text-brand-600 font-bold">✓</span>
-                  <span><strong>Foto Asli & Jelas:</strong> Upload foto langsung dari kamera HP atau galeri Anda agar calon pembeli yakin barang real & original.</span>
+                  <span><strong>Foto Asli & Jelas:</strong> Upload foto langsung dari kamera HP agar calon pembeli yakin barang real & original.</span>
                 </li>
                 <li className="flex items-start gap-1.5">
                   <span className="text-brand-600 font-bold">✓</span>
