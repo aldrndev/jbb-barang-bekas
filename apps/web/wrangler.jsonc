@@ -10,6 +10,7 @@
   },
   "vars": {
     "NEXT_PUBLIC_API_URL": "https://bekasin-api.corporate-e78.workers.dev",
-    "NEXT_PUBLIC_SITE_URL": "https://peygo.id"
+    "NEXT_PUBLIC_SITE_URL": "https://peygo.id",
+    "NEXT_PUBLIC_GOOGLE_CLIENT_ID": "595496164188-puus9l24v5chr5ucr9uc2plm063vtq68.apps.googleusercontent.com"
   }
 }
