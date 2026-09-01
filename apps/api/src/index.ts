@@ -16,11 +16,37 @@ import type { AppEnv } from './types/env';
 
 const app = new Hono<AppEnv>();
 
-// Global Middlewares
+// 1. CORS Configuration (MUST BE VERY FIRST)
+app.use(
+  '*',
+  cors({
+    origin: (origin) => {
+      if (!origin) return '*';
+      if (
+        origin.includes('localhost') ||
+        origin.includes('127.0.0.1') ||
+        origin.endsWith('.workers.dev') ||
+        origin.endsWith('.pages.dev') ||
+        origin.endsWith('.peygo.id') ||
+        origin === 'https://peygo.id' ||
+        origin === 'https://www.peygo.id'
+      ) {
+        return origin;
+      }
+      return '*';
+    },
+    allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    credentials: true,
+    maxAge: 86400
+  })
+);
+
+// 2. Logging & Pretty JSON
 app.use('*', logger());
 app.use('*', prettyJSON());
 
-// Security Headers Middleware
+// 3. Security Headers Middleware
 app.use('*', async (c, next) => {
   await next();
   c.header('X-Content-Type-Options', 'nosniff');
@@ -29,37 +55,10 @@ app.use('*', async (c, next) => {
   c.header('Referrer-Policy', 'strict-origin-when-cross-origin');
 });
 
-// CORS Configuration
-app.use(
-  '*',
-  cors({
-    origin: (origin) => {
-      if (!origin) return '*';
-      const allowedOrigins = [
-        'https://peygo.id',
-        'https://www.peygo.id',
-        'http://localhost:3000',
-        'http://127.0.0.1:3000'
-      ];
-      if (
-        allowedOrigins.includes(origin) ||
-        origin.endsWith('.peygo.id') ||
-        origin.endsWith('.pages.dev') ||
-        origin.endsWith('.workers.dev')
-      ) {
-        return origin;
-      }
-      return allowedOrigins[0];
-    },
-    allowHeaders: ['Content-Type', 'Authorization'],
-    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-  })
-);
-
-// Global Error Handler
+// 4. Global Error Handler
 app.onError(errorHandler);
 
-// Healthcheck & Welcome
+// 5. Healthcheck
 app.get('/health', (c) => {
   return c.json({
     status: 'healthy',
@@ -69,7 +68,7 @@ app.get('/health', (c) => {
   });
 });
 
-// Mounted Routes
+// 6. Mounted Routes
 const routes = app
   .route('/api/auth', authRoutes)
   .route('/api/categories', categoryRoutes)
