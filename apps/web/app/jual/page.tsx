@@ -10,6 +10,7 @@ import { formatIDR } from '../../lib/utils';
 import { ItemCondition, Completeness } from '@jbb/types';
 import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
+import { getCategoryConfig } from '../../lib/category-spec-config';
 import {
   Upload,
   Plus,
@@ -403,7 +404,9 @@ function JualBarangContent() {
     );
   }
 
-  const selectedCategoryName = categories.find((c) => c.id === categoryId)?.name || categories[0]?.name || 'HP & Gadget';
+  const selectedCategory = categories.find((c) => c.id === categoryId) || categories[0];
+  const selectedCategoryName = selectedCategory?.name || 'HP & Gadget';
+  const categoryConfig = getCategoryConfig(categoryId, selectedCategory?.slug);
   const primaryImagePreview = imageUrls[0] || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80';
 
   return (
@@ -619,31 +622,17 @@ function JualBarangContent() {
               </div>
             </div>
 
-            {/* Section 2: Info & Category */}
+            {/* Section 2: Info & Category (Dynamic based on Category) */}
             <div className="rounded-3xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-3.5">
               <h2 className="text-xs sm:text-sm font-black text-slate-900 flex items-center gap-2">
                 <Tag className="h-4 w-4 text-brand-600" />
-                <span>2. Informasi & Spesifikasi Barang</span>
+                <span>2. Informasi & Spesifikasi ({categoryConfig.name})</span>
               </h2>
 
               <div className="space-y-3">
-                <div>
-                  <label className="text-xs font-bold text-slate-800">
-                    Judul Iklan <span className="text-rose-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Contoh: MacBook Pro 14 M1 Pro 16/512GB Space Grey Fullset"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs sm:text-sm text-slate-900 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
-                  />
-                </div>
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   <div>
-                    <label className="text-xs font-bold text-slate-800">Kategori</label>
+                    <label className="text-xs font-bold text-slate-800">Kategori Barang</label>
                     <select
                       value={categoryId}
                       onChange={(e) => setCategoryId(e.target.value)}
@@ -658,70 +647,86 @@ function JualBarangContent() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-800">Kondisi Fisik</label>
+                    <label className="text-xs font-bold text-slate-800">Kondisi Fisik Unit</label>
                     <select
                       value={condition}
                       onChange={(e) => setCondition(e.target.value as ItemCondition)}
                       className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs sm:text-sm text-slate-800 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none cursor-pointer"
                     >
-                      <option value="NEW">Baru (BNOB / Segel 100%)</option>
-                      <option value="LIKE_NEW">Seperti Baru / Like New (96% Mulus)</option>
-                      <option value="USED_EXCELLENT">Bekas Sangat Mulus (90% Mulus)</option>
-                      <option value="USED_GOOD">Bekas Mulus Terawat (80% Mulus)</option>
-                      <option value="USED_FAIR">Pemakaian Wajar / Ada Lecet (65%)</option>
-                      <option value="PARTS_ONLY">Kondisi Minus / Kanibalan / Sparepart</option>
+                      {categoryConfig.conditionOptions.map((opt) => (
+                        <option key={opt.id} value={opt.id}>
+                          {opt.label}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
 
-                {/* Completeness Section (Aligned with domain enum) */}
                 <div>
-                  <label className="text-xs font-bold text-slate-800">Kelengkapan Paket Unit</label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2 mt-1">
-                    {[
-                      { id: 'FULLSET', label: 'Fullset Dus & Box' },
-                      { id: 'UNIT_ONLY', label: 'Batangan (Hanya Unit)' },
-                      { id: 'BOX_UNIT', label: 'Unit + Dus Saja' },
-                      { id: 'WITH_RECEIPT', label: 'Ada Nota Asli' },
-                      { id: 'ACTIVE_WARRANTY', label: 'Garansi Resmi Aktif' }
-                    ].map((comp) => {
+                  <label className="text-xs font-bold text-slate-800">
+                    Judul Iklan <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder={categoryConfig.defaultTitlePlaceholder}
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs sm:text-sm text-slate-900 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
+                  />
+                </div>
+
+                {/* Completeness Section (Dynamic per category) */}
+                <div>
+                  <label className="text-xs font-bold text-slate-800">
+                    Kelengkapan Paket Unit ({categoryConfig.name})
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-1.5">
+                    {categoryConfig.completenessOptions.map((comp) => {
                       const isChecked = completeness.includes(comp.id as Completeness);
                       return (
                         <button
                           key={comp.id}
                           type="button"
                           onClick={() => toggleCompleteness(comp.id as Completeness)}
-                          className={`rounded-xl border p-2 text-center text-xs font-bold transition-all cursor-pointer ${
+                          className={`rounded-2xl border p-2.5 text-left transition-all cursor-pointer ${
                             isChecked
-                              ? 'border-brand-600 bg-brand-50 text-brand-900 shadow-2xs'
+                              ? 'border-brand-600 bg-brand-50/90 text-brand-950 shadow-2xs'
                               : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'
                           }`}
                         >
-                          {comp.label}
+                          <span className="text-xs font-bold block">{comp.label}</span>
+                          {comp.sublabel && (
+                            <span className="text-[10px] text-slate-500 font-medium block mt-0.5">
+                              {comp.sublabel}
+                            </span>
+                          )}
                         </button>
                       );
                     })}
                   </div>
                 </div>
 
-                {/* Purchase Year, Invoice Receipt & Warranty Sub-section */}
+                {/* Purchase Year, Invoice Receipt & Warranty Sub-section (Dynamic per category) */}
                 <div className="rounded-2xl bg-slate-50 p-3 sm:p-3.5 border border-slate-200 space-y-3">
                   <div className="flex items-center gap-2 border-b border-slate-200/80 pb-2">
                     <Calendar className="h-4 w-4 text-brand-600 shrink-0" />
-                    <span className="text-xs font-bold text-slate-900">Riwayat Pembelian & Keaslian Unit</span>
+                    <span className="text-xs font-bold text-slate-900">
+                      {categoryConfig.historySectionTitle}
+                    </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div className={`grid grid-cols-1 ${categoryConfig.showWarrantyField ? 'sm:grid-cols-2' : ''} gap-2.5`}>
                     <div>
                       <label className="text-[11px] font-bold text-slate-700 block mb-1">
-                        Tahun Pembelian:
+                        {categoryConfig.yearLabel}
                       </label>
                       <select
                         value={purchaseYear}
                         onChange={(e) => setPurchaseYear(Number(e.target.value))}
                         className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 focus:border-brand-500 focus:outline-none cursor-pointer"
                       >
-                        {[2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018].map((yr) => (
+                        {[2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015].map((yr) => (
                           <option key={yr} value={yr}>
                             Tahun {yr}
                           </option>
@@ -729,41 +734,51 @@ function JualBarangContent() {
                       </select>
                     </div>
 
-                    <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
-                        Sisa Masa Garansi (Opsional):
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Contoh: Desember 2025 / iBox"
-                        value={warrantyUntil}
-                        onChange={(e) => setWarrantyUntil(e.target.value)}
-                        className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 focus:border-brand-500 focus:outline-none"
-                      />
-                    </div>
+                    {categoryConfig.showWarrantyField && (
+                      <div>
+                        <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                          {categoryConfig.warrantyLabel}
+                        </label>
+                        <input
+                          type="text"
+                          placeholder={categoryConfig.warrantyPlaceholder}
+                          value={warrantyUntil}
+                          onChange={(e) => setWarrantyUntil(e.target.value)}
+                          className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 focus:border-brand-500 focus:outline-none"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   {/* Has Original Receipt Toggle */}
-                  <label className="flex items-center gap-2.5 cursor-pointer pt-1 border-t border-slate-200/80">
-                    <input
-                      type="checkbox"
-                      checked={hasOriginalReceipt}
-                      onChange={(e) => setHasOriginalReceipt(e.target.checked)}
-                      className="h-4 w-4 rounded text-brand-600 focus:ring-brand-500"
-                    />
-                    <div className="text-xs">
-                      <span className="font-bold text-slate-900 block">Menyertakan Nota / Struk Pembelian Asli</span>
-                      <span className="text-[10px] text-slate-500">Struk resmi toko fisik atau invoice resmi digital</span>
-                    </div>
-                  </label>
+                  {categoryConfig.showReceiptToggle && (
+                    <label className="flex items-center gap-2.5 cursor-pointer pt-1 border-t border-slate-200/80">
+                      <input
+                        type="checkbox"
+                        checked={hasOriginalReceipt}
+                        onChange={(e) => setHasOriginalReceipt(e.target.checked)}
+                        className="h-4 w-4 rounded text-brand-600 focus:ring-brand-500"
+                      />
+                      <div className="text-xs">
+                        <span className="font-bold text-slate-900 block">
+                          {categoryConfig.receiptLabel}
+                        </span>
+                        <span className="text-[10px] text-slate-500">
+                          {categoryConfig.receiptSublabel}
+                        </span>
+                      </div>
+                    </label>
+                  )}
                 </div>
 
-                {/* Technical Specs Editor (Key-Value Dynamic Specs) */}
+                {/* Technical Specs Editor (Key-Value Dynamic Specs per category) */}
                 <div className="rounded-2xl bg-slate-50 p-3 sm:p-3.5 border border-slate-200 space-y-2.5">
                   <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
                     <div className="flex items-center gap-2">
                       <Wrench className="h-4 w-4 text-brand-600 shrink-0" />
-                      <span className="text-xs font-bold text-slate-900">Spesifikasi Teknis Tambahan</span>
+                      <span className="text-xs font-bold text-slate-900">
+                        Spesifikasi Teknis ({categoryConfig.name})
+                      </span>
                     </div>
                     <button
                       type="button"
@@ -777,8 +792,8 @@ function JualBarangContent() {
 
                   {/* Quick Spec Presets */}
                   <div className="flex items-center gap-1 flex-wrap">
-                    <span className="text-[10px] font-bold text-slate-400">Preset Cepat:</span>
-                    {QUICK_SPEC_SUGGESTIONS.map((s, idx) => (
+                    <span className="text-[10px] font-bold text-slate-400">Preset Spek {categoryConfig.name}:</span>
+                    {categoryConfig.suggestedSpecs.map((s, idx) => (
                       <button
                         key={idx}
                         type="button"
@@ -797,14 +812,14 @@ function JualBarangContent() {
                         <div key={idx} className="flex items-center gap-2">
                           <input
                             type="text"
-                            placeholder="Nama Spek (ex: RAM)"
+                            placeholder="Nama Spek (ex: Ukuran)"
                             value={spec.key}
                             onChange={(e) => handleUpdateSpec(idx, 'key', e.target.value)}
                             className="w-1/2 rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 focus:border-brand-500 focus:outline-none"
                           />
                           <input
                             type="text"
-                            placeholder="Nilai (ex: 16 GB)"
+                            placeholder="Nilai (ex: 42 EU / 9 US)"
                             value={spec.value}
                             onChange={(e) => handleUpdateSpec(idx, 'value', e.target.value)}
                             className="w-1/2 rounded-xl border border-slate-300 bg-white p-2 text-xs font-medium text-slate-800 focus:border-brand-500 focus:outline-none"
@@ -829,7 +844,7 @@ function JualBarangContent() {
                   <textarea
                     rows={4}
                     required
-                    placeholder="Jelaskan kondisi barang, riwayat pemakaian, minus baret halus bila ada, battery health, dll..."
+                    placeholder={categoryConfig.defaultDescriptionPlaceholder}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 sm:p-3 text-xs text-slate-900 mt-1 focus:border-brand-500 focus:bg-white focus:outline-none leading-relaxed"

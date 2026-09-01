@@ -12,6 +12,7 @@ import { ConditionBadge } from '../../../components/marketplace/condition-badge'
 import { ListingCard } from '../../../components/marketplace/listing-card';
 import { MakeOfferModal } from '../../../components/marketplace/make-offer-modal';
 import { Breadcrumbs } from '../../../components/layout/breadcrumbs';
+import { getCategoryConfig } from '../../../lib/category-spec-config';
 import {
   ShieldCheck,
   Zap,
@@ -129,6 +130,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
   const primaryImageUrl = images[activeImageIdx]?.url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&auto=format&fit=crop&q=80';
   const completenessList = Array.isArray(listing.completeness) ? listing.completeness : [];
   const specs = listing.specs || {};
+  const categoryConfig = getCategoryConfig(listing.categoryId, listing.category?.slug);
 
   const savingsPercent = listing.originalPrice
     ? Math.round(((listing.originalPrice - effectivePrice) / listing.originalPrice) * 100)
@@ -469,44 +471,68 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                 <ConditionBadge condition={listing.condition} size="sm" />
               </div>
 
-              {/* Structured 2-Column Inspection Badges */}
+              {/* Structured 2-Column Inspection Badges (Dynamic based on Category) */}
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                {/* 1. Kelengkapan Unit */}
                 <div className="flex items-center gap-2 rounded-2xl bg-slate-50 p-2.5 sm:p-3.5 border border-slate-200/80">
                   <Package className="h-4 w-4 text-brand-600 shrink-0" />
                   <div className="min-w-0">
                     <span className="text-[11px] sm:text-xs font-bold text-slate-900 block truncate">
-                      {completenessList.includes('FULLSET') ? 'Fullset Dus & Box' : 'Unit Saja (Batangan)'}
+                      {categoryConfig.completenessOptions.find((o) => completenessList.includes(o.id))?.label ||
+                        (completenessList.includes('FULLSET') ? 'Fullset Original' : 'Unit Saja')}
                     </span>
                     <span className="text-[10px] text-slate-400 block truncate">
-                      {completenessList.includes('FULLSET') ? 'Lengkap aksesoris' : 'Tanpa dus'}
+                      {categoryConfig.completenessOptions.find((o) => completenessList.includes(o.id))?.sublabel ||
+                        (completenessList.includes('FULLSET') ? 'Lengkap aksesoris' : 'Tanpa kemasan')}
                     </span>
                   </div>
                 </div>
 
+                {/* 2. Legalitas / Nota / Invoice Toko */}
                 <div className="flex items-center gap-2 rounded-2xl bg-slate-50 p-2.5 sm:p-3.5 border border-slate-200/80">
                   <FileText className={`h-4 w-4 shrink-0 ${listing.hasOriginalReceipt ? 'text-brand-600' : 'text-slate-400'}`} />
                   <div className="min-w-0">
                     <span className="text-[11px] sm:text-xs font-bold text-slate-900 block truncate">
-                      {listing.hasOriginalReceipt ? 'Ada Nota Pembelian' : 'Tanpa Nota Toko'}
+                      {listing.hasOriginalReceipt
+                        ? categoryConfig.slug === 'fashion-sepatu'
+                          ? 'Ada Invoice / Struk'
+                          : categoryConfig.slug === 'motor-otomotif'
+                          ? 'Faktur / BPKB Sah'
+                          : 'Ada Nota Pembelian'
+                        : categoryConfig.slug === 'fashion-sepatu'
+                        ? 'Tanpa Invoice Toko'
+                        : categoryConfig.slug === 'motor-otomotif'
+                        ? 'Tanpa Buku Servis'
+                        : 'Tanpa Nota Toko'}
                     </span>
                     <span className="text-[10px] text-slate-400 block truncate">
-                      {listing.hasOriginalReceipt ? 'Struk asli resmi' : 'Garansi habis'}
+                      {listing.hasOriginalReceipt ? 'Bukti pembelian resmi' : 'Verifikasi fisik Rekber'}
                     </span>
                   </div>
                 </div>
 
+                {/* 3. Tahun / Garansi */}
                 <div className="flex items-center gap-2 rounded-2xl bg-slate-50 p-2.5 sm:p-3.5 border border-slate-200/80">
                   <Calendar className="h-4 w-4 text-brand-600 shrink-0" />
                   <div className="min-w-0">
                     <span className="text-[11px] sm:text-xs font-bold text-slate-900 block truncate">
-                      Tahun {listing.purchaseYear || '2023'}
+                      {listing.warrantyUntil
+                        ? `Garansi: ${listing.warrantyUntil}`
+                        : `Tahun ${listing.purchaseYear || '2024'}`}
                     </span>
                     <span className="text-[10px] text-slate-400 block truncate">
-                      Tangan pertama
+                      {listing.warrantyUntil
+                        ? 'Garansi resmi aktif'
+                        : categoryConfig.slug === 'fashion-sepatu'
+                        ? 'Tahun rilis/beli'
+                        : categoryConfig.slug === 'motor-otomotif'
+                        ? 'Tahun perakitan'
+                        : 'Tangan pertama'}
                     </span>
                   </div>
                 </div>
 
+                {/* 4. COD / Pengiriman */}
                 <div className="flex items-center gap-2 rounded-2xl bg-slate-50 p-2.5 sm:p-3.5 border border-slate-200/80">
                   <Zap className="h-4 w-4 text-brand-600 shrink-0" />
                   <div className="min-w-0">
