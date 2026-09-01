@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useWishlist } from '../../context/wishlist-context';
 import { ListingCard } from '../../components/marketplace/listing-card';
@@ -11,21 +11,13 @@ import {
   ShoppingBag,
   Trash2,
   ArrowRight,
-  ShieldCheck,
-  ArrowUpDown
+  ShieldCheck
 } from 'lucide-react';
 
 export default function WishlistPage() {
   const { wishlistItems, wishlistCount, clearWishlist } = useWishlist();
-  const [sortBy, setSortBy] = useState<'default' | 'price_asc' | 'price_desc'>('default');
 
   const totalValue = wishlistItems.reduce((acc, item) => acc + item.price, 0);
-
-  const sortedItems = [...wishlistItems].sort((a, b) => {
-    if (sortBy === 'price_asc') return a.price - b.price;
-    if (sortBy === 'price_desc') return b.price - a.price;
-    return 0;
-  });
 
   const handleClearWishlist = () => {
     if (confirm('Kosongkan semua barang dari wishlist favorit Anda?')) {
@@ -56,7 +48,7 @@ export default function WishlistPage() {
           )}
         </div>
 
-        {/* 1. Main Wishlist Header Card (Clean without redundant filter pills) */}
+        {/* 1. Main Wishlist Header Card */}
         <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -74,25 +66,9 @@ export default function WishlistPage() {
             </div>
 
             {wishlistCount > 0 && (
-              <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                <div className="text-left sm:text-right">
-                  <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-bold">Total Estimasi:</span>
-                  <span className="text-sm sm:text-base font-black text-brand-700">{formatIDR(totalValue)}</span>
-                </div>
-
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <ArrowUpDown className="h-3.5 w-3.5 text-slate-400" />
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as any)}
-                    aria-label="Urutkan Wishlist"
-                    className="rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-700 focus:outline-none focus:bg-white cursor-pointer"
-                  >
-                    <option value="default">Terbaru Disimpan</option>
-                    <option value="price_asc">Harga Terendah</option>
-                    <option value="price_desc">Harga Tertinggi</option>
-                  </select>
-                </div>
+              <div className="text-left sm:text-right pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-bold">Total Estimasi:</span>
+                <span className="text-sm sm:text-base font-black text-brand-700">{formatIDR(totalValue)}</span>
               </div>
             )}
           </div>
@@ -124,7 +100,7 @@ export default function WishlistPage() {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
-            {sortedItems.map((listing) => (
+            {wishlistItems.map((listing) => (
               <ListingCard key={listing.id} listing={listing} />
             ))}
           </div>
