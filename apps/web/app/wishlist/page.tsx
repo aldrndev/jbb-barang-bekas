@@ -9,35 +9,23 @@ import { formatIDR } from '../../lib/utils';
 import {
   Heart,
   ShoppingBag,
-  Sparkles,
   Trash2,
   ArrowRight,
   ShieldCheck,
-  Zap,
-  Filter,
-  ArrowUpDown,
-  Search,
-  Tag
+  ArrowUpDown
 } from 'lucide-react';
 
 export default function WishlistPage() {
   const { wishlistItems, wishlistCount, clearWishlist } = useWishlist();
-  const [filterType, setFilterType] = useState<'all' | 'cod' | 'nego'>('all');
   const [sortBy, setSortBy] = useState<'default' | 'price_asc' | 'price_desc'>('default');
 
   const totalValue = wishlistItems.reduce((acc, item) => acc + item.price, 0);
 
-  const filteredItems = wishlistItems
-    .filter((item) => {
-      if (filterType === 'cod') return item.isCodAvailable;
-      if (filterType === 'nego') return item.isNegotiable;
-      return true;
-    })
-    .sort((a, b) => {
-      if (sortBy === 'price_asc') return a.price - b.price;
-      if (sortBy === 'price_desc') return b.price - a.price;
-      return 0;
-    });
+  const sortedItems = [...wishlistItems].sort((a, b) => {
+    if (sortBy === 'price_asc') return a.price - b.price;
+    if (sortBy === 'price_desc') return b.price - a.price;
+    return 0;
+  });
 
   const handleClearWishlist = () => {
     if (confirm('Kosongkan semua barang dari wishlist favorit Anda?')) {
@@ -68,8 +56,8 @@ export default function WishlistPage() {
           )}
         </div>
 
-        {/* 1. Main Wishlist Header Card */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-3.5">
+        {/* 1. Main Wishlist Header Card (Clean without redundant filter pills) */}
+        <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 shadow-xs shrink-0">
@@ -80,77 +68,34 @@ export default function WishlistPage() {
                   Wishlist Saya ({wishlistCount})
                 </h1>
                 <p className="text-[11px] sm:text-xs text-slate-500 font-medium truncate">
-                  Pantau penurunan harga dan tawaran nego barang bekas incaran Anda
+                  Daftar barang bekas incaran yang tersimpan di akun Anda
                 </p>
               </div>
             </div>
 
             {wishlistCount > 0 && (
               <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                <div>
-                  <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-bold">Total Nilai Wishlist:</span>
+                <div className="text-left sm:text-right">
+                  <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-bold">Total Estimasi:</span>
                   <span className="text-sm sm:text-base font-black text-brand-700">{formatIDR(totalValue)}</span>
+                </div>
+
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <ArrowUpDown className="h-3.5 w-3.5 text-slate-400" />
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as any)}
+                    aria-label="Urutkan Wishlist"
+                    className="rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-700 focus:outline-none focus:bg-white cursor-pointer"
+                  >
+                    <option value="default">Terbaru Disimpan</option>
+                    <option value="price_asc">Harga Terendah</option>
+                    <option value="price_desc">Harga Tertinggi</option>
+                  </select>
                 </div>
               </div>
             )}
           </div>
-
-          {/* Quick Filter Pills & Sort Bar */}
-          {wishlistCount > 0 && (
-            <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-              {/* Filter Pills */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
-                <button
-                  type="button"
-                  onClick={() => setFilterType('all')}
-                  className={`rounded-2xl px-3 py-1.5 text-xs font-bold whitespace-nowrap transition-all shrink-0 cursor-pointer ${
-                    filterType === 'all'
-                      ? 'bg-slate-900 text-white shadow-xs'
-                      : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'
-                  }`}
-                >
-                  Semua ({wishlistCount})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFilterType('nego')}
-                  className={`rounded-2xl px-3 py-1.5 text-xs font-bold whitespace-nowrap transition-all shrink-0 cursor-pointer ${
-                    filterType === 'nego'
-                      ? 'bg-amber-500 text-white shadow-xs'
-                      : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'
-                  }`}
-                >
-                  Bisa Nego ({wishlistItems.filter((i) => i.isNegotiable).length})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFilterType('cod')}
-                  className={`rounded-2xl px-3 py-1.5 text-xs font-bold whitespace-nowrap transition-all shrink-0 cursor-pointer ${
-                    filterType === 'cod'
-                      ? 'bg-brand-600 text-white shadow-xs'
-                      : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'
-                  }`}
-                >
-                  Siap COD ({wishlistItems.filter((i) => i.isCodAvailable).length})
-                </button>
-              </div>
-
-              {/* Sort Dropdown */}
-              <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
-                <ArrowUpDown className="h-3.5 w-3.5 text-slate-400" />
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
-                  aria-label="Urutkan Wishlist"
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-700 focus:outline-none focus:bg-white cursor-pointer"
-                >
-                  <option value="default">Terbaru Disimpan</option>
-                  <option value="price_asc">Harga Terendah</option>
-                  <option value="price_desc">Harga Tertinggi</option>
-                </select>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* 2. Wishlist Items Grid (Mobile 2-Cols for Compact E-commerce Browsing) */}
@@ -177,20 +122,9 @@ export default function WishlistPage() {
               </Link>
             </div>
           </div>
-        ) : filteredItems.length === 0 ? (
-          <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-xs space-y-2">
-            <p className="text-xs font-bold text-slate-700">Tidak ada barang yang cocok dengan filter ini</p>
-            <button
-              type="button"
-              onClick={() => setFilterType('all')}
-              className="text-xs font-bold text-brand-600 hover:underline cursor-pointer"
-            >
-              Reset Filter
-            </button>
-          </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
-            {filteredItems.map((listing) => (
+            {sortedItems.map((listing) => (
               <ListingCard key={listing.id} listing={listing} />
             ))}
           </div>
