@@ -747,20 +747,27 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
         </div>
 
         {/* Bottom Section: Related / Recommended Listings (Eliminates bottom empty space) */}
+        {/* Bottom Section: Related / Recommended Listings */}
         {relatedListings.length > 0 && (
-          <div className="pt-6 sm:pt-8 border-t border-slate-200">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-base sm:text-lg font-black text-slate-900">
-                  Rekomendasi Barang Bekas Lainnya
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Pilihan barang bekas berkualitas dengan garansi Rekber 100%
-                </p>
+          <div className="mt-8 sm:mt-12 pt-8 sm:pt-10 border-t border-slate-200">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 border border-brand-100 shadow-2xs shrink-0">
+                  <Sparkles className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+                    Rekomendasi Barang Bekas Lainnya
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Pilihan barang bekas berkualitas dengan garansi Rekber 100%
+                  </p>
+                </div>
               </div>
+
               <Link
                 href="/cari"
-                className="flex items-center gap-1 text-xs font-bold text-brand-600 hover:text-brand-700"
+                className="self-start sm:self-auto flex items-center gap-1 text-xs font-bold text-brand-600 hover:text-brand-700 transition-colors"
               >
                 <span>Lihat Semua</span>
                 <ChevronRight className="h-3.5 w-3.5" />
