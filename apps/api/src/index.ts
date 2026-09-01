@@ -11,6 +11,7 @@ import { offerRoutes } from './routes/offers';
 import { orderRoutes } from './routes/orders';
 import { reviewRoutes } from './routes/reviews';
 import { uploadRoutes } from './routes/uploads';
+import { adminRoutes } from './routes/admin';
 
 const app = new Hono<AppEnv>();
 
@@ -47,7 +48,9 @@ const routes = app
   .route('/api/offers', offerRoutes)
   .route('/api/orders', orderRoutes)
   .route('/api/reviews', reviewRoutes)
-  .route('/api/uploads', uploadRoutes);
+  .route('/api/uploads', uploadRoutes)
+  .route('/api/admin', adminRoutes);
 
 export default app;
 export type AppType = typeof routes;
+

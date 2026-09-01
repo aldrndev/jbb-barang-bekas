@@ -13,7 +13,8 @@ import {
   ChevronDown,
   Heart,
   ShoppingBag,
-  Package
+  Package,
+  ShieldAlert
 } from 'lucide-react';
 import { useAuth } from '../../context/auth-context';
 import { useWishlist } from '../../context/wishlist-context';
@@ -211,6 +212,14 @@ export function Navbar() {
                     >
                       <Plus className="h-4 w-4 text-brand-600" />
                       Pasang Iklan Baru
+                    </Link>
+                    <Link
+                      href="/admin"
+                      onClick={() => setIsProfileMenuOpen(false)}
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 bg-amber-50/70 hover:bg-amber-100/70 transition-colors mt-1 border border-amber-200"
+                    >
+                      <ShieldAlert className="h-4 w-4 text-amber-600" />
+                      <span>Portal Admin & Mediasi</span>
                     </Link>
                   </div>
                   <div className="border-t border-slate-200 pt-1">

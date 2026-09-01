@@ -217,6 +217,49 @@ export const api = {
 
   getSellerReviews: (sellerId: string) => request<Review[]>(`/api/reviews/seller/${sellerId}`),
 
+  // Admin Portal Endpoints
+  getAdminStats: () =>
+    request<{
+      escrowHoldingTotal: number;
+      completedPayoutTotal: number;
+      totalGmv: number;
+      activeDisputesCount: number;
+      pendingKycCount: number;
+      totalUsersCount: number;
+      totalListingsCount: number;
+      activeListingsCount: number;
+    }>('/api/admin/stats'),
+
+  getAdminKycQueue: () => request<any[]>('/api/admin/kyc-queue'),
+
+  approveKyc: (userId: string) =>
+    request<any>(`/api/admin/kyc/${userId}/approve`, {
+      method: 'POST'
+    }),
+
+  rejectKyc: (userId: string) =>
+    request<any>(`/api/admin/kyc/${userId}/reject`, {
+      method: 'POST'
+    }),
+
+  getAdminDisputes: () => request<any[]>('/api/admin/disputes'),
+
+  resolveDispute: (orderId: string, action: 'REFUND_BUYER' | 'RELEASE_TO_SELLER', adminNotes?: string) =>
+    request<any>(`/api/admin/disputes/${orderId}/resolve`, {
+      method: 'POST',
+      body: JSON.stringify({ action, adminNotes })
+    }),
+
+  getAdminPayouts: () => request<any[]>('/api/admin/payouts'),
+
+  getAdminListings: () => request<any[]>('/api/admin/listings'),
+
+  updateAdminListingStatus: (listingId: string, status: 'ACTIVE' | 'ARCHIVED' | 'SOLD') =>
+    request<any>(`/api/admin/listings/${listingId}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status })
+    }),
+
   // Cloudflare Storage / R2 Upload
   uploadImage: async (file: File): Promise<ApiResponse<{ url: string; key: string }>> => {
     const token = getAuthToken();
@@ -257,3 +300,4 @@ export const api = {
     }
   }
 };
+

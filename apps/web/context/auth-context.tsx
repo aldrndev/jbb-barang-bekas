@@ -16,6 +16,7 @@ interface AuthContextType {
   logout: () => void;
   loginAsDemoBuyer: () => Promise<void>;
   loginAsDemoSeller: () => Promise<void>;
+  loginAsDemoAdmin: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -74,6 +75,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const loginAsDemoAdmin = async () => {
+    const adminUser: UserProfile = {
+      id: 'usr-admin-master',
+      name: 'Administrator Rekber JBB',
+      email: 'admin.rekber@jbb-marketplace.id',
+      phone: '081199887766',
+      role: 'ADMIN',
+      isKycVerified: true,
+      isPhoneVerified: true,
+      trustScore: 100,
+      totalTransactions: 999,
+      ratingAverage: 5.0,
+      ratingCount: 500,
+      city: 'Jakarta Pusat',
+      province: 'DKI Jakarta',
+      bio: 'Master Administrator & Escrow Dispute Resolution Officer Rekber JBB.',
+      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      createdAt: '2023-01-01T00:00:00Z'
+    };
+    login('admin_master_secret_jwt_token', adminUser);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -86,7 +109,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login,
         logout,
         loginAsDemoBuyer,
-        loginAsDemoSeller
+        loginAsDemoSeller,
+        loginAsDemoAdmin
       }}
     >
       {children}
