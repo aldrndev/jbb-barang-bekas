@@ -40,10 +40,10 @@ export default function WishlistPage() {
             <button
               type="button"
               onClick={handleClearWishlist}
-              className="flex items-center gap-1 rounded-full border border-slate-200 bg-white hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 px-3 py-1 text-[11px] font-bold text-slate-600 transition-colors cursor-pointer shrink-0 shadow-2xs"
+              className="flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 hover:bg-rose-100 px-3.5 py-1.5 text-xs font-bold text-rose-700 transition-colors cursor-pointer shrink-0 shadow-2xs"
             >
-              <Trash2 className="h-3 w-3" />
-              <span>Kosongkan ({wishlistCount})</span>
+              <Trash2 className="h-3.5 w-3.5 text-rose-600" />
+              <span>Hapus Semua Wishlist</span>
             </button>
           )}
         </div>
@@ -74,7 +74,7 @@ export default function WishlistPage() {
           </div>
         </div>
 
-        {/* 2. Wishlist Items Grid (Mobile 2-Cols for Compact E-commerce Browsing) */}
+        {/* 2. Wishlist Items Grid (Mobile 2-Cols with Direct Remove per Card) */}
         {wishlistCount === 0 ? (
           <div className="rounded-3xl border border-slate-200 bg-white p-8 sm:p-12 text-center shadow-xs space-y-4">
             <div className="mx-auto flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-3xl bg-rose-50 text-rose-400 border border-rose-100">
@@ -101,7 +101,7 @@ export default function WishlistPage() {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
             {wishlistItems.map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
+              <ListingCard key={listing.id} listing={listing} showRemoveFromWishlist={true} />
             ))}
           </div>
         )}

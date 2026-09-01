@@ -5,14 +5,15 @@ import Link from 'next/link';
 import type { Listing } from '@jbb/types';
 import { formatIDR, formatTimeAgo } from '../../lib/utils';
 import { ConditionBadge } from './condition-badge';
-import { MapPin, ShieldCheck, Star, Zap, MessageSquareQuote, Heart } from 'lucide-react';
+import { MapPin, ShieldCheck, Star, Zap, MessageSquareQuote, Heart, Trash2 } from 'lucide-react';
 import { useWishlist } from '../../context/wishlist-context';
 
 interface ListingCardProps {
   listing: Listing;
+  showRemoveFromWishlist?: boolean;
 }
 
-export function ListingCard({ listing }: ListingCardProps) {
+export function ListingCard({ listing, showRemoveFromWishlist = false }: ListingCardProps) {
   const { isWishlisted, toggleWishlist } = useWishlist();
   const wishlisted = isWishlisted(listing.id);
 
@@ -47,33 +48,49 @@ export function ListingCard({ listing }: ListingCardProps) {
       </Link>
 
       {/* Floating Wishlist Heart Button */}
-      <button
-        type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          toggleWishlist(listing);
-        }}
-        className={`absolute top-2.5 right-2.5 z-20 flex h-7 w-7 items-center justify-center rounded-full backdrop-blur-md transition-all cursor-pointer shadow-xs ${
-          wishlisted
-            ? 'bg-rose-500 text-white shadow-rose-500/30 scale-105'
-            : 'bg-white/90 text-slate-500 hover:bg-white hover:text-rose-500 border border-slate-200/80'
-        }`}
-        title={wishlisted ? 'Hapus dari Wishlist' : 'Simpan ke Wishlist'}
-      >
-        <Heart className={`h-3.5 w-3.5 ${wishlisted ? 'fill-current' : ''}`} />
-      </button>
+      {/* Floating Wishlist Heart / Trash Button */}
+      {showRemoveFromWishlist ? (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleWishlist(listing);
+          }}
+          className="absolute top-2.5 right-2.5 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-white/95 text-rose-600 hover:bg-rose-500 hover:text-white border border-rose-200 backdrop-blur-md transition-all cursor-pointer shadow-xs"
+          title="Hapus dari Wishlist"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleWishlist(listing);
+          }}
+          className={`absolute top-2.5 right-2.5 z-20 flex h-7 w-7 items-center justify-center rounded-full backdrop-blur-md transition-all cursor-pointer shadow-xs ${
+            wishlisted
+              ? 'bg-rose-500 text-white shadow-rose-500/30 scale-105'
+              : 'bg-white/90 text-slate-500 hover:bg-white hover:text-rose-500 border border-slate-200/80'
+          }`}
+          title={wishlisted ? 'Hapus dari Wishlist' : 'Simpan ke Wishlist'}
+        >
+          <Heart className={`h-3.5 w-3.5 ${wishlisted ? 'fill-current' : ''}`} />
+        </button>
+      )}
 
       {/* Card Content */}
-      <Link href={`/listing/${listing.slug || listing.id}`} className="flex flex-1 flex-col p-4">
+      <Link href={`/listing/${listing.slug || listing.id}`} className="flex flex-1 flex-col p-3.5 sm:p-4">
         {/* Title */}
         <h3 className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-2 leading-snug group-hover:text-brand-600 transition-colors">
           {listing.title}
         </h3>
 
         {/* Price & Badges */}
-        <div className="mt-2.5 flex items-center justify-between gap-1.5 flex-wrap">
-          <div className="text-base sm:text-lg font-black text-slate-900">
+        <div className="mt-2 flex items-center justify-between gap-1.5 flex-wrap">
+          <div className="text-sm sm:text-base font-black text-slate-900">
             {formatIDR(listing.price)}
           </div>
           <div className="flex items-center gap-1 flex-wrap">
@@ -92,7 +109,7 @@ export function ListingCard({ listing }: ListingCardProps) {
         </div>
 
         {/* Seller Info & Location Footer */}
-        <div className="mt-3 flex items-center justify-between border-t border-slate-200/80 pt-2.5 text-[11px] text-slate-500">
+        <div className="mt-2.5 flex items-center justify-between border-t border-slate-200/80 pt-2 text-[10px] sm:text-[11px] text-slate-500">
           <div className="flex items-center gap-1 truncate max-w-30">
             <MapPin className="h-3 w-3 text-slate-400 shrink-0" />
             <span className="truncate">{listing.city}</span>
@@ -104,6 +121,24 @@ export function ListingCard({ listing }: ListingCardProps) {
           </div>
         </div>
       </Link>
+
+      {/* Explicit Bottom Action on Wishlist Page */}
+      {showRemoveFromWishlist && (
+        <div className="border-t border-slate-100 p-2 bg-slate-50/60">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleWishlist(listing);
+            }}
+            className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-rose-200 bg-white hover:bg-rose-50 py-1.5 text-[11px] font-bold text-rose-600 transition-colors cursor-pointer shadow-2xs"
+          >
+            <Trash2 className="h-3 w-3 text-rose-500" />
+            <span>Hapus</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }
