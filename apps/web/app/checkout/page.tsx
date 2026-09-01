@@ -591,7 +591,14 @@ function CheckoutContent() {
               </button>
 
               <p className="text-[10px] text-center text-slate-400 leading-relaxed font-medium">
-                Dengan melanjutkan, Anda menyetujui Ketentuan Rekening Bersama & Jaminan Perlindungan Pembeli Bekasin.
+                Dengan melanjutkan, Anda menyetujui{' '}
+                <Link href="/panduan-rekber" target="_blank" className="underline hover:text-slate-600 font-bold">
+                  Ketentuan Rekening Bersama
+                </Link>{' '}
+                &{' '}
+                <Link href="/syarat-ketentuan" target="_blank" className="underline hover:text-slate-600 font-bold">
+                  Jaminan Perlindungan Pembeli Peygo
+                </Link>.
               </p>
             </div>
           </div>

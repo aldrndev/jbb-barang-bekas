@@ -35,6 +35,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.5
+    },
+    {
+      url: `${baseUrl}/panduan-rekber`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.8
+    },
+    {
+      url: `${baseUrl}/pusat-bantuan`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.7
+    },
+    {
+      url: `${baseUrl}/syarat-ketentuan`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.5
+    },
+    {
+      url: `${baseUrl}/kebijakan-privasi`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.5
     }
   ];
 

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { X, Zap, Shield, Sparkles, Lock, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/auth-context';
 import { PeygoLogoIcon } from '../common/peygo-logo';
@@ -270,7 +271,23 @@ export function AuthModal() {
             {/* Bottom Disclaimer */}
             <div className="pt-2 text-center">
               <p className="text-[11px] text-slate-600 font-medium leading-relaxed">
-                Dengan melanjutkan, Anda menyetujui <span className="text-slate-900 font-bold underline cursor-pointer">Ketentuan Layanan</span> & <span className="text-slate-900 font-bold underline cursor-pointer">Kebijakan Privasi</span> Rekber Peygo.
+                Dengan melanjutkan, Anda menyetujui{' '}
+                <Link
+                  href="/syarat-ketentuan"
+                  onClick={closeAuthModal}
+                  className="text-slate-900 font-bold underline hover:text-brand-600"
+                >
+                  Ketentuan Layanan
+                </Link>{' '}
+                &{' '}
+                <Link
+                  href="/kebijakan-privasi"
+                  onClick={closeAuthModal}
+                  className="text-slate-900 font-bold underline hover:text-brand-600"
+                >
+                  Kebijakan Privasi
+                </Link>{' '}
+                Rekber Peygo.
               </p>
             </div>
           </div>

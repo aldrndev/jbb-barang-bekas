@@ -77,11 +77,11 @@ export function Footer() {
             <span>&copy; {new Date().getFullYear()} PT Peygo Rekber Indonesia.</span>
           </div>
 
-          <div className="flex items-center gap-6">
-            <Link href="#" className="hover:text-emerald-600 transition-colors">Syarat & Ketentuan</Link>
-            <Link href="#" className="hover:text-emerald-600 transition-colors">Kebijakan Privasi</Link>
-            <Link href="#" className="hover:text-emerald-600 transition-colors">Panduan Rekber</Link>
-            <Link href="#" className="hover:text-emerald-600 transition-colors">Pusat Bantuan</Link>
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+            <Link href="/syarat-ketentuan" className="hover:text-emerald-600 transition-colors">Syarat & Ketentuan</Link>
+            <Link href="/kebijakan-privasi" className="hover:text-emerald-600 transition-colors">Kebijakan Privasi</Link>
+            <Link href="/panduan-rekber" className="hover:text-emerald-600 transition-colors">Panduan Rekber</Link>
+            <Link href="/pusat-bantuan" className="hover:text-emerald-600 transition-colors">Pusat Bantuan</Link>
           </div>
         </div>
       </div>
