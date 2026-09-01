@@ -2,7 +2,7 @@ CREATE TABLE `users` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
 	`email` text NOT NULL,
-	`password_hash` text NOT NULL,
+	`password_hash` text,
 	`phone` text,
 	`avatar_url` text,
 	`role` text DEFAULT 'BUYER' NOT NULL,

@@ -1,18 +1,18 @@
+import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
-import type { UserProfile } from '@jbb/types';
+import { eq } from 'drizzle-orm';
 import {
   googleAuthSchema,
+  updateProfileSchema,
   submitKycSchema,
-  updateBankPayoutSchema,
-  updateProfileSchema
+  updateBankPayoutSchema
 } from '@jbb/validators';
-import { eq } from 'drizzle-orm';
-import { Hono } from 'hono';
-import { getDb, schema } from '../db';
-import { authMiddleware } from '../middlewares/auth';
-import { memoryStore } from '../services/store';
 import type { AppEnv } from '../types/env';
+import { getDb, schema } from '../db';
+import { memoryStore } from '../services/store';
 import { signJwt } from '../utils/auth';
+import { authMiddleware } from '../middlewares/auth';
+import type { UserProfile } from '@jbb/types';
 
 interface GoogleTokenInfo {
   email?: string;
@@ -36,7 +36,8 @@ async function verifyGoogleCredential(
     }
 
     const payload = (await res.json()) as GoogleTokenInfo;
-    const isVerified = payload.email_verified === 'true' || payload.email_verified === true;
+    const isVerified =
+      payload.email_verified === 'true' || payload.email_verified === true;
 
     if (!payload.email || !isVerified) {
       return null;
@@ -64,7 +65,7 @@ export const authRoutes = new Hono<AppEnv>()
             success: false,
             error: {
               code: 'INVALID_GOOGLE_AUTH',
-              message: 'Otentikasi Google gagal atau token tidak valid'
+              message: 'Otentikasi Google gagal atau token tidak valid. Silakan coba login kembali.'
             }
           },
           401
@@ -73,12 +74,13 @@ export const authRoutes = new Hono<AppEnv>()
 
       const secret = c.env.JWT_SECRET;
       if (!secret) {
+        console.error('Server Error: JWT_SECRET is not configured in environment variables.');
         return c.json(
           {
             success: false,
             error: {
               code: 'SERVER_CONFIGURATION_ERROR',
-              message: 'Konfigurasi secret token server belum terpasang'
+              message: 'Konfigurasi secret token server belum terpasang. Silakan hubungi admin.'
             }
           },
           500
@@ -125,7 +127,20 @@ export const authRoutes = new Hono<AppEnv>()
             updatedAt: now
           };
 
-          await db.insert(schema.users).values(newUserRecord);
+          try {
+            await db.insert(schema.users).values(newUserRecord);
+          } catch (dbErr: unknown) {
+            const errStr = String(dbErr);
+            // Backward-compatibility: if existing SQLite database has NOT NULL on password_hash
+            if (errStr.includes('password_hash')) {
+              await db.insert(schema.users).values({
+                ...newUserRecord,
+                passwordHash: ''
+              });
+            } else {
+              throw dbErr;
+            }
+          }
           existingUser = newUserRecord;
         } else if (googleUser.avatarUrl && existingUser.avatarUrl !== googleUser.avatarUrl) {
           await db
@@ -201,11 +216,14 @@ export const authRoutes = new Hono<AppEnv>()
         data: { token, user }
       });
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Gagal autentikasi Google';
+      console.error('Google Auth Route Error:', err);
       return c.json(
         {
           success: false,
-          error: { code: 'GOOGLE_AUTH_FAILED', message: errorMessage }
+          error: {
+            code: 'GOOGLE_AUTH_FAILED',
+            message: 'Terjadi kendala saat memproses login Google Anda. Silakan coba kembali beberapa saat lagi.'
+          }
         },
         500
       );
@@ -220,40 +238,45 @@ export const authRoutes = new Hono<AppEnv>()
     });
   })
 
-  .put('/profile', authMiddleware, zValidator('json', updateProfileSchema), async (c) => {
-    const user = c.get('user');
-    if (!user) {
-      return c.json(
-        {
-          success: false,
-          error: { code: 'UNAUTHORIZED', message: 'Unauthorized' }
-        },
-        401
-      );
+  .put(
+    '/profile',
+    authMiddleware,
+    zValidator('json', updateProfileSchema),
+    async (c) => {
+      const user = c.get('user');
+      if (!user) {
+        return c.json(
+          {
+            success: false,
+            error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' }
+          },
+          401
+        );
+      }
+
+      const updates = c.req.valid('json');
+      const db = getDb(c.env.DB);
+      const now = new Date().toISOString();
+
+      if (db) {
+        await db
+          .update(schema.users)
+          .set({
+            ...updates,
+            updatedAt: now
+          })
+          .where(eq(schema.users.id, user.id));
+      }
+
+      Object.assign(user, updates);
+
+      return c.json({
+        success: true,
+        message: 'Profil berhasil diperbarui',
+        data: user
+      });
     }
-
-    const updates = c.req.valid('json');
-    const db = getDb(c.env.DB);
-    const now = new Date().toISOString();
-
-    if (db) {
-      await db
-        .update(schema.users)
-        .set({
-          ...updates,
-          updatedAt: now
-        })
-        .where(eq(schema.users.id, user.id));
-    }
-
-    Object.assign(user, updates);
-
-    return c.json({
-      success: true,
-      message: 'Profil berhasil diperbarui',
-      data: user
-    });
-  })
+  )
 
   .post('/kyc', authMiddleware, zValidator('json', submitKycSchema), async (c) => {
     const user = c.get('user');
@@ -261,7 +284,7 @@ export const authRoutes = new Hono<AppEnv>()
       return c.json(
         {
           success: false,
-          error: { code: 'UNAUTHORIZED', message: 'Unauthorized' }
+          error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' }
         },
         401
       );
@@ -303,7 +326,8 @@ export const authRoutes = new Hono<AppEnv>()
 
     return c.json({
       success: true,
-      message: 'Pengajuan KYC berhasil dikirim! Menunggu persetujuan Admin Mediasi Rekber Peygo.',
+      message:
+        'Pengajuan KYC berhasil dikirim! Menunggu persetujuan Admin Mediasi Rekber Peygo.',
       data: {
         ...user,
         nik,
@@ -315,41 +339,47 @@ export const authRoutes = new Hono<AppEnv>()
     });
   })
 
-  .put('/bank-payout', authMiddleware, zValidator('json', updateBankPayoutSchema), async (c) => {
-    const user = c.get('user');
-    if (!user) {
-      return c.json(
-        {
-          success: false,
-          error: { code: 'UNAUTHORIZED', message: 'Unauthorized' }
-        },
-        401
-      );
+  .put(
+    '/bank-payout',
+    authMiddleware,
+    zValidator('json', updateBankPayoutSchema),
+    async (c) => {
+      const user = c.get('user');
+      if (!user) {
+        return c.json(
+          {
+            success: false,
+            error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' }
+          },
+          401
+        );
+      }
+
+      const { bankName, bankAccountNumber, bankAccountHolder } =
+        c.req.valid('json');
+      const db = getDb(c.env.DB);
+      const now = new Date().toISOString();
+
+      if (db) {
+        await db
+          .update(schema.users)
+          .set({
+            bankName,
+            bankAccountNumber,
+            bankAccountHolder,
+            updatedAt: now
+          })
+          .where(eq(schema.users.id, user.id));
+      }
+
+      user.bankName = bankName;
+      user.bankAccountNumber = bankAccountNumber;
+      user.bankAccountHolder = bankAccountHolder;
+
+      return c.json({
+        success: true,
+        message: 'Rekening pencairan dana berhasil disimpan!',
+        data: user
+      });
     }
-
-    const { bankName, bankAccountNumber, bankAccountHolder } = c.req.valid('json');
-    const db = getDb(c.env.DB);
-    const now = new Date().toISOString();
-
-    if (db) {
-      await db
-        .update(schema.users)
-        .set({
-          bankName,
-          bankAccountNumber,
-          bankAccountHolder,
-          updatedAt: now
-        })
-        .where(eq(schema.users.id, user.id));
-    }
-
-    user.bankName = bankName;
-    user.bankAccountNumber = bankAccountNumber;
-    user.bankAccountHolder = bankAccountHolder;
-
-    return c.json({
-      success: true,
-      message: 'Rekening pencairan dana berhasil disimpan!',
-      data: user
-    });
-  });
+  );

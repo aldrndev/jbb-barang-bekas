@@ -32,7 +32,7 @@
           "name": "password_hash",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "phone": {
