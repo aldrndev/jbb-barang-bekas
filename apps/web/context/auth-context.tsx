@@ -52,6 +52,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setToken(savedToken);
         const parsed = JSON.parse(savedUser) as UserProfile;
         setUser(normalizeUser(parsed));
+
+        // Sync fresh profile in background (role, KYC, etc.)
+        api
+          .getMe()
+          .then((res) => {
+            if (res.success && res.data) {
+              const freshUser = normalizeUser(res.data);
+              setUser(freshUser);
+              localStorage.setItem('jbb_auth_user', JSON.stringify(freshUser));
+            }
+          })
+          .catch(() => {});
       } catch {
         localStorage.removeItem('jbb_auth_token');
         localStorage.removeItem('jbb_auth_user');

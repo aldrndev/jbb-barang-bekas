@@ -109,7 +109,7 @@ export const authRoutes = new Hono<AppEnv>()
             email: googleUser.email,
             passwordHash: null,
             phone: null,
-            role: (isSuperAdmin ? 'ADMIN' : 'BUYER') as const,
+            role: isSuperAdmin ? ('ADMIN' as const) : ('BUYER' as const),
             avatarUrl: googleUser.avatarUrl,
             isKycVerified: isSuperAdmin,
             isPhoneVerified: isSuperAdmin,
@@ -258,6 +258,65 @@ export const authRoutes = new Hono<AppEnv>()
 
   .get('/me', authMiddleware, async (c) => {
     const user = c.get('user');
+    if (!user) {
+      return c.json(
+        {
+          success: false,
+          error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' }
+        },
+        401
+      );
+    }
+
+    const isSuperAdmin = SUPER_ADMIN_EMAILS.includes(user.email.toLowerCase().trim());
+    const db = getDb(c.env.DB);
+
+    if (db) {
+      const [dbUser] = await db
+        .select()
+        .from(schema.users)
+        .where(eq(schema.users.id, user.id))
+        .limit(1);
+
+      if (dbUser) {
+        const userProfile: UserProfile = {
+          id: dbUser.id,
+          name: dbUser.name,
+          email: dbUser.email,
+          phone: dbUser.phone,
+          avatarUrl: dbUser.avatarUrl,
+          role: isSuperAdmin ? 'ADMIN' : dbUser.role,
+          isKycVerified: isSuperAdmin ? true : Boolean(dbUser.isKycVerified),
+          isPhoneVerified: isSuperAdmin ? true : Boolean(dbUser.isPhoneVerified),
+          trustScore: isSuperAdmin ? 100 : dbUser.trustScore,
+          totalTransactions: dbUser.totalTransactions,
+          ratingAverage: dbUser.ratingAverage,
+          ratingCount: dbUser.ratingCount,
+          city: dbUser.city,
+          province: dbUser.province,
+          bio: dbUser.bio,
+          nik: dbUser.nik,
+          ktpImageUrl: dbUser.ktpImageUrl,
+          selfieImageUrl: dbUser.selfieImageUrl,
+          kycSubmittedAt: dbUser.kycSubmittedAt,
+          bankName: dbUser.bankName,
+          bankAccountNumber: dbUser.bankAccountNumber,
+          bankAccountHolder: dbUser.bankAccountHolder,
+          createdAt: dbUser.createdAt
+        };
+        return c.json({
+          success: true,
+          data: userProfile
+        });
+      }
+    }
+
+    if (isSuperAdmin) {
+      user.role = 'ADMIN';
+      user.isKycVerified = true;
+      user.trustScore = 100;
+    }
+
     return c.json({
       success: true,
       data: user
