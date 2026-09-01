@@ -39,8 +39,8 @@ export function ListingCard({ listing }: ListingCardProps) {
 
         {/* COD Pill at bottom of image */}
         {listing.isCodAvailable && (
-          <div className="absolute bottom-2 left-2 z-10 rounded-full bg-white/95 px-2 py-0.5 text-[9px] font-bold text-brand-700 border border-brand-200/80 backdrop-blur-md shadow-2xs flex items-center gap-1">
-            <Zap className="h-2.5 w-2.5 text-brand-600" />
+          <div className="absolute bottom-2 left-2 z-10 rounded-full bg-amber-50/95 px-2.5 py-0.5 text-[9px] font-bold text-amber-950 border border-amber-300 backdrop-blur-md shadow-2xs flex items-center gap-1">
+            <Zap className="h-2.5 w-2.5 text-amber-600 fill-amber-400" />
             <span>Siap COD</span>
           </div>
         )}

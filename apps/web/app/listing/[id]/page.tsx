@@ -234,8 +234,8 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                   <div className="flex items-center gap-2 flex-wrap">
                     <ConditionBadge condition={listing.condition} size="md" />
                     {listing.isCodAvailable && (
-                      <span className="rounded-full bg-brand-50 text-brand-800 border border-brand-200 px-2.5 py-0.5 text-xs font-bold shadow-2xs flex items-center gap-1">
-                        <Zap className="h-3 w-3 text-brand-600" />
+                      <span className="rounded-full bg-amber-50 text-amber-950 border border-amber-300 px-2.5 py-0.5 text-xs font-bold shadow-2xs flex items-center gap-1">
+                        <Zap className="h-3 w-3 text-amber-600 fill-amber-400" />
                         <span>Siap COD</span>
                       </span>
                     )}
@@ -339,8 +339,8 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2 flex-wrap">
                   {listing.isCodAvailable && (
-                    <span className="flex items-center gap-1 rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-bold text-brand-800 border border-brand-200">
-                      <Zap className="h-3 w-3 text-brand-600" />
+                    <span className="flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold text-amber-950 border border-amber-300">
+                      <Zap className="h-3 w-3 text-amber-600 fill-amber-400" />
                       <span>Siap COD</span>
                     </span>
                   )}
@@ -694,8 +694,8 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                       {listing.district}, {listing.city}
                     </span>
                     {listing.isCodAvailable && (
-                      <span className="rounded-full bg-brand-100/80 text-brand-900 px-2 py-0.2 text-[9px] font-black border border-brand-200 flex items-center gap-1 shrink-0">
-                        <Zap className="h-2.5 w-2.5 text-brand-600" />
+                      <span className="rounded-full bg-amber-50 text-amber-950 px-2.5 py-0.5 text-[10px] font-bold border border-amber-300 flex items-center gap-1 shrink-0">
+                        <Zap className="h-2.5 w-2.5 text-amber-600 fill-amber-400" />
                         <span>Siap COD</span>
                       </span>
                     )}

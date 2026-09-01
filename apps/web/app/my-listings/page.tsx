@@ -348,7 +348,7 @@ export default function MyListingsPage() {
                       </span>
 
                       {item.isCodAvailable && (
-                        <span className="rounded-full bg-slate-100 text-slate-600 text-[9px] font-bold px-2 py-0.5 border border-slate-200">
+                        <span className="rounded-full bg-amber-50 text-amber-950 text-[9px] font-bold px-2 py-0.5 border border-amber-300">
                           COD
                         </span>
                       )}
