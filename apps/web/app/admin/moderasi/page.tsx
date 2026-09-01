@@ -66,6 +66,10 @@ export default function AdminModerationPage() {
             <tbody className="divide-y divide-slate-100">
               {listings.map((l: any) => {
                 const cover = l.images?.[0]?.url || 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&auto=format&fit=crop&q=80';
+                const categoryName =
+                  typeof l.category === 'object' && l.category !== null
+                    ? l.category.name
+                    : (typeof l.category === 'string' ? l.category : 'Elektronik');
 
                 return (
                   <tr key={l.id} className="hover:bg-slate-50/80 transition-colors">
@@ -89,7 +93,7 @@ export default function AdminModerationPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="p-4 font-medium text-slate-600">{l.category}</td>
+                    <td className="p-4 font-medium text-slate-600">{categoryName}</td>
                     <td className="p-4 font-black text-brand-700">{formatIDR(l.price)}</td>
                     <td className="p-4">
                       <span className="font-bold text-slate-900 block">{l.seller?.name || 'Penjual'}</span>
