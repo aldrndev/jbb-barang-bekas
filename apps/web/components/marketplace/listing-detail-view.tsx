@@ -702,7 +702,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
           </div>
 
           {/* Right Column: Desktop Transaction Sidebar Card (Sticky on Desktop) */}
-          <div className="hidden lg:block lg:col-span-5 sticky top-20 self-start space-y-4 transform-gpu">
+          <div className="hidden lg:block lg:col-span-5 sticky top-20 self-start space-y-4">
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-md shadow-slate-200/60 space-y-5">
               {/* Special Banner if Accepted Offer exists */}
               {acceptedOffer && (
@@ -953,7 +953,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
       </div>
 
       {/* Floating Bottom Sticky Action Bar (Mobile & Tablet View) */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white/95 backdrop-blur-md px-4 py-3 lg:hidden shadow-2xl transform-gpu">
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white px-4 py-3 lg:hidden shadow-xl">
         <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">
           {/* Price Preview & Chat Button */}
           <div className="flex items-center gap-2.5 min-w-0">

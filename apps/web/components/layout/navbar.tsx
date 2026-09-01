@@ -44,7 +44,7 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md shadow-xs transform-gpu">
+    <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md shadow-xs">
       {/* 1. Mobile Viewport Single-Row Clean Header */}
       <div className="flex h-14 items-center justify-between gap-1.5 px-3 sm:px-4 md:hidden">
         {/* Compact Logo */}

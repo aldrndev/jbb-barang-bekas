@@ -1061,7 +1061,7 @@ function JualBarangContent() {
           </div>
 
           {/* Right Column: Sticky Live Preview & Seller Tips (Desktop 5 Cols) */}
-          <div className="hidden lg:block lg:col-span-5 space-y-4 sm:space-y-5 sticky top-20 self-start transform-gpu">
+          <div className="hidden lg:block lg:col-span-5 space-y-4 sm:space-y-5 sticky top-20 self-start">
             {/* Live Preview Card */}
             <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs space-y-3.5">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">

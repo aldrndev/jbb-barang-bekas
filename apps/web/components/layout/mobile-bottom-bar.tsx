@@ -29,7 +29,7 @@ export function MobileBottomBar() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 block border-t border-slate-200/90 bg-white/95 px-3 pt-1 pb-2 sm:pb-2.5 backdrop-blur-xl md:hidden shadow-lg shadow-slate-900/5 transform-gpu">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 block border-t border-slate-200/90 bg-white/95 px-3 pt-1 pb-2 sm:pb-2.5 backdrop-blur-xl md:hidden shadow-lg shadow-slate-900/5">
       <div className="flex items-center justify-around max-w-md mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
