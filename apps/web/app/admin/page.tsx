@@ -607,66 +607,66 @@ export default function StandaloneAdminDashboard() {
 
         {/* Dashboard Workspace */}
         <main className="p-4 sm:p-8 space-y-6 max-w-7xl w-full mx-auto">
-          {/* Key Metric Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-            <div className="rounded-3xl border border-brand-200 bg-white p-4 sm:p-6 shadow-xs space-y-1.5 relative overflow-hidden">
-              <div className="flex items-center justify-between text-slate-400 text-[10px] sm:text-xs font-bold">
-                <span>Dana Ditahan Rekber</span>
-                <div className="h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
-              </div>
-              <p className="text-base sm:text-2xl font-black text-brand-700">
-                {formatIDR(stats.escrowHoldingTotal)}
-              </p>
-              <span className="text-[10px] text-slate-500 font-medium block">
-                Dana aman dalam perlindungan Rekber JBB
-              </span>
-            </div>
-
-            <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-1.5">
-              <span className="text-slate-400 text-[10px] sm:text-xs font-bold block">
-                Total Pencairan Selesai
-              </span>
-              <p className="text-base sm:text-2xl font-black text-slate-900">
-                {formatIDR(stats.completedPayoutTotal)}
-              </p>
-              <span className="text-[10px] text-emerald-600 font-bold block">
-                ✓ Telah ditransfer ke rekening penjual
-              </span>
-            </div>
-
-            <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-1.5">
-              <div className="flex items-center justify-between text-slate-400 text-[10px] sm:text-xs font-bold">
-                <span>Sengketa / Komplain</span>
-                {stats.activeDisputesCount > 0 && (
-                  <span className="rounded-full bg-rose-100 text-rose-800 text-[9px] font-black px-1.5 py-0.2">
-                    {stats.activeDisputesCount} Kasus
-                  </span>
-                )}
-              </div>
-              <p className="text-base sm:text-2xl font-black text-rose-600">
-                {stats.activeDisputesCount} Pesanan
-              </p>
-              <span className="text-[10px] text-slate-500 font-medium block">
-                Butuh investigasi & putusan mediasi
-              </span>
-            </div>
-
-            <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-1.5">
-              <span className="text-slate-400 text-[10px] sm:text-xs font-bold block">
-                Antrean Verifikasi KYC
-              </span>
-              <p className="text-base sm:text-2xl font-black text-amber-600">
-                {stats.pendingKycCount} Akun
-              </p>
-              <span className="text-[10px] text-slate-500 font-medium block">
-                Menunggu validasi KTP & NIK
-              </span>
-            </div>
-          </div>
-
           {/* TAB CONTENT MODULES */}
           {activeTab === 'overview' && (
-            <div className="space-y-5">
+            <div className="space-y-5 sm:space-y-6">
+              {/* Key Metric Cards */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+                <div className="rounded-3xl border border-brand-200 bg-white p-4 sm:p-6 shadow-xs space-y-1.5 relative overflow-hidden">
+                  <div className="flex items-center justify-between text-slate-400 text-[10px] sm:text-xs font-bold">
+                    <span>Dana Ditahan Rekber</span>
+                    <div className="h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
+                  </div>
+                  <p className="text-base sm:text-2xl font-black text-brand-700">
+                    {formatIDR(stats.escrowHoldingTotal)}
+                  </p>
+                  <span className="text-[10px] text-slate-500 font-medium block">
+                    Dana aman dalam perlindungan Rekber JBB
+                  </span>
+                </div>
+
+                <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-1.5">
+                  <span className="text-slate-400 text-[10px] sm:text-xs font-bold block">
+                    Total Pencairan Selesai
+                  </span>
+                  <p className="text-base sm:text-2xl font-black text-slate-900">
+                    {formatIDR(stats.completedPayoutTotal)}
+                  </p>
+                  <span className="text-[10px] text-emerald-600 font-bold block">
+                    ✓ Telah ditransfer ke rekening penjual
+                  </span>
+                </div>
+
+                <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-1.5">
+                  <div className="flex items-center justify-between text-slate-400 text-[10px] sm:text-xs font-bold">
+                    <span>Sengketa / Komplain</span>
+                    {stats.activeDisputesCount > 0 && (
+                      <span className="rounded-full bg-rose-100 text-rose-800 text-[9px] font-black px-1.5 py-0.2">
+                        {stats.activeDisputesCount} Kasus
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-base sm:text-2xl font-black text-rose-600">
+                    {stats.activeDisputesCount} Pesanan
+                  </p>
+                  <span className="text-[10px] text-slate-500 font-medium block">
+                    Butuh investigasi & putusan mediasi
+                  </span>
+                </div>
+
+                <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-1.5">
+                  <span className="text-slate-400 text-[10px] sm:text-xs font-bold block">
+                    Antrean Verifikasi KYC
+                  </span>
+                  <p className="text-base sm:text-2xl font-black text-amber-600">
+                    {stats.pendingKycCount} Akun
+                  </p>
+                  <span className="text-[10px] text-slate-500 font-medium block">
+                    Menunggu validasi KTP & NIK
+                  </span>
+                </div>
+              </div>
+
               <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
                   <div>
