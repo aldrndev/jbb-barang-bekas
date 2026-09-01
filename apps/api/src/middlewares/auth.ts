@@ -2,6 +2,7 @@ import type { MiddlewareHandler } from 'hono';
 import type { AppEnv } from '../types/env';
 import { verifyJwt } from '../utils/auth';
 import { seedUsers } from '@jbb/database';
+import { memoryStore } from '../services/store';
 
 export const authMiddleware: MiddlewareHandler<AppEnv> = async (c, next) => {
   const authHeader = c.req.header('Authorization');
@@ -24,8 +25,8 @@ export const authMiddleware: MiddlewareHandler<AppEnv> = async (c, next) => {
   if (token.includes('admin') || token === 'admin_master_secret_jwt_token') {
     c.set('user', {
       id: 'usr-admin-master',
-      name: 'Administrator Rekber JBB',
-      email: 'admin.rekber@jbb-marketplace.id',
+      name: 'Administrator Rekber Peygo',
+      email: 'admin.rekber@peygo.id',
       phone: '081199887766',
       role: 'ADMIN',
       isKycVerified: true,
@@ -41,37 +42,15 @@ export const authMiddleware: MiddlewareHandler<AppEnv> = async (c, next) => {
   }
 
   if (token === 'buyer_token' || token === 'demo_token') {
-    c.set('user', seedUsers[0] || {
-      id: 'user_1',
-      name: 'Dimas Aditya',
-      email: 'dimas@example.com',
-      role: 'BUYER',
-      isKycVerified: false,
-      isPhoneVerified: true,
-      trustScore: 85,
-      totalTransactions: 5,
-      ratingAverage: 5.0,
-      ratingCount: 10,
-      createdAt: new Date().toISOString()
-    });
+    const buyer = memoryStore.findUserById('usr-buyer-1') || memoryStore.users[0] || seedUsers[0];
+    c.set('user', buyer);
     await next();
     return;
   }
 
   if (token === 'seller_token') {
-    c.set('user', seedUsers[1] || {
-      id: 'user_seller',
-      name: 'Budi Santoso',
-      email: 'budi@example.com',
-      role: 'SELLER',
-      isKycVerified: true,
-      isPhoneVerified: true,
-      trustScore: 98,
-      totalTransactions: 30,
-      ratingAverage: 4.9,
-      ratingCount: 25,
-      createdAt: new Date().toISOString()
-    });
+    const seller = memoryStore.findUserById('usr-seller-1') || memoryStore.users[1] || seedUsers[1];
+    c.set('user', seller);
     await next();
     return;
   }
@@ -92,15 +71,17 @@ export const authMiddleware: MiddlewareHandler<AppEnv> = async (c, next) => {
     );
   }
 
-  // Get user from seed / memory or DB
-  const user = seedUsers.find((u) => u.id === payload.sub) || {
+  // Get user from memory store with live KYC verification status
+  const user = memoryStore.findUserById(payload.sub) || {
     id: payload.sub,
     name: payload.name,
     email: payload.email,
+    phone: (payload as any).phone || '081234567890',
+    avatarUrl: (payload as any).avatarUrl || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
     role: payload.role as any,
-    isKycVerified: false,
-    isPhoneVerified: false,
-    trustScore: 80,
+    isKycVerified: memoryStore.approvedUserIds.has(payload.sub),
+    isPhoneVerified: true,
+    trustScore: memoryStore.approvedUserIds.has(payload.sub) ? 98 : 80,
     totalTransactions: 0,
     ratingAverage: 5.0,
     ratingCount: 0,
@@ -118,14 +99,16 @@ export const optionalAuthMiddleware: MiddlewareHandler<AppEnv> = async (c, next)
     const secret = c.env.JWT_SECRET || 'jbb_marketplace_super_secret_jwt_key_2026';
     const payload = await verifyJwt(token, secret);
     if (payload) {
-      const user = seedUsers.find((u) => u.id === payload.sub) || {
+      const user = memoryStore.findUserById(payload.sub) || {
         id: payload.sub,
         name: payload.name,
         email: payload.email,
+        phone: (payload as any).phone || '081234567890',
+        avatarUrl: (payload as any).avatarUrl || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
         role: payload.role as any,
-        isKycVerified: false,
-        isPhoneVerified: false,
-        trustScore: 80,
+        isKycVerified: memoryStore.approvedUserIds.has(payload.sub),
+        isPhoneVerified: true,
+        trustScore: memoryStore.approvedUserIds.has(payload.sub) ? 98 : 80,
         totalTransactions: 0,
         ratingAverage: 5.0,
         ratingCount: 0,

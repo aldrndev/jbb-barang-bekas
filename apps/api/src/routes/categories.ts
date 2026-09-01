@@ -13,15 +13,30 @@ export const categoryRoutes = new Hono<AppEnv>()
         .from(schema.categories)
         .orderBy(schema.categories.sortOrder);
 
+      const dbListings = await db
+        .select({ categoryId: schema.listings.categoryId })
+        .from(schema.listings)
+        .where(eq(schema.listings.status, 'ACTIVE'));
+
+      const counts: Record<string, number> = {};
+      dbListings.forEach((l) => {
+        counts[l.categoryId] = (counts[l.categoryId] || 0) + 1;
+      });
+
+      const categoriesWithCount = dbCategories.map((cat) => ({
+        ...cat,
+        itemCount: counts[cat.id] || 0
+      }));
+
       return c.json({
         success: true,
-        data: dbCategories
+        data: categoriesWithCount
       });
     }
 
     return c.json({
       success: true,
-      data: memoryStore.categories
+      data: memoryStore.getCategories()
     });
   })
 
@@ -43,13 +58,22 @@ export const categoryRoutes = new Hono<AppEnv>()
         );
       }
 
+      const [countResult] = await db
+        .select()
+        .from(schema.listings)
+        .where(eq(schema.listings.categoryId, category.id));
+
       return c.json({
         success: true,
-        data: category
+        data: {
+          ...category,
+          itemCount: countResult ? 1 : 0
+        }
       });
     }
 
-    const category = memoryStore.categories.find((cat) => cat.slug === slug || cat.id === slug);
+    const categories = memoryStore.getCategories();
+    const category = categories.find((cat) => cat.slug === slug || cat.id === slug);
 
     if (!category) {
       return c.json(

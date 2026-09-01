@@ -6,11 +6,13 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
-import { formatIDR } from '../../lib/utils';
+import { useToast } from '../../context/toast-context';
+import { formatIDR, toTitleCase, cleanTitle, cleanWhitespace } from '../../lib/utils';
 import { ItemCondition, Completeness } from '@jbb/types';
 import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
 import { getCategoryConfig } from '../../lib/category-spec-config';
+import { ALL_PROVINCES, getCitiesByProvince, getDistrictsByCity } from '../../lib/indonesia-locations';
 import {
   Upload,
   Plus,
@@ -42,41 +44,6 @@ import {
   Wrench
 } from 'lucide-react';
 
-const PRESET_DEMO_PHOTOS = [
-  {
-    name: 'iPhone 13 Pro',
-    urls: [
-      'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80'
-    ]
-  },
-  {
-    name: 'MacBook Pro',
-    urls: [
-      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&auto=format&fit=crop&q=80'
-    ]
-  },
-  {
-    name: 'Kamera Sony A6400',
-    urls: [
-      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&auto=format&fit=crop&q=80'
-    ]
-  },
-  {
-    name: 'PS5 Digital',
-    urls: [
-      'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80'
-    ]
-  },
-  {
-    name: 'Nike Dunk Panda',
-    urls: [
-      'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&auto=format&fit=crop&q=80'
-    ]
-  }
-];
-
 const QUICK_SPEC_SUGGESTIONS = [
   'Warna',
   'Kapasitas / Storage',
@@ -95,39 +62,54 @@ function JualBarangContent() {
   const isEditMode = Boolean(editId);
 
   const queryClient = useQueryClient();
-  const { user, openAuthModal, loginAsDemoSeller } = useAuth();
+  const { user, openAuthModal } = useAuth();
+  const toast = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [title, setTitle] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [condition, setCondition] = useState<ItemCondition>('LIKE_NEW');
-  const [completeness, setCompleteness] = useState<Completeness[]>(['FULLSET']);
+  const [completeness, setCompleteness] = useState<Completeness[]>([]);
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState<number>(0);
   const [originalPrice, setOriginalPrice] = useState<number | undefined>(undefined);
   const [isNegotiable, setIsNegotiable] = useState(true);
   const [minOfferPrice, setMinOfferPrice] = useState<number | undefined>(undefined);
   const [purchaseYear, setPurchaseYear] = useState<number>(2024);
-  const [hasOriginalReceipt, setHasOriginalReceipt] = useState(true);
+  const [hasOriginalReceipt, setHasOriginalReceipt] = useState(false);
   const [warrantyUntil, setWarrantyUntil] = useState('');
 
   // Dynamic Specs
-  const [specsList, setSpecsList] = useState<{ key: string; value: string }[]>([
-    { key: 'Warna', value: 'Space Grey' },
-    { key: 'Kapasitas / Storage', value: '256 GB' }
-  ]);
+  const [specsList, setSpecsList] = useState<{ key: string; value: string }[]>([]);
 
   // Location
-  const [province, setProvince] = useState('DKI Jakarta');
-  const [city, setCity] = useState('Jakarta Selatan');
-  const [district, setDistrict] = useState('Kebayoran Baru');
-  const [isCodAvailable, setIsCodAvailable] = useState(true);
+  const [province, setProvince] = useState(user?.province || '');
+  const [city, setCity] = useState(user?.city || '');
+  const [district, setDistrict] = useState('');
+  const [isCodAvailable, setIsCodAvailable] = useState(false);
   const [codMeetingPoint, setCodMeetingPoint] = useState('');
 
-  // Images & Cloudflare Upload
-  const [imageUrls, setImageUrls] = useState<string[]>([
-    'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80'
-  ]);
+  // Computed available cities & districts based on current selection
+  const availableCities = province ? getCitiesByProvince(province) : [];
+  const availableDistricts = province && city ? getDistrictsByCity(province, city) : [];
+
+  const handleProvinceChange = (newProvince: string) => {
+    setProvince(newProvince);
+    const cities = getCitiesByProvince(newProvince);
+    const defaultCity = cities[0] || '';
+    setCity(defaultCity);
+    const districts = defaultCity ? getDistrictsByCity(newProvince, defaultCity) : [];
+    setDistrict(districts[0] || '');
+  };
+
+  const handleCityChange = (newCity: string) => {
+    setCity(newCity);
+    const districts = province ? getDistrictsByCity(province, newCity) : [];
+    setDistrict(districts[0] || '');
+  };
+
+  // Images
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [showMobilePreview, setShowMobilePreview] = useState(false);
@@ -142,6 +124,12 @@ function JualBarangContent() {
   });
 
   const categories = categoriesData?.data || [];
+
+  useEffect(() => {
+    if (categories.length > 0 && !categoryId && !isEditMode) {
+      setCategoryId(categories[0].id);
+    }
+  }, [categories, categoryId, isEditMode]);
 
   // Fetch listing if in edit mode
   const { data: editListingData } = useQuery({
@@ -193,7 +181,7 @@ function JualBarangContent() {
     if (!files || files.length === 0) return;
 
     if (imageUrls.length + files.length > 10) {
-      alert('Maksimal total 10 foto per barang');
+      toast.warning('Maksimal 10 Foto', 'Batas maksimal upload adalah 10 foto per barang.');
       return;
     }
 
@@ -216,7 +204,7 @@ function JualBarangContent() {
       const uploadedUrls = await Promise.all(uploadPromises);
       setImageUrls((prev) => [...prev, ...uploadedUrls]);
     } catch (err: any) {
-      setErrorMsg(err.message || 'Gagal mengupload foto ke Cloudflare Storage');
+      setErrorMsg(err.message || 'Gagal mengunggah foto barang. Pastikan file berupa gambar (JPG, PNG, WEBP) dan coba lagi.');
     } finally {
       setIsUploadingImage(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -241,10 +229,6 @@ function JualBarangContent() {
 
   const handleRemoveImage = (idx: number) => {
     setImageUrls(imageUrls.filter((_, i) => i !== idx));
-  };
-
-  const handleSetPreset = (presetUrls: string[]) => {
-    setImageUrls(presetUrls);
   };
 
   const toggleCompleteness = (val: Completeness) => {
@@ -289,50 +273,71 @@ function JualBarangContent() {
       return;
     }
 
-    if (!title.trim()) {
-      setErrorMsg('Judul barang wajib diisi');
+    if (!title.trim() || title.trim().length < 5) {
+      setErrorMsg('Judul barang minimal 5 karakter');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (!description.trim() || description.trim().length < 20) {
+      setErrorMsg('Deskripsikan kondisi barang secara jujur dan jelas minimal 20 karakter');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (completeness.length === 0) {
+      setErrorMsg('Pilih minimal satu kelengkapan barang (misal: Unit Saja atau Fullset Original)');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     if (price <= 0) {
       setErrorMsg('Harga jual harus lebih dari Rp 0');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     if (imageUrls.length === 0) {
       setErrorMsg('Harap masukkan minimal 1 foto barang');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
-    // Convert specsList to record
+    // Convert specsList to record with clean keys
     const specsRecord: Record<string, string> = {};
     specsList.forEach((s) => {
       if (s.key.trim() && s.value.trim()) {
-        specsRecord[s.key.trim()] = s.value.trim();
+        specsRecord[toTitleCase(s.key)] = s.value.trim();
       }
     });
 
     setErrorMsg(null);
     setIsSubmitting(true);
 
+    const cleanedTitle = cleanTitle(title);
+    const cleanedDescription = cleanWhitespace(description);
+    const cleanedMeetingPoint = isCodAvailable && codMeetingPoint ? toTitleCase(codMeetingPoint) : undefined;
+    const cleanedDistrict = district ? toTitleCase(district) : '';
+    const cleanedWarranty = warrantyUntil ? cleanTitle(warrantyUntil) : undefined;
+
     const payload = {
-      title: title.trim(),
+      title: cleanedTitle,
       categoryId: categoryId || categories[0]?.id || 'cat-gadget',
       condition,
       completeness,
-      description: description.trim() || 'Barang terawat kondisi bagus sesuai foto.',
+      description: cleanedDescription || 'Barang terawat kondisi bagus sesuai foto.',
       price,
       originalPrice: originalPrice || undefined,
       isNegotiable,
       minOfferPrice: isNegotiable && minOfferPrice ? minOfferPrice : undefined,
       purchaseYear: purchaseYear || undefined,
       hasOriginalReceipt,
-      warrantyUntil: warrantyUntil.trim() || undefined,
+      warrantyUntil: cleanedWarranty,
       province,
       city,
-      district,
+      district: cleanedDistrict,
       isCodAvailable,
-      codMeetingPoint: isCodAvailable ? codMeetingPoint || undefined : undefined,
+      codMeetingPoint: cleanedMeetingPoint,
       specs: Object.keys(specsRecord).length > 0 ? specsRecord : undefined,
       imageUrls
     };
@@ -347,7 +352,7 @@ function JualBarangContent() {
           queryClient.invalidateQueries({ queryKey: ['listing', editId] }),
           queryClient.invalidateQueries({ queryKey: ['edit-listing', editId] })
         ]);
-        alert('Perubahan iklan berhasil disimpan!');
+        toast.success('Perubahan Disimpan', 'Iklan barang bekas Anda berhasil diperbarui.');
         router.push(`/listing/${res.data.slug || res.data.id}`);
       } else {
         setErrorMsg(res.error?.message || 'Gagal memperbarui listing. Periksa form Anda.');
@@ -380,23 +385,16 @@ function JualBarangContent() {
             {isEditMode ? 'Masuk untuk Mengedit Iklan' : 'Masuk untuk Jual Barang'}
           </h1>
           <p className="text-xs text-slate-500 leading-relaxed font-medium">
-            Demi keamanan bersama dan perlindungan anti-penipuan di ekosistem Rekber JBB, Anda harus masuk sebagai penjual terdaftar.
+            Demi keamanan bersama dan perlindungan anti-penipuan di ekosistem Rekber Peygo, Anda harus masuk sebagai penjual terdaftar.
           </p>
 
-          <div className="pt-2 space-y-2">
-            <button
-              onClick={loginAsDemoSeller}
-              className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 px-6 py-3 text-xs font-bold text-white shadow-md shadow-brand-600/25 hover:bg-brand-700 transition-all cursor-pointer"
-            >
-              <Sparkles className="h-4 w-4" />
-              <span>Masuk Demo Penjual (Budi)</span>
-            </button>
+          <div className="pt-2">
             <button
               onClick={openAuthModal}
-              className="w-full flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 px-6 py-2.5 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 px-6 py-3 text-xs font-bold text-white shadow-md shadow-brand-600/25 hover:bg-brand-700 transition-all cursor-pointer"
             >
-              <User className="h-3.5 w-3.5" />
-              <span>Masuk Akun Lain</span>
+              <Lock className="h-4 w-4" />
+              <span>Masuk / Daftar Akun Penjual</span>
             </button>
           </div>
         </div>
@@ -407,7 +405,7 @@ function JualBarangContent() {
   const selectedCategory = categories.find((c) => c.id === categoryId) || categories[0];
   const selectedCategoryName = selectedCategory?.name || 'HP & Gadget';
   const categoryConfig = getCategoryConfig(categoryId, selectedCategory?.slug);
-  const primaryImagePreview = imageUrls[0] || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80';
+  const primaryImagePreview = imageUrls[0] || null;
 
   return (
     <div className="bg-slate-50 py-3 sm:py-6 px-3.5 sm:px-6 lg:px-8 pb-6 sm:pb-8">
@@ -456,7 +454,7 @@ function JualBarangContent() {
 
             <div className="flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-[11px] sm:text-xs font-bold text-brand-800 border border-brand-200 shrink-0">
               <ShieldCheck className="h-3.5 w-3.5 text-brand-600" />
-              <span>Garansi Rekber JBB</span>
+              <span>Garansi Rekber Peygo</span>
             </div>
           </div>
         </div>
@@ -483,11 +481,21 @@ function JualBarangContent() {
 
             <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white shadow-2xs max-w-sm mx-auto">
               <div className="relative aspect-4/3 w-full bg-slate-100 overflow-hidden">
-                <img
-                  src={primaryImagePreview}
-                  alt="Preview"
-                  className="h-full w-full object-cover"
-                />
+                {primaryImagePreview ? (
+                  <img
+                    src={primaryImagePreview}
+                    alt={title || 'Pratinjau'}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="h-full w-full flex flex-col items-center justify-center bg-slate-100/90 text-slate-400 gap-1.5 p-4 text-center">
+                    <div className="h-10 w-10 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center text-slate-400">
+                      <ImageIcon className="h-5 w-5" />
+                    </div>
+                    <span className="text-[11px] font-bold text-slate-500">Belum ada foto</span>
+                    <span className="text-[9px] text-slate-400">Upload minimal 1 foto asli</span>
+                  </div>
+                )}
                 <div className="absolute top-2.5 left-2.5 z-10">
                   <ConditionBadge condition={condition} size="sm" />
                 </div>
@@ -521,7 +529,7 @@ function JualBarangContent() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
           {/* Left Column: Form Fields (7 Cols) */}
           <div className="lg:col-span-7 space-y-3.5 sm:space-y-5">
             {/* Section 1: Photos */}
@@ -565,7 +573,7 @@ function JualBarangContent() {
 
                 <div className="space-y-0.5">
                   <p className="text-xs font-bold text-slate-800">
-                    {isUploadingImage ? 'Mengupload ke Cloudflare Storage...' : 'Pilih Foto dari Galeri / Kamera'}
+                    {isUploadingImage ? 'Mengunggah foto barang...' : 'Pilih Foto dari Galeri / Kamera'}
                   </p>
                   <p className="text-[10px] text-slate-400 font-medium">
                     Mendukung JPG, PNG, WEBP (Maks 5 MB per foto)
@@ -601,25 +609,6 @@ function JualBarangContent() {
                   ))}
                 </div>
               )}
-
-              {/* Demo Photos Quick Preset */}
-              <div className="pt-2 border-t border-slate-100 space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
-                  Foto Demo Cepat:
-                </span>
-                <div className="flex flex-wrap gap-1">
-                  {PRESET_DEMO_PHOTOS.map((preset, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => handleSetPreset(preset.urls)}
-                      className="rounded-xl border border-slate-200 bg-slate-50 hover:bg-brand-50 hover:border-brand-200 hover:text-brand-700 px-2 py-0.5 text-[10px] sm:text-[11px] font-bold text-slate-600 transition-colors cursor-pointer shadow-2xs"
-                    >
-                      + {preset.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
             </div>
 
             {/* Section 2: Info & Category (Dynamic based on Category) */}
@@ -672,7 +661,8 @@ function JualBarangContent() {
                     placeholder={categoryConfig.defaultTitlePlaceholder}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs sm:text-sm text-slate-900 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
+                    onBlur={() => setTitle(cleanTitle(title))}
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs sm:text-sm text-slate-900 font-bold placeholder:font-normal placeholder:text-slate-400 mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
                   />
                 </div>
 
@@ -744,7 +734,8 @@ function JualBarangContent() {
                           placeholder={categoryConfig.warrantyPlaceholder}
                           value={warrantyUntil}
                           onChange={(e) => setWarrantyUntil(e.target.value)}
-                          className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 focus:border-brand-500 focus:outline-none"
+                          onBlur={() => setWarrantyUntil(cleanTitle(warrantyUntil))}
+                          className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 placeholder:font-normal placeholder:text-slate-400 focus:border-brand-500 focus:outline-none"
                         />
                       </div>
                     )}
@@ -815,14 +806,15 @@ function JualBarangContent() {
                             placeholder="Nama Spek (ex: Ukuran)"
                             value={spec.key}
                             onChange={(e) => handleUpdateSpec(idx, 'key', e.target.value)}
-                            className="w-1/2 rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 focus:border-brand-500 focus:outline-none"
+                            onBlur={() => handleUpdateSpec(idx, 'key', toTitleCase(spec.key))}
+                            className="w-1/2 rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 placeholder:font-normal placeholder:text-slate-400 focus:border-brand-500 focus:outline-none"
                           />
                           <input
                             type="text"
                             placeholder="Nilai (ex: 42 EU / 9 US)"
                             value={spec.value}
                             onChange={(e) => handleUpdateSpec(idx, 'value', e.target.value)}
-                            className="w-1/2 rounded-xl border border-slate-300 bg-white p-2 text-xs font-medium text-slate-800 focus:border-brand-500 focus:outline-none"
+                            className="w-1/2 rounded-xl border border-slate-300 bg-white p-2 text-xs font-medium text-slate-800 placeholder:font-normal placeholder:text-slate-400 focus:border-brand-500 focus:outline-none"
                           />
                           <button
                             type="button"
@@ -838,16 +830,21 @@ function JualBarangContent() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-800">
-                    Deskripsi & Kejujuran Fisik <span className="text-rose-500">*</span>
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-800">
+                      Deskripsi & Kejujuran Fisik <span className="text-rose-500">*</span>
+                    </label>
+                    <span className={`text-[10px] font-semibold ${description.trim().length >= 20 ? 'text-emerald-600' : 'text-slate-500'}`}>
+                      {description.trim().length}/20 karakter min.
+                    </span>
+                  </div>
                   <textarea
                     rows={4}
                     required
                     placeholder={categoryConfig.defaultDescriptionPlaceholder}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 sm:p-3 text-xs text-slate-900 mt-1 focus:border-brand-500 focus:bg-white focus:outline-none leading-relaxed"
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 sm:p-3 text-xs text-slate-900 placeholder:font-normal placeholder:text-slate-400 mt-1 focus:border-brand-500 focus:bg-white focus:outline-none leading-relaxed"
                   />
                 </div>
               </div>
@@ -873,7 +870,7 @@ function JualBarangContent() {
                       placeholder="Contoh: 15500000"
                       value={price || ''}
                       onChange={(e) => setPrice(Number(e.target.value))}
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-sm sm:text-base text-brand-700 font-black mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-sm sm:text-base text-brand-700 font-black placeholder:font-normal placeholder:text-slate-400 mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
                     />
                   </div>
 
@@ -884,7 +881,7 @@ function JualBarangContent() {
                       placeholder="Contoh: 21000000"
                       value={originalPrice || ''}
                       onChange={(e) => setOriginalPrice(e.target.value ? Number(e.target.value) : undefined)}
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs sm:text-sm text-slate-700 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs sm:text-sm text-slate-700 font-bold placeholder:font-normal placeholder:text-slate-400 mt-1 focus:border-brand-500 focus:bg-white focus:outline-none"
                     />
                   </div>
                 </div>
@@ -910,7 +907,7 @@ function JualBarangContent() {
                         onChange={(e) => setIsNegotiable(e.target.checked)}
                         className="sr-only peer"
                       />
-                      <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600" />
+                      <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600" />
                     </label>
                   </div>
 
@@ -924,7 +921,7 @@ function JualBarangContent() {
                         placeholder="Tawaran di bawah harga ini akan ditolak otomatis..."
                         value={minOfferPrice || ''}
                         onChange={(e) => setMinOfferPrice(e.target.value ? Number(e.target.value) : undefined)}
-                        className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-900 focus:border-brand-500 focus:outline-none"
+                        className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-900 placeholder:font-normal placeholder:text-slate-400 focus:border-brand-500 focus:outline-none"
                       />
                     </div>
                   )}
@@ -939,36 +936,76 @@ function JualBarangContent() {
                 <span>4. Lokasi & Titik Temu COD</span>
               </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 <div>
-                  <label className="text-[10px] font-bold text-slate-700">Provinsi</label>
-                  <input
-                    type="text"
+                  <label className="text-[10px] font-bold text-slate-700 block mb-0.5">
+                    Provinsi <span className="text-rose-500">*</span>
+                  </label>
+                  <select
                     required
                     value={province}
-                    onChange={(e) => setProvince(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold mt-0.5 focus:border-brand-500 focus:bg-white focus:outline-none"
-                  />
+                    onChange={(e) => handleProvinceChange(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold mt-0.5 focus:border-brand-500 focus:bg-white focus:outline-none cursor-pointer"
+                  >
+                    <option value="" disabled>Pilih Provinsi...</option>
+                    {ALL_PROVINCES.map((p) => (
+                      <option key={p} value={p}>
+                        {p}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+
                 <div>
-                  <label className="text-[10px] font-bold text-slate-700">Kota / Kabupaten</label>
-                  <input
-                    type="text"
+                  <label className="text-[10px] font-bold text-slate-700 block mb-0.5">
+                    Kota / Kabupaten <span className="text-rose-500">*</span>
+                  </label>
+                  <select
                     required
+                    disabled={!province}
                     value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold mt-0.5 focus:border-brand-500 focus:bg-white focus:outline-none"
-                  />
+                    onChange={(e) => handleCityChange(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold mt-0.5 focus:border-brand-500 focus:bg-white focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <option value="" disabled>{province ? 'Pilih Kota / Kab...' : 'Pilih Provinsi Dahulu'}</option>
+                    {availableCities.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+
                 <div>
-                  <label className="text-[10px] font-bold text-slate-700">Kecamatan</label>
-                  <input
-                    type="text"
-                    required
-                    value={district}
-                    onChange={(e) => setDistrict(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold mt-0.5 focus:border-brand-500 focus:bg-white focus:outline-none"
-                  />
+                  <label className="text-[10px] font-bold text-slate-700 block mb-0.5">
+                    Kecamatan <span className="text-rose-500">*</span>
+                  </label>
+                  {availableDistricts.length > 0 ? (
+                    <select
+                      required
+                      disabled={!city}
+                      value={district}
+                      onChange={(e) => setDistrict(e.target.value)}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold mt-0.5 focus:border-brand-500 focus:bg-white focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <option value="" disabled>{city ? 'Pilih Kecamatan...' : 'Pilih Kota Dahulu'}</option>
+                      {availableDistricts.map((d) => (
+                        <option key={d} value={d}>
+                          {d}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      required
+                      placeholder="Nama Kecamatan..."
+                      value={district}
+                      onChange={(e) => setDistrict(e.target.value)}
+                      onBlur={() => setDistrict(toTitleCase(district))}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-xs text-slate-800 font-bold placeholder:font-normal placeholder:text-slate-400 mt-0.5 focus:border-brand-500 focus:bg-white focus:outline-none"
+                    />
+                  )}
                 </div>
               </div>
 
@@ -991,7 +1028,8 @@ function JualBarangContent() {
                       placeholder="Contoh: Gandaria City / Starbucks Blok M Plaza"
                       value={codMeetingPoint}
                       onChange={(e) => setCodMeetingPoint(e.target.value)}
-                      className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-900 focus:border-brand-500 focus:outline-none"
+                      onBlur={() => setCodMeetingPoint(toTitleCase(codMeetingPoint))}
+                      className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-900 placeholder:font-normal placeholder:text-slate-400 focus:border-brand-500 focus:outline-none"
                     />
                   </div>
                 )}
@@ -1002,7 +1040,7 @@ function JualBarangContent() {
             <button
               type="submit"
               disabled={isSubmitting || isUploadingImage}
-              className="w-full rounded-2xl bg-brand-600 hover:bg-brand-700 py-3.5 text-xs sm:text-sm font-black text-white shadow-md shadow-brand-600/25 transition-all hover:scale-101 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full rounded-2xl bg-brand-600 hover:bg-brand-700 py-3.5 text-xs sm:text-sm font-black text-white shadow-md shadow-brand-600/25 transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isSubmitting ? (
                 <span>{isEditMode ? 'Menyimpan Perubahan...' : 'Mempublikasikan Iklan...'}</span>
@@ -1023,7 +1061,7 @@ function JualBarangContent() {
           </div>
 
           {/* Right Column: Sticky Live Preview & Seller Tips (Desktop 5 Cols) */}
-          <div className="hidden lg:block lg:col-span-5 space-y-4 sm:space-y-5 lg:sticky lg:top-24">
+          <div className="hidden lg:block lg:col-span-5 space-y-4 sm:space-y-5 sticky top-20 self-start transform-gpu">
             {/* Live Preview Card */}
             <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs space-y-3.5">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
@@ -1031,7 +1069,7 @@ function JualBarangContent() {
                   <Eye className="h-4 w-4 text-brand-600" />
                   <span className="text-xs font-black text-slate-900">Pratinjau Tampilan Iklan</span>
                 </div>
-                <span className="rounded-full bg-emerald-50 text-brand-800 border border-brand-200 px-2 py-0.5 text-[10px] font-bold animate-pulse">
+                <span className="rounded-full bg-emerald-50 text-brand-800 border border-brand-200 px-2 py-0.5 text-[10px] font-bold">
                   Live Preview
                 </span>
               </div>
@@ -1039,11 +1077,21 @@ function JualBarangContent() {
               {/* Mock Product Card in Marketplace */}
               <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white shadow-2xs">
                 <div className="relative aspect-4/3 w-full bg-slate-100 overflow-hidden">
-                  <img
-                    src={primaryImagePreview}
-                    alt="Preview"
-                    className="h-full w-full object-cover transition-transform duration-300"
-                  />
+                  {primaryImagePreview ? (
+                    <img
+                      src={primaryImagePreview}
+                      alt={title || 'Pratinjau'}
+                      className="h-full w-full object-cover transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="h-full w-full flex flex-col items-center justify-center bg-slate-100/90 text-slate-400 gap-1.5 p-4 text-center">
+                      <div className="h-11 w-11 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center text-slate-400">
+                        <ImageIcon className="h-5 w-5" />
+                      </div>
+                      <span className="text-[11px] font-bold text-slate-500">Belum ada foto</span>
+                      <span className="text-[9px] text-slate-400">Upload minimal 1 foto asli barang Anda</span>
+                    </div>
+                  )}
                   <div className="absolute top-2.5 left-2.5 z-10">
                     <ConditionBadge condition={condition} size="sm" />
                   </div>
@@ -1098,7 +1146,7 @@ function JualBarangContent() {
             <div className="rounded-3xl border border-brand-200/80 bg-brand-50/50 p-4 sm:p-5 space-y-2.5 text-xs">
               <h4 className="font-black text-brand-950 flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-brand-700" />
-                <span>Tips Cepat Laku di Rekber JBB</span>
+                <span>Tips Cepat Laku di Rekber Peygo</span>
               </h4>
               <ul className="space-y-1.5 text-brand-900 leading-relaxed text-[11px]">
                 <li className="flex items-start gap-1.5">
@@ -1111,7 +1159,7 @@ function JualBarangContent() {
                 </li>
                 <li className="flex items-start gap-1.5">
                   <span className="text-brand-600 font-bold">✓</span>
-                  <span><strong>Keamanan Rekber:</strong> Pembeli langsung membayar ke Rekber JBB, dana Anda dijamin cair setelah barang tiba & dicek 48 jam.</span>
+                  <span><strong>Keamanan Rekber:</strong> Pembeli langsung membayar ke Rekber Peygo, dana Anda dijamin cair setelah barang tiba & dicek 48 jam.</span>
                 </li>
               </ul>
             </div>

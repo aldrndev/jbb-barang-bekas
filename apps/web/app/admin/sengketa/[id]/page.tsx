@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   RefreshCw,
   Check,
+  CheckCircle2,
   X,
   CreditCard,
   Truck
@@ -118,6 +119,8 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
   const [adminNotes, setAdminNotes] = useState('');
   const [isProcessingAction, setIsProcessingAction] = useState(false);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+  const [confirmModal, setConfirmModal] = useState<'REFUND_BUYER' | 'RELEASE_TO_SELLER' | null>(null);
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; title: string; message: string } | null>(null);
 
   const { data: disputesData } = useQuery({
     queryKey: ['admin-disputes'],
@@ -127,26 +130,30 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
   const disputes = (disputesData?.data && disputesData.data.length > 0) ? disputesData.data : DEFAULT_DISPUTES;
   const dispute = disputes.find((d: any) => d.id === disputeId) || disputes[0];
 
-  const handleResolve = async (action: 'REFUND_BUYER' | 'RELEASE_TO_SELLER') => {
-    const confirmText =
-      action === 'REFUND_BUYER'
-        ? 'Apakah Anda yakin ingin memutuskan REFUND PENUH ke rekening pembeli? Dana escrow akan ditransfer balik.'
-        : 'Apakah Anda yakin ingin memutuskan CAIRKAN DANA ke rekening penjual? Sengketa akan ditutup dan diselesaikan.';
-
-    if (!window.confirm(confirmText)) return;
-
+  const executeResolve = async (action: 'REFUND_BUYER' | 'RELEASE_TO_SELLER') => {
     setIsProcessingAction(true);
+    setConfirmModal(null);
     const res = await api.resolveDispute(dispute.id, action, adminNotes);
     if (res.success) {
-      alert(res.message || 'Putusan sengketa berhasil dieksekusi!');
+      setToast({
+        type: 'success',
+        title: 'Putusan Mediasi Berhasil! 🎉',
+        message: res.message || 'Putusan sengketa berhasil dieksekusi dan dana telah diproses.'
+      });
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['admin-disputes'] }),
         queryClient.invalidateQueries({ queryKey: ['admin-stats'] }),
         queryClient.invalidateQueries({ queryKey: ['admin-payouts'] })
       ]);
-      router.push('/admin/sengketa');
+      setTimeout(() => {
+        router.push('/admin/sengketa');
+      }, 1500);
     } else {
-      alert(res.error?.message || 'Gagal mengeksekusi putusan sengketa');
+      setToast({
+        type: 'error',
+        title: 'Eksekusi Gagal ⚠️',
+        message: res.error?.message || 'Gagal mengeksekusi putusan sengketa'
+      });
     }
     setIsProcessingAction(false);
   };
@@ -168,6 +175,40 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
 
   return (
     <div className="space-y-6 animate-in fade-in">
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed top-6 right-6 z-50 max-w-md animate-in slide-in-from-top-4">
+          <div
+            className={`rounded-2xl border p-4 shadow-2xl backdrop-blur-md flex items-start gap-3.5 ${
+              toast.type === 'success'
+                ? 'bg-slate-900/95 text-white border-emerald-500/50 shadow-emerald-950/40 ring-1 ring-emerald-500/20'
+                : 'bg-slate-900/95 text-white border-rose-500/50 shadow-rose-950/40 ring-1 ring-rose-500/20'
+            }`}
+          >
+            {toast.type === 'success' ? (
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">
+                <CheckCircle2 className="h-5 w-5" />
+              </div>
+            ) : (
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 shrink-0">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
+            )}
+            <div className="space-y-1 flex-1 min-w-0">
+              <h4 className="font-black text-xs text-white tracking-wide">{toast.title}</h4>
+              <p className="text-[11px] text-slate-300 leading-relaxed font-medium">{toast.message}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setToast(null)}
+              className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer shrink-0"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Top Back Navigation Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-3xl border border-slate-200 shadow-xs">
         <Link
@@ -194,7 +235,7 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
       {/* Main Dispute Case Card */}
       <div className="rounded-3xl border-2 border-rose-200 bg-white p-5 sm:p-7 shadow-xs space-y-6">
         {/* Header Case Info */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div className="flex items-center gap-3.5">
             <img
               src={dispute.listing?.imageUrl || dispute.disputeEvidenceUrls?.[0] || 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&auto=format&fit=crop&q=80'}
@@ -224,7 +265,7 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 text-xs">
           {/* Column 1: Buyer Claim & Evidence */}
           <div className="rounded-2xl border border-rose-200 bg-rose-50/40 p-4 sm:p-5 space-y-3.5 shadow-2xs">
-            <div className="flex items-center justify-between border-b border-rose-200/80 pb-2.5">
+            <div className="flex items-center justify-between border-b border-rose-200 pb-2.5">
               <span className="font-black text-rose-900 text-sm flex items-center gap-2">
                 <User className="h-4 w-4 text-rose-600" />
                 <span>Pihak Penggugat (Pembeli)</span>
@@ -314,7 +355,7 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
               <div className="space-y-1 text-[11px] text-slate-600">
                 <p>Kurir: <strong>{dispute.courierName || 'JNE Express'}</strong></p>
                 <p>No. Resi: <strong className="font-mono text-slate-900">{dispute.trackingNumber || 'JNE-882910293'}</strong></p>
-                <div className="pt-1.5 border-t border-slate-100 flex justify-between font-bold text-slate-900 text-xs">
+                <div className="pt-1.5 border-t border-slate-200 flex justify-between font-bold text-slate-900 text-xs">
                   <span>Total Nilai Sengketa:</span>
                   <span className="text-brand-700">{formatIDR(dispute.totalAmount || dispute.amount || 16560000)}</span>
                 </div>
@@ -352,7 +393,7 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
             <button
               type="button"
               disabled={isProcessingAction}
-              onClick={() => handleResolve('REFUND_BUYER')}
+              onClick={() => setConfirmModal('REFUND_BUYER')}
               className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full bg-rose-600 hover:bg-rose-700 px-6 py-3 text-xs font-bold text-white shadow-md shadow-rose-600/25 transition-all cursor-pointer disabled:opacity-50"
             >
               <RefreshCw className="h-4 w-4" />
@@ -362,7 +403,7 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
             <button
               type="button"
               disabled={isProcessingAction}
-              onClick={() => handleResolve('RELEASE_TO_SELLER')}
+              onClick={() => setConfirmModal('RELEASE_TO_SELLER')}
               className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full bg-emerald-600 hover:bg-emerald-700 px-6 py-3 text-xs font-bold text-white shadow-md shadow-emerald-600/25 transition-all cursor-pointer disabled:opacity-50"
             >
               <Check className="h-4 w-4" />
@@ -372,6 +413,85 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
         </div>
       </div>
 
+      {/* Confirmation Modal */}
+      {confirmModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-in fade-in"
+          onClick={() => setConfirmModal(null)}
+        >
+          <div
+            className="relative max-w-md w-full bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 p-6 space-y-4 animate-in zoom-in-95"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between border-b border-slate-200 pb-3">
+              <div className="flex items-center gap-2">
+                <div
+                  className={`flex h-9 w-9 items-center justify-center rounded-xl ${
+                    confirmModal === 'REFUND_BUYER'
+                      ? 'bg-rose-100 text-rose-700'
+                      : 'bg-emerald-100 text-emerald-700'
+                  }`}
+                >
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-900 text-sm">
+                    {confirmModal === 'REFUND_BUYER'
+                      ? 'Konfirmasi Refund Penuh'
+                      : 'Konfirmasi Pencairan ke Penjual'}
+                  </h3>
+                  <span className="text-[11px] text-slate-400">Putusan Resmi Mediasi Bekasin</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setConfirmModal(null)}
+                className="text-slate-400 hover:text-slate-700 p-1 rounded-lg"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5 text-xs text-slate-700 leading-relaxed">
+              <p>
+                {confirmModal === 'REFUND_BUYER'
+                  ? `Apakah Anda yakin ingin memutuskan REFUND PENUH sebesar ${formatIDR(
+                      dispute.totalAmount || dispute.amount || 16560000
+                    )} ke rekening pembeli (${dispute.buyer?.name})?`
+                  : `Apakah Anda yakin ingin memutuskan CAIRKAN DANA sebesar ${formatIDR(
+                      dispute.totalAmount || dispute.amount || 16560000
+                    )} ke rekening bank penjual (${dispute.seller?.name})?`}
+              </p>
+              <p className="text-[11px] text-slate-500 font-medium">
+                Dana escrow akan otomatis disettle seketika dan status kasus sengketa ditutup.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setConfirmModal(null)}
+                className="flex-1 rounded-2xl border border-slate-200 bg-slate-100 hover:bg-slate-200 py-2.5 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                disabled={isProcessingAction}
+                onClick={() => executeResolve(confirmModal)}
+                className={`flex-1 rounded-2xl py-2.5 text-xs font-bold text-white shadow-xs transition-colors cursor-pointer disabled:opacity-50 ${
+                  confirmModal === 'REFUND_BUYER'
+                    ? 'bg-rose-600 hover:bg-rose-700'
+                    : 'bg-emerald-600 hover:bg-emerald-700'
+                }`}
+              >
+                {confirmModal === 'REFUND_BUYER' ? 'Eksekusi Refund' : 'Eksekusi Pencairan'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Image Preview Modal */}
       {previewImageUrl && (
         <div
@@ -379,7 +499,7 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
           onClick={() => setPreviewImageUrl(null)}
         >
           <div className="relative max-w-3xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl p-2" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between p-3 border-b border-slate-100">
+            <div className="flex items-center justify-between p-3 border-b border-slate-200">
               <span className="text-xs font-bold text-slate-800">Bukti Fisik / Unboxing Resolusi Penuh</span>
               <button
                 type="button"

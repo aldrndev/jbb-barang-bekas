@@ -110,33 +110,174 @@ export const seedUsers = [
     ratingCount: 31,
     city: 'Bandung',
     province: 'Jawa Barat',
-    bio: 'Software engineer. Jual laptop & equipment kerja eks-upgrade kantor / pribadi.',
+    bio: 'Software engineer. Jual laptop & workstation equipment eks-upgrade kantor / pribadi.',
     createdAt: '2025-03-15T12:00:00Z',
     updatedAt: '2026-08-30T12:00:00Z'
   },
   {
-    id: 'usr-buyer-1',
+    id: 'usr-seller-3',
     name: 'Dimas Ardiansyah',
     email: 'dimas.ardi@example.com',
     passwordHash: 'argon2_or_bcrypt_mock_hash',
     phone: '082155443322',
     avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-    role: 'BUYER' as const,
+    role: 'SELLER' as const,
+    isKycVerified: true,
+    isPhoneVerified: true,
+    trustScore: 96,
+    totalTransactions: 45,
+    ratingAverage: 4.95,
+    ratingCount: 38,
+    city: 'Surabaya',
+    province: 'Jawa Timur',
+    bio: 'Fotografer & videografer komersial. Unit kamera dan lensa selalu dirawat di dry cabinet elektrik.',
+    createdAt: '2025-05-20T08:00:00Z',
+    updatedAt: '2026-08-30T08:00:00Z'
+  },
+  {
+    id: 'usr-seller-4',
+    name: 'Siti Nurhaliza',
+    email: 'siti.nur@example.com',
+    passwordHash: 'argon2_or_bcrypt_mock_hash',
+    phone: '081233445566',
+    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+    role: 'SELLER' as const,
+    isKycVerified: true,
+    isPhoneVerified: true,
+    trustScore: 94,
+    totalTransactions: 29,
+    ratingAverage: 4.9,
+    ratingCount: 24,
+    city: 'Yogyakarta',
+    province: 'DI Yogyakarta',
+    bio: 'Sneaker enthusiast & vintage fashion collector. Semua item dijamin 100% original authentic.',
+    createdAt: '2025-06-12T09:00:00Z',
+    updatedAt: '2026-08-30T09:00:00Z'
+  },
+  {
+    id: 'usr-seller-5',
+    name: 'Ahmad Fauzi',
+    email: 'ahmad.fauzi@example.com',
+    passwordHash: 'argon2_or_bcrypt_mock_hash',
+    phone: '081977665544',
+    avatarUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80',
+    role: 'SELLER' as const,
+    isKycVerified: true,
+    isPhoneVerified: true,
+    trustScore: 93,
+    totalTransactions: 34,
+    ratingAverage: 4.88,
+    ratingCount: 28,
+    city: 'Tangerang Selatan',
+    province: 'Banten',
+    bio: 'Gamer & PC hardware builder. Jual konsol game dan aksesoris eks pemakaian santai di rumah.',
+    createdAt: '2025-07-04T11:00:00Z',
+    updatedAt: '2026-08-30T11:00:00Z'
+  },
+  {
+    id: 'usr-seller-6',
+    name: 'Dewi Lestari',
+    email: 'dewi.lestari@example.com',
+    passwordHash: 'argon2_or_bcrypt_mock_hash',
+    phone: '081322119988',
+    avatarUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+    role: 'SELLER' as const,
+    isKycVerified: true,
+    isPhoneVerified: true,
+    trustScore: 97,
+    totalTransactions: 22,
+    ratingAverage: 4.92,
+    ratingCount: 19,
+    city: 'Semarang',
+    province: 'Jawa Tengah',
+    bio: 'Home living & kitchen hobbyist. Jual peralatan elektronik rumah tangga mulus eks kado / jarang dipakai.',
+    createdAt: '2025-08-18T14:00:00Z',
+    updatedAt: '2026-08-30T14:00:00Z'
+  },
+  {
+    id: 'usr-seller-7',
+    name: 'Bayu Setiawan',
+    email: 'bayu.setiawan@example.com',
+    passwordHash: 'argon2_or_bcrypt_mock_hash',
+    phone: '085611223344',
+    avatarUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80',
+    role: 'SELLER' as const,
+    isKycVerified: true,
+    isPhoneVerified: true,
+    trustScore: 91,
+    totalTransactions: 18,
+    ratingAverage: 4.85,
+    ratingCount: 15,
+    city: 'Malang',
+    province: 'Jawa Timur',
+    bio: 'Pecinta roda dua & otomotif. Jual motor dan apparel riding original simpanan pribadi.',
+    createdAt: '2025-09-02T16:00:00Z',
+    updatedAt: '2026-08-30T16:00:00Z'
+  },
+  {
+    id: 'usr-seller-8',
+    name: 'Reza Rahardian',
+    email: 'reza.sound@example.com',
+    passwordHash: 'argon2_or_bcrypt_mock_hash',
+    phone: '081788776655',
+    avatarUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
+    role: 'SELLER' as const,
+    isKycVerified: true,
+    isPhoneVerified: true,
+    trustScore: 99,
+    totalTransactions: 27,
+    ratingAverage: 5.0,
+    ratingCount: 23,
+    city: 'Denpasar',
+    province: 'Bali',
+    bio: 'Music producer & audio engineer. Koleksi headphone audiophile dan perlengkapan audio pro.',
+    createdAt: '2025-10-10T13:00:00Z',
+    updatedAt: '2026-08-30T13:00:00Z'
+  },
+  {
+    id: 'usr-seller-9',
+    name: 'Nadia Safitri',
+    email: 'nadia.safitri@example.com',
+    passwordHash: 'argon2_or_bcrypt_mock_hash',
+    phone: '082266778899',
+    avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
+    role: 'SELLER' as const,
     isKycVerified: true,
     isPhoneVerified: true,
     trustScore: 92,
-    totalTransactions: 19,
-    ratingAverage: 5.0,
-    ratingCount: 14,
-    city: 'Surabaya',
-    province: 'Jawa Timur',
-    bio: 'Kolektor kamera dan pecinta thrift jacket.',
-    createdAt: '2025-05-20T08:00:00Z',
-    updatedAt: '2026-08-30T08:00:00Z'
+    totalTransactions: 15,
+    ratingAverage: 4.8,
+    ratingCount: 12,
+    city: 'Medan',
+    province: 'Sumatera Utara',
+    bio: 'UI/UX Designer. Gadget dan aksesoris kerja eks pemakaian pribadi, sangat apik dan mulus.',
+    createdAt: '2025-11-25T15:00:00Z',
+    updatedAt: '2026-08-30T15:00:00Z'
+  },
+  {
+    id: 'usr-seller-10',
+    name: 'Hendro Wijaya',
+    email: 'hendro.wijaya@example.com',
+    passwordHash: 'argon2_or_bcrypt_mock_hash',
+    phone: '081199882233',
+    avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+    role: 'SELLER' as const,
+    isKycVerified: true,
+    isPhoneVerified: true,
+    trustScore: 96,
+    totalTransactions: 41,
+    ratingAverage: 4.93,
+    ratingCount: 35,
+    city: 'Makassar',
+    province: 'Sulawesi Selatan',
+    bio: 'Kolektor gadget & home appliances. Barang selalu dibeli resmi dan disimpan dengan apik di ruang AC.',
+    createdAt: '2025-12-05T10:00:00Z',
+    updatedAt: '2026-08-30T10:00:00Z'
   }
 ];
 
 export const seedListings = [
+  // 1. iPhone 13 Pro
   {
     id: 'item-1',
     sellerId: 'usr-seller-1',
@@ -172,26 +313,96 @@ export const seedListings = [
       trueTone: 'Active'
     }),
     images: [
-      {
-        id: 'img-1-1',
-        listingId: 'item-1',
-        url: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80',
-        isPrimary: true,
-        sortOrder: 1
-      },
-      {
-        id: 'img-1-2',
-        listingId: 'item-1',
-        url: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80',
-        isPrimary: false,
-        sortOrder: 2
-      }
+      { id: 'img-1-1', listingId: 'item-1', url: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
+      { id: 'img-1-2', listingId: 'item-1', url: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 },
+      { id: 'img-1-3', listingId: 'item-1', url: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 3 }
     ],
     createdAt: '2026-08-30T14:30:00Z',
     updatedAt: '2026-08-30T14:30:00Z'
   },
+  // 2. iPhone 14 Pro
   {
     id: 'item-2',
+    sellerId: 'usr-seller-9',
+    categoryId: 'cat-gadget',
+    title: 'iPhone 14 Pro 256GB Deep Purple Resmi iBox Baterai 91%',
+    slug: 'iphone-14-pro-256gb-deep-purple-resmi-ibox-baterai-91',
+    description: 'Dijual iPhone 14 Pro 256GB warna Deep Purple garansi resmi Indonesia. Pemakaian pribadi perempuan, bodi no dent no baret, Dynamic Island dan kamera 48MP berfungsi sempurna. Baterai health 91% masih awet seharian. Fullset dus original.',
+    price: 13900000,
+    originalPrice: 21999000,
+    isNegotiable: true,
+    minOfferPrice: 13200000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'BOX_UNIT']),
+    purchaseYear: 2023,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 512,
+    offerCount: 11,
+    favoriteCount: 63,
+    province: 'Sumatera Utara',
+    city: 'Medan',
+    district: 'Medan Barat',
+    postalCode: '20111',
+    isCodAvailable: true,
+    codMeetingPoint: 'Sun Plaza Medan / Center Point',
+    specs: JSON.stringify({
+      storage: '256 GB',
+      color: 'Deep Purple',
+      batteryHealth: '91%',
+      screen: '6.1 Super Retina XDR 120Hz'
+    }),
+    images: [
+      { id: 'img-2-1', listingId: 'item-2', url: 'https://images.unsplash.com/photo-1663499482523-1c0c1bae4ce1?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
+      { id: 'img-2-2', listingId: 'item-2', url: 'https://images.unsplash.com/photo-1663499482512-c5101031d277?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+    ],
+    createdAt: '2026-08-29T11:00:00Z',
+    updatedAt: '2026-08-29T11:00:00Z'
+  },
+  // 3. Samsung Galaxy S23 Ultra
+  {
+    id: 'item-3',
+    sellerId: 'usr-seller-2',
+    categoryId: 'cat-gadget',
+    title: 'Samsung Galaxy S23 Ultra 5G 12GB / 512GB Phantom Black SEIN',
+    slug: 'samsung-galaxy-s23-ultra-5g-12gb-512gb-phantom-black-sein',
+    description: 'Dijual flagship Samsung Galaxy S23 Ultra 5G RAM 12GB internal lega 512GB garansi resmi SEIN Indonesia. Kamera 200MP dan zoom 100x sangat jernih. S-Pen mulus responsif, layar Dynamic AMOLED 2X no shadow no green line. Lengkap dus dan kabel data ori.',
+    price: 12800000,
+    originalPrice: 21999000,
+    isNegotiable: true,
+    minOfferPrice: 12000000,
+    condition: 'USED_EXCELLENT' as const,
+    completeness: JSON.stringify(['FULLSET', 'BOX_UNIT']),
+    purchaseYear: 2023,
+    warrantyUntil: null,
+    hasOriginalReceipt: false,
+    status: 'ACTIVE' as const,
+    viewCount: 430,
+    offerCount: 6,
+    favoriteCount: 38,
+    province: 'Jawa Barat',
+    city: 'Bandung',
+    district: 'Coblong',
+    postalCode: '40132',
+    isCodAvailable: true,
+    codMeetingPoint: 'Paris Van Java / Ciwalk',
+    specs: JSON.stringify({
+      ram: '12 GB',
+      storage: '512 GB',
+      chipset: 'Snapdragon 8 Gen 2 for Galaxy',
+      color: 'Phantom Black'
+    }),
+    images: [
+      { id: 'img-3-1', listingId: 'item-3', url: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
+      { id: 'img-3-2', listingId: 'item-3', url: 'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+    ],
+    createdAt: '2026-08-28T16:00:00Z',
+    updatedAt: '2026-08-28T16:00:00Z'
+  },
+  // 6. MacBook Pro 14 M1 Pro
+  {
+    id: 'item-6',
     sellerId: 'usr-seller-2',
     categoryId: 'cat-laptop',
     title: 'MacBook Pro 14" M1 Pro 16GB / 512GB Space Grey Fullset Garansi Habis',
@@ -224,26 +435,15 @@ export const seedListings = [
       screenSize: '14.2 Inch Liquid Retina XDR'
     }),
     images: [
-      {
-        id: 'img-2-1',
-        listingId: 'item-2',
-        url: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80',
-        isPrimary: true,
-        sortOrder: 1
-      },
-      {
-        id: 'img-2-2',
-        listingId: 'item-2',
-        url: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&auto=format&fit=crop&q=80',
-        isPrimary: false,
-        sortOrder: 2
-      }
+      { id: 'img-6-1', listingId: 'item-6', url: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
+      { id: 'img-6-2', listingId: 'item-6', url: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
     ],
     createdAt: '2026-08-29T10:00:00Z',
     updatedAt: '2026-08-30T10:00:00Z'
   },
+  // 10. Sony Alpha A6400
   {
-    id: 'item-3',
+    id: 'item-10',
     sellerId: 'usr-seller-1',
     categoryId: 'cat-kamera',
     title: 'Sony Alpha A6400 Body + Lensa Sigma 30mm F1.4 DC DN Shutter Count 4.2k',
@@ -275,20 +475,95 @@ export const seedListings = [
       autofocus: 'Real-time Eye AF'
     }),
     images: [
-      {
-        id: 'img-3-1',
-        listingId: 'item-3',
-        url: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&auto=format&fit=crop&q=80',
-        isPrimary: true,
-        sortOrder: 1
-      }
+      { id: 'img-10-1', listingId: 'item-10', url: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
+      { id: 'img-10-2', listingId: 'item-10', url: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
     ],
     createdAt: '2026-08-28T09:15:00Z',
     updatedAt: '2026-08-28T09:15:00Z'
   },
+  // 14. Vespa Sprint 150
   {
-    id: 'item-4',
-    sellerId: 'usr-seller-2',
+    id: 'item-14',
+    sellerId: 'usr-seller-7',
+    categoryId: 'cat-otomotif',
+    title: 'Vespa Sprint 150 i-Get ABS 2022 Matt Grey Km Rendah 4.800 Pajak Hidup',
+    slug: 'vespa-sprint-150-i-get-abs-2022-matt-grey',
+    description: 'Dijual Vespa Sprint 150 i-Get ABS tahun 2022 warna favorit Grey Titanio (Matt Grey). Odometer baru 4.800 km asli bukan putaran. Servis rutin berkala di bengkel resmi Piaggio Vespa. Kunci master coklat & kunci biru lengkap. Surat-surat lengkap BPKB, STNK, Faktur. Pajak hidup panjang sampai akhir tahun.',
+    price: 43500000,
+    originalPrice: 54800000,
+    isNegotiable: true,
+    minOfferPrice: 41000000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'WITH_RECEIPT']),
+    purchaseYear: 2022,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 720,
+    offerCount: 15,
+    favoriteCount: 95,
+    province: 'Jawa Timur',
+    city: 'Malang',
+    district: 'Klojen',
+    postalCode: '65111',
+    isCodAvailable: true,
+    codMeetingPoint: 'Mall Olympic Garden (MOG) Malang / Ijen Boulevard',
+    specs: JSON.stringify({
+      engine: '150cc i-Get 3-Valves',
+      transmission: 'CVT Otomatis',
+      brakes: 'ABS Front Disc Brake',
+      odometer: '4.800 km'
+    }),
+    images: [
+      { id: 'img-14-1', listingId: 'item-14', url: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
+      { id: 'img-14-2', listingId: 'item-14', url: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+    ],
+    createdAt: '2026-08-29T13:00:00Z',
+    updatedAt: '2026-08-29T13:00:00Z'
+  },
+  // 16. Helm Arai RX-7X
+  {
+    id: 'item-16',
+    sellerId: 'usr-seller-7',
+    categoryId: 'cat-otomotif',
+    title: 'Helm Arai RX-7X Spencer 30th Anniversary Size L Original Mulus 97%',
+    slug: 'helm-arai-rx-7x-spencer-30th-anniversary-size-l',
+    description: 'Helm premium Arai RX-7X motif legendaris Freddie Spencer 30th Anniversary size L (59-60 cm). Kondisi 97% mulus sangat terawat tidak pernah jatuh/kejedot. Busa pipi dan interior wangi kencang dicuci berkala. Kelengkapan sarung helm asli Arai, buku panduan, pelumas silikon, dan dus original.',
+    price: 8700000,
+    originalPrice: 12500000,
+    isNegotiable: true,
+    minOfferPrice: 8000000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'BOX_UNIT']),
+    purchaseYear: 2023,
+    warrantyUntil: null,
+    hasOriginalReceipt: false,
+    status: 'ACTIVE' as const,
+    viewCount: 280,
+    offerCount: 4,
+    favoriteCount: 33,
+    province: 'Jawa Timur',
+    city: 'Malang',
+    district: 'Lowokwaru',
+    postalCode: '65141',
+    isCodAvailable: true,
+    codMeetingPoint: 'Matos Malang / Cafe Soekarno Hatta',
+    specs: JSON.stringify({
+      size: 'L (59-60 cm)',
+      homologation: 'Snell M2020 & JIS Certified',
+      shellMaterial: 'PB-SNC2 Structural Net Composite'
+    }),
+    images: [
+      { id: 'img-16-1', listingId: 'item-16', url: 'https://images.unsplash.com/photo-1558980664-769d59546b3d?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
+      { id: 'img-16-2', listingId: 'item-16', url: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+    ],
+    createdAt: '2026-08-27T15:00:00Z',
+    updatedAt: '2026-08-27T15:00:00Z'
+  },
+  // 18. PS5 Digital
+  {
+    id: 'item-18',
+    sellerId: 'usr-seller-5',
     categoryId: 'cat-game',
     title: 'PlayStation 5 (PS5) Digital Edition CFI-1200 + 2 Stik DualSense Ori',
     slug: 'ps5-digital-edition-cfi-1200-2-stik-dualsense',
@@ -318,20 +593,16 @@ export const seedListings = [
       controller: '2x DualSense Wireless'
     }),
     images: [
-      {
-        id: 'img-4-1',
-        listingId: 'item-4',
-        url: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80',
-        isPrimary: true,
-        sortOrder: 1
-      }
+      { id: 'img-18-1', listingId: 'item-18', url: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
+      { id: 'img-18-2', listingId: 'item-18', url: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
     ],
     createdAt: '2026-08-27T16:00:00Z',
     updatedAt: '2026-08-27T16:00:00Z'
   },
+  // 22. Nike Dunk Panda
   {
-    id: 'item-5',
-    sellerId: 'usr-seller-1',
+    id: 'item-22',
+    sellerId: 'usr-seller-4',
     categoryId: 'cat-fashion',
     title: 'Nike Dunk Low Retro White Black "Panda" Size 42.5 / US 9 Original',
     slug: 'nike-dunk-low-retro-panda-size-42-5-original',
@@ -361,15 +632,88 @@ export const seedListings = [
       authenticity: '100% Original Verified'
     }),
     images: [
-      {
-        id: 'img-5-1',
-        listingId: 'item-5',
-        url: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&auto=format&fit=crop&q=80',
-        isPrimary: true,
-        sortOrder: 1
-      }
+      { id: 'img-22-1', listingId: 'item-22', url: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
+      { id: 'img-22-2', listingId: 'item-22', url: 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
     ],
     createdAt: '2026-08-26T11:20:00Z',
     updatedAt: '2026-08-26T11:20:00Z'
+  },
+  // 27. Sony WH-1000XM5
+  {
+    id: 'item-27',
+    sellerId: 'usr-seller-8',
+    categoryId: 'cat-audio',
+    title: 'Sony WH-1000XM5 Wireless Noise Cancelling Silver Mulus Garansi Sony',
+    slug: 'sony-wh-1000xm5-wireless-noise-cancelling-silver',
+    description: 'Headphone flagship peredam bising terbaik Sony WH-1000XM5 warna Silver Platinum. Suara vokal jernih bass bulat empuk, active noise cancelling nomor 1 di dunia. Bantal telinga kulit sintesis sangat lembut no sobek no kelupas. Fullset hardcase magnetik, kabel aux, kabel charger.',
+    price: 3850000,
+    originalPrice: 5999000,
+    isNegotiable: true,
+    minOfferPrice: 3500000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'BOX_UNIT']),
+    purchaseYear: 2023,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 520,
+    offerCount: 10,
+    favoriteCount: 67,
+    province: 'Bali',
+    city: 'Denpasar',
+    district: 'Denpasar Barat',
+    postalCode: '80119',
+    isCodAvailable: true,
+    codMeetingPoint: 'Level 21 Mall Denpasar / Mall Bali Galeria',
+    specs: JSON.stringify({
+      batteryLife: '30 Hours with ANC On',
+      driver: '30mm Carbon Fiber Composite',
+      codec: 'LDAC, AAC, SBC with Hi-Res Audio Wireless'
+    }),
+    images: [
+      { id: 'img-27-1', listingId: 'item-27', url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
+      { id: 'img-27-2', listingId: 'item-27', url: 'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+    ],
+    createdAt: '2026-08-28T14:00:00Z',
+    updatedAt: '2026-08-28T14:00:00Z'
+  },
+  // 31. Dyson V12 Detect Slim
+  {
+    id: 'item-31',
+    sellerId: 'usr-seller-6',
+    categoryId: 'cat-elektronik',
+    title: 'Dyson V12 Detect Slim Total Clean Cordless Vacuum Cleaner Laser Fluffy',
+    slug: 'dyson-v12-detect-slim-total-clean-laser-fluffy',
+    description: 'Vacuum cleaner nirkabel premium Dyson V12 Detect Slim Total Clean. Dilengkapi laser optic hijau yang menerangi debu kasat mata di lantai dan sensor piezo pengukur partikel debu. Bobot ringan 2.2 kg, baterai tahan 60 menit. Semua 5 kepala nozzle lengkap dalam kondisi mulus.',
+    price: 7900000,
+    originalPrice: 12999000,
+    isNegotiable: true,
+    minOfferPrice: 7400000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'BOX_UNIT']),
+    purchaseYear: 2023,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 430,
+    offerCount: 7,
+    favoriteCount: 52,
+    province: 'Jawa Tengah',
+    city: 'Semarang',
+    district: 'Semarang Tengah',
+    postalCode: '50132',
+    isCodAvailable: true,
+    codMeetingPoint: 'Mall Ciputra Semarang / Simpang Lima',
+    specs: JSON.stringify({
+      suctionPower: '150 Air Watts',
+      filtration: 'Whole-Machine HEPA Filtration 99.99%',
+      weight: '2.2 Kg'
+    }),
+    images: [
+      { id: 'img-31-1', listingId: 'item-31', url: 'https://images.unsplash.com/photo-1558317374-067fb5f30001?w=800&auto=format&fit=crop&q=80', isPrimary: true, sortOrder: 1 },
+      { id: 'img-31-2', listingId: 'item-31', url: 'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=800&auto=format&fit=crop&q=80', isPrimary: false, sortOrder: 2 }
+    ],
+    createdAt: '2026-08-28T15:30:00Z',
+    updatedAt: '2026-08-28T15:30:00Z'
   }
 ];

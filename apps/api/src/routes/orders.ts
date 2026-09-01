@@ -113,7 +113,7 @@ export const orderRoutes = new Hono<AppEnv>()
       return c.json(
         {
           success: true,
-          message: 'Pesanan Rekber berhasil dibuat! Dana Anda aman tersimpan di Rekber JBB.',
+          message: 'Pesanan Rekber berhasil dibuat! Dana Anda aman tersimpan di Rekber Peygo.',
           data: createdOrder
         },
         201
@@ -187,7 +187,7 @@ export const orderRoutes = new Hono<AppEnv>()
     return c.json(
       {
         success: true,
-        message: 'Pesanan Rekber berhasil dibuat! Dana Anda aman tersimpan di Rekber JBB.',
+        message: 'Pesanan Rekber berhasil dibuat! Dana Anda aman tersimpan di Rekber Peygo.',
         data: newOrder
       },
       201

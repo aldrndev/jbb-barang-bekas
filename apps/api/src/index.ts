@@ -12,6 +12,7 @@ import { orderRoutes } from './routes/orders';
 import { reviewRoutes } from './routes/reviews';
 import { uploadRoutes } from './routes/uploads';
 import { adminRoutes } from './routes/admin';
+import { wishlistRoutes } from './routes/wishlists';
 
 const app = new Hono<AppEnv>();
 
@@ -35,7 +36,7 @@ app.get('/health', (c) => {
   return c.json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    service: 'JBB Marketplace API (Cloudflare Worker)',
+    service: 'Bekasin Marketplace API (Cloudflare Worker)',
     version: '1.0.0'
   });
 });
@@ -49,7 +50,8 @@ const routes = app
   .route('/api/orders', orderRoutes)
   .route('/api/reviews', reviewRoutes)
   .route('/api/uploads', uploadRoutes)
-  .route('/api/admin', adminRoutes);
+  .route('/api/admin', adminRoutes)
+  .route('/api/wishlist', wishlistRoutes);
 
 export default app;
 export type AppType = typeof routes;

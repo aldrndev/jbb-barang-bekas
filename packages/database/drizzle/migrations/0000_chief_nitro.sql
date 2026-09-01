@@ -15,6 +15,13 @@ CREATE TABLE `users` (
 	`city` text,
 	`province` text,
 	`bio` text,
+	`nik` text,
+	`ktp_image_url` text,
+	`selfie_image_url` text,
+	`kyc_submitted_at` text,
+	`bank_name` text,
+	`bank_account_number` text,
+	`bank_account_holder` text,
 	`created_at` text NOT NULL,
 	`updated_at` text NOT NULL
 );
@@ -161,3 +168,14 @@ CREATE TABLE `chats` (
 	FOREIGN KEY (`listing_id`) REFERENCES `listings`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`offer_id`) REFERENCES `offers`(`id`) ON UPDATE no action ON DELETE no action
 );
+--> statement-breakpoint
+CREATE TABLE `wishlists` (
+	`id` text PRIMARY KEY NOT NULL,
+	`user_id` text NOT NULL,
+	`listing_id` text NOT NULL,
+	`created_at` text NOT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`listing_id`) REFERENCES `listings`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `wishlists_user_listing_unique` ON `wishlists` (`user_id`, `listing_id`);

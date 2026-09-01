@@ -46,7 +46,7 @@ export function getConditionMeta(condition: ItemCondition) {
         displayLabel: 'Like New (96% Mulus)',
         score: '96%',
         badgeClasses: 'bg-emerald-50 text-emerald-900 border border-emerald-300 shadow-xs',
-        dotColor: 'bg-emerald-600 animate-pulse'
+        dotColor: 'bg-emerald-600'
       };
     case 'USED_EXCELLENT':
       return {
@@ -89,4 +89,43 @@ export function getConditionMeta(condition: ItemCondition) {
         dotColor: 'bg-slate-600'
       };
   }
+}
+
+/**
+ * Capitalizes each word in a string cleanly (Title Case), removing excess whitespace.
+ * Ideal for person names, meeting points, locations, and spec keys.
+ * Example: "gandaria city blok m" -> "Gandaria City Blok M"
+ */
+export function toTitleCase(str: string): string {
+  if (!str) return '';
+  return str
+    .trim()
+    .replace(/\s+/g, ' ')
+    .split(' ')
+    .map((word) => {
+      if (!word) return '';
+      // Preserve words that are already all-uppercase acronyms like COD, BCA, PS5, RAM, SSD
+      if (word.length > 1 && word === word.toUpperCase()) return word;
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ');
+}
+
+/**
+ * Cleans product titles: trims excess spaces and capitalizes the leading character,
+ * while preserving custom brand casing (e.g. "iPhone 13 Pro", "macOS", "PS5").
+ */
+export function cleanTitle(str: string): string {
+  if (!str) return '';
+  const cleaned = str.trim().replace(/\s+/g, ' ');
+  if (!cleaned) return '';
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+}
+
+/**
+ * Normalizes multiline text / descriptions by collapsing excessive blank lines.
+ */
+export function cleanWhitespace(str: string): string {
+  if (!str) return '';
+  return str.trim().replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n');
 }

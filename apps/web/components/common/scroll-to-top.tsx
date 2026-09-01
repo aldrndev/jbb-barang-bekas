@@ -5,7 +5,6 @@ import { usePathname, useSearchParams } from 'next/navigation';
 
 function ScrollWatcher() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     // Instant scroll to top on route change
@@ -16,7 +15,7 @@ function ScrollWatcher() {
     });
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   return null;
 }

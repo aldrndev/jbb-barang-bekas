@@ -19,84 +19,74 @@ import {
   Sparkles,
   ChevronRight
 } from 'lucide-react';
+import { PeygoLogoIcon } from '@/components/common/peygo-logo';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, loginAsDemoAdmin, loginAsDemoSeller, loginAsDemoBuyer, logout } = useAuth();
+  const { user, openAuthModal, logout } = useAuth();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const isAdmin = user?.role === 'ADMIN';
 
-  // Navigation Items
+  // Navigation Items (Clean & Minimalist without misleading static badges)
   const navItems = [
     {
       label: 'Dashboard',
       href: '/admin',
       icon: LayoutDashboard,
-      badge: null,
       isActive: pathname === '/admin'
     },
     {
       label: 'Sengketa',
       href: '/admin/sengketa',
       icon: AlertTriangle,
-      badge: '2 Kasus',
-      badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
       isActive: pathname.startsWith('/admin/sengketa')
     },
     {
-      label: 'Verifikasi KYC',
+      label: 'KYC User',
       href: '/admin/kyc',
       icon: UserCheck,
-      badge: '3 Baru',
-      badgeColor: 'bg-amber-100 text-amber-800 border-amber-200',
-      isActive: pathname.startsWith('/admin/kyc')
+      isActive: pathname === '/admin/kyc'
     },
     {
-      label: 'Pencairan Bank',
+      label: 'Pencairan',
       href: '/admin/pencairan',
       icon: CreditCard,
-      badge: null,
-      isActive: pathname.startsWith('/admin/pencairan')
+      isActive: pathname === '/admin/pencairan'
     },
     {
       label: 'Moderasi Iklan',
       href: '/admin/moderasi',
       icon: Package,
-      badge: null,
       isActive: pathname.startsWith('/admin/moderasi')
     }
   ];
 
   if (!user || !isAdmin) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <div className="max-w-md w-full rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 text-center space-y-5 shadow-lg">
-          <div className="h-16 w-16 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto shadow-xs">
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+        <div className="max-w-md w-full rounded-3xl border border-slate-800 bg-slate-950 p-8 text-center space-y-6 shadow-2xl">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-rose-500/10 text-rose-500 border border-rose-500/20">
             <ShieldAlert className="h-8 w-8" />
           </div>
-          <div>
-            <h2 className="text-xl font-black text-slate-900">Akses Terbatas: Administrator</h2>
-            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-              Halaman ini dikhususkan untuk Staff Operasional & Mediasi Rekber JBB Marketplace.
+          <div className="space-y-2">
+            <h2 className="text-xl font-black text-white">Akses Terbatas: Administrator Only</h2>
+            <p className="text-xs text-slate-400 leading-relaxed font-medium">
+              Panel ini khusus untuk administrator rekber dan petugas mediasi sengketa transaksi.
             </p>
           </div>
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-left space-y-2">
-            <span className="font-bold text-slate-700 block">Uji Coba Cepat (1-Klik Mode Demo):</span>
+          <div className="space-y-3 pt-2">
             <button
               type="button"
-              onClick={() => loginAsDemoAdmin()}
-              className="w-full rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 px-4 shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+              onClick={openAuthModal}
+              className="w-full rounded-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 px-6 shadow-md shadow-brand-600/25 transition-all flex items-center justify-center gap-2 cursor-pointer text-xs"
             >
-              <Sparkles className="h-4 w-4" />
-              <span>Masuk Sebagai Master Admin Rekber</span>
+              <span>Masuk Akun Admin</span>
             </button>
-          </div>
-          <div className="pt-2">
             <Link
               href="/"
-              className="inline-flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-brand-600 transition-colors"
+              className="inline-flex items-center justify-center gap-1 text-xs font-bold text-slate-600 hover:text-white transition-colors w-full py-2"
             >
               <span>← Kembali ke Marketplace Utama</span>
             </Link>
@@ -111,14 +101,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* 1. STANDALONE LIGHT SIDEBAR (DESKTOP) */}
       <aside className="hidden lg:flex w-64 flex-col bg-white border-r border-slate-200 sticky top-0 h-screen z-40 shadow-xs">
         {/* Brand Header */}
-        <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+        <div className="p-5 border-b border-slate-200 flex items-center justify-between">
           <Link href="/admin" className="flex items-center gap-2.5 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white font-black text-base shadow-sm shadow-brand-600/25 group-hover:scale-105 transition-transform">
-              J
-            </div>
+            <PeygoLogoIcon size="sm" className="group-hover:scale-105 transition-transform" />
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-base font-black text-slate-900 tracking-tight">JBB.ADMIN</span>
+                <span className="text-base font-black text-slate-900 tracking-tight">PEYGO.ADMIN</span>
                 <span className="rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-black px-1.5 py-0.2 border border-emerald-200">
                   PRO
                 </span>
@@ -152,18 +140,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <Icon className={`h-4 w-4 ${item.isActive ? 'text-brand-600 font-bold' : 'text-slate-400'}`} />
                   <span>{item.label}</span>
                 </div>
-                {item.badge && (
-                  <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${item.badgeColor}`}>
-                    {item.badge}
-                  </span>
-                )}
               </Link>
             );
           })}
         </div>
 
         {/* Bottom User Profile & Navigation */}
-        <div className="p-4 border-t border-slate-100 space-y-3 bg-slate-50/50">
+        <div className="p-4 border-t border-slate-200 space-y-3 bg-slate-50/80">
           <div className="flex items-center gap-2.5 px-1">
             <img
               src={user.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
@@ -176,7 +159,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           </div>
 
-          <div className="pt-2 border-t border-slate-200/80 flex items-center justify-between">
+          <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
             <Link
               href="/"
               className="flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-brand-600 transition-colors"
@@ -205,12 +188,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             onClick={() => setIsMobileSidebarOpen(false)}
           />
           <div className="relative flex w-72 max-w-xs flex-1 flex-col bg-white border-r border-slate-200 pt-5 pb-4 shadow-xl">
-            <div className="flex items-center justify-between px-5 pb-4 border-b border-slate-100">
+            <div className="flex items-center justify-between px-5 pb-4 border-b border-slate-200">
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-600 text-white font-black text-base shadow-xs">
-                  J
-                </div>
-                <span className="text-base font-black text-slate-900">JBB.ADMIN</span>
+                <PeygoLogoIcon size="sm" />
+                <span className="text-base font-black text-slate-900">PEYGO.ADMIN</span>
               </div>
               <button
                 type="button"
@@ -239,11 +220,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       <Icon className="h-4 w-4" />
                       <span>{item.label}</span>
                     </div>
-                    {item.badge && (
-                      <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${item.badgeColor}`}>
-                        {item.badge}
-                      </span>
-                    )}
                   </Link>
                 );
               })}
@@ -277,7 +253,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           {/* Right Status Badge */}
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
             <span>Escrow Gateway 100% Online</span>
           </div>
         </header>

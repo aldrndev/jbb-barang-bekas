@@ -28,7 +28,7 @@ interface MakeOfferModalProps {
 
 export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: MakeOfferModalProps) {
   const queryClient = useQueryClient();
-  const { user, openAuthModal, loginAsDemoBuyer } = useAuth();
+  const { user, openAuthModal } = useAuth();
   const minAllowed = listing.minOfferPrice || Math.round(listing.price * 0.7);
   const defaultSuggestion = Math.max(minAllowed, Math.round(listing.price * 0.9));
 
@@ -139,21 +139,11 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
                 Anda saat ini login sebagai <strong>{user.name}</strong> (penjual listing ini). Anda tidak dapat menawar barang milik sendiri.
               </p>
             </div>
-            <div className="pt-2 space-y-2">
-              <button
-                type="button"
-                onClick={async () => {
-                  await loginAsDemoBuyer();
-                  setErrorMsg(null);
-                }}
-                className="w-full rounded-full bg-brand-600 py-3 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/20 cursor-pointer"
-              >
-                Ganti Akun ke Pembeli (Dimas)
-              </button>
+            <div className="pt-2">
               <Link
                 href="/nego"
                 onClick={onClose}
-                className="block w-full rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 text-center"
+                className="block w-full rounded-full bg-brand-600 py-3 text-xs font-bold text-white hover:bg-brand-700 text-center shadow-md shadow-brand-600/20"
               >
                 Buka Menu Nego & Pesanan Masuk
               </Link>
@@ -167,29 +157,20 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
             <div>
               <h3 className="text-lg font-bold text-slate-900">Masuk untuk Menawar</h3>
               <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-                Ajukan tawaran resmi agar harga terkunci 24 jam dengan perlindungan Rekber JBB.
+                Ajukan tawaran resmi agar harga terkunci 24 jam dengan perlindungan Rekber Peygo.
               </p>
             </div>
-            <div className="pt-2 space-y-2">
-              <button
-                type="button"
-                onClick={async () => {
-                  await loginAsDemoBuyer();
-                }}
-                className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 py-3 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/20 cursor-pointer"
-              >
-                <Sparkles className="h-4 w-4" />
-                <span>Masuk Cepat Demo (Pembeli: Dimas)</span>
-              </button>
+            <div className="pt-2">
               <button
                 type="button"
                 onClick={() => {
                   onClose();
                   openAuthModal();
                 }}
-                className="w-full rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 py-3 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/20 cursor-pointer"
               >
-                Masuk / Daftar Akun Sendiri
+                <Lock className="h-4 w-4" />
+                <span>Masuk / Daftar Akun</span>
               </button>
             </div>
           </div>
@@ -278,7 +259,7 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
               <div className="rounded-2xl bg-slate-50 p-3 text-[11px] text-slate-600 flex items-start gap-2 border border-slate-200">
                 <ShieldCheck className="h-4 w-4 text-brand-600 shrink-0 mt-0.5" />
                 <p>
-                  Jika penjual menyetujui, harga ini akan <strong>terkunci 24 jam</strong> khusus untuk Anda melakukan checkout via Rekber JBB.
+                  Jika penjual menyetujui, harga ini akan <strong>terkunci 24 jam</strong> khusus untuk Anda melakukan checkout via Rekber Peygo.
                 </p>
               </div>
 

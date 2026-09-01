@@ -162,7 +162,7 @@ export default function AdminDisputesListPage() {
                     <img
                       src={coverPhoto}
                       alt={d.listing?.title || 'Cover Barang'}
-                      className="h-20 w-20 sm:h-22 sm:w-22 rounded-2xl object-cover border border-slate-200/80 shrink-0 shadow-2xs group-hover:scale-102 transition-transform"
+                      className="h-20 w-20 sm:h-22 sm:w-22 rounded-2xl object-cover border border-slate-200 shrink-0 shadow-2xs group-hover:scale-102 transition-transform"
                     />
                     <div className="min-w-0 flex-1 space-y-1">
                       <h4 className="font-black text-xs sm:text-sm text-slate-900 line-clamp-2 leading-snug">
@@ -180,7 +180,7 @@ export default function AdminDisputesListPage() {
                   </div>
 
                   {/* Dispute Reason Snippet */}
-                  <div className="bg-rose-50/50 p-3 rounded-2xl border border-rose-100/80 space-y-1">
+                  <div className="bg-rose-50/50 p-3 rounded-2xl border border-rose-200 space-y-1">
                     <span className="text-[10px] font-extrabold text-rose-800 uppercase tracking-wider block">
                       Keluhan Pembeli:
                     </span>
@@ -191,7 +191,7 @@ export default function AdminDisputesListPage() {
                 </div>
 
                 {/* Card Bottom: Evidence Previews + Action Button to Case Detail Route */}
-                <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                <div className="pt-2 border-t border-slate-200 flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1.5 overflow-hidden">
                     {d.disputeEvidenceUrls?.slice(0, 3).map((imgUrl: string, idx: number) => (
                       <img

@@ -10,4 +10,7 @@ dist
 .env
 .env.local
 .env*.local
+.dev.vars
+*.sqlite
+*.tsbuildinfo
 .DS_Store

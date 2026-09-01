@@ -36,9 +36,9 @@ export const authRoutes = new Hono<AppEnv>()
         role: 'BUYER',
         isKycVerified: false,
         isPhoneVerified: !!phone,
-        trustScore: 85,
+        trustScore: 0,
         totalTransactions: 0,
-        ratingAverage: 5.0,
+        ratingAverage: 0,
         ratingCount: 0,
         createdAt: new Date().toISOString()
       };
@@ -87,9 +87,9 @@ export const authRoutes = new Hono<AppEnv>()
       role: 'BUYER',
       isKycVerified: false,
       isPhoneVerified: !!phone,
-      trustScore: 85,
+      trustScore: 0,
       totalTransactions: 0,
-      ratingAverage: 5.0,
+      ratingAverage: 0,
       ratingCount: 0,
       createdAt: new Date().toISOString()
     };
@@ -171,6 +171,171 @@ export const authRoutes = new Hono<AppEnv>()
     });
   })
 
+  .post('/google', async (c) => {
+    try {
+      const body = await c.req.json();
+      const { credential, email, name, avatarUrl } = body;
+
+      // Extract user info from credential or direct payload
+      let userEmail = email;
+      let userName = name;
+      let userAvatar = avatarUrl;
+
+      // If Google JWT credential is provided, decode payload safely
+      if (credential && typeof credential === 'string') {
+        try {
+          const parts = credential.split('.');
+          if (parts.length === 3) {
+            const payload = JSON.parse(atob(parts[1]));
+            userEmail = payload.email || userEmail;
+            userName = payload.name || userName;
+            userAvatar = payload.picture || userAvatar;
+          }
+        } catch {
+          // ignore parsing error and use fallback fields
+        }
+      }
+
+      if (!userEmail) {
+        return c.json(
+          { success: false, error: { code: 'INVALID_GOOGLE_AUTH', message: 'Email akun Google tidak ditemukan' } },
+          400
+        );
+      }
+
+      const db = getDb(c.env.DB);
+      const secret = c.env.JWT_SECRET || 'jbb_marketplace_super_secret_jwt_key_2026';
+      const isSuperAdmin = userEmail.toLowerCase() === 'aldrn.dev@gmail.com';
+
+      if (db) {
+        let [existingUser] = await db
+          .select()
+          .from(schema.users)
+          .where(eq(schema.users.email, userEmail.toLowerCase()))
+          .limit(1);
+
+        if (!existingUser) {
+          const newUserId = `usr-g-${Date.now()}`;
+          const created = {
+            id: newUserId,
+            name: userName || userEmail.split('@')[0],
+            email: userEmail.toLowerCase(),
+            passwordHash: 'google_oauth_authenticated',
+            phone: null,
+            role: isSuperAdmin ? ('ADMIN' as const) : ('BUYER' as const),
+            avatarUrl: userAvatar || null,
+            isKycVerified: false,
+            isPhoneVerified: false,
+            trustScore: 0,
+            totalTransactions: 0,
+            ratingAverage: 0,
+            ratingCount: 0,
+            city: null,
+            province: null,
+            bio: null,
+            bankName: null,
+            bankAccountNumber: null,
+            bankAccountHolder: null,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          };
+
+          await db.insert(schema.users).values(created);
+          existingUser = created as any;
+        } else {
+          // If existing user needs admin upgrade or avatar update
+          const updates: Record<string, any> = {};
+          if (isSuperAdmin && existingUser.role !== 'ADMIN') {
+            updates.role = 'ADMIN';
+            existingUser.role = 'ADMIN';
+          }
+          if (userAvatar && existingUser.avatarUrl !== userAvatar) {
+            updates.avatarUrl = userAvatar;
+            existingUser.avatarUrl = userAvatar;
+          }
+          if (Object.keys(updates).length > 0) {
+            updates.updatedAt = new Date().toISOString();
+            await db.update(schema.users).set(updates).where(eq(schema.users.id, existingUser.id));
+          }
+        }
+
+        const userProfile: UserProfile = {
+          id: existingUser.id,
+          name: existingUser.name,
+          email: existingUser.email,
+          phone: existingUser.phone,
+          avatarUrl: existingUser.avatarUrl || userAvatar,
+          role: (isSuperAdmin ? 'ADMIN' : existingUser.role) as any,
+          isKycVerified: Boolean(existingUser.isKycVerified),
+          isPhoneVerified: Boolean(existingUser.isPhoneVerified),
+          trustScore: existingUser.trustScore,
+          totalTransactions: existingUser.totalTransactions,
+          ratingAverage: existingUser.ratingAverage,
+          ratingCount: existingUser.ratingCount,
+          city: existingUser.city,
+          province: existingUser.province,
+          bio: existingUser.bio,
+          nik: (existingUser as any).nik,
+          ktpImageUrl: (existingUser as any).ktpImageUrl,
+          selfieImageUrl: (existingUser as any).selfieImageUrl,
+          kycSubmittedAt: (existingUser as any).kycSubmittedAt,
+          bankName: (existingUser as any).bankName,
+          bankAccountNumber: (existingUser as any).bankAccountNumber,
+          bankAccountHolder: (existingUser as any).bankAccountHolder,
+          createdAt: existingUser.createdAt
+        };
+
+        const token = await signJwt(userProfile, secret);
+
+        return c.json({
+          success: true,
+          message: 'Berhasil login dengan Google!',
+          data: { token, user: userProfile }
+        });
+      }
+
+      // Memory Store fallback
+      let user = memoryStore.findUserByEmail(userEmail.toLowerCase());
+      if (!user) {
+        user = {
+          id: `usr-g-${Date.now()}`,
+          name: userName || userEmail.split('@')[0],
+          email: userEmail.toLowerCase(),
+          phone: null,
+          role: isSuperAdmin ? 'ADMIN' : 'BUYER',
+          avatarUrl: userAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(userName || 'GoogleUser')}`,
+          isKycVerified: false,
+          isPhoneVerified: false,
+          trustScore: 0,
+          totalTransactions: 0,
+          ratingAverage: 0,
+          ratingCount: 0,
+          createdAt: new Date().toISOString()
+        };
+        memoryStore.addUser(user);
+      } else if (isSuperAdmin) {
+        user.role = 'ADMIN';
+        if (userAvatar) user.avatarUrl = userAvatar;
+      }
+
+      const token = await signJwt(user, secret);
+
+      return c.json({
+        success: true,
+        message: 'Berhasil login dengan Google!',
+        data: { token, user }
+      });
+    } catch (err: any) {
+      return c.json(
+        {
+          success: false,
+          error: { code: 'GOOGLE_AUTH_FAILED', message: err.message || 'Gagal autentikasi Google' }
+        },
+        500
+      );
+    }
+  })
+
   .get('/me', authMiddleware, async (c) => {
     const user = c.get('user');
     return c.json({
@@ -223,28 +388,41 @@ export const authRoutes = new Hono<AppEnv>()
         .set({
           nik,
           ktpImageUrl,
-          selfieImageUrl,
+          selfieImageUrl: selfieImageUrl || null,
           kycSubmittedAt: now,
-          isKycVerified: true,
-          role: user.role === 'BUYER' ? 'SELLER' : user.role,
-          trustScore: Math.max(user.trustScore || 80, 96),
+          isKycVerified: false,
           updatedAt: now
         })
         .where(eq(schema.users.id, user.id));
     }
 
-    user.nik = nik;
-    user.ktpImageUrl = ktpImageUrl;
-    user.selfieImageUrl = selfieImageUrl;
-    user.kycSubmittedAt = now;
-    user.isKycVerified = true;
-    user.trustScore = Math.max(user.trustScore || 80, 96);
-    if (user.role === 'BUYER') user.role = 'SELLER';
+    const memUser = memoryStore.findUserById(user.id);
+    if (memUser) {
+      memUser.nik = nik;
+      memUser.ktpImageUrl = ktpImageUrl;
+      memUser.selfieImageUrl = selfieImageUrl || null;
+      memUser.kycSubmittedAt = now;
+      memUser.isKycVerified = false;
+    } else {
+      user.nik = nik;
+      user.ktpImageUrl = ktpImageUrl;
+      user.selfieImageUrl = selfieImageUrl || null;
+      user.kycSubmittedAt = now;
+      user.isKycVerified = false;
+      memoryStore.addUser(user);
+    }
 
     return c.json({
       success: true,
-      message: 'Verifikasi KYC KTP berhasil disetujui! Status akun kini Terverifikasi Resmi.',
-      data: user
+      message: 'Pengajuan KYC berhasil dikirim! Menunggu persetujuan Admin Mediasi Rekber Peygo.',
+      data: {
+        ...user,
+        nik,
+        ktpImageUrl,
+        selfieImageUrl,
+        kycSubmittedAt: now,
+        isKycVerified: false
+      }
     });
   })
 

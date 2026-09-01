@@ -101,7 +101,7 @@ export const EscrowStatusLabel: Record<EscrowStatus, { label: string; badge: str
   PAYMENT_CONFIRMED: {
     label: 'Dana Rekber Terverifikasi',
     badge: 'Dana Diamankan',
-    description: 'Dana aman 100% di perantara Rekber JBB. Penjual diinstruksikan memproses pesanan.'
+    description: 'Dana aman 100% di perantara Rekber Peygo. Penjual diinstruksikan memproses pesanan.'
   },
   SELLER_PACKING: {
     label: 'Penjual Sedang Mengemas Paket',
@@ -302,4 +302,12 @@ export interface ChatMessage {
   isRead: boolean;
   createdAt: string;
   sender?: UserProfile;
+}
+
+export interface WishlistItem {
+  id: string;
+  userId: string;
+  listingId: string;
+  createdAt: string;
+  listing?: Listing;
 }

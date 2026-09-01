@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
+import { useToast } from '../../context/toast-context';
 import { formatIDR, formatTimeAgo } from '../../lib/utils';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
 import { Breadcrumbs } from '../../components/layout/breadcrumbs';
@@ -28,11 +29,12 @@ import {
   ShoppingBag,
   TrendingUp,
   Filter,
-  Edit3
+  Edit3,
+  Lock
 } from 'lucide-react';
 
 export default function MyListingsPage() {
-  const { user, openAuthModal, loginAsDemoSeller, loginAsDemoBuyer } = useAuth();
+  const { user, openAuthModal } = useAuth();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -51,31 +53,25 @@ export default function MyListingsPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-        <div className="max-w-md w-full rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 text-center shadow-xs space-y-4">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-brand-50 text-brand-600 border border-brand-100">
-            <Package className="h-8 w-8" />
+      <div className="bg-slate-50 py-10 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+        <div className="max-w-md w-full rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 text-center shadow-xs space-y-5">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 border border-brand-100 shadow-xs">
+            <Package className="h-7 w-7" />
           </div>
           <div className="space-y-1">
-            <h2 className="text-lg font-black text-slate-900">Masuk untuk Mengelola Barang Dijual</h2>
+            <h2 className="text-base sm:text-lg font-black text-slate-900">Masuk untuk Mengelola Barang Dijual</h2>
             <p className="text-xs text-slate-500">
               Pantau status iklan barang bekas Anda, tawaran nego masuk, dan statistik pengunjung.
             </p>
           </div>
-          <div className="space-y-2 pt-2">
-            <button
-              type="button"
-              onClick={loginAsDemoSeller}
-              className="w-full rounded-full bg-brand-600 hover:bg-brand-700 py-3 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
-            >
-              Masuk Demo Penjual (Budi Santoso)
-            </button>
+          <div className="pt-2">
             <button
               type="button"
               onClick={openAuthModal}
-              className="w-full rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 py-2.5 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 hover:bg-brand-700 py-3 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
             >
-              Masuk Akun Lain
+              <Lock className="h-4 w-4" />
+              <span>Masuk / Daftar Akun</span>
             </button>
           </div>
         </div>
@@ -101,6 +97,9 @@ export default function MyListingsPage() {
     return true;
   });
 
+  const toast = useToast();
+  const [listingToDelete, setListingToDelete] = useState<{ id: string; title: string } | null>(null);
+
   const handleUpdateStatus = async (id: string, newStatus: string) => {
     const res = await api.updateListingStatus(id, newStatus);
     if (res.success) {
@@ -110,25 +109,28 @@ export default function MyListingsPage() {
         queryClient.invalidateQueries({ queryKey: ['featured-listings'] }),
         queryClient.invalidateQueries({ queryKey: ['listing'] })
       ]);
+      toast.success('Status Diperbarui', `Status iklan berhasil diubah ke ${newStatus}.`);
       refetch();
     } else {
-      alert(res.error?.message || 'Gagal mengubah status iklan');
+      toast.error('Gagal Mengubah Status', res.error?.message || 'Terjadi kesalahan sistem.');
     }
   };
 
-  const handleDeleteListing = async (id: string, title: string) => {
-    if (confirm(`Apakah Anda yakin ingin menghapus iklan "${title}"?`)) {
-      const res = await api.deleteListing(id);
-      if (res.success) {
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ['my-listings'] }),
-          queryClient.invalidateQueries({ queryKey: ['listings'] }),
-          queryClient.invalidateQueries({ queryKey: ['featured-listings'] })
-        ]);
-        refetch();
-      } else {
-        alert(res.error?.message || 'Gagal menghapus iklan');
-      }
+  const confirmDeleteListing = async () => {
+    if (!listingToDelete) return;
+    const res = await api.deleteListing(listingToDelete.id);
+    if (res.success) {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['my-listings'] }),
+        queryClient.invalidateQueries({ queryKey: ['listings'] }),
+        queryClient.invalidateQueries({ queryKey: ['featured-listings'] })
+      ]);
+      toast.success('Iklan Dihapus', `Iklan "${listingToDelete.title}" telah dihapus.`);
+      setListingToDelete(null);
+      refetch();
+    } else {
+      toast.error('Gagal Menghapus Iklan', res.error?.message || 'Terjadi kesalahan.');
+      setListingToDelete(null);
     }
   };
 
@@ -143,7 +145,7 @@ export default function MyListingsPage() {
   return (
     <div className="bg-slate-50 py-3 sm:py-6 px-3.5 sm:px-6 lg:px-8 pb-6 sm:pb-8">
       <div className="mx-auto max-w-5xl space-y-4 sm:space-y-5">
-        {/* Top Header Row: Breadcrumbs & Quick Role Switcher */}
+        {/* Top Header Row: Breadcrumbs */}
         <div className="flex items-center justify-between gap-2 min-w-0">
           <Breadcrumbs
             items={[
@@ -151,31 +153,6 @@ export default function MyListingsPage() {
               { label: 'Barang yang Dijual' }
             ]}
           />
-
-          <div className="flex items-center gap-1.5 shrink-0">
-            <button
-              type="button"
-              onClick={loginAsDemoSeller}
-              className={`rounded-full px-2.5 py-1 text-[10px] font-bold border transition-colors cursor-pointer ${
-                user?.role === 'SELLER'
-                  ? 'bg-brand-50 border-brand-300 text-brand-800'
-                  : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              Demo Penjual
-            </button>
-            <button
-              type="button"
-              onClick={loginAsDemoBuyer}
-              className={`rounded-full px-2.5 py-1 text-[10px] font-bold border transition-colors cursor-pointer ${
-                user?.role === 'BUYER'
-                  ? 'bg-brand-50 border-brand-300 text-brand-800'
-                  : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              Demo Pembeli
-            </button>
-          </div>
         </div>
 
         {/* 1. Main Dashboard Header & Metrics Card */}
@@ -281,7 +258,7 @@ export default function MyListingsPage() {
         {isLoading ? (
           <div className="space-y-3.5">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-40 rounded-3xl bg-white border border-slate-200 p-5 animate-pulse" />
+              <div key={i} className="h-40 rounded-3xl bg-white border border-slate-200 p-5 shadow-2xs" />
             ))}
           </div>
         ) : filteredListings.length === 0 ? (
@@ -445,7 +422,7 @@ export default function MyListingsPage() {
 
                       <button
                         type="button"
-                        onClick={() => handleDeleteListing(item.id, item.title)}
+                        onClick={() => setListingToDelete({ id: item.id, title: item.title })}
                         className="flex items-center justify-center h-7 w-7 rounded-xl border border-rose-200 bg-rose-50/50 hover:bg-rose-100 text-rose-600 transition-colors cursor-pointer"
                         title="Hapus Iklan"
                       >
@@ -456,6 +433,39 @@ export default function MyListingsPage() {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* Custom Confirmation Modal for Deleting Listing */}
+        {listingToDelete && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-in fade-in">
+            <div className="w-full max-w-sm rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl space-y-4 animate-in zoom-in-95">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 mx-auto">
+                <Trash2 className="h-6 w-6" />
+              </div>
+              <div className="text-center space-y-1">
+                <h3 className="text-base font-black text-slate-900">Hapus Iklan Ini?</h3>
+                <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                  Apakah Anda yakin ingin menghapus iklan <strong>&ldquo;{listingToDelete.title}&rdquo;</strong>? Tindakan ini tidak dapat dibatalkan.
+                </p>
+              </div>
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setListingToDelete(null)}
+                  className="flex-1 rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmDeleteListing}
+                  className="flex-1 rounded-full bg-rose-600 hover:bg-rose-700 py-2.5 text-xs font-bold text-white shadow-md shadow-rose-600/25 transition-colors cursor-pointer"
+                >
+                  Ya, Hapus
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

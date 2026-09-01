@@ -1,8 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useWishlist } from '../../context/wishlist-context';
+import { useAuth } from '../../context/auth-context';
+import { useToast } from '../../context/toast-context';
 import { ListingCard } from '../../components/marketplace/listing-card';
 import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import { formatIDR } from '../../lib/utils';
@@ -11,19 +13,51 @@ import {
   ShoppingBag,
   Trash2,
   ArrowRight,
-  ShieldCheck
+  ShieldCheck,
+  Lock
 } from 'lucide-react';
 
 export default function WishlistPage() {
+  const { user, openAuthModal } = useAuth();
   const { wishlistItems, wishlistCount, clearWishlist } = useWishlist();
+  const toast = useToast();
+  const [isConfirmClearOpen, setIsConfirmClearOpen] = useState(false);
 
   const totalValue = wishlistItems.reduce((acc, item) => acc + item.price, 0);
 
-  const handleClearWishlist = () => {
-    if (confirm('Kosongkan semua barang dari wishlist favorit Anda?')) {
-      clearWishlist();
-    }
+  const confirmClear = () => {
+    clearWishlist();
+    setIsConfirmClearOpen(false);
+    toast.info('Wishlist Dikosongkan', 'Semua barang dari daftar wishlist favorit Anda telah dihapus.');
   };
+
+  if (!user) {
+    return (
+      <div className="bg-slate-50 py-10 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+        <div className="max-w-md w-full rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 text-center shadow-xs space-y-5">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 shadow-xs">
+            <Heart className="h-7 w-7 fill-current" />
+          </div>
+          <div className="space-y-1">
+            <h2 className="text-base sm:text-lg font-black text-slate-900">Masuk untuk Melihat Wishlist</h2>
+            <p className="text-xs text-slate-500">
+              Simpan dan pantau barang bekas favorit Anda yang tersimpan di akun Rekber Peygo.
+            </p>
+          </div>
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={openAuthModal}
+              className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 hover:bg-brand-700 py-3 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
+            >
+              <Lock className="h-4 w-4" />
+              <span>Masuk / Daftar Akun</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-slate-50 py-3 sm:py-6 px-3.5 sm:px-6 lg:px-8 pb-6 sm:pb-8">
@@ -39,7 +73,7 @@ export default function WishlistPage() {
           {wishlistCount > 0 && (
             <button
               type="button"
-              onClick={handleClearWishlist}
+              onClick={() => setIsConfirmClearOpen(true)}
               className="flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 hover:bg-rose-100 px-3.5 py-1.5 text-xs font-bold text-rose-700 transition-colors cursor-pointer shrink-0 shadow-2xs"
             >
               <Trash2 className="h-3.5 w-3.5 text-rose-600" />
@@ -66,9 +100,19 @@ export default function WishlistPage() {
             </div>
 
             {wishlistCount > 0 && (
-              <div className="text-left sm:text-right pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-bold">Total Estimasi:</span>
-                <span className="text-sm sm:text-base font-black text-brand-700">{formatIDR(totalValue)}</span>
+              <div className="flex items-center gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setIsConfirmClearOpen(true)}
+                  className="flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50/50 hover:bg-rose-100 px-3 py-1.5 text-xs font-bold text-rose-700 transition-colors cursor-pointer"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  <span>Kosongkan</span>
+                </button>
+                <div className="text-right">
+                  <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-bold">Total Estimasi:</span>
+                  <span className="text-sm sm:text-base font-black text-brand-700">{formatIDR(totalValue)}</span>
+                </div>
               </div>
             )}
           </div>
@@ -114,7 +158,7 @@ export default function WishlistPage() {
             </div>
             <div className="min-w-0">
               <h3 className="text-xs font-bold text-brand-950">
-                Garansi Rekber & Perlindungan Pembeli JBB
+                Garansi Rekber & Perlindungan Pembeli Peygo
               </h3>
               <p className="text-[11px] text-brand-800 font-medium">
                 Setiap transaksi dari wishlist Anda dilindungi garansi inspeksi fisik 48 jam dan dana aman di perantara.
@@ -130,6 +174,39 @@ export default function WishlistPage() {
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
+
+        {/* Custom Confirmation Modal for Clearing Wishlist */}
+        {isConfirmClearOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-in fade-in">
+            <div className="w-full max-w-sm rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl space-y-4 animate-in zoom-in-95">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 mx-auto">
+                <Trash2 className="h-6 w-6" />
+              </div>
+              <div className="text-center space-y-1">
+                <h3 className="text-base font-black text-slate-900">Kosongkan Wishlist?</h3>
+                <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                  Apakah Anda yakin ingin menghapus semua barang dari daftar wishlist favorit Anda?
+                </p>
+              </div>
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsConfirmClearOpen(false)}
+                  className="flex-1 rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmClear}
+                  className="flex-1 rounded-full bg-rose-600 hover:bg-rose-700 py-2.5 text-xs font-bold text-white shadow-md shadow-rose-600/25 transition-colors cursor-pointer"
+                >
+                  Ya, Kosongkan
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

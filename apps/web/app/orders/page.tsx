@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
+import { useToast } from '../../context/toast-context';
 import { formatIDR } from '../../lib/utils';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
 import { EscrowStatusBadge } from '../../components/marketplace/escrow-status-badge';
@@ -33,18 +34,24 @@ import {
   AlertCircle,
   Check,
   Filter,
-  MessageSquare
+  MessageSquare,
+  Lock
 } from 'lucide-react';
 
 function OrderHistoryContent() {
-  const { user, loginAsDemoBuyer, loginAsDemoSeller } = useAuth();
+  const { user, openAuthModal } = useAuth();
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const queryRole = searchParams.get('role') as 'buyer' | 'seller' | null;
 
-  const [orderMode, setOrderMode] = useState<'buyer' | 'seller'>('buyer');
+  const [orderMode, setOrderMode] = useState<'buyer' | 'seller'>(() => {
+    if (queryRole === 'seller' || queryRole === 'buyer') return queryRole;
+    if (user?.role === 'SELLER') return 'seller';
+    return 'buyer';
+  });
   const [activeTab, setActiveTab] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const toast = useToast();
   const [selectedInvoiceOrder, setSelectedInvoiceOrder] = useState<Order | null>(null);
   const [copiedResi, setCopiedResi] = useState<string | null>(null);
   const [expandedTimelineId, setExpandedTimelineId] = useState<string | null>(null);
@@ -53,6 +60,13 @@ function OrderHistoryContent() {
   const [shippingOrderId, setShippingOrderId] = useState<string | null>(null);
   const [courierNameInput, setCourierNameInput] = useState('JNE Reguler');
   const [trackingNumberInput, setTrackingNumberInput] = useState('');
+
+  // Buyer Release Funds & Dispute Modals
+  const [releaseOrderId, setReleaseOrderId] = useState<string | null>(null);
+  const [isSubmittingRelease, setIsSubmittingRelease] = useState(false);
+  const [disputeOrderId, setDisputeOrderId] = useState<string | null>(null);
+  const [disputeReasonInput, setDisputeReasonInput] = useState('');
+  const [isSubmittingDispute, setIsSubmittingDispute] = useState(false);
 
   const { data: orders = [], isLoading, refetch } = useQuery({
     queryKey: ['my-orders'],
@@ -66,47 +80,34 @@ function OrderHistoryContent() {
     enabled: !!user
   });
 
-  // Automatically sync role mode from URL or user default
+  // Automatically sync role mode only when queryRole explicitly changes
   useEffect(() => {
     if (queryRole === 'seller' || queryRole === 'buyer') {
       setOrderMode(queryRole);
-    } else if (user?.role === 'SELLER') {
-      setOrderMode('seller');
-    } else if (user?.role === 'BUYER') {
-      setOrderMode('buyer');
     }
-  }, [queryRole, user?.role]);
+  }, [queryRole]);
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+      <div className="bg-slate-50 py-10 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
         <div className="max-w-md w-full rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 text-center shadow-xs space-y-5">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-brand-50 text-brand-600 border border-brand-100 shadow-xs">
-            <ShoppingBag className="h-8 w-8" />
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 border border-brand-100 shadow-xs">
+            <ShoppingBag className="h-7 w-7" />
           </div>
           <div className="space-y-1">
-            <h2 className="text-lg font-black text-slate-900">Masuk untuk Melihat Riwayat Pesanan</h2>
-            <p className="text-xs text-slate-500">
-              Pantau status penahanan dana Rekber, nomor resi pengiriman, dan pencairan saldo penjualan.
+            <h2 className="text-base sm:text-lg font-black text-slate-900">Masuk untuk Melihat Riwayat Pesanan</h2>
+            <p className="text-xs text-slate-500 max-w-xs mx-auto">
+              Akses status escrow rekening bersama, pantau resi ekspedisi, dan konfirmasi barang.
             </p>
           </div>
-
-          <div className="space-y-2.5 pt-2">
+          <div className="pt-2">
             <button
               type="button"
-              onClick={loginAsDemoBuyer}
+              onClick={openAuthModal}
               className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 hover:bg-brand-700 py-3 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
             >
-              <Sparkles className="h-4 w-4" />
-              <span>Masuk Demo (Pembeli: Dimas)</span>
-            </button>
-            <button
-              type="button"
-              onClick={loginAsDemoSeller}
-              className="w-full flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 py-2.5 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
-            >
-              <Tag className="h-3.5 w-3.5 text-amber-600" />
-              <span>Masuk Demo (Penjual: Budi)</span>
+              <Lock className="h-4 w-4" />
+              <span>Masuk / Daftar Akun</span>
             </button>
           </div>
         </div>
@@ -114,18 +115,16 @@ function OrderHistoryContent() {
     );
   }
 
-  // Filter orders by mode (buyer purchases vs seller sales)
+  // Filter orders by role tab (buyer vs seller)
   const modeOrders = orders.filter((order) => {
     if (orderMode === 'buyer') {
       return order.buyerId === user.id;
-    } else {
-      return order.sellerId === user.id;
     }
+    return order.sellerId === user.id;
   });
 
   // Filter orders by tab and search query
   const filteredOrders = modeOrders.filter((order) => {
-    // Search query match
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       const matchNumber = order.orderNumber.toLowerCase().includes(q);
@@ -133,7 +132,6 @@ function OrderHistoryContent() {
       if (!matchNumber && !matchTitle) return false;
     }
 
-    // Tab status match
     if (activeTab === 'all') return true;
     if (activeTab === 'pending_payment') return order.escrowStatus === 'WAITING_PAYMENT';
     if (activeTab === 'packing') return order.escrowStatus === 'PAYMENT_CONFIRMED' || order.escrowStatus === 'SELLER_PACKING';
@@ -148,51 +146,62 @@ function OrderHistoryContent() {
     if (typeof window !== 'undefined') {
       navigator.clipboard.writeText(resi);
       setCopiedResi(resi);
+      toast.success('Resi Disalin', `Nomor resi ${resi} berhasil disalin ke clipboard.`);
       setTimeout(() => setCopiedResi(null), 2000);
     }
   };
 
-  const handleReleaseFunds = async (orderId: string) => {
-    if (confirm('Konfirmasi bahwa barang telah Anda terima dan sesuai deskripsi? Dana akan diteruskan ke rekening penjual.')) {
-      const res = await api.completeOrder(orderId);
-      if (res.success) {
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ['my-orders'] }),
-          queryClient.invalidateQueries({ queryKey: ['orders'] }),
-          queryClient.invalidateQueries({ queryKey: ['my-listings'] })
-        ]);
-        refetch();
-      } else {
-        alert(res.error?.message || 'Gagal melepaskan dana');
-      }
+  const confirmReleaseFunds = async () => {
+    if (!releaseOrderId) return;
+    setIsSubmittingRelease(true);
+    const res = await api.completeOrder(releaseOrderId);
+    if (res.success) {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['my-orders'] }),
+        queryClient.invalidateQueries({ queryKey: ['orders'] }),
+        queryClient.invalidateQueries({ queryKey: ['my-listings'] })
+      ]);
+      toast.success('Dana Berhasil Dicairkan', 'Terima kasih telah mengonfirmasi penerimaan barang. Transaksi selesai aman.');
+      setReleaseOrderId(null);
+      refetch();
+    } else {
+      toast.error('Gagal Melepaskan Dana', res.error?.message || 'Terjadi kesalahan sistem.');
     }
+    setIsSubmittingRelease(false);
   };
 
-  const handleDispute = async (orderId: string) => {
-    const reason = prompt('Masukkan alasan komplain / retur garansi 48 jam:');
-    if (reason && reason.trim()) {
-      const res = await api.disputeOrder(orderId, reason.trim(), []);
-      if (res.success) {
-        alert('Komplain Anda telah terdaftar. Tim CS Rekber JBB akan menahan dana dan memediasi dengan penjual.');
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ['my-orders'] }),
-          queryClient.invalidateQueries({ queryKey: ['orders'] })
-        ]);
-        refetch();
-      } else {
-        alert(res.error?.message || 'Gagal mengajukan komplain');
-      }
+  const confirmSubmitDispute = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!disputeOrderId) return;
+    if (!disputeReasonInput.trim()) {
+      toast.warning('Alasan Wajib Diisi', 'Mohon jelaskan kendala barang yang Anda terima.');
+      return;
     }
+    setIsSubmittingDispute(true);
+    const res = await api.disputeOrder(disputeOrderId, disputeReasonInput.trim(), []);
+    if (res.success) {
+      toast.success('Komplain Terdaftar', 'Tim CS Rekber Bekasin akan menahan dana dan memediasi dengan penjual.');
+      setDisputeOrderId(null);
+      setDisputeReasonInput('');
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['my-orders'] }),
+        queryClient.invalidateQueries({ queryKey: ['orders'] })
+      ]);
+      refetch();
+    } else {
+      toast.error('Gagal Mengajukan Komplain', res.error?.message || 'Terjadi kendala saat mengirim komplain.');
+    }
+    setIsSubmittingDispute(false);
   };
 
   const handleSubmitShipping = async (orderId: string) => {
     if (!trackingNumberInput.trim()) {
-      alert('Masukkan nomor resi pengiriman');
+      toast.warning('Nomor Resi Wajib Diisi', 'Masukkan nomor resi pengiriman kurir yang valid.');
       return;
     }
     const res = await api.updateShipping(orderId, courierNameInput, trackingNumberInput.trim());
     if (res.success) {
-      alert('Resi pengiriman berhasil disimpan! Pembeli telah diberi tahu.');
+      toast.success('Resi Pengiriman Disimpan', 'Pembeli telah menerima notifikasi nomor resi pengiriman.');
       setShippingOrderId(null);
       setTrackingNumberInput('');
       await Promise.all([
@@ -201,7 +210,7 @@ function OrderHistoryContent() {
       ]);
       refetch();
     } else {
-      alert(res.error?.message || 'Gagal mengupdate resi');
+      toast.error('Gagal Mengupdate Resi', res.error?.message || 'Terjadi kesalahan saat menyimpan resi.');
     }
   };
 
@@ -211,38 +220,13 @@ function OrderHistoryContent() {
   return (
     <div className="bg-slate-50 py-3 sm:py-6 px-3.5 sm:px-6 lg:px-8 pb-6 sm:pb-8">
       <div className="mx-auto max-w-5xl space-y-4 sm:space-y-5">
-        {/* Top Header Row: Breadcrumbs & Quick Role Switcher */}
+        {/* Top Header Row: Breadcrumbs */}
         <div className="flex items-center justify-between gap-2 min-w-0">
           <Breadcrumbs
             items={[
               { label: orderMode === 'buyer' ? 'Belanjaan Saya' : 'Penjualan Saya' }
             ]}
           />
-
-          <div className="flex items-center gap-1.5 shrink-0">
-            <button
-              type="button"
-              onClick={loginAsDemoBuyer}
-              className={`rounded-full px-2.5 py-1 text-[10px] font-bold border transition-colors cursor-pointer ${
-                user?.role === 'BUYER'
-                  ? 'bg-brand-50 border-brand-300 text-brand-800'
-                  : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              Demo Pembeli
-            </button>
-            <button
-              type="button"
-              onClick={loginAsDemoSeller}
-              className={`rounded-full px-2.5 py-1 text-[10px] font-bold border transition-colors cursor-pointer ${
-                user?.role === 'SELLER'
-                  ? 'bg-brand-50 border-brand-300 text-brand-800'
-                  : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              Demo Penjual
-            </button>
-          </div>
         </div>
 
         {/* 1. Mode Segmented Switcher Bar (Mobile-Friendly 2-Tabs) */}
@@ -347,7 +331,7 @@ function OrderHistoryContent() {
         {isLoading ? (
           <div className="space-y-3.5">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-44 rounded-3xl bg-white border border-slate-200 p-5 animate-pulse" />
+              <div key={i} className="h-44 rounded-3xl bg-white border border-slate-200 p-5 shadow-2xs" />
             ))}
           </div>
         ) : filteredOrders.length === 0 ? (
@@ -361,8 +345,8 @@ function OrderHistoryContent() {
               </h2>
               <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
                 {orderMode === 'buyer'
-                  ? 'Barang bekas berkualitas yang Anda beli lewat Rekber JBB akan otomatis terpantau di sini.'
-                  : 'Pesanan barang Anda yang dibayar pembeli lewat Rekber JBB akan muncul di sini untuk Anda proses.'}
+                  ? 'Barang bekas berkualitas yang Anda beli lewat Rekber Bekasin akan otomatis terpantau di sini.'
+                  : 'Pesanan barang Anda yang dibayar pembeli lewat Rekber Bekasin akan muncul di sini untuk Anda proses.'}
               </p>
             </div>
             <div className="pt-1">
@@ -585,14 +569,17 @@ function OrderHistoryContent() {
                         <>
                           <button
                             type="button"
-                            onClick={() => handleDispute(order.id)}
+                            onClick={() => {
+                              setDisputeOrderId(order.id);
+                              setDisputeReasonInput('');
+                            }}
                             className="rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 text-xs font-bold text-rose-700 transition-colors cursor-pointer"
                           >
                             Komplain
                           </button>
                           <button
                             type="button"
-                            onClick={() => handleReleaseFunds(order.id)}
+                            onClick={() => setReleaseOrderId(order.id)}
                             className="rounded-xl bg-brand-600 hover:bg-brand-700 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition-colors cursor-pointer"
                           >
                             Konfirmasi Cair
@@ -627,7 +614,7 @@ function OrderHistoryContent() {
                     <ShieldCheck className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-slate-900">Bukti Transaksi Rekber JBB</h3>
+                    <h3 className="text-sm font-black text-slate-900">Bukti Transaksi Rekber Bekasin</h3>
                     <p className="text-[10px] text-slate-400">Nomor Transaksi Resmi Terverifikasi</p>
                   </div>
                 </div>
@@ -672,7 +659,7 @@ function OrderHistoryContent() {
               </div>
 
               <div className="rounded-2xl bg-brand-50/80 p-3.5 border border-brand-200 text-[11px] text-brand-900 leading-relaxed font-medium">
-                🛡️ <strong>Jaminan Rekber:</strong> Dana transaksi berada dalam rekening perantara resmi JBB dan baru akan dicairkan ke penjual setelah barang diterima dan melewati masa inspeksi fisik 48 jam.
+                🛡️ <strong>Jaminan Rekber:</strong> Dana transaksi berada dalam rekening perantara resmi Bekasin dan baru akan dicairkan ke penjual setelah barang diterima dan melewati masa inspeksi fisik 48 jam.
               </div>
 
               <button
@@ -682,6 +669,102 @@ function OrderHistoryContent() {
               >
                 Tutup Bukti Transaksi
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Custom Confirmation Modal for Releasing Funds to Seller */}
+        {releaseOrderId && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-in fade-in">
+            <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl space-y-4 animate-in zoom-in-95">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 mx-auto">
+                <CheckCircle2 className="h-6 w-6" />
+              </div>
+              <div className="text-center space-y-1">
+                <h3 className="text-base font-black text-slate-900">Konfirmasi Pelepasan Dana</h3>
+                <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                  Apakah barang yang Anda terima sudah diperiksa dan sesuai dengan deskripsi iklan? Dana akan langsung diteruskan ke saldo rekening penjual.
+                </p>
+              </div>
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  disabled={isSubmittingRelease}
+                  onClick={() => setReleaseOrderId(null)}
+                  className="flex-1 rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  disabled={isSubmittingRelease}
+                  onClick={confirmReleaseFunds}
+                  className="flex-1 rounded-full bg-emerald-600 hover:bg-emerald-700 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-600/25 transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {isSubmittingRelease ? 'Memproses...' : 'Ya, Cairkan Dana'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Custom Dispute / Komplain Modal Dialog */}
+        {disputeOrderId && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-in fade-in">
+            <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl space-y-4 animate-in zoom-in-95">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-100">
+                    <ShieldCheck className="h-4.5 w-4.5" />
+                  </div>
+                  <h3 className="text-sm font-black text-slate-900">Pengajuan Komplain Garansi 48 Jam</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setDisputeOrderId(null)}
+                  className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                Dana transaksi Anda akan <strong>otomatis dibekukan sementara</strong>. Tim Mediasi Bekasin akan menghubungi Anda dan penjual untuk verifikasi bukti kendala.
+              </p>
+
+              <form onSubmit={confirmSubmitDispute} className="space-y-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Detail Alasan Komplain / Kerusakan / Ketidaksesuaian:
+                  </label>
+                  <textarea
+                    rows={4}
+                    required
+                    value={disputeReasonInput}
+                    onChange={(e) => setDisputeReasonInput(e.target.value)}
+                    placeholder="Contoh: Layar HP bergaris tidak sesuai deskripsi mulus, kelengkapan charger tidak ada..."
+                    className="w-full rounded-2xl border border-slate-200 p-3 text-xs focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none resize-none font-medium"
+                  />
+                </div>
+
+                <div className="flex items-center gap-3 pt-2">
+                  <button
+                    type="button"
+                    disabled={isSubmittingDispute}
+                    onClick={() => setDisputeOrderId(null)}
+                    className="flex-1 rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmittingDispute}
+                    className="flex-1 rounded-full bg-rose-600 hover:bg-rose-700 py-2.5 text-xs font-bold text-white shadow-md shadow-rose-600/25 transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    {isSubmittingDispute ? 'Mengirim...' : 'Kirim Komplain'}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}

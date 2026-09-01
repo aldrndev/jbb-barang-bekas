@@ -60,7 +60,8 @@ export const listingQuerySchema = z.object({
   isNego: z.coerce.boolean().optional(),
   sortBy: z.enum(['newest', 'price_asc', 'price_desc', 'popular']).default('newest').optional(),
   page: z.coerce.number().int().min(1).default(1).optional(),
-  limit: z.coerce.number().int().min(1).max(50).default(20).optional()
+  limit: z.coerce.number().int().min(1).max(50).default(20).optional(),
+  cursor: z.string().optional()
 });
 
 export type CreateListingInput = z.infer<typeof createListingSchema>;

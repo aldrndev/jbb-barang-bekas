@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
+import { useToast } from '../../context/toast-context';
 import { formatIDR, formatTimeAgo } from '../../lib/utils';
 import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
@@ -25,16 +26,20 @@ import {
   MapPin,
   ExternalLink,
   Tag,
-  Zap
+  Zap,
+  Lock
 } from 'lucide-react';
 
 function NegoDashboardContent() {
-  const { user, loginAsDemoBuyer, loginAsDemoSeller } = useAuth();
+  const { user, openAuthModal } = useAuth();
+  const toast = useToast();
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const queryTab = searchParams.get('tab') as 'received' | 'sent' | null;
-
-  const [activeTab, setActiveTab] = useState<'received' | 'sent'>('received');
+  const [activeTab, setActiveTab] = useState<'received' | 'sent'>(() => {
+    if (queryTab && ['received', 'sent'].includes(queryTab)) return queryTab;
+    return 'received';
+  });
   const [counterPriceInput, setCounterPriceInput] = useState<number>(0);
   const [counterMessageInput, setCounterMessageInput] = useState('');
   const [selectedOfferForCounter, setSelectedOfferForCounter] = useState<string | null>(null);
@@ -42,12 +47,8 @@ function NegoDashboardContent() {
   useEffect(() => {
     if (queryTab && ['received', 'sent'].includes(queryTab)) {
       setActiveTab(queryTab);
-    } else if (user?.role === 'BUYER') {
-      setActiveTab('sent');
-    } else if (user?.role === 'SELLER') {
-      setActiveTab('received');
     }
-  }, [queryTab, user?.role]);
+  }, [queryTab]);
 
   // Queries
   const { data: receivedOffersData, refetch: refetchReceived } = useQuery({
@@ -73,12 +74,18 @@ function NegoDashboardContent() {
         queryClient.invalidateQueries({ queryKey: ['my-listings'] }),
         queryClient.invalidateQueries({ queryKey: ['my-orders'] })
       ]);
+      const actionLabels = {
+        ACCEPT: 'Tawaran Disetujui',
+        REJECT: 'Tawaran Ditolak',
+        COUNTER: 'Tawaran Balik Terkirim'
+      };
+      toast.success(actionLabels[action], 'Status negosiasi harga berhasil diperbarui.');
       refetchReceived();
       refetchSent();
       setSelectedOfferForCounter(null);
       setCounterMessageInput('');
     } else {
-      alert(res.error?.message || 'Gagal merespons tawaran');
+      toast.error('Gagal Merespons', res.error?.message || 'Terjadi kesalahan sistem.');
     }
   };
 
@@ -118,22 +125,14 @@ function NegoDashboardContent() {
             </p>
           </div>
 
-          <div className="space-y-2 pt-2">
+          <div className="pt-2">
             <button
               type="button"
-              onClick={loginAsDemoBuyer}
+              onClick={openAuthModal}
               className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 hover:bg-brand-700 py-3 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
             >
-              <Sparkles className="h-4 w-4" />
-              <span>Masuk Demo (Pembeli: Dimas)</span>
-            </button>
-            <button
-              type="button"
-              onClick={loginAsDemoSeller}
-              className="w-full flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 py-2.5 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
-            >
-              <Tag className="h-3.5 w-3.5 text-amber-600" />
-              <span>Masuk Demo (Penjual: Budi)</span>
+              <Lock className="h-4 w-4" />
+              <span>Masuk / Daftar Akun</span>
             </button>
           </div>
         </div>
@@ -151,46 +150,19 @@ function NegoDashboardContent() {
           ]}
         />
 
-        {/* 1. Header Card with Role Info & Demo Switcher */}
+        {/* 1. Header Card */}
         <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-3.5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 shadow-xs shrink-0">
-                <MessageSquareQuote className="h-5 w-5" />
-              </div>
-              <div className="min-w-0">
-                <h1 className="text-base sm:text-xl font-black text-slate-900 tracking-tight truncate">
-                  Pusat Tawar & Nego Harga
-                </h1>
-                <p className="text-[11px] sm:text-xs text-slate-500 font-medium truncate">
-                  Kunci harga 24 jam dengan rekber resmi JBB
-                </p>
-              </div>
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 shadow-xs shrink-0">
+              <MessageSquareQuote className="h-5 w-5" />
             </div>
-
-            {/* User Badge & Switcher */}
-            <div className="flex items-center justify-between sm:justify-end gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-              <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-xl border border-slate-200 text-xs">
-                {user.avatarUrl ? (
-                  <img src={user.avatarUrl} alt={user.name} className="h-4.5 w-4.5 rounded-full object-cover" />
-                ) : (
-                  <User className="h-3.5 w-3.5 text-slate-500" />
-                )}
-                <span className="text-slate-900 font-bold text-[11px] truncate max-w-24">{user.name.split(' ')[0]}</span>
-                <span className={`rounded px-1.5 py-0.2 text-[9px] font-black border ${
-                  user.role === 'SELLER' ? 'bg-amber-100 text-amber-900 border-amber-200' : 'bg-brand-100 text-brand-900 border-brand-200'
-                }`}>
-                  {user.role}
-                </span>
-              </div>
-
-              <button
-                type="button"
-                onClick={user.role === 'BUYER' ? loginAsDemoSeller : loginAsDemoBuyer}
-                className="rounded-xl bg-white border border-slate-200 px-2.5 py-1 text-[10px] sm:text-[11px] font-bold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs shrink-0"
-              >
-                Ganti ke {user.role === 'BUYER' ? 'Penjual' : 'Pembeli'}
-              </button>
+            <div className="min-w-0">
+              <h1 className="text-base sm:text-xl font-black text-slate-900 tracking-tight truncate">
+                Pusat Tawar & Nego Harga
+              </h1>
+              <p className="text-[11px] sm:text-xs text-slate-500 font-medium truncate">
+                Kunci harga 24 jam dengan rekber resmi Peygo
+              </p>
             </div>
           </div>
 

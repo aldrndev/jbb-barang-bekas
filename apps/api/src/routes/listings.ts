@@ -14,10 +14,6 @@ export const listingRoutes = new Hono<AppEnv>()
     const db = getDb(c.env.DB);
 
     if (db) {
-      const page = query.page || 1;
-      const limit = query.limit || 20;
-      const offset = (page - 1) * limit;
-
       // Fetch all listings with images, seller, category
       const dbListings = await db.query.listings.findMany({
         with: {
@@ -87,14 +83,35 @@ export const listingRoutes = new Hono<AppEnv>()
       }
 
       const total = items.length;
+      const limit = query.limit || 20;
+
+      let paginated: Listing[] = [];
+      let nextCursor: string | null = null;
+      let hasMore = false;
+      let page = query.page || 1;
+
+      if (query.cursor) {
+        const cursorIndex = items.findIndex((i) => i.id === query.cursor);
+        const startIndex = cursorIndex >= 0 ? cursorIndex + 1 : 0;
+        paginated = items.slice(startIndex, startIndex + limit);
+        const lastItem = paginated[paginated.length - 1];
+        nextCursor = (startIndex + limit < total && lastItem) ? lastItem.id : null;
+        hasMore = startIndex + limit < total;
+      } else {
+        const offset = (page - 1) * limit;
+        paginated = items.slice(offset, offset + limit);
+        const lastItem = paginated[paginated.length - 1];
+        nextCursor = (offset + limit < total && lastItem) ? lastItem.id : null;
+        hasMore = offset + limit < total;
+      }
+
       const totalPages = Math.ceil(total / limit);
-      const paginated = items.slice(offset, offset + limit);
 
       return c.json({
         success: true,
         data: {
           items: paginated,
-          pagination: { page, limit, total, totalPages, hasMore: page < totalPages }
+          pagination: { page, limit, total, totalPages, hasMore, nextCursor }
         }
       });
     }
@@ -113,7 +130,7 @@ export const listingRoutes = new Hono<AppEnv>()
     }
     if (query.category && query.category !== 'all') {
       const cat = memoryStore.categories.find(
-        (cat) => cat.slug === query.category || cat.id === query.category
+        (c) => c.slug === query.category || c.id === query.category
       );
       if (cat) {
         items = items.filter((item) => item.categoryId === cat.id);
@@ -147,17 +164,35 @@ export const listingRoutes = new Hono<AppEnv>()
       items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     }
 
-    const page = query.page || 1;
-    const limit = query.limit || 20;
     const total = items.length;
+    const limit = query.limit || 20;
+    let paginatedItems: Listing[] = [];
+    let nextCursor: string | null = null;
+    let hasMore = false;
+    let page = query.page || 1;
+
+    if (query.cursor) {
+      const cursorIndex = items.findIndex((i) => i.id === query.cursor);
+      const startIndex = cursorIndex >= 0 ? cursorIndex + 1 : 0;
+      paginatedItems = items.slice(startIndex, startIndex + limit);
+      const lastItem = paginatedItems[paginatedItems.length - 1];
+      nextCursor = (startIndex + limit < total && lastItem) ? lastItem.id : null;
+      hasMore = startIndex + limit < total;
+    } else {
+      const offset = (page - 1) * limit;
+      paginatedItems = items.slice(offset, offset + limit);
+      const lastItem = paginatedItems[paginatedItems.length - 1];
+      nextCursor = (offset + limit < total && lastItem) ? lastItem.id : null;
+      hasMore = offset + limit < total;
+    }
+
     const totalPages = Math.ceil(total / limit);
-    const paginatedItems = items.slice((page - 1) * limit, page * limit);
 
     return c.json({
       success: true,
       data: {
         items: paginatedItems,
-        pagination: { page, limit, total, totalPages, hasMore: page < totalPages }
+        pagination: { page, limit, total, totalPages, hasMore, nextCursor }
       }
     });
   })
@@ -249,7 +284,19 @@ export const listingRoutes = new Hono<AppEnv>()
     return c.json({ success: true, message: 'Status iklan berhasil diperbarui' });
   })
 
-  .put('/:id', authMiddleware, zValidator('json', updateListingSchema), async (c) => {
+  .put('/:id', authMiddleware, zValidator('json', updateListingSchema, (result, c) => {
+    if (!result.success) {
+      const firstIssue = result.error.issues?.[0];
+      return c.json({
+        success: false,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: firstIssue?.message || 'Data form tidak valid',
+          issues: result.error.issues
+        }
+      }, 400);
+    }
+  }), async (c) => {
     const user = c.get('user')!;
     const id = c.req.param('id');
     const payload = c.req.valid('json');
@@ -409,7 +456,41 @@ export const listingRoutes = new Hono<AppEnv>()
     return c.json({ success: true, data: listing });
   })
 
-  .post('/', authMiddleware, zValidator('json', createListingSchema), async (c) => {
+  .post('/:idOrSlug/view', async (c) => {
+    const idOrSlug = c.req.param('idOrSlug');
+    const db = getDb(c.env.DB);
+
+    if (db) {
+      try {
+        await db.update(schema.listings)
+          .set({ viewCount: sql`${schema.listings.viewCount} + 1` })
+          .where(or(eq(schema.listings.id, idOrSlug), eq(schema.listings.slug, idOrSlug)));
+      } catch (err) {
+        console.error('Failed to increment viewCount:', err);
+      }
+      return c.json({ success: true });
+    }
+
+    const listing = memoryStore.listings.find((item) => item.slug === idOrSlug || item.id === idOrSlug);
+    if (listing) {
+      listing.viewCount = (listing.viewCount || 0) + 1;
+    }
+    return c.json({ success: true });
+  })
+
+  .post('/', authMiddleware, zValidator('json', createListingSchema, (result, c) => {
+    if (!result.success) {
+      const firstIssue = result.error.issues?.[0];
+      return c.json({
+        success: false,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: firstIssue?.message || 'Data form tidak valid',
+          issues: result.error.issues
+        }
+      }, 400);
+    }
+  }), async (c) => {
     const user = c.get('user')!;
     const payload = c.req.valid('json');
     const db = getDb(c.env.DB);

@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ShieldCheck, Lock, RefreshCw, Zap, Heart } from 'lucide-react';
+import { PeygoLogoIcon } from '../common/peygo-logo';
 
 export function Footer() {
   const pathname = usePathname();
@@ -67,10 +68,13 @@ export function Footer() {
 
         {/* Footer Links & Copyright */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 text-xs text-slate-500">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-emerald-600" />
-            <span className="font-bold text-slate-800">JBB Marketplace Indonesia</span>
-            <span>&copy; {new Date().getFullYear()} Dilindungi Hak Cipta.</span>
+          <div className="flex items-center gap-2.5">
+            <PeygoLogoIcon size="xs" />
+            <span className="font-bold text-slate-800">
+              Pey<span className="bg-linear-to-r from-brand-600 to-emerald-500 bg-clip-text text-transparent">go</span>
+              <span className="text-slate-400 font-normal"> &bull; Jual Beli Barang Bekas</span>
+            </span>
+            <span>&copy; {new Date().getFullYear()} PT Peygo Rekber Indonesia.</span>
           </div>
 
           <div className="flex items-center gap-6">

@@ -6,3 +6,4 @@ export * from './orders';
 export * from './reviews';
 export * from './chats';
 export * from './relations';
+export * from './wishlists';

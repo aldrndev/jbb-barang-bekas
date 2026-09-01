@@ -1,30 +1,30 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "jbb-api",
+  "name": "bekasin-api",
   "main": "src/index.ts",
   "compatibility_date": "2026-08-30",
   "compatibility_flags": ["nodejs_compat"],
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "jbb-prod-db",
-      "database_id": "local-d1-placeholder"
+      "database_name": "bekasin-prod-db",
+      "database_id": "6f9a8d20-f715-4459-8af8-dc5ec0ad89c7"
     }
   ],
   "r2_buckets": [
     {
       "binding": "STORAGE",
-      "bucket_name": "jbb-images"
+      "bucket_name": "bekasin-images"
     }
   ],
   "kv_namespaces": [
     {
       "binding": "CACHE",
-      "id": "local-kv-placeholder"
+      "id": "589cd36e11a84fe5ad80f219d8b86bd9"
     }
   ],
   "vars": {
-    "JWT_SECRET": "jbb_marketplace_super_secret_jwt_key_2026",
-    "APP_ENV": "development"
+    "JWT_SECRET": "bekasin_marketplace_super_secret_jwt_key_2026_prod",
+    "APP_ENV": "production"
   }
 }

@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import type { Listing } from '@jbb/types';
-import { formatIDR, formatTimeAgo } from '../../lib/utils';
+import { formatIDR, formatTimeAgo, toTitleCase } from '../../lib/utils';
 import { ConditionBadge } from './condition-badge';
 import { MapPin, ShieldCheck, Star, Zap, MessageSquareQuote, Heart, Trash2 } from 'lucide-react';
 import { useWishlist } from '../../context/wishlist-context';
@@ -24,13 +24,13 @@ export function ListingCard({ listing, showRemoveFromWishlist = false }: Listing
     : null;
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-3xl border border-slate-200/60 bg-white shadow-2xs hover:border-brand-500/30 hover:shadow-md transition-all duration-200">
+    <div className="group relative flex flex-col overflow-hidden rounded-3xl border border-slate-200/60 bg-white shadow-2xs hover:border-brand-500/40 hover:shadow-md transition-colors duration-150">
       {/* Image Container */}
       <Link href={`/listing/${listing.slug || listing.id}`} className="relative aspect-4/3 w-full overflow-hidden bg-slate-50/80 block">
         <img
           src={primaryImage}
           alt={listing.title}
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-103"
+          className="h-full w-full object-cover select-none"
         />
 
         {/* Top Badges */}
@@ -38,13 +38,24 @@ export function ListingCard({ listing, showRemoveFromWishlist = false }: Listing
           <ConditionBadge condition={listing.condition} size="sm" />
         </div>
 
-        {/* COD Pill at bottom of image */}
-        {listing.isCodAvailable && (
-          <div className="absolute bottom-2 left-2 z-10 rounded-full bg-amber-50/95 px-2.5 py-0.5 text-[9px] font-bold text-amber-950 border border-amber-300 backdrop-blur-md shadow-2xs flex items-center gap-1">
-            <Zap className="h-2.5 w-2.5 text-amber-600 fill-amber-400" />
-            <span>Siap COD</span>
-          </div>
-        )}
+        {/* Bottom Overlay Badges (COD on left, Nego on right) */}
+        <div className="absolute bottom-2 inset-x-2 z-10 flex items-center justify-between pointer-events-none">
+          {listing.isCodAvailable ? (
+            <div className="rounded-full bg-amber-50/95 px-2.5 py-0.5 text-[9px] font-bold text-amber-950 border border-amber-300 backdrop-blur-md shadow-2xs flex items-center gap-1">
+              <Zap className="h-2.5 w-2.5 text-amber-600 fill-amber-400" />
+              <span>Siap COD</span>
+            </div>
+          ) : (
+            <div />
+          )}
+
+          {listing.isNegotiable && (
+            <div className="rounded-full bg-amber-50/95 px-2.5 py-0.5 text-[9px] font-bold text-amber-950 border border-amber-300 backdrop-blur-md shadow-2xs flex items-center gap-1">
+              <MessageSquareQuote className="h-2.5 w-2.5 text-amber-600" />
+              <span>Nego</span>
+            </div>
+          )}
+        </div>
       </Link>
 
       {/* Floating Wishlist Heart / Trash Button */}
@@ -88,30 +99,30 @@ export function ListingCard({ listing, showRemoveFromWishlist = false }: Listing
         </h3>
 
         {/* Price & Badges */}
-        <div className="mt-2 flex items-center justify-between gap-1.5 flex-wrap">
-          <div className="text-sm sm:text-base font-black text-slate-900">
-            {formatIDR(listing.price)}
-          </div>
-          <div className="flex items-center gap-1 flex-wrap">
-            {listing.isNegotiable && (
-              <span className="rounded-md bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold text-amber-900 border border-amber-200/80 flex items-center gap-0.5">
-                <MessageSquareQuote className="h-2.5 w-2.5 text-amber-600" />
-                <span>Nego</span>
-              </span>
-            )}
-            {discountPercent && (
-              <span className="rounded-md bg-rose-50 px-1.5 py-0.5 text-[9px] font-bold text-rose-600 border border-rose-100">
+        <div className="mt-2 space-y-0.5">
+          <div className="flex items-center justify-between gap-1.5 flex-wrap">
+            <div className="text-sm sm:text-base font-black text-slate-900">
+              {formatIDR(listing.price)}
+            </div>
+            {discountPercent && discountPercent > 0 ? (
+              <span className="rounded-md bg-rose-50 px-1.5 py-0.5 text-[9px] font-bold text-rose-600 border border-rose-100 shrink-0">
                 Hemat {discountPercent}%
               </span>
-            )}
+            ) : null}
           </div>
+
+          {listing.originalPrice && listing.originalPrice > listing.price ? (
+            <div className="text-[10px] text-slate-400 line-through font-medium">
+              {formatIDR(listing.originalPrice)}
+            </div>
+          ) : null}
         </div>
 
         {/* Seller Info & Location Footer */}
         <div className="mt-2.5 flex items-center justify-between border-t border-slate-200/80 pt-2 text-[10px] sm:text-[11px] text-slate-500">
           <div className="flex items-center gap-1 truncate max-w-30">
             <MapPin className="h-3 w-3 text-slate-400 shrink-0" />
-            <span className="truncate">{listing.city}</span>
+            <span className="truncate">{toTitleCase(listing.city)}</span>
           </div>
 
           <div className="flex items-center gap-1 font-semibold text-slate-700">

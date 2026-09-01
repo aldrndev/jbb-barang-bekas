@@ -6,7 +6,8 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
 import { useWishlist } from '../../context/wishlist-context';
-import { formatIDR } from '../../lib/utils';
+import { useToast } from '../../context/toast-context';
+import { formatIDR, toTitleCase, cleanWhitespace } from '../../lib/utils';
 import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import {
   User,
@@ -37,11 +38,13 @@ import {
   Upload,
   Camera,
   AlertCircle,
+  ShieldAlert,
   X,
   Loader2,
   FileText,
   CheckCircle,
-  HelpCircle
+  HelpCircle,
+  Clock
 } from 'lucide-react';
 
 const SUPPORTED_BANKS = [
@@ -58,34 +61,25 @@ const SUPPORTED_BANKS = [
 ];
 
 export default function ProfilePage() {
-  const { user, openAuthModal, logout, login } = useAuth();
+  const { user, openAuthModal, logout, login, token } = useAuth();
   const { wishlistCount } = useWishlist();
+  const toast = useToast();
 
-  const { data: myListings = [] } = useQuery({
-    queryKey: ['my-listings'],
-    queryFn: async () => {
-      const res = await api.getMyListings();
-      if (res.success && res.data) return res.data;
-      return [];
-    },
-    enabled: !!user
-  });
+  const [activeTab, setActiveTab] = useState<'biodata' | 'security' | 'reputation'>('biodata');
 
-  const [activeTab, setActiveTab] = useState<'biodata' | 'security' | 'listings' | 'reputation'>('biodata');
-
-  // Form Biodata State
+  // Form Biodata State - Clean and initialized from real user profile
   const [name, setName] = useState(user?.name || '');
-  const [phone, setPhone] = useState(user?.phone || '081234567890');
-  const [city, setCity] = useState(user?.city || 'Jakarta Selatan');
-  const [province, setProvince] = useState(user?.province || 'DKI Jakarta');
-  const [bio, setBio] = useState(user?.bio || 'Penggemar gadget & teknologi. Semua barang pemakaian pribadi dan sangat terawat.');
+  const [phone, setPhone] = useState(user?.phone || '');
+  const [city, setCity] = useState(user?.city || '');
+  const [province, setProvince] = useState(user?.province || '');
+  const [bio, setBio] = useState(user?.bio || '');
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [isSavedToast, setIsSavedToast] = useState(false);
 
   // Bank Account State
   const [isEditingBank, setIsEditingBank] = useState(false);
   const [bankName, setBankName] = useState(user?.bankName || 'Bank Central Asia (BCA)');
-  const [bankAccountNumber, setBankAccountNumber] = useState(user?.bankAccountNumber || '8271029384');
+  const [bankAccountNumber, setBankAccountNumber] = useState(user?.bankAccountNumber || '');
   const [bankAccountHolder, setBankAccountHolder] = useState(user?.bankAccountHolder || user?.name || '');
   const [isSavingBank, setIsSavingBank] = useState(false);
   const [copiedRekening, setCopiedRekening] = useState(false);
@@ -93,8 +87,8 @@ export default function ProfilePage() {
   // KYC Modal State
   const [isKycModalOpen, setIsKycModalOpen] = useState(false);
   const [nik, setNik] = useState(user?.nik || '');
-  const [ktpImageUrl, setKtpImageUrl] = useState(user?.ktpImageUrl || 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80');
-  const [selfieImageUrl, setSelfieImageUrl] = useState(user?.selfieImageUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80');
+  const [ktpImageUrl, setKtpImageUrl] = useState(user?.ktpImageUrl || '');
+  const [selfieImageUrl, setSelfieImageUrl] = useState(user?.selfieImageUrl || '');
   const [isSubmittingKyc, setIsSubmittingKyc] = useState(false);
   const [kycError, setKycError] = useState<string | null>(null);
 
@@ -104,40 +98,43 @@ export default function ProfilePage() {
   // Sync state if user changes
   useEffect(() => {
     if (user) {
-      setName(user.name);
-      if (user.phone) setPhone(user.phone);
-      if (user.city) setCity(user.city);
-      if (user.province) setProvince(user.province);
-      if (user.bio) setBio(user.bio);
+      setName(toTitleCase(user.name));
+      setPhone(user.phone || '');
+      setCity(user.city ? toTitleCase(user.city) : '');
+      setProvince(user.province ? toTitleCase(user.province) : '');
+      setBio(user.bio || '');
       if (user.bankName) setBankName(user.bankName);
-      if (user.bankAccountNumber) setBankAccountNumber(user.bankAccountNumber);
-      if (user.bankAccountHolder) setBankAccountHolder(user.bankAccountHolder);
-      if (user.nik) setNik(user.nik);
-      if (user.ktpImageUrl) setKtpImageUrl(user.ktpImageUrl);
-      if (user.selfieImageUrl) setSelfieImageUrl(user.selfieImageUrl);
+      setBankAccountNumber(user.bankAccountNumber || '');
+      setBankAccountHolder(toTitleCase(user.bankAccountHolder || user.name || ''));
+      setNik(user.nik || '');
+      setKtpImageUrl(user.ktpImageUrl || '');
+      setSelfieImageUrl(user.selfieImageUrl || '');
     }
-  }, [user]);
+  }, [user?.id]);
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-        <div className="max-w-md w-full rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 text-center shadow-xs space-y-4">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-brand-50 text-brand-600 border border-brand-100">
-            <User className="h-8 w-8" />
+      <div className="bg-slate-50 py-10 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+        <div className="max-w-md w-full rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 text-center shadow-xs space-y-5">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 border border-brand-100 shadow-xs">
+            <User className="h-7 w-7" />
           </div>
           <div className="space-y-1">
-            <h2 className="text-lg font-black text-slate-900">Masuk ke Akun Anda</h2>
+            <h2 className="text-base sm:text-lg font-black text-slate-900">Masuk ke Akun Anda</h2>
             <p className="text-xs text-slate-500">
               Silakan masuk atau daftar untuk mengelola profil, melihat riwayat pesanan, dan iklan Anda.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={openAuthModal}
-            className="w-full rounded-full bg-brand-600 hover:bg-brand-700 py-3 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
-          >
-            Masuk / Daftar Akun
-          </button>
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={openAuthModal}
+              className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 hover:bg-brand-700 py-3 text-xs font-bold text-white shadow-md shadow-brand-600/25 transition-all cursor-pointer"
+            >
+              <Lock className="h-4 w-4" />
+              <span>Masuk / Daftar Akun</span>
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -146,33 +143,36 @@ export default function ProfilePage() {
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsUpdatingProfile(true);
-    const token = localStorage.getItem('jbb_auth_token') || 'demo_token';
+    const currentToken = token || '';
+
+    const cleanedName = toTitleCase(name);
+    const cleanedCity = toTitleCase(city);
+    const cleanedBio = cleanWhitespace(bio);
 
     const res = await api.updateProfile({
-      name,
+      name: cleanedName,
       phone,
-      city,
+      city: cleanedCity,
       province,
-      bio
+      bio: cleanedBio
     });
 
     if (res.success && res.data) {
-      login(token, res.data);
+      login(currentToken, res.data);
       setIsSavedToast(true);
       setTimeout(() => setIsSavedToast(false), 3000);
     } else {
       // Fallback local update
       const updatedUser = {
         ...user,
-        name,
+        name: cleanedName,
         phone,
-        city,
+        city: cleanedCity,
         province,
-        bio
+        bio: cleanedBio
       };
-      login(token, updatedUser);
-      setIsSavedToast(true);
-      setTimeout(() => setIsSavedToast(false), 3000);
+      login(currentToken, updatedUser);
+      toast.success('Profil Diperbarui', 'Data biodata Anda berhasil disimpan.');
     }
     setIsUpdatingProfile(false);
   };
@@ -180,33 +180,34 @@ export default function ProfilePage() {
   const handleSaveBankAccount = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!bankAccountNumber.trim() || !bankAccountHolder.trim()) {
-      alert('Nomor rekening dan nama pemilik rekening wajib diisi');
+      toast.warning('Data Belum Lengkap', 'Nomor rekening dan nama pemilik rekening wajib diisi.');
       return;
     }
 
     setIsSavingBank(true);
-    const token = localStorage.getItem('jbb_auth_token') || 'demo_token';
+    const currentToken = token || '';
+    const cleanedHolder = toTitleCase(bankAccountHolder);
 
     const res = await api.updateBankPayout({
       bankName,
       bankAccountNumber: bankAccountNumber.trim(),
-      bankAccountHolder: bankAccountHolder.trim()
+      bankAccountHolder: cleanedHolder
     });
 
     if (res.success && res.data) {
-      login(token, res.data);
+      login(currentToken, res.data);
       setIsEditingBank(false);
-      alert('Rekening pencairan dana berhasil diperbarui!');
+      toast.success('Rekening Disimpan', 'Rekening pencairan dana berhasil diperbarui.');
     } else {
       const updatedUser = {
         ...user,
         bankName,
         bankAccountNumber: bankAccountNumber.trim(),
-        bankAccountHolder: bankAccountHolder.trim()
+        bankAccountHolder: cleanedHolder
       };
-      login(token, updatedUser);
+      login(currentToken, updatedUser);
       setIsEditingBank(false);
-      alert('Rekening pencairan dana berhasil diperbarui!');
+      toast.success('Rekening Disimpan', 'Rekening pencairan dana berhasil diperbarui.');
     }
     setIsSavingBank(false);
   };
@@ -218,9 +219,10 @@ export default function ProfilePage() {
       const res = await api.uploadImage(file);
       if (res.success && res.data?.url) {
         setKtpImageUrl(res.data.url);
+        toast.success('Foto KTP Diunggah', 'Dokumen KTP siap untuk diajukan.');
       }
     } catch {
-      alert('Gagal mengupload foto KTP');
+      toast.error('Gagal Upload', 'Gagal mengupload foto KTP. Periksa format & ukuran file.');
     }
   };
 
@@ -231,9 +233,10 @@ export default function ProfilePage() {
       const res = await api.uploadImage(file);
       if (res.success && res.data?.url) {
         setSelfieImageUrl(res.data.url);
+        toast.success('Foto Selfie Diunggah', 'Dokumen selfie siap untuk diajukan.');
       }
     } catch {
-      alert('Gagal mengupload foto Selfie');
+      toast.error('Gagal Upload', 'Gagal mengupload foto selfie. Periksa format & ukuran file.');
     }
   };
 
@@ -254,7 +257,7 @@ export default function ProfilePage() {
 
     setKycError(null);
     setIsSubmittingKyc(true);
-    const token = localStorage.getItem('jbb_auth_token') || 'demo_token';
+    const currentToken = token || '';
 
     const res = await api.submitKyc({
       nik: nik.trim(),
@@ -263,22 +266,21 @@ export default function ProfilePage() {
     });
 
     if (res.success && res.data) {
-      login(token, res.data);
+      login(currentToken, res.data);
       setIsKycModalOpen(false);
-      alert('Selamat! Verifikasi KYC KTP Anda berhasil disetujui. Akun Anda kini berstatus Terverifikasi Resmi dengan Trust Score 98%!');
+      toast.success('Dokumen KYC Terkirim', 'Pengajuan verifikasi identitas Anda sedang ditinjau oleh Tim Mediasi Bekasin.');
     } else {
       const updatedUser = {
         ...user,
         nik: nik.trim(),
         ktpImageUrl,
         selfieImageUrl,
-        isKycVerified: true,
-        trustScore: 98,
-        role: user.role === 'BUYER' ? ('SELLER' as const) : user.role
+        isKycVerified: false,
+        kycSubmittedAt: new Date().toISOString()
       };
-      login(token, updatedUser);
+      login(currentToken, updatedUser);
       setIsKycModalOpen(false);
-      alert('Selamat! Verifikasi KYC KTP Anda berhasil disetujui. Akun Anda kini berstatus Terverifikasi Resmi dengan Trust Score 98%!');
+      toast.success('Dokumen KYC Terkirim', 'Pengajuan verifikasi identitas Anda sedang ditinjau oleh Tim Mediasi Bekasin.');
     }
     setIsSubmittingKyc(false);
   };
@@ -294,77 +296,9 @@ export default function ProfilePage() {
   return (
     <div className="bg-slate-50 py-3 sm:py-6 px-3.5 sm:px-6 lg:px-8 pb-6 sm:pb-8">
       <div className="mx-auto max-w-5xl space-y-4 sm:space-y-5">
-        {/* Top Breadcrumb & Demo Switcher */}
+        {/* Top Breadcrumb */}
         <div className="flex items-center justify-between gap-2 min-w-0">
           <Breadcrumbs items={[{ label: 'Profil Saya' }]} />
-
-          <div className="flex items-center gap-1.5 shrink-0">
-            <button
-              onClick={() => {
-                login('buyer_token', {
-                  id: 'user_1',
-                  name: 'Dimas Aditya (Pembeli)',
-                  email: 'dimas@example.com',
-                  role: 'BUYER',
-                  isKycVerified: false,
-                  isPhoneVerified: true,
-                  phone: '081234567890',
-                  city: 'Jakarta Selatan',
-                  province: 'DKI Jakarta',
-                  trustScore: 88,
-                  ratingAverage: 5.0,
-                  ratingCount: 14,
-                  totalTransactions: 9,
-                  bio: 'Pembeli aktif gadget & fashion terverifikasi Rekber.',
-                  avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-                  bankName: 'Bank Central Asia (BCA)',
-                  bankAccountNumber: '8271029384',
-                  bankAccountHolder: 'Dimas Aditya',
-                  createdAt: '2024-01-15T08:00:00Z'
-                });
-              }}
-              className={`rounded-full px-2.5 py-1 text-[10px] font-bold border transition-colors cursor-pointer ${
-                user?.role === 'BUYER'
-                  ? 'bg-brand-50 border-brand-300 text-brand-800'
-                  : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              Demo Pembeli (Non-KYC)
-            </button>
-            <button
-              onClick={() => {
-                login('seller_token', {
-                  id: 'user_seller',
-                  name: 'Budi Santoso (Penjual)',
-                  email: 'budi@example.com',
-                  role: 'SELLER',
-                  isKycVerified: true,
-                  isPhoneVerified: true,
-                  phone: '081987654321',
-                  city: 'Jakarta Barat',
-                  province: 'DKI Jakarta',
-                  trustScore: 98,
-                  ratingAverage: 4.9,
-                  ratingCount: 28,
-                  totalTransactions: 35,
-                  bio: 'Penjual spesialis laptop & kamera bekas terawat tangan pertama.',
-                  avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-                  nik: '3174092801950001',
-                  bankName: 'Bank Central Asia (BCA)',
-                  bankAccountNumber: '8271029384',
-                  bankAccountHolder: 'Budi Santoso',
-                  createdAt: '2023-11-20T08:00:00Z'
-                });
-              }}
-              className={`rounded-full px-2.5 py-1 text-[10px] font-bold border transition-colors cursor-pointer ${
-                user?.role === 'SELLER'
-                  ? 'bg-brand-50 border-brand-300 text-brand-800'
-                  : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              Demo Penjual (KYC Verified)
-            </button>
-          </div>
         </div>
 
         {/* 1. Profile Hero Card (Mobile-Optimized) */}
@@ -379,6 +313,7 @@ export default function ProfilePage() {
                   <img
                     src={user.avatarUrl}
                     alt={user.name}
+                    referrerPolicy="no-referrer"
                     className="h-16 w-16 sm:h-20 sm:w-20 rounded-3xl object-cover ring-4 ring-slate-100 shadow-xs"
                   />
                 ) : (
@@ -395,12 +330,21 @@ export default function ProfilePage() {
 
               <div className="space-y-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-base sm:text-xl font-black text-slate-900 truncate">{user.name}</h1>
+                  <h1 className="text-base sm:text-xl font-black text-slate-900 truncate">{toTitleCase(user.name)}</h1>
                   {user.isKycVerified ? (
                     <span className="inline-flex items-center gap-1 rounded-full bg-brand-50 px-2.5 py-0.5 text-[10px] font-extrabold text-brand-900 border border-brand-200">
                       <ShieldCheck className="h-3 w-3 text-brand-600" />
                       <span>Terverifikasi KYC</span>
                     </span>
+                  ) : user.nik ? (
+                    <button
+                      type="button"
+                      onClick={() => setIsKycModalOpen(true)}
+                      className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-extrabold text-amber-900 border border-amber-300 hover:bg-amber-100 transition-colors cursor-pointer"
+                    >
+                      <Clock className="h-3 w-3 text-amber-600" />
+                      <span>⏳ Menunggu Verifikasi Admin</span>
+                    </button>
                   ) : (
                     <button
                       onClick={() => setIsKycModalOpen(true)}
@@ -415,12 +359,12 @@ export default function ProfilePage() {
                 <div className="flex items-center gap-2 text-xs text-slate-500 flex-wrap">
                   <span className="flex items-center gap-1">
                     <MapPin className="h-3.5 w-3.5 text-slate-400" />
-                    {user.city || 'DKI Jakarta'}
+                    {user.city ? toTitleCase(user.city) : 'Domisili belum diatur'}
                   </span>
                   <span>&bull;</span>
                   <span className="flex items-center gap-1 font-semibold text-amber-600">
                     <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                    <span>{user.ratingAverage || 5.0}</span>
+                    <span>{user.ratingCount > 0 ? user.ratingAverage.toFixed(1) : 'Pengguna Baru'}</span>
                     <span className="text-slate-400 font-normal">({user.ratingCount || 0} ulasan)</span>
                   </span>
                 </div>
@@ -440,20 +384,26 @@ export default function ProfilePage() {
           </div>
 
           {/* Quick Metrics Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-100 text-xs">
-            <div className="rounded-2xl bg-slate-50 p-2.5 border border-slate-200/80">
-              <span className="text-[10px] font-bold text-slate-400 block">Trust Score</span>
-              <span className="text-sm sm:text-base font-black text-brand-700">{user.trustScore || 85}%</span>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-slate-100 text-xs">
+            <div className="rounded-2xl bg-slate-50 p-3 border border-slate-200/80">
+              <span className="text-[10px] font-bold text-slate-400 block">Status Akun</span>
+              {user.isKycVerified ? (
+                <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-black text-emerald-700 mt-0.5">
+                  <BadgeCheck className="h-4 w-4 text-emerald-600 shrink-0" />
+                  <span>Terverifikasi</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-black text-slate-600 mt-0.5">
+                  <ShieldAlert className="h-4 w-4 text-slate-400 shrink-0" />
+                  <span>Belum KYC</span>
+                </span>
+              )}
             </div>
-            <div className="rounded-2xl bg-slate-50 p-2.5 border border-slate-200/80">
+            <div className="rounded-2xl bg-slate-50 p-3 border border-slate-200/80">
               <span className="text-[10px] font-bold text-slate-400 block">Total Transaksi</span>
               <span className="text-sm sm:text-base font-black text-slate-900">{user.totalTransactions || 0} Selesai</span>
             </div>
-            <div className="rounded-2xl bg-slate-50 p-2.5 border border-slate-200/80">
-              <span className="text-[10px] font-bold text-slate-400 block">Iklan Aktif</span>
-              <span className="text-sm sm:text-base font-black text-slate-900">{myListings.length} Barang</span>
-            </div>
-            <div className="rounded-2xl bg-slate-50 p-2.5 border border-slate-200/80">
+            <div className="rounded-2xl bg-slate-50 p-3 border border-slate-200/80">
               <span className="text-[10px] font-bold text-slate-400 block">Wishlist Disimpan</span>
               <span className="text-sm sm:text-base font-black text-slate-900">{wishlistCount} Item</span>
             </div>
@@ -485,18 +435,6 @@ export default function ProfilePage() {
           >
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
             <span>KYC & Rekening</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('listings')}
-            className={`flex items-center gap-1.5 rounded-2xl px-3.5 py-2 text-xs font-bold transition-all shrink-0 cursor-pointer ${
-              activeTab === 'listings'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
-            }`}
-          >
-            <Package className="h-3.5 w-3.5 text-blue-500" />
-            <span>Iklan Saya ({myListings.length})</span>
           </button>
           <button
             type="button"
@@ -535,6 +473,7 @@ export default function ProfilePage() {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    onBlur={() => setName(toTitleCase(name))}
                     required
                     className="w-full rounded-2xl border border-slate-200 px-3.5 py-2.5 text-xs text-slate-800 focus:border-brand-500 focus:outline-none bg-slate-50/50"
                   />
@@ -568,6 +507,7 @@ export default function ProfilePage() {
                     type="text"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
+                    onBlur={() => setCity(toTitleCase(city))}
                     placeholder="Contoh: Jakarta Selatan"
                     className="w-full rounded-2xl border border-slate-200 px-3.5 py-2.5 text-xs text-slate-800 focus:border-brand-500 focus:outline-none bg-slate-50/50"
                   />
@@ -605,7 +545,7 @@ export default function ProfilePage() {
             <div className="border-b border-slate-100 pb-3.5 flex items-center justify-between">
               <div>
                 <h3 className="text-sm sm:text-base font-black text-slate-900">Status Keamanan & KYC</h3>
-                <p className="text-[11px] sm:text-xs text-slate-500 font-medium">Verifikasi identitas KTP dan nomor rekening pencairan Rekber JBB.</p>
+                <p className="text-[11px] sm:text-xs text-slate-500 font-medium">Verifikasi identitas KTP dan nomor rekening pencairan Rekber Bekasin.</p>
               </div>
             </div>
 
@@ -630,7 +570,7 @@ export default function ProfilePage() {
 
                 <p className="text-[11px] text-slate-600 font-medium leading-relaxed">
                   {user.isKycVerified
-                    ? `Identitas KTP Anda (${user.nik ? user.nik.slice(0, 4) + '********' + user.nik.slice(-4) : '3174********0001'}) telah diverifikasi resmi oleh sistem KYC JBB. Anda memiliki lencana resmi penjual terpercaya.`
+                    ? `Identitas KTP Anda (${user.nik ? user.nik.slice(0, 4) + '********' + user.nik.slice(-4) : '3174********0001'}) telah diverifikasi resmi oleh sistem KYC Bekasin. Anda memiliki lencana resmi penjual terpercaya.`
                     : 'Verifikasi KTP Anda untuk mendapatkan badge Checkmark Biru, menaikkan Trust Score ke 98%, dan membuka akses pencairan saldo Rekber tanpa batas.'}
                 </p>
 
@@ -655,25 +595,37 @@ export default function ProfilePage() {
               </div>
 
               {/* WhatsApp Verified Card */}
-              <div className="rounded-2xl border border-brand-200 bg-brand-50/60 p-4 space-y-2.5">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 space-y-2.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4.5 w-4.5 text-brand-600" />
+                    <CheckCircle2 className={`h-4.5 w-4.5 ${user.phone ? 'text-brand-600' : 'text-slate-400'}`} />
                     <h4 className="text-xs font-bold text-slate-900">WhatsApp Notifikasi</h4>
                   </div>
-                  <span className="rounded-full bg-brand-200/80 px-2 py-0.5 text-[9px] font-extrabold text-brand-900">
-                    Aktif
-                  </span>
+                  {user.phone ? (
+                    <span className="rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 px-2 py-0.5 text-[9px] font-extrabold">
+                      Aktif
+                    </span>
+                  ) : (
+                    <span className="rounded-full bg-slate-200 text-slate-700 px-2 py-0.5 text-[9px] font-extrabold">
+                      Belum Diisi
+                    </span>
+                  )}
                 </div>
                 <p className="text-[11px] text-slate-600 font-medium leading-relaxed">
-                  Nomor WhatsApp <strong>{user.phone || '081234567890'}</strong> terhubung untuk notifikasi pencairan dana Rekber & update resi kurir.
+                  {user.phone ? (
+                    <>
+                      Nomor WhatsApp <strong>{user.phone}</strong> terhubung untuk notifikasi pencairan dana Rekber & update resi kurir.
+                    </>
+                  ) : (
+                    'Tambahkan nomor WhatsApp aktif untuk menerima konfirmasi pesanan & notifikasi pencairan dana.'
+                  )}
                 </p>
                 <div className="pt-1">
                   <button
                     onClick={() => setActiveTab('biodata')}
                     className="text-xs font-bold text-brand-700 hover:text-brand-800 underline cursor-pointer"
                   >
-                    Ubah Nomor WhatsApp
+                    {user.phone ? 'Ubah Nomor WhatsApp' : '+ Tambah Nomor WhatsApp'}
                   </button>
                 </div>
               </div>
@@ -693,16 +645,18 @@ export default function ProfilePage() {
                     className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-bold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer shadow-2xs"
                   >
                     <Edit3 className="h-3 w-3 text-brand-600" />
-                    <span>{isEditingBank ? 'Batal Edit' : 'Ubah Rekening'}</span>
+                    <span>{isEditingBank ? 'Batal' : bankAccountNumber ? 'Ubah Rekening' : '+ Tambah Rekening'}</span>
                   </button>
-                  <button
-                    type="button"
-                    onClick={handleCopyRekening}
-                    className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-bold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer shadow-2xs"
-                  >
-                    {copiedRekening ? <Check className="h-3 w-3 text-emerald-600" /> : <Copy className="h-3 w-3" />}
-                    <span>{copiedRekening ? 'Tersalin' : 'Salin No Rek'}</span>
-                  </button>
+                  {bankAccountNumber ? (
+                    <button
+                      type="button"
+                      onClick={handleCopyRekening}
+                      className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-bold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer shadow-2xs"
+                    >
+                      {copiedRekening ? <Check className="h-3 w-3 text-emerald-600" /> : <Copy className="h-3 w-3" />}
+                      <span>{copiedRekening ? 'Tersalin' : 'Salin No Rek'}</span>
+                    </button>
+                  ) : null}
                 </div>
               </div>
 
@@ -742,6 +696,7 @@ export default function ProfilePage() {
                         placeholder="Contoh: Budi Santoso"
                         value={bankAccountHolder}
                         onChange={(e) => setBankAccountHolder(e.target.value)}
+                        onBlur={() => setBankAccountHolder(toTitleCase(bankAccountHolder))}
                         className="w-full rounded-xl border border-slate-300 bg-slate-50/50 p-2 text-xs font-bold text-slate-900 focus:border-brand-500 focus:bg-white focus:outline-none"
                       />
                     </div>
@@ -764,7 +719,7 @@ export default function ProfilePage() {
                     </button>
                   </div>
                 </form>
-              ) : (
+              ) : bankAccountNumber ? (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
                   <div className="rounded-xl bg-white p-3 border border-slate-200/80">
                     <span className="text-[10px] font-bold text-slate-400 block">Bank / E-Wallet</span>
@@ -772,12 +727,24 @@ export default function ProfilePage() {
                   </div>
                   <div className="rounded-xl bg-white p-3 border border-slate-200/80">
                     <span className="text-[10px] font-bold text-slate-400 block">Nomor Rekening</span>
-                    <span className="font-mono font-bold text-slate-900">{bankAccountNumber || '8271029384'}</span>
+                    <span className="font-mono font-bold text-slate-900">{bankAccountNumber}</span>
                   </div>
                   <div className="rounded-xl bg-white p-3 border border-slate-200/80">
                     <span className="text-[10px] font-bold text-slate-400 block">Atas Nama</span>
                     <span className="font-bold text-slate-900">{bankAccountHolder || user.name}</span>
                   </div>
+                </div>
+              ) : (
+                <div className="rounded-xl bg-white p-4 border border-dashed border-slate-300 text-center space-y-1.5">
+                  <p className="text-xs font-bold text-slate-700">Belum Ada Rekening Pencairan</p>
+                  <p className="text-[11px] text-slate-400">Daftarkan nomor rekening bank atau e-wallet Anda untuk menerima pencairan hasil penjualan barang.</p>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditingBank(true)}
+                    className="inline-flex items-center gap-1 text-xs font-bold text-brand-600 hover:text-brand-700 pt-1 cursor-pointer"
+                  >
+                    + Daftarkan Rekening Sekarang
+                  </button>
                 </div>
               )}
 
@@ -788,78 +755,7 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* Tab 3: Iklan Saya */}
-        {activeTab === 'listings' && (
-          <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-7 shadow-xs space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3.5">
-              <div>
-                <h3 className="text-sm sm:text-base font-black text-slate-900">Iklan Barang Bekas Anda ({myListings.length})</h3>
-                <p className="text-[11px] sm:text-xs text-slate-500 font-medium">Kelola status barang yang sedang Anda tawarkan.</p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/my-listings"
-                  className="rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 transition-colors"
-                >
-                  Kelola Iklan
-                </Link>
-                <Link
-                  href="/jual"
-                  className="flex items-center gap-1 rounded-full bg-brand-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-brand-700 transition-colors"
-                >
-                  <Plus className="h-3.5 w-3.5 stroke-3" />
-                  <span>Pasang Iklan</span>
-                </Link>
-              </div>
-            </div>
-
-            {myListings.length === 0 ? (
-              <div className="py-12 text-center space-y-3">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
-                  <Package className="h-7 w-7" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900">Belum Ada Iklan Aktif</h4>
-                  <p className="text-xs text-slate-400">Jual gadget, laptop, atau barang bekas Anda dengan garansi Rekber JBB.</p>
-                </div>
-                <Link
-                  href="/jual"
-                  className="inline-flex items-center gap-1 rounded-full bg-brand-600 px-5 py-2 text-xs font-bold text-white shadow-xs hover:bg-brand-700"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  <span>Pasang Iklan Pertama</span>
-                </Link>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {myListings.map((item) => (
-                  <div key={item.id} className="flex gap-3 rounded-2xl border border-slate-200/80 p-3 bg-white hover:border-brand-300 transition-all">
-                    <img
-                      src={item.images?.[0]?.url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300&auto=format&fit=crop&q=80'}
-                      alt={item.title}
-                      className="h-16 w-16 rounded-xl object-cover shrink-0 border border-slate-100"
-                    />
-                    <div className="flex-1 min-w-0 space-y-1">
-                      <h4 className="font-bold text-xs text-slate-900 truncate">{item.title}</h4>
-                      <p className="font-black text-xs text-brand-700">{formatIDR(item.price)}</p>
-                      <div className="flex items-center gap-2 text-[10px]">
-                        <span className="rounded bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.2 font-bold">
-                          {item.status}
-                        </span>
-                        <Link href={`/jual?editId=${item.id}`} className="text-brand-600 font-bold hover:underline">
-                          Edit
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Tab 4: Ulasan & Reputasi */}
+        {/* Tab 3: Ulasan & Reputasi */}
         {activeTab === 'reputation' && (
           <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-7 shadow-xs space-y-4">
             <div className="border-b border-slate-100 pb-3.5">
@@ -867,14 +763,18 @@ export default function ProfilePage() {
               <p className="text-[11px] sm:text-xs text-slate-500 font-medium">Riwayat ulasan dari pembeli dan penjual terverifikasi Rekber.</p>
             </div>
 
-            <div className="rounded-2xl border border-amber-200 bg-amber-50/60 p-4 flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500 text-white font-black text-lg shrink-0 shadow-xs">
-                ★ {user.ratingAverage || 5.0}
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 flex items-center gap-4">
+              <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${user.ratingCount > 0 ? 'bg-amber-500' : 'bg-slate-300'} text-white font-black text-lg shrink-0 shadow-xs`}>
+                ★ {user.ratingCount > 0 ? user.ratingAverage.toFixed(1) : '-'}
               </div>
               <div className="space-y-0.5 text-xs">
-                <span className="font-bold text-slate-900 block">Reputasi Sangat Terpercaya (5.0 / 5.0)</span>
+                <span className="font-bold text-slate-900 block">
+                  {user.ratingCount > 0 ? `Rating Rata-rata (${user.ratingAverage.toFixed(1)} / 5.0)` : 'Pengguna Baru (Belum Ada Ulasan)'}
+                </span>
                 <span className="text-slate-600 text-[11px]">
-                  Berdasarkan {user.ratingCount || 12} ulasan pembeli terverifikasi setelah 48 jam garansi inspeksi.
+                  {user.ratingCount > 0
+                    ? `Berdasarkan ${user.ratingCount} ulasan pembeli terverifikasi setelah 48 jam garansi inspeksi.`
+                    : 'Riwayat ulasan dan bintang reputasi akan otomatis bertambah setelah Anda berhasil menyelesaikan transaksi jual atau beli via Rekber.'}
                 </span>
               </div>
             </div>
@@ -904,13 +804,6 @@ export default function ProfilePage() {
                 <X className="h-4 w-4" />
               </button>
             </div>
-
-            {kycError && (
-              <div className="rounded-2xl bg-rose-50 p-2.5 text-xs font-bold text-rose-700 border border-rose-200 flex items-center gap-2">
-                <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
-                <span>{kycError}</span>
-              </div>
-            )}
 
             <form onSubmit={handleSubmitKyc} className="space-y-4 text-xs">
               <div>

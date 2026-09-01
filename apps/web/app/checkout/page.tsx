@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api-client';
 import { useAuth } from '../../context/auth-context';
-import { formatIDR } from '../../lib/utils';
+import { formatIDR, toTitleCase, cleanWhitespace } from '../../lib/utils';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
 import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import {
@@ -30,7 +30,7 @@ import {
 function CheckoutContent() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { user, openAuthModal, loginAsDemoBuyer } = useAuth();
+  const { user, openAuthModal } = useAuth();
   const searchParams = useSearchParams();
   const listingIdOrSlug = searchParams.get('listingId');
   const queryOfferId = searchParams.get('offerId');
@@ -98,9 +98,9 @@ function CheckoutContent() {
       return;
     }
 
-    const trimmedName = recipientName.trim();
+    const trimmedName = toTitleCase(recipientName);
     const trimmedPhone = recipientPhone.trim();
-    const trimmedAddress = shippingAddress.trim();
+    const trimmedAddress = deliveryMethod === 'COD_KETEMUAN' ? toTitleCase(shippingAddress) : cleanWhitespace(shippingAddress);
 
     if (!trimmedName || trimmedName.length < 2) {
       setErrorMessage('Nama penerima minimal 2 karakter');
@@ -172,17 +172,11 @@ function CheckoutContent() {
 
           <div className="mt-6 flex flex-col gap-2.5">
             <button
-              onClick={loginAsDemoBuyer}
+              onClick={openAuthModal}
               className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 px-6 py-3.5 text-xs font-bold text-white shadow-md shadow-brand-600/25 hover:bg-brand-700 transition-all cursor-pointer"
             >
-              <Sparkles className="h-4 w-4" />
-              <span>Masuk Cepat Demo (Dimas Pembeli)</span>
-            </button>
-            <button
-              onClick={openAuthModal}
-              className="w-full rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
-            >
-              Masuk / Daftar Akun Lain
+              <Lock className="h-4 w-4" />
+              <span>Masuk / Daftar Akun Pembeli</span>
             </button>
           </div>
         </div>
@@ -193,11 +187,11 @@ function CheckoutContent() {
   // Loading view
   if (isListingLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 max-w-6xl mx-auto animate-pulse">
-        <div className="h-8 w-48 bg-slate-200 rounded-xl mb-6" />
+      <div className="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 max-w-6xl mx-auto">
+        <div className="h-8 w-48 bg-slate-200/80 rounded-xl mb-6 border border-slate-200" />
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-7 h-96 bg-slate-200 rounded-3xl" />
-          <div className="lg:col-span-5 h-96 bg-slate-200 rounded-3xl" />
+          <div className="lg:col-span-7 h-96 bg-white rounded-3xl border border-slate-200" />
+          <div className="lg:col-span-5 h-96 bg-white rounded-3xl border border-slate-200" />
         </div>
       </div>
     );
@@ -260,7 +254,7 @@ function CheckoutContent() {
           <div className="mt-4 rounded-2xl bg-brand-50 p-3.5 border border-brand-200 text-[11px] text-brand-900 text-left flex items-start gap-2.5">
             <ShieldCheck className="h-4 w-4 text-brand-600 shrink-0 mt-0.5" />
             <p>
-              Dana Anda telah <strong>terkunci aman di rekening bersama Rekber JBB</strong>. Penjual telah kami beri notifikasi untuk menyiapkan pengiriman / jadwal COD.
+              Dana Anda telah <strong>terkunci aman di rekening bersama Rekber Bekasin</strong>. Penjual telah kami beri notifikasi untuk menyiapkan pengiriman / jadwal COD.
             </p>
           </div>
 
@@ -420,6 +414,7 @@ function CheckoutContent() {
                       setRecipientName(e.target.value);
                       if (errorMessage) setErrorMessage(null);
                     }}
+                    onBlur={() => setRecipientName(toTitleCase(recipientName))}
                     className="w-full rounded-xl border border-slate-200 p-3 text-xs text-slate-800 focus:border-brand-500 focus:outline-none"
                   />
                 </div>
@@ -507,7 +502,7 @@ function CheckoutContent() {
             <div className="rounded-3xl border border-brand-200 bg-brand-50/60 p-5 space-y-3">
               <div className="flex items-center gap-2 text-brand-950 font-black text-sm">
                 <ShieldCheck className="h-5 w-5 text-brand-600" />
-                <span>Jaminan Transaksi Rekber JBB Indonesia</span>
+                <span>Jaminan Transaksi Rekber Bekasin Indonesia</span>
               </div>
               <ul className="space-y-1.5 text-xs text-brand-900 font-medium">
                 <li className="flex items-start gap-2">
@@ -596,7 +591,7 @@ function CheckoutContent() {
               </button>
 
               <p className="text-[10px] text-center text-slate-400 leading-relaxed font-medium">
-                Dengan melanjutkan, Anda menyetujui Ketentuan Rekening Bersama & Jaminan Perlindungan Pembeli JBB.
+                Dengan melanjutkan, Anda menyetujui Ketentuan Rekening Bersama & Jaminan Perlindungan Pembeli Bekasin.
               </p>
             </div>
           </div>

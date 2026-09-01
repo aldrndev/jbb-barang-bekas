@@ -13,7 +13,7 @@ export function EscrowTimeline({ status, trackingNumber, courierName }: EscrowTi
     {
       id: 'PAYMENT_CONFIRMED',
       label: 'Dana Aman di Rekber',
-      description: 'Pembayaran telah dikonfirmasi dan ditahan aman oleh sistem JBB.',
+      description: 'Pembayaran telah dikonfirmasi dan ditahan aman oleh sistem Rekber Peygo.',
       icon: ShieldCheck
     },
     {

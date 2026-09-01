@@ -1,9 +1,15 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "jbb-web",
+  "name": "bekasin-web",
+  "main": ".open-next/worker.js",
   "compatibility_date": "2026-08-30",
   "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
   "vars": {
-    "NEXT_PUBLIC_API_URL": "http://localhost:8787"
+    "NEXT_PUBLIC_API_URL": "https://bekasin-api.corporate-e78.workers.dev",
+    "NEXT_PUBLIC_SITE_URL": "https://peygo.id"
   }
 }

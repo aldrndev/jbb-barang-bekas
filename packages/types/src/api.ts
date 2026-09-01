@@ -17,6 +17,7 @@ export interface PaginatedList<T> {
     total: number;
     totalPages: number;
     hasMore: boolean;
+    nextCursor?: string | null;
   };
 }
 
@@ -33,4 +34,5 @@ export interface ListingFilterParams {
   sortBy?: 'newest' | 'price_asc' | 'price_desc' | 'popular';
   page?: number;
   limit?: number;
+  cursor?: string;
 }

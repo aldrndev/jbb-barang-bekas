@@ -9,6 +9,50 @@ function getAuthToken(): string | null {
   return localStorage.getItem('jbb_auth_token');
 }
 
+function extractFriendlyErrorMessage(rawError: any): string {
+  if (!rawError) return 'Terjadi kesalahan pada permintaan';
+
+  if (typeof rawError === 'string') {
+    const trimmed = rawError.trim();
+    if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        return extractFriendlyErrorMessage(parsed);
+      } catch {
+        return rawError;
+      }
+    }
+    return rawError;
+  }
+
+  if (Array.isArray(rawError)) {
+    if (rawError.length > 0) {
+      const first = rawError[0];
+      if (first?.message && typeof first.message === 'string') {
+        return extractFriendlyErrorMessage(first.message);
+      }
+      if (typeof first === 'string') {
+        return extractFriendlyErrorMessage(first);
+      }
+    }
+    return 'Data form tidak valid';
+  }
+
+  if (typeof rawError === 'object') {
+    if (rawError.message && typeof rawError.message === 'string') {
+      return extractFriendlyErrorMessage(rawError.message);
+    }
+    if (rawError.issues && Array.isArray(rawError.issues)) {
+      return extractFriendlyErrorMessage(rawError.issues);
+    }
+    if (rawError.error) {
+      return extractFriendlyErrorMessage(rawError.error);
+    }
+  }
+
+  return 'Terjadi kesalahan pada permintaan';
+}
+
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
   const token = getAuthToken();
   const headers: Record<string, string> = {
@@ -29,19 +73,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     const data: any = await res.json();
 
     if (!res.ok || data.success === false) {
-      let errorMessage = 'Terjadi kesalahan pada permintaan';
-
-      if (data?.error?.message) {
-        errorMessage = data.error.message;
-      } else if (data?.error?.issues && Array.isArray(data.error.issues) && data.error.issues[0]?.message) {
-        errorMessage = data.error.issues[0].message;
-      } else if (Array.isArray(data?.error) && data.error[0]?.message) {
-        errorMessage = data.error[0].message;
-      } else if (typeof data?.error === 'string') {
-        errorMessage = data.error;
-      } else if (data?.message) {
-        errorMessage = data.message;
-      }
+      const errorMessage = extractFriendlyErrorMessage(data?.error || data);
 
       return {
         success: false,
@@ -78,6 +110,12 @@ export const api = {
     request<{ token: string; user: UserProfile }>('/api/auth/register', {
       method: 'POST',
       body: JSON.stringify({ name, email, password, phone })
+    }),
+
+  loginWithGoogle: (data: { credential?: string; email?: string; name?: string; avatarUrl?: string }) =>
+    request<{ token: string; user: UserProfile }>('/api/auth/google', {
+      method: 'POST',
+      body: JSON.stringify(data)
     }),
 
   getMe: () => request<UserProfile>('/api/auth/me'),
@@ -123,6 +161,7 @@ export const api = {
     if (params.sortBy) searchParams.set('sortBy', params.sortBy);
     if (params.page) searchParams.set('page', params.page.toString());
     if (params.limit) searchParams.set('limit', params.limit.toString());
+    if (params.cursor) searchParams.set('cursor', params.cursor);
 
     const qs = searchParams.toString();
     return request<PaginatedList<Listing>>(`/api/listings${qs ? `?${qs}` : ''}`);
@@ -131,6 +170,10 @@ export const api = {
   getFeaturedListings: () => request<Listing[]>('/api/listings/featured'),
 
   getListingDetail: (idOrSlug: string) => request<Listing>(`/api/listings/${idOrSlug}`),
+  recordListingView: (idOrSlug: string) =>
+    request<{ success: boolean }>(`/api/listings/${idOrSlug}/view`, {
+      method: 'POST'
+    }),
 
   getMyListings: () => request<Listing[]>('/api/listings/my'),
 
@@ -252,6 +295,17 @@ export const api = {
 
   getAdminPayouts: () => request<any[]>('/api/admin/payouts'),
 
+  disbursePayout: (payoutId: string) =>
+    request<any>(`/api/admin/payouts/${payoutId}/disburse`, {
+      method: 'POST'
+    }),
+
+  batchDisbursePayouts: (payoutIds: string[]) =>
+    request<any>('/api/admin/payouts/batch-disburse', {
+      method: 'POST',
+      body: JSON.stringify({ payoutIds })
+    }),
+
   getAdminListings: () => request<any[]>('/api/admin/listings'),
 
   updateAdminListingStatus: (listingId: string, status: 'ACTIVE' | 'ARCHIVED' | 'SOLD') =>
@@ -284,7 +338,7 @@ export const api = {
           success: false,
           error: {
             code: data?.error?.code || 'UPLOAD_FAILED',
-            message: data?.error?.message || 'Gagal mengupload gambar ke Cloudflare Storage'
+            message: extractFriendlyErrorMessage(data?.error || data) || 'Gagal mengunggah foto barang'
           }
         };
       }
@@ -294,10 +348,25 @@ export const api = {
         success: false,
         error: {
           code: 'UPLOAD_FAILED',
-          message: err.message || 'Gagal mengupload file ke Cloudflare Storage'
+          message: extractFriendlyErrorMessage(err?.message) || 'Gagal mengunggah foto barang'
         }
       };
     }
-  }
+  },
+
+  // Wishlist Database Endpoints
+  getWishlist: () => request<Listing[]>('/api/wishlist'),
+  toggleWishlist: (listingId: string) =>
+    request<{ isWishlisted: boolean }>(`/api/wishlist/${listingId}/toggle`, {
+      method: 'POST'
+    }),
+  removeFromWishlist: (listingId: string) =>
+    request<{ success: boolean }>(`/api/wishlist/${listingId}`, {
+      method: 'DELETE'
+    }),
+  clearWishlist: () =>
+    request<{ success: boolean }>('/api/wishlist', {
+      method: 'DELETE'
+    })
 };
 

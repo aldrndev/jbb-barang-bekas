@@ -4,6 +4,18 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import type { UserProfile } from '@jbb/types';
 import { api } from '../lib/api-client';
+import { toTitleCase } from '../lib/utils';
+
+function normalizeUser(u: UserProfile): UserProfile {
+  if (!u) return u;
+  return {
+    ...u,
+    name: toTitleCase(u.name),
+    city: u.city ? toTitleCase(u.city) : u.city,
+    province: u.province ? toTitleCase(u.province) : u.province,
+    bankAccountHolder: u.bankAccountHolder ? toTitleCase(u.bankAccountHolder) : (u.name ? toTitleCase(u.name) : undefined)
+  };
+}
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -14,6 +26,7 @@ interface AuthContextType {
   closeAuthModal: () => void;
   login: (token: string, user: UserProfile) => void;
   logout: () => void;
+  loginWithGoogle: (data: { credential?: string; email?: string; name?: string; avatarUrl?: string }) => Promise<{ success: boolean; error?: string }>;
   loginAsDemoBuyer: () => Promise<void>;
   loginAsDemoSeller: () => Promise<void>;
   loginAsDemoAdmin: () => Promise<void>;
@@ -35,7 +48,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (savedToken && savedUser) {
       try {
         setToken(savedToken);
-        setUser(JSON.parse(savedUser));
+        const parsed = JSON.parse(savedUser);
+        setUser(normalizeUser(parsed));
       } catch {
         localStorage.removeItem('jbb_auth_token');
         localStorage.removeItem('jbb_auth_user');
@@ -45,10 +59,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = (newToken: string, newUser: UserProfile) => {
+    const normalized = normalizeUser(newUser);
     setToken(newToken);
-    setUser(newUser);
+    setUser(normalized);
     localStorage.setItem('jbb_auth_token', newToken);
-    localStorage.setItem('jbb_auth_user', JSON.stringify(newUser));
+    localStorage.setItem('jbb_auth_user', JSON.stringify(normalized));
     setIsAuthModalOpen(false);
     queryClient.invalidateQueries();
   };
@@ -59,6 +74,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('jbb_auth_token');
     localStorage.removeItem('jbb_auth_user');
     queryClient.clear();
+  };
+
+  const loginWithGoogle = async (data: { credential?: string; email?: string; name?: string; avatarUrl?: string }) => {
+    setIsLoading(true);
+    try {
+      const res = await api.loginWithGoogle(data);
+      if (res.success && res.data) {
+        login(res.data.token, res.data.user);
+        setIsLoading(false);
+        return { success: true };
+      }
+      setIsLoading(false);
+      return { success: false, error: res.error?.message || 'Gagal login dengan Google' };
+    } catch (err: any) {
+      setIsLoading(false);
+      return { success: false, error: err.message || 'Gagal autentikasi Google' };
+    }
   };
 
   const loginAsDemoBuyer = async () => {
@@ -78,8 +110,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const loginAsDemoAdmin = async () => {
     const adminUser: UserProfile = {
       id: 'usr-admin-master',
-      name: 'Administrator Rekber JBB',
-      email: 'admin.rekber@jbb-marketplace.id',
+      name: 'Administrator Rekber Peygo',
+      email: 'admin.rekber@peygo.id',
       phone: '081199887766',
       role: 'ADMIN',
       isKycVerified: true,
@@ -90,7 +122,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       ratingCount: 500,
       city: 'Jakarta Pusat',
       province: 'DKI Jakarta',
-      bio: 'Master Administrator & Escrow Dispute Resolution Officer Rekber JBB.',
+      bio: 'Master Administrator & Escrow Dispute Resolution Officer Rekber Peygo.',
       avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
       createdAt: '2023-01-01T00:00:00Z'
     };
@@ -108,6 +140,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         closeAuthModal: () => setIsAuthModalOpen(false),
         login,
         logout,
+        loginWithGoogle,
         loginAsDemoBuyer,
         loginAsDemoSeller,
         loginAsDemoAdmin

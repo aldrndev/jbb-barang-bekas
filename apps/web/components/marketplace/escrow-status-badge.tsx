@@ -54,7 +54,7 @@ export function EscrowStatusBadge({
         };
       case 'DELIVERED_INSPECTION':
         return {
-          containerClass: 'bg-purple-50 text-purple-900 border-purple-200/90 animate-pulse',
+          containerClass: 'bg-purple-50 text-purple-900 border-purple-200/90',
           icon: <Eye className={size === 'sm' ? 'h-3 w-3 text-purple-600' : 'h-3.5 w-3.5 text-purple-600'} />
         };
       case 'COMPLETED':
