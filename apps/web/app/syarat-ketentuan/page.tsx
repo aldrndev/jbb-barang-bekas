@@ -154,7 +154,7 @@ export default function SyaratKetentuanPage() {
 
             {/* 4. Larangan */}
             <section id="barang-larangan" className="scroll-mt-24">
-              <h2 className="text-lg font-black text-slate-900 pb-2 border-b border-slate-100 mb-4 flex items-center gap-2 text-rose-600">
+              <h2 className="text-lg font-black text-rose-600 pb-2 border-b border-slate-100 mb-4 flex items-center gap-2">
                 <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-rose-100 text-rose-700 text-xs font-black">4</span>
                 Barang yang Dilarang Diperjualbelikan
               </h2>
