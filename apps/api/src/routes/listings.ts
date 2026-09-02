@@ -1,12 +1,12 @@
-import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
-import { eq, desc, asc, or, sql } from 'drizzle-orm';
-import { createListingSchema, updateListingSchema, listingQuerySchema } from '@jbb/validators';
-import type { AppEnv } from '../types/env';
-import { getDb, schema } from '../db';
-import { memoryStore } from '../services/store';
-import { authMiddleware } from '../middlewares/auth';
 import type { Completeness, Listing, ListingCondition, ListingStatus } from '@jbb/types';
+import { createListingSchema, listingQuerySchema, updateListingSchema } from '@jbb/validators';
+import { asc, desc, eq, or, sql } from 'drizzle-orm';
+import { Hono } from 'hono';
+import { getDb, schema } from '../db';
+import { authMiddleware } from '../middlewares/auth';
+import { memoryStore } from '../services/store';
+import type { AppEnv } from '../types/env';
 
 function safeJsonParse<T>(val: unknown, fallback: T): T {
   if (val === null || val === undefined || val === '') return fallback;
@@ -258,7 +258,20 @@ export const listingRoutes = new Hono<AppEnv>()
       });
     } catch (err: unknown) {
       console.error('Listings GET Route Error:', err);
-      return c.json({ success: true, data: { items: memoryStore.listings.slice(0, 20), pagination: { page: 1, limit: 20, total: memoryStore.listings.length, totalPages: 1, hasMore: false, nextCursor: null } } });
+      return c.json({
+        success: true,
+        data: {
+          items: memoryStore.listings.slice(0, 20),
+          pagination: {
+            page: 1,
+            limit: 20,
+            total: memoryStore.listings.length,
+            totalPages: 1,
+            hasMore: false,
+            nextCursor: null
+          }
+        }
+      });
     }
   })
 
@@ -420,7 +433,9 @@ export const listingRoutes = new Hono<AppEnv>()
     } catch (err: unknown) {
       console.error('Listings /my Error:', err);
       const user = c.get('user');
-      const myListings = user ? memoryStore.listings.filter((item) => item.sellerId === user.id) : [];
+      const myListings = user
+        ? memoryStore.listings.filter((item) => item.sellerId === user.id)
+        : [];
       return c.json({ success: true, data: myListings });
     }
   })
@@ -431,7 +446,10 @@ export const listingRoutes = new Hono<AppEnv>()
     const body = (await c.req.json().catch(() => ({}))) as { status?: string };
     const status = body.status;
 
-    if (!status || !['DRAFT', 'ACTIVE', 'IN_NEGO', 'RESERVED', 'SOLD', 'ARCHIVED'].includes(status)) {
+    if (
+      !status ||
+      !['DRAFT', 'ACTIVE', 'IN_NEGO', 'RESERVED', 'SOLD', 'ARCHIVED'].includes(status)
+    ) {
       return c.json(
         { success: false, error: { code: 'INVALID_STATUS', message: 'Status iklan tidak valid' } },
         400
@@ -492,139 +510,134 @@ export const listingRoutes = new Hono<AppEnv>()
     return c.json({ success: true, message: 'Status iklan berhasil diperbarui' });
   })
 
-  .put(
-    '/:id',
-    authMiddleware,
-    zValidator('json', updateListingSchema),
-    async (c) => {
-      const user = c.get('user')!;
-      const id = c.req.param('id');
-      const payload = c.req.valid('json');
-      const db = getDb(c.env.DB);
+  .put('/:id', authMiddleware, zValidator('json', updateListingSchema), async (c) => {
+    const user = c.get('user')!;
+    const id = c.req.param('id');
+    const payload = c.req.valid('json');
+    const db = getDb(c.env.DB);
 
-      if (db) {
-        const existing = await db.query.listings.findFirst({
-          where: eq(schema.listings.id, id)
-        });
+    if (db) {
+      const existing = await db.query.listings.findFirst({
+        where: eq(schema.listings.id, id)
+      });
 
-        if (!existing) {
-          return c.json(
-            { success: false, error: { code: 'NOT_FOUND', message: 'Iklan tidak ditemukan' } },
-            404
-          );
-        }
-
-        if (existing.sellerId !== user.id && user.role !== 'ADMIN') {
-          return c.json(
-            {
-              success: false,
-              error: { code: 'FORBIDDEN', message: 'Anda bukan pemilik iklan ini' }
-            },
-            403
-          );
-        }
-
-        await db
-          .update(schema.listings)
-          .set({
-            ...(payload.title ? { title: payload.title } : {}),
-            ...(payload.description ? { description: payload.description } : {}),
-            ...(payload.categoryId ? { categoryId: payload.categoryId } : {}),
-            ...(payload.price !== undefined ? { price: payload.price } : {}),
-            ...(payload.originalPrice !== undefined ? { originalPrice: payload.originalPrice } : {}),
-            ...(payload.isNegotiable !== undefined ? { isNegotiable: payload.isNegotiable } : {}),
-            ...(payload.minOfferPrice !== undefined ? { minOfferPrice: payload.minOfferPrice } : {}),
-            ...(payload.condition ? { condition: payload.condition } : {}),
-            ...(payload.completeness ? { completeness: JSON.stringify(payload.completeness) } : {}),
-            ...(payload.purchaseYear !== undefined ? { purchaseYear: payload.purchaseYear } : {}),
-            ...(payload.warrantyUntil !== undefined ? { warrantyUntil: payload.warrantyUntil } : {}),
-            ...(payload.hasOriginalReceipt !== undefined
-              ? { hasOriginalReceipt: payload.hasOriginalReceipt }
-              : {}),
-            ...(payload.province ? { province: payload.province } : {}),
-            ...(payload.city ? { city: payload.city } : {}),
-            ...(payload.district ? { district: payload.district } : {}),
-            ...(payload.isCodAvailable !== undefined
-              ? { isCodAvailable: payload.isCodAvailable }
-              : {}),
-            ...(payload.codMeetingPoint !== undefined
-              ? { codMeetingPoint: payload.codMeetingPoint }
-              : {}),
-            ...(payload.specs ? { specs: JSON.stringify(payload.specs) } : {}),
-            updatedAt: new Date().toISOString()
-          })
-          .where(eq(schema.listings.id, id));
-
-        if (payload.imageUrls && payload.imageUrls.length > 0) {
-          await db.delete(schema.listingImages).where(eq(schema.listingImages.listingId, id));
-          await db.insert(schema.listingImages).values(
-            payload.imageUrls.map((url: string, idx: number) => ({
-              id: `img-${Date.now()}-${idx}`,
-              listingId: id,
-              url,
-              isPrimary: idx === 0,
-              sortOrder: idx + 1,
-              createdAt: new Date().toISOString()
-            }))
-          );
-        }
-
-        const updated = await db.query.listings.findFirst({
-          where: eq(schema.listings.id, id),
-          with: { images: true, seller: true, category: true }
-        });
-
-        return c.json({ success: true, message: 'Iklan berhasil diperbarui!', data: updated });
-      }
-
-      // Memory store fallback with ownership check
-      const listing = memoryStore.listings.find((l) => l.id === id);
-      if (!listing) {
+      if (!existing) {
         return c.json(
           { success: false, error: { code: 'NOT_FOUND', message: 'Iklan tidak ditemukan' } },
           404
         );
       }
 
-      if (listing.sellerId !== user.id && user.role !== 'ADMIN') {
+      if (existing.sellerId !== user.id && user.role !== 'ADMIN') {
         return c.json(
-          { success: false, error: { code: 'FORBIDDEN', message: 'Anda bukan pemilik iklan ini' } },
+          {
+            success: false,
+            error: { code: 'FORBIDDEN', message: 'Anda bukan pemilik iklan ini' }
+          },
           403
         );
       }
 
-      if (payload.title) listing.title = payload.title;
-      if (payload.description) listing.description = payload.description;
-      if (payload.categoryId) listing.categoryId = payload.categoryId;
-      if (payload.price !== undefined) listing.price = payload.price;
-      if (payload.originalPrice !== undefined) listing.originalPrice = payload.originalPrice;
-      if (payload.isNegotiable !== undefined) listing.isNegotiable = payload.isNegotiable;
-      if (payload.minOfferPrice !== undefined) listing.minOfferPrice = payload.minOfferPrice;
-      if (payload.condition) listing.condition = payload.condition;
-      if (payload.completeness) listing.completeness = payload.completeness;
-      if (payload.purchaseYear !== undefined) listing.purchaseYear = payload.purchaseYear;
-      if (payload.hasOriginalReceipt !== undefined)
-        listing.hasOriginalReceipt = payload.hasOriginalReceipt;
-      if (payload.province) listing.province = payload.province;
-      if (payload.city) listing.city = payload.city;
-      if (payload.district) listing.district = payload.district;
-      if (payload.isCodAvailable !== undefined) listing.isCodAvailable = payload.isCodAvailable;
-      if (payload.codMeetingPoint !== undefined) listing.codMeetingPoint = payload.codMeetingPoint;
-      if (payload.specs) listing.specs = payload.specs;
-      if (payload.imageUrls && payload.imageUrls.length > 0) {
-        listing.images = payload.imageUrls.map((url, idx) => ({
-          id: `img-${Date.now()}-${idx}`,
-          listingId: id,
-          url,
-          isPrimary: idx === 0,
-          sortOrder: idx + 1
-        }));
-      }
-      listing.updatedAt = new Date().toISOString();
+      await db
+        .update(schema.listings)
+        .set({
+          ...(payload.title ? { title: payload.title } : {}),
+          ...(payload.description ? { description: payload.description } : {}),
+          ...(payload.categoryId ? { categoryId: payload.categoryId } : {}),
+          ...(payload.price !== undefined ? { price: payload.price } : {}),
+          ...(payload.originalPrice !== undefined ? { originalPrice: payload.originalPrice } : {}),
+          ...(payload.isNegotiable !== undefined ? { isNegotiable: payload.isNegotiable } : {}),
+          ...(payload.minOfferPrice !== undefined ? { minOfferPrice: payload.minOfferPrice } : {}),
+          ...(payload.condition ? { condition: payload.condition } : {}),
+          ...(payload.completeness ? { completeness: JSON.stringify(payload.completeness) } : {}),
+          ...(payload.purchaseYear !== undefined ? { purchaseYear: payload.purchaseYear } : {}),
+          ...(payload.warrantyUntil !== undefined ? { warrantyUntil: payload.warrantyUntil } : {}),
+          ...(payload.hasOriginalReceipt !== undefined
+            ? { hasOriginalReceipt: payload.hasOriginalReceipt }
+            : {}),
+          ...(payload.province ? { province: payload.province } : {}),
+          ...(payload.city ? { city: payload.city } : {}),
+          ...(payload.district ? { district: payload.district } : {}),
+          ...(payload.isCodAvailable !== undefined
+            ? { isCodAvailable: payload.isCodAvailable }
+            : {}),
+          ...(payload.codMeetingPoint !== undefined
+            ? { codMeetingPoint: payload.codMeetingPoint }
+            : {}),
+          ...(payload.specs ? { specs: JSON.stringify(payload.specs) } : {}),
+          updatedAt: new Date().toISOString()
+        })
+        .where(eq(schema.listings.id, id));
 
-      return c.json({ success: true, message: 'Iklan berhasil diperbarui!', data: listing });
+      if (payload.imageUrls && payload.imageUrls.length > 0) {
+        await db.delete(schema.listingImages).where(eq(schema.listingImages.listingId, id));
+        await db.insert(schema.listingImages).values(
+          payload.imageUrls.map((url: string, idx: number) => ({
+            id: `img-${Date.now()}-${idx}`,
+            listingId: id,
+            url,
+            isPrimary: idx === 0,
+            sortOrder: idx + 1,
+            createdAt: new Date().toISOString()
+          }))
+        );
+      }
+
+      const updated = await db.query.listings.findFirst({
+        where: eq(schema.listings.id, id),
+        with: { images: true, seller: true, category: true }
+      });
+
+      return c.json({ success: true, message: 'Iklan berhasil diperbarui!', data: updated });
     }
-  )
+
+    // Memory store fallback with ownership check
+    const listing = memoryStore.listings.find((l) => l.id === id);
+    if (!listing) {
+      return c.json(
+        { success: false, error: { code: 'NOT_FOUND', message: 'Iklan tidak ditemukan' } },
+        404
+      );
+    }
+
+    if (listing.sellerId !== user.id && user.role !== 'ADMIN') {
+      return c.json(
+        { success: false, error: { code: 'FORBIDDEN', message: 'Anda bukan pemilik iklan ini' } },
+        403
+      );
+    }
+
+    if (payload.title) listing.title = payload.title;
+    if (payload.description) listing.description = payload.description;
+    if (payload.categoryId) listing.categoryId = payload.categoryId;
+    if (payload.price !== undefined) listing.price = payload.price;
+    if (payload.originalPrice !== undefined) listing.originalPrice = payload.originalPrice;
+    if (payload.isNegotiable !== undefined) listing.isNegotiable = payload.isNegotiable;
+    if (payload.minOfferPrice !== undefined) listing.minOfferPrice = payload.minOfferPrice;
+    if (payload.condition) listing.condition = payload.condition;
+    if (payload.completeness) listing.completeness = payload.completeness;
+    if (payload.purchaseYear !== undefined) listing.purchaseYear = payload.purchaseYear;
+    if (payload.hasOriginalReceipt !== undefined)
+      listing.hasOriginalReceipt = payload.hasOriginalReceipt;
+    if (payload.province) listing.province = payload.province;
+    if (payload.city) listing.city = payload.city;
+    if (payload.district) listing.district = payload.district;
+    if (payload.isCodAvailable !== undefined) listing.isCodAvailable = payload.isCodAvailable;
+    if (payload.codMeetingPoint !== undefined) listing.codMeetingPoint = payload.codMeetingPoint;
+    if (payload.specs) listing.specs = payload.specs;
+    if (payload.imageUrls && payload.imageUrls.length > 0) {
+      listing.images = payload.imageUrls.map((url, idx) => ({
+        id: `img-${Date.now()}-${idx}`,
+        listingId: id,
+        url,
+        isPrimary: idx === 0,
+        sortOrder: idx + 1
+      }));
+    }
+    listing.updatedAt = new Date().toISOString();
+
+    return c.json({ success: true, message: 'Iklan berhasil diperbarui!', data: listing });
+  })
 
   .delete('/:id', authMiddleware, async (c) => {
     const user = c.get('user')!;
@@ -719,7 +732,10 @@ export const listingRoutes = new Hono<AppEnv>()
           postalCode: listingDb.postalCode,
           isCodAvailable: Boolean(listingDb.isCodAvailable),
           codMeetingPoint: listingDb.codMeetingPoint,
-          specs: safeJsonParse<Record<string, string | number | boolean> | null>(listingDb.specs, null),
+          specs: safeJsonParse<Record<string, string | number | boolean> | null>(
+            listingDb.specs,
+            null
+          ),
           images: (listingDb.images || []).map((img) => ({
             id: img.id,
             listingId: img.listingId,
@@ -777,11 +793,16 @@ export const listingRoutes = new Hono<AppEnv>()
     } catch (err: unknown) {
       console.error('Listings /:idOrSlug Error:', err);
       const idOrSlug = c.req.param('idOrSlug');
-      const listing = memoryStore.listings.find((item) => item.slug === idOrSlug || item.id === idOrSlug);
+      const listing = memoryStore.listings.find(
+        (item) => item.slug === idOrSlug || item.id === idOrSlug
+      );
       if (listing) {
         return c.json({ success: true, data: listing });
       }
-      return c.json({ success: false, error: { code: 'NOT_FOUND', message: 'Barang tidak ditemukan' } }, 404);
+      return c.json(
+        { success: false, error: { code: 'NOT_FOUND', message: 'Barang tidak ditemukan' } },
+        404
+      );
     }
   })
 
@@ -810,81 +831,20 @@ export const listingRoutes = new Hono<AppEnv>()
     return c.json({ success: true });
   })
 
-  .post(
-    '/',
-    authMiddleware,
-    zValidator('json', createListingSchema),
-    async (c) => {
-      const user = c.get('user')!;
-      const payload = c.req.valid('json');
-      const db = getDb(c.env.DB);
+  .post('/', authMiddleware, zValidator('json', createListingSchema), async (c) => {
+    const user = c.get('user')!;
+    const payload = c.req.valid('json');
+    const db = getDb(c.env.DB);
 
-      const slug = `${payload.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')}-${Date.now().toString().slice(-4)}`;
-      const listingId = `item-${Date.now()}`;
-      const now = new Date().toISOString();
+    const slug = `${payload.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '')}-${Date.now().toString().slice(-4)}`;
+    const listingId = `item-${Date.now()}`;
+    const now = new Date().toISOString();
 
-      if (db) {
-        await db.insert(schema.listings).values({
-          id: listingId,
-          sellerId: user.id,
-          categoryId: payload.categoryId,
-          title: payload.title,
-          slug,
-          description: payload.description,
-          price: payload.price,
-          originalPrice: payload.originalPrice || null,
-          isNegotiable: payload.isNegotiable,
-          minOfferPrice: payload.minOfferPrice || null,
-          condition: payload.condition,
-          completeness: JSON.stringify(payload.completeness),
-          purchaseYear: payload.purchaseYear || null,
-          warrantyUntil: payload.warrantyUntil || null,
-          hasOriginalReceipt: payload.hasOriginalReceipt,
-          status: 'ACTIVE',
-          viewCount: 0,
-          offerCount: 0,
-          favoriteCount: 0,
-          province: payload.province,
-          city: payload.city,
-          district: payload.district,
-          postalCode: payload.postalCode || null,
-          isCodAvailable: payload.isCodAvailable,
-          codMeetingPoint: payload.codMeetingPoint || null,
-          specs: payload.specs ? JSON.stringify(payload.specs) : null,
-          createdAt: now,
-          updatedAt: now
-        });
-
-        if (payload.imageUrls && payload.imageUrls.length > 0) {
-          await db.insert(schema.listingImages).values(
-            payload.imageUrls.map((url: string, idx: number) => ({
-              id: `img-${Date.now()}-${idx}`,
-              listingId,
-              url,
-              isPrimary: idx === 0,
-              sortOrder: idx + 1,
-              createdAt: now
-            }))
-          );
-        }
-
-        const created = await db.query.listings.findFirst({
-          where: eq(schema.listings.id, listingId),
-          with: { images: true, seller: true, category: true }
-        });
-
-        return c.json(
-          {
-            success: true,
-            message: 'Barang berhasil dipasang untuk dijual!',
-            data: created
-          },
-          201
-        );
-      }
-
-      // Memory Store Fallback
-      const newListing: Listing = {
+    if (db) {
+      await db.insert(schema.listings).values({
         id: listingId,
         sellerId: user.id,
         categoryId: payload.categoryId,
@@ -896,7 +856,7 @@ export const listingRoutes = new Hono<AppEnv>()
         isNegotiable: payload.isNegotiable,
         minOfferPrice: payload.minOfferPrice || null,
         condition: payload.condition,
-        completeness: payload.completeness,
+        completeness: JSON.stringify(payload.completeness),
         purchaseYear: payload.purchaseYear || null,
         warrantyUntil: payload.warrantyUntil || null,
         hasOriginalReceipt: payload.hasOriginalReceipt,
@@ -910,29 +870,88 @@ export const listingRoutes = new Hono<AppEnv>()
         postalCode: payload.postalCode || null,
         isCodAvailable: payload.isCodAvailable,
         codMeetingPoint: payload.codMeetingPoint || null,
-        specs: payload.specs || null,
-        images:
-          payload.imageUrls?.map((url: string, idx: number) => ({
+        specs: payload.specs ? JSON.stringify(payload.specs) : null,
+        createdAt: now,
+        updatedAt: now
+      });
+
+      if (payload.imageUrls && payload.imageUrls.length > 0) {
+        await db.insert(schema.listingImages).values(
+          payload.imageUrls.map((url: string, idx: number) => ({
             id: `img-${Date.now()}-${idx}`,
             listingId,
             url,
             isPrimary: idx === 0,
-            sortOrder: idx + 1
-          })) || [],
-        seller: user,
-        createdAt: now,
-        updatedAt: now
-      };
+            sortOrder: idx + 1,
+            createdAt: now
+          }))
+        );
+      }
 
-      memoryStore.listings.unshift(newListing);
+      const created = await db.query.listings.findFirst({
+        where: eq(schema.listings.id, listingId),
+        with: { images: true, seller: true, category: true }
+      });
 
       return c.json(
         {
           success: true,
           message: 'Barang berhasil dipasang untuk dijual!',
-          data: newListing
+          data: created
         },
         201
       );
     }
-  );
+
+    // Memory Store Fallback
+    const newListing: Listing = {
+      id: listingId,
+      sellerId: user.id,
+      categoryId: payload.categoryId,
+      title: payload.title,
+      slug,
+      description: payload.description,
+      price: payload.price,
+      originalPrice: payload.originalPrice || null,
+      isNegotiable: payload.isNegotiable,
+      minOfferPrice: payload.minOfferPrice || null,
+      condition: payload.condition,
+      completeness: payload.completeness,
+      purchaseYear: payload.purchaseYear || null,
+      warrantyUntil: payload.warrantyUntil || null,
+      hasOriginalReceipt: payload.hasOriginalReceipt,
+      status: 'ACTIVE',
+      viewCount: 0,
+      offerCount: 0,
+      favoriteCount: 0,
+      province: payload.province,
+      city: payload.city,
+      district: payload.district,
+      postalCode: payload.postalCode || null,
+      isCodAvailable: payload.isCodAvailable,
+      codMeetingPoint: payload.codMeetingPoint || null,
+      specs: payload.specs || null,
+      images:
+        payload.imageUrls?.map((url: string, idx: number) => ({
+          id: `img-${Date.now()}-${idx}`,
+          listingId,
+          url,
+          isPrimary: idx === 0,
+          sortOrder: idx + 1
+        })) || [],
+      seller: user,
+      createdAt: now,
+      updatedAt: now
+    };
+
+    memoryStore.listings.unshift(newListing);
+
+    return c.json(
+      {
+        success: true,
+        message: 'Barang berhasil dipasang untuk dijual!',
+        data: newListing
+      },
+      201
+    );
+  });

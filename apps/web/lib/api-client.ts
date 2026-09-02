@@ -107,7 +107,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   };
 
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`;
   }
 
   try {
@@ -185,7 +185,9 @@ export const api = {
     if (params.category) searchParams.set('category', params.category);
     if (params.condition) {
       if (Array.isArray(params.condition)) {
-        params.condition.forEach((c) => searchParams.append('condition', c));
+        for (const c of params.condition) {
+          searchParams.append('condition', c);
+        }
       } else {
         searchParams.set('condition', params.condition);
       }
@@ -421,7 +423,7 @@ export const api = {
 
     const headers: Record<string, string> = {};
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      headers.Authorization = `Bearer ${token}`;
     }
 
     try {

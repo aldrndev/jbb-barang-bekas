@@ -684,14 +684,14 @@ export const adminRoutes = new Hono<AppEnv>()
     const now = new Date().toISOString();
 
     let count = 0;
-    activePayoutsList.forEach((p) => {
+    for (const p of activePayoutsList) {
       if (p.status === 'PENDING_TRANSFER' && (payoutIds.length === 0 || payoutIds.includes(p.id))) {
         p.status = 'TRANSFERRED_SUCCESS';
         p.completedAt = now;
         p.transferRef = `TRX-BIFAST-2026-${Math.floor(100000 + Math.random() * 900000)}`;
         count++;
       }
-    });
+    }
 
     return c.json({
       success: true,

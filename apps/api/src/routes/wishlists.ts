@@ -1,10 +1,10 @@
+import type { Completeness, Listing, ListingCondition } from '@jbb/types';
+import { and, eq, inArray } from 'drizzle-orm';
 import { Hono } from 'hono';
-import { eq, and, inArray } from 'drizzle-orm';
-import type { AppEnv } from '../types/env';
 import { getDb, schema } from '../db';
 import { authMiddleware } from '../middlewares/auth';
 import { memoryStore } from '../services/store';
-import type { Completeness, Listing, ListingCondition } from '@jbb/types';
+import type { AppEnv } from '../types/env';
 
 function safeJsonParse<T>(val: unknown, fallback: T): T {
   if (val === null || val === undefined || val === '') return fallback;
@@ -28,7 +28,10 @@ export const wishlistRoutes = new Hono<AppEnv>()
       const user = c.get('user');
       if (!user) {
         return c.json(
-          { success: false, error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' } },
+          {
+            success: false,
+            error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' }
+          },
           401
         );
       }
@@ -150,7 +153,10 @@ export const wishlistRoutes = new Hono<AppEnv>()
     const user = c.get('user');
     if (!user) {
       return c.json(
-        { success: false, error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' } },
+        {
+          success: false,
+          error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' }
+        },
         401
       );
     }
@@ -163,17 +169,12 @@ export const wishlistRoutes = new Hono<AppEnv>()
           .select()
           .from(schema.wishlists)
           .where(
-            and(
-              eq(schema.wishlists.userId, user.id),
-              eq(schema.wishlists.listingId, listingId)
-            )
+            and(eq(schema.wishlists.userId, user.id), eq(schema.wishlists.listingId, listingId))
           )
           .limit(1);
 
         if (existing) {
-          await db
-            .delete(schema.wishlists)
-            .where(eq(schema.wishlists.id, existing.id));
+          await db.delete(schema.wishlists).where(eq(schema.wishlists.id, existing.id));
 
           return c.json({
             success: true,
@@ -209,7 +210,10 @@ export const wishlistRoutes = new Hono<AppEnv>()
     const user = c.get('user');
     if (!user) {
       return c.json(
-        { success: false, error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' } },
+        {
+          success: false,
+          error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' }
+        },
         401
       );
     }
@@ -221,10 +225,7 @@ export const wishlistRoutes = new Hono<AppEnv>()
         await db
           .delete(schema.wishlists)
           .where(
-            and(
-              eq(schema.wishlists.userId, user.id),
-              eq(schema.wishlists.listingId, listingId)
-            )
+            and(eq(schema.wishlists.userId, user.id), eq(schema.wishlists.listingId, listingId))
           );
 
         return c.json({ success: true, data: { success: true } });
@@ -242,7 +243,10 @@ export const wishlistRoutes = new Hono<AppEnv>()
     const user = c.get('user');
     if (!user) {
       return c.json(
-        { success: false, error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' } },
+        {
+          success: false,
+          error: { code: 'UNAUTHORIZED', message: 'Silakan login terlebih dahulu' }
+        },
         401
       );
     }
@@ -250,9 +254,7 @@ export const wishlistRoutes = new Hono<AppEnv>()
 
     if (db) {
       try {
-        await db
-          .delete(schema.wishlists)
-          .where(eq(schema.wishlists.userId, user.id));
+        await db.delete(schema.wishlists).where(eq(schema.wishlists.userId, user.id));
 
         return c.json({ success: true, data: { success: true } });
       } catch (err: unknown) {

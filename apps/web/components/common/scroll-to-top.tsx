@@ -6,6 +6,7 @@ import { Suspense, useEffect } from 'react';
 function ScrollWatcher() {
   const pathname = usePathname();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: trigger scroll to top on route change
   useEffect(() => {
     // Instant scroll to top on route change
     window.scrollTo({

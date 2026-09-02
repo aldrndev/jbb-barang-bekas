@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuth } from '@/context/auth-context';
 import { api } from '@/lib/api-client';
 import { formatIDR } from '@/lib/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -18,7 +19,6 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useAuth } from '@/context/auth-context';
 
 const DEFAULT_DISPUTES = [
   {
@@ -412,10 +412,14 @@ export default function AdminDisputeDetailPage() {
           </div>
 
           <div>
-            <label className="text-[11px] font-bold text-slate-700 block mb-1">
+            <label
+              htmlFor="adminNotesTextarea"
+              className="text-[11px] font-bold text-slate-700 block mb-1"
+            >
               Catatan Investigasi / Pertimbangan Putusan Admin (Opsional):
             </label>
             <textarea
+              id="adminNotesTextarea"
               rows={2}
               value={adminNotes}
               onChange={(e) => setAdminNotes(e.target.value)}
@@ -451,12 +455,20 @@ export default function AdminDisputeDetailPage() {
       {/* Confirmation Modal */}
       {confirmModal && (
         <div
+          role="dialog"
+          aria-modal="true"
+          tabIndex={-1}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-in fade-in"
           onClick={() => setConfirmModal(null)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setConfirmModal(null);
+          }}
         >
           <div
+            role="document"
             className="relative max-w-md w-full bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 p-6 space-y-4 animate-in zoom-in-95"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between border-b border-slate-200 pb-3">
               <div className="flex items-center gap-2">

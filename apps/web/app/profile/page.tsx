@@ -866,6 +866,13 @@ export default function ProfilePage() {
               </button>
             </div>
 
+            {kycError && (
+              <div className="rounded-xl bg-rose-50 border border-rose-200 p-3 text-rose-700 text-xs flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                <span>{kycError}</span>
+              </div>
+            )}
+
             <form onSubmit={handleSubmitKyc} className="space-y-4 text-xs">
               <div>
                 <label className="font-bold text-slate-800 block mb-1">

@@ -1,5 +1,13 @@
 import { seedCategories, seedListings, seedUsers } from '@jbb/database';
-import type { Category, Completeness, Listing, Offer, Order, Review, UserProfile } from '@jbb/types';
+import type {
+  Category,
+  Completeness,
+  Listing,
+  Offer,
+  Order,
+  Review,
+  UserProfile
+} from '@jbb/types';
 
 // In-memory data store for ultra-fast edge simulation and fallback
 class MemoryStore {

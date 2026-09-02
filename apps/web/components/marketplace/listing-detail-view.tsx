@@ -30,7 +30,6 @@ import {
   Zap
 } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { useAuth } from '../../context/auth-context';
 import { useWishlist } from '../../context/wishlist-context';
@@ -43,7 +42,6 @@ import { ListingCard } from './listing-card';
 import { MakeOfferModal } from './make-offer-modal';
 
 function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
-  const router = useRouter();
   const { user, openAuthModal } = useAuth();
   const { isWishlisted, toggleWishlist } = useWishlist();
 

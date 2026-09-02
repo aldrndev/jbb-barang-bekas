@@ -112,7 +112,6 @@ export default function PanduanRekberPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const fee = Math.min(Math.round(calcPrice * 0.015), 50000);
-  const sellerReceives = calcPrice;
   const buyerPays = calcPrice + fee;
 
   return (
@@ -171,7 +170,7 @@ export default function PanduanRekberPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            {STEPS.map((step, idx) => {
+            {STEPS.map((step) => {
               const Icon = step.icon;
               return (
                 <div
@@ -237,8 +236,8 @@ export default function PanduanRekberPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {COMPARISONS.map((row, i) => (
-                    <tr key={i} className="hover:bg-slate-50/50">
+                  {COMPARISONS.map((row) => (
+                    <tr key={row.feature} className="hover:bg-slate-50/50">
                       <td className="py-3.5 px-4 font-bold text-slate-900">{row.feature}</td>
                       <td className="py-3.5 px-4 text-rose-600 font-medium flex items-center gap-2">
                         <XCircle className="h-4 w-4 shrink-0" />
@@ -274,10 +273,14 @@ export default function PanduanRekberPage() {
 
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-2">
+                <label
+                  htmlFor="calcPriceRange"
+                  className="text-xs font-bold text-slate-700 block mb-2"
+                >
                   Masukkan Harga Barang: <strong>{formatIDR(calcPrice)}</strong>
                 </label>
                 <input
+                  id="calcPriceRange"
                   type="range"
                   min={100000}
                   max={25000000}
@@ -330,7 +333,7 @@ export default function PanduanRekberPage() {
             <div className="pt-6 border-t border-emerald-800/60 mt-6">
               <Link
                 href="/cari"
-                className="w-full rounded-2xl bg-emerald-400 py-3 text-center text-xs font-black text-slate-950 hover:bg-emerald-300 transition-colors block"
+                className="w-full rounded-2xl bg-emerald-400 py-3 text-center text-xs font-black text-slate-900 hover:bg-emerald-300 transition-colors block"
               >
                 Cari Barang Sekarang
               </Link>
@@ -350,7 +353,7 @@ export default function PanduanRekberPage() {
           <div className="max-w-3xl mx-auto space-y-3">
             {FAQS.map((faq, idx) => (
               <div
-                key={idx}
+                key={faq.q}
                 className="rounded-2xl bg-white border border-slate-200 overflow-hidden shadow-2xs transition-all"
               >
                 <button

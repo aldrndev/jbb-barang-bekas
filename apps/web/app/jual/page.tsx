@@ -40,17 +40,6 @@ import {
 } from '../../lib/indonesia-locations';
 import { cleanTitle, cleanWhitespace, formatIDR, toTitleCase } from '../../lib/utils';
 
-const QUICK_SPEC_SUGGESTIONS = [
-  'Warna',
-  'Kapasitas / Storage',
-  'RAM',
-  'Battery Health',
-  'Garansi',
-  'Kelengkapan',
-  'Kondisi Layar',
-  'Shutter Count'
-];
-
 function JualBarangContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -199,11 +188,12 @@ function JualBarangContent() {
     try {
       const uploadedUrls = await Promise.all(uploadPromises);
       setImageUrls((prev) => [...prev, ...uploadedUrls]);
-    } catch (err: any) {
-      setErrorMsg(
-        err.message ||
-          'Gagal mengunggah foto barang. Pastikan file berupa gambar (JPG, PNG, WEBP) dan coba lagi.'
-      );
+    } catch (err) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : 'Gagal mengunggah foto barang. Pastikan file berupa gambar (JPG, PNG, WEBP) dan coba lagi.';
+      setErrorMsg(message);
     } finally {
       setIsUploadingImage(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -304,11 +294,11 @@ function JualBarangContent() {
 
     // Convert specsList to record with clean keys
     const specsRecord: Record<string, string> = {};
-    specsList.forEach((s) => {
+    for (const s of specsList) {
       if (s.key.trim() && s.value.trim()) {
         specsRecord[toTitleCase(s.key)] = s.value.trim();
       }
-    });
+    }
 
     setErrorMsg(null);
     setIsSubmitting(true);

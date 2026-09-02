@@ -4,21 +4,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   AlertCircle,
   ArrowLeft,
-  Building,
   CheckCircle2,
-  ChevronRight,
-  Clock,
-  Copy,
-  CreditCard,
-  ExternalLink,
   HelpCircle,
-  Info,
   Lock,
   MapPin,
-  MessageSquareQuote,
-  Package,
   Phone,
-  QrCode,
   ShieldCheck,
   Tag,
   Truck,
@@ -27,7 +17,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import React, { useState, useEffect, Suspense } from 'react';
+import { type FormEvent, Suspense, useEffect, useState } from 'react';
 import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
 import { useAuth } from '../../context/auth-context';
@@ -105,15 +95,7 @@ function CheckoutContent() {
   const serviceFee = Math.round(effectivePrice * 0.01); // 1% escrow fee
   const totalPayment = effectivePrice + shippingFee + serviceFee;
 
-  // Auto-fill user profile info
-  useEffect(() => {
-    if (user) {
-      if (!recipientName) setRecipientName(user.name);
-      if (!recipientPhone && user.phone) setRecipientPhone(user.phone);
-    }
-  }, [user]);
-
-  const handleSubmitCheckout = async (e: React.FormEvent) => {
+  const handleSubmitCheckout = async (e: FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
 
@@ -457,7 +439,10 @@ function CheckoutContent() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="checkoutRecipientName" className="text-xs font-bold text-slate-700 flex items-center gap-1.5 mb-1.5">
+                  <label
+                    htmlFor="checkoutRecipientName"
+                    className="text-xs font-bold text-slate-700 flex items-center gap-1.5 mb-1.5"
+                  >
                     <User className="h-3.5 w-3.5 text-slate-400" />
                     <span>Nama Lengkap Penerima</span>
                   </label>
@@ -478,7 +463,10 @@ function CheckoutContent() {
 
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label htmlFor="checkoutRecipientPhone" className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                    <label
+                      htmlFor="checkoutRecipientPhone"
+                      className="text-xs font-bold text-slate-700 flex items-center gap-1.5"
+                    >
                       <Phone className="h-3.5 w-3.5 text-slate-400" />
                       <span>Nomor WhatsApp Aktif</span>
                     </label>
@@ -502,7 +490,10 @@ function CheckoutContent() {
               {/* Address / COD Location Textarea */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label htmlFor="checkoutShippingAddress" className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                  <label
+                    htmlFor="checkoutShippingAddress"
+                    className="text-xs font-bold text-slate-700 flex items-center gap-1.5"
+                  >
                     <MapPin className="h-3.5 w-3.5 text-slate-400" />
                     <span>
                       {deliveryMethod === 'COD_KETEMUAN'
@@ -546,7 +537,10 @@ function CheckoutContent() {
 
               {/* Buyer Notes */}
               <div>
-                <label htmlFor="checkoutBuyerNotes" className="text-xs font-bold text-slate-700 block mb-1.5">
+                <label
+                  htmlFor="checkoutBuyerNotes"
+                  className="text-xs font-bold text-slate-700 block mb-1.5"
+                >
                   Catatan untuk Penjual (Opsional)
                 </label>
                 <input

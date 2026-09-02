@@ -25,7 +25,6 @@ import {
   UserCheck
 } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
 
 const DEFAULT_KYC_QUEUE = [
   {

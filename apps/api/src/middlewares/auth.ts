@@ -124,7 +124,7 @@ export const authMiddleware: MiddlewareHandler<AppEnv> = async (c, next) => {
 
 export const optionalAuthMiddleware: MiddlewareHandler<AppEnv> = async (c, next) => {
   const authHeader = c.req.header('Authorization');
-  if (authHeader && authHeader.startsWith('Bearer ')) {
+  if (authHeader?.startsWith('Bearer ')) {
     const token = authHeader.substring(7).trim();
     const secret = c.env.JWT_SECRET;
     if (token && secret) {

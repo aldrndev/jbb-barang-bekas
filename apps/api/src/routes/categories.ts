@@ -19,9 +19,9 @@ export const categoryRoutes = new Hono<AppEnv>()
         .where(eq(schema.listings.status, 'ACTIVE'));
 
       const counts: Record<string, number> = {};
-      dbListings.forEach((l) => {
+      for (const l of dbListings) {
         counts[l.categoryId] = (counts[l.categoryId] || 0) + 1;
-      });
+      }
 
       const categoriesWithCount = dbCategories.map((cat) => ({
         ...cat,

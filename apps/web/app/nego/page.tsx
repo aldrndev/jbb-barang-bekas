@@ -246,7 +246,8 @@ function NegoDashboardContent() {
                 const discountPercent =
                   originalPrice > 0 ? Math.round((discountAmount / originalPrice) * 100) : 0;
                 const primaryImg =
-                  listing?.images?.find((i: any) => i.isPrimary)?.url ||
+                  listing?.images?.find((i: { url?: string; isPrimary?: boolean }) => i.isPrimary)
+                    ?.url ||
                   listing?.images?.[0]?.url ||
                   'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=250&auto=format&fit=crop&q=80';
 
@@ -395,9 +396,9 @@ function NegoDashboardContent() {
                               },
                               { label: '-5%', price: Math.round(originalPrice * 0.95) },
                               { label: '-10%', price: Math.round(originalPrice * 0.9) }
-                            ].map((preset, idx) => (
+                            ].map((preset) => (
                               <button
-                                key={idx}
+                                key={preset.label}
                                 type="button"
                                 onClick={() => setCounterPriceInput(preset.price)}
                                 className="rounded-lg border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-bold text-slate-700 hover:bg-slate-100 cursor-pointer shadow-2xs"
@@ -515,9 +516,10 @@ function NegoDashboardContent() {
                 const discountPercent =
                   originalPrice > 0 ? Math.round((discountAmount / originalPrice) * 100) : 0;
                 const primaryImg =
-                  listing?.images?.find((i: any) => i.isPrimary)?.url ||
+                  listing?.images?.find((i: { url?: string; isPrimary?: boolean }) => i.isPrimary)
+                    ?.url ||
                   listing?.images?.[0]?.url ||
-                  'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=250&auto=format&fit=crop&q=80';
+                  'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=250&auto=format&fit=crop&q=80';
 
                 return (
                   <div
