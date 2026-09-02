@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuth } from '@/context/auth-context';
 import { api } from '@/lib/api-client';
 import { formatIDR, formatTimeAgo } from '@/lib/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -20,10 +21,28 @@ import {
   X,
   Zap
 } from 'lucide-react';
-import { useAuth } from '@/context/auth-context';
 import { useState } from 'react';
 
-const DEFAULT_PAYOUTS = [
+interface AdminPayoutItem {
+  id: string;
+  orderId?: string;
+  orderNumber: string;
+  listingTitle: string;
+  amount: number;
+  serviceFee?: number;
+  netAmount?: number;
+  payoutBank: string;
+  payoutAccountNumber: string;
+  payoutAccountHolder: string;
+  sellerName: string;
+  sellerPhone?: string;
+  readyAt?: string | null;
+  status: string;
+  transferRef?: string | null;
+  completedAt?: string | null;
+}
+
+const DEFAULT_PAYOUTS: AdminPayoutItem[] = [
   {
     id: 'pay-pending-1',
     orderId: 'ord-macbook-1',
@@ -160,7 +179,7 @@ export default function AdminPayoutsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBankFilter, setSelectedBankFilter] = useState('ALL');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [selectedReceipt, setSelectedReceipt] = useState<any | null>(null);
+  const [selectedReceipt, setSelectedReceipt] = useState<AdminPayoutItem | null>(null);
   const [toast, setToast] = useState<{
     type: 'success' | 'error';
     title: string;
@@ -177,9 +196,11 @@ export default function AdminPayoutsPage() {
     Record<string, { status: string; transferRef: string; completedAt: string }>
   >({});
 
-  const rawPayouts =
-    payoutsData?.data && payoutsData.data.length > 0 ? payoutsData.data : DEFAULT_PAYOUTS;
-  const payouts = rawPayouts.map((p: any) => {
+  const rawPayouts: AdminPayoutItem[] =
+    payoutsData?.data && payoutsData.data.length > 0
+      ? (payoutsData.data as AdminPayoutItem[])
+      : DEFAULT_PAYOUTS;
+  const payouts: AdminPayoutItem[] = rawPayouts.map((p) => {
     const override = localOverrides[p.id];
     if (override) {
       return { ...p, ...override };
@@ -187,26 +208,23 @@ export default function AdminPayoutsPage() {
     return p;
   });
 
-  const pendingPayouts = payouts.filter((p: any) => p.status === 'PENDING_TRANSFER');
-  const completedPayouts = payouts.filter((p: any) => p.status === 'TRANSFERRED_SUCCESS');
+  const pendingPayouts = payouts.filter((p) => p.status === 'PENDING_TRANSFER');
+  const completedPayouts = payouts.filter((p) => p.status === 'TRANSFERRED_SUCCESS');
 
   // Executive Metric Calculations
   const totalCompletedAmount = completedPayouts.reduce(
-    (sum: number, p: any) => sum + (p.amount || 0),
+    (sum: number, p) => sum + (p.amount || 0),
     0
   );
-  const totalPendingAmount = pendingPayouts.reduce(
-    (sum: number, p: any) => sum + (p.amount || 0),
-    0
-  );
+  const totalPendingAmount = pendingPayouts.reduce((sum: number, p) => sum + (p.amount || 0), 0);
   const totalPlatformFee = payouts.reduce(
-    (sum: number, p: any) => sum + (p.serviceFee || Math.round(p.amount * 0.015)),
+    (sum: number, p) => sum + (p.serviceFee || Math.round(p.amount * 0.015)),
     0
   );
 
   // Filtered List
   const displayedPayouts = (activeTab === 'pending' ? pendingPayouts : completedPayouts).filter(
-    (p: any) => {
+    (p) => {
       const matchesSearch =
         !searchQuery.trim() ||
         p.orderNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -229,7 +247,7 @@ export default function AdminPayoutsPage() {
     }, 4500);
   };
 
-  const handleDisburseSingle = async (payout: any) => {
+  const handleDisburseSingle = async (payout: AdminPayoutItem) => {
     setIsProcessing(true);
     const generatedRef = `TRX-BIFAST-2026-${Math.floor(100000 + Math.random() * 900000)}`;
     const now = new Date().toISOString();
@@ -268,14 +286,17 @@ export default function AdminPayoutsPage() {
     setIsProcessing(true);
     const now = new Date().toISOString();
 
-    const newOverrides: Record<string, any> = {};
-    pendingPayouts.forEach((p: any) => {
+    const newOverrides: Record<
+      string,
+      { status: string; transferRef: string; completedAt: string }
+    > = {};
+    for (const p of pendingPayouts) {
       newOverrides[p.id] = {
         status: 'TRANSFERRED_SUCCESS',
         transferRef: `TRX-BIFAST-2026-${Math.floor(100000 + Math.random() * 900000)}`,
         completedAt: now
       };
-    });
+    }
     setLocalOverrides((prev) => ({ ...prev, ...newOverrides }));
 
     showToast(
@@ -285,7 +306,7 @@ export default function AdminPayoutsPage() {
     );
 
     try {
-      await api.batchDisbursePayouts(pendingPayouts.map((p: any) => p.id));
+      await api.batchDisbursePayouts(pendingPayouts.map((p) => p.id));
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['admin-payouts'] }),
         queryClient.invalidateQueries({ queryKey: ['admin-stats'] })
@@ -355,7 +376,7 @@ export default function AdminPayoutsPage() {
               <span>Pusat Settlement & Pencairan Bank Penjual</span>
             </h1>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 text-[10px] font-black">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               <span>BI-FAST 24/7 Gateway</span>
             </span>
           </div>
@@ -416,7 +437,7 @@ export default function AdminPayoutsPage() {
               {formatIDR(totalPendingAmount || 38050000)}
             </h3>
             <div className="flex items-center gap-1.5 text-[11px] text-amber-800 font-bold mt-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-ping"></span>
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-ping" />
               <span>{pendingPayouts.length} Pesanan Menunggu Rilis Transfer</span>
             </div>
           </div>
@@ -603,7 +624,7 @@ export default function AdminPayoutsPage() {
       ) : viewMode === 'grid' ? (
         /* 3-COLUMN FINTECH CARD GRID */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {displayedPayouts.map((p: any) => {
+          {displayedPayouts.map((p) => {
             const isPending = p.status === 'PENDING_TRANSFER';
             const fee = p.serviceFee || Math.round(p.amount * 0.015);
             const net = p.netAmount || p.amount - fee;
@@ -716,7 +737,7 @@ export default function AdminPayoutsPage() {
                         <span>Lihat Bukti Transfer</span>
                       </button>
                       <span className="text-[10px] text-slate-400 font-mono shrink-0">
-                        {formatTimeAgo(p.completedAt || p.readyAt)}
+                        {formatTimeAgo(p.completedAt || p.readyAt || '')}
                       </span>
                     </div>
                   )}
@@ -742,7 +763,7 @@ export default function AdminPayoutsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
-                {displayedPayouts.map((p: any) => {
+                {displayedPayouts.map((p) => {
                   const isPending = p.status === 'PENDING_TRANSFER';
                   const fee = p.serviceFee || Math.round(p.amount * 0.015);
                   const net = p.netAmount || p.amount - fee;
@@ -793,7 +814,7 @@ export default function AdminPayoutsPage() {
                           </span>
                         ) : (
                           <span className="text-slate-600">
-                            {formatTimeAgo(p.completedAt || p.readyAt)}
+                            {formatTimeAgo(p.completedAt || p.readyAt || '')}
                           </span>
                         )}
                       </td>
@@ -831,12 +852,20 @@ export default function AdminPayoutsPage() {
       {/* FinTech Digital Settlement Receipt Modal */}
       {selectedReceipt && (
         <div
+          role="dialog"
+          aria-modal="true"
+          tabIndex={-1}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-in fade-in"
           onClick={() => setSelectedReceipt(null)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setSelectedReceipt(null);
+          }}
         >
           <div
+            role="document"
             className="relative max-w-md w-full bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 p-6 space-y-5 animate-in zoom-in-95"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
             <div className="flex items-start justify-between border-b border-slate-200 pb-4">

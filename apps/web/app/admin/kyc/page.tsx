@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuth } from '@/context/auth-context';
 import { api } from '@/lib/api-client';
 import { formatTimeAgo } from '@/lib/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -14,10 +15,25 @@ import {
   UserCheck,
   X
 } from 'lucide-react';
-import { useAuth } from '@/context/auth-context';
 import { useState } from 'react';
+interface KycUserItem {
+  id: string;
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+  nik?: string | null;
+  ktpImageUrl?: string | null;
+  selfieImageUrl?: string | null;
+  avatarUrl?: string | null;
+  isKycVerified: boolean;
+  trustScore?: number | null;
+  role?: string | null;
+  createdAt?: string | null;
+  kycSubmittedAt?: string | null;
+  isRejected?: boolean;
+}
 
-const DEFAULT_KYC_QUEUE = [
+const DEFAULT_KYC_QUEUE: KycUserItem[] = [
   {
     id: 'usr-kyc-pending-1',
     name: 'Rian Hidayat (Pendaftar Baru)',
@@ -107,8 +123,9 @@ export default function AdminKycPage() {
     Record<string, { status: 'APPROVED' | 'REJECTED' }>
   >({});
 
-  const rawQueue = kycData?.data && kycData.data.length > 0 ? kycData.data : DEFAULT_KYC_QUEUE;
-  const kycQueue = rawQueue.map((u: any) => {
+  const rawQueue: KycUserItem[] =
+    kycData?.data && kycData.data.length > 0 ? (kycData.data as KycUserItem[]) : DEFAULT_KYC_QUEUE;
+  const kycQueue: KycUserItem[] = rawQueue.map((u) => {
     const override = localOverrides[u.id];
     if (override) {
       if (override.status === 'APPROVED') {
@@ -121,21 +138,19 @@ export default function AdminKycPage() {
     return { ...u, isRejected: Boolean(u.isRejected) };
   });
 
-  const pendingUsers = kycQueue.filter((u: any) => !u.isKycVerified);
-  const approvedUsers = kycQueue.filter((u: any) => u.isKycVerified);
+  const pendingUsers = kycQueue.filter((u) => !u.isKycVerified);
+  const approvedUsers = kycQueue.filter((u) => u.isKycVerified);
 
-  const displayedUsers = (activeTab === 'pending' ? pendingUsers : approvedUsers).filter(
-    (u: any) => {
-      if (!searchQuery.trim()) return true;
-      const q = searchQuery.toLowerCase();
-      return (
-        u.name?.toLowerCase().includes(q) ||
-        u.nik?.toLowerCase().includes(q) ||
-        u.email?.toLowerCase().includes(q) ||
-        u.phone?.toLowerCase().includes(q)
-      );
-    }
-  );
+  const displayedUsers = (activeTab === 'pending' ? pendingUsers : approvedUsers).filter((u) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      u.name?.toLowerCase().includes(q) ||
+      u.nik?.toLowerCase().includes(q) ||
+      u.email?.toLowerCase().includes(q) ||
+      u.phone?.toLowerCase().includes(q)
+    );
+  });
 
   const showToast = (type: 'success' | 'error', title: string, message: string) => {
     setToast({ type, title, message });
@@ -156,12 +171,12 @@ export default function AdminKycPage() {
     );
 
     try {
-      const res = await api.approveKyc(userId);
-      queryClient.setQueryData(['admin-kyc'], (old: any) => {
+      await api.approveKyc(userId);
+      queryClient.setQueryData(['admin-kyc'], (old: { data?: KycUserItem[] } | undefined) => {
         if (!old || !old.data) return old;
         return {
           ...old,
-          data: old.data.map((u: any) =>
+          data: old.data.map((u) =>
             u.id === userId ? { ...u, isKycVerified: true, role: 'SELLER' } : u
           )
         };
@@ -189,12 +204,12 @@ export default function AdminKycPage() {
     );
 
     try {
-      const res = await api.rejectKyc(userId);
-      queryClient.setQueryData(['admin-kyc'], (old: any) => {
+      await api.rejectKyc(userId);
+      queryClient.setQueryData(['admin-kyc'], (old: { data?: KycUserItem[] } | undefined) => {
         if (!old || !old.data) return old;
         return {
           ...old,
-          data: old.data.map((u: any) => (u.id === userId ? { ...u, isKycVerified: false } : u))
+          data: old.data.map((u) => (u.id === userId ? { ...u, isKycVerified: false } : u))
         };
       });
       await Promise.all([
@@ -348,7 +363,7 @@ export default function AdminKycPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {displayedUsers.map((u: any) => {
+          {displayedUsers.map((u) => {
             const ktpUrl =
               u.ktpImageUrl ||
               'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80';
@@ -405,11 +420,12 @@ export default function AdminKycPage() {
                   {/* 2. DUAL DOCUMENT VERIFICATION: KTP + SELFIE WITH KTP */}
                   <div className="grid grid-cols-2 gap-2">
                     {/* Foto KTP */}
-                    <div
+                    <button
+                      type="button"
                       onClick={() =>
                         setPreviewImage({ url: ktpUrl, title: `Foto Fisik E-KTP - ${u.name}` })
                       }
-                      className="relative h-28 rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 group/ktp cursor-pointer"
+                      className="relative h-28 w-full rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 group/ktp cursor-pointer text-left"
                     >
                       <img
                         src={ktpUrl}
@@ -423,17 +439,18 @@ export default function AdminKycPage() {
                         <Eye className="h-3.5 w-3.5" />
                         <span>Zoom</span>
                       </div>
-                    </div>
+                    </button>
 
                     {/* Foto Selfie Bersama KTP */}
-                    <div
+                    <button
+                      type="button"
                       onClick={() =>
                         setPreviewImage({
                           url: selfieUrl,
                           title: `Foto Selfie Bersama KTP - ${u.name}`
                         })
                       }
-                      className="relative h-28 rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 group/selfie cursor-pointer"
+                      className="relative h-28 w-full rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 group/selfie cursor-pointer text-left"
                     >
                       <img
                         src={selfieUrl}
@@ -447,7 +464,7 @@ export default function AdminKycPage() {
                         <Eye className="h-3.5 w-3.5" />
                         <span>Zoom</span>
                       </div>
-                    </div>
+                    </button>
                   </div>
 
                   {/* 3. NIK & Meta Info */}
@@ -460,7 +477,7 @@ export default function AdminKycPage() {
                     </div>
                     <div className="flex items-center justify-between text-[11px] text-slate-400 px-1">
                       <span>HP: {u.phone || '-'}</span>
-                      <span>Diajukan: {formatTimeAgo(u.kycSubmittedAt || u.createdAt)}</span>
+                      <span>Diajukan: {formatTimeAgo(u.kycSubmittedAt || u.createdAt || '')}</span>
                     </div>
                   </div>
                 </div>
@@ -519,12 +536,20 @@ export default function AdminKycPage() {
       {/* Full Photo Zoom Modal */}
       {previewImage && (
         <div
+          role="dialog"
+          aria-modal="true"
+          tabIndex={-1}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in"
           onClick={() => setPreviewImage(null)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setPreviewImage(null);
+          }}
         >
           <div
+            role="document"
             className="relative max-w-2xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl p-2"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-3 border-b border-slate-200">
               <span className="text-xs font-bold text-slate-800">{previewImage.title}</span>

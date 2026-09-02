@@ -1,8 +1,10 @@
 'use client';
 
 import { ConditionBadge } from '@/components/marketplace/condition-badge';
+import { useAuth } from '@/context/auth-context';
 import { api } from '@/lib/api-client';
 import { formatIDR, formatTimeAgo } from '@/lib/utils';
+import type { ItemCondition } from '@jbb/types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   AlertCircle,
@@ -22,10 +24,22 @@ import {
   X
 } from 'lucide-react';
 import Link from 'next/link';
-import { useAuth } from '@/context/auth-context';
 import { useState } from 'react';
+interface AdminListingItem {
+  id: string;
+  title: string;
+  price: number;
+  originalPrice?: number | null;
+  condition?: string | null;
+  status: 'ACTIVE' | 'ARCHIVED' | 'SOLD';
+  city?: string | null;
+  category?: { id?: string; name: string } | string | null;
+  seller?: { id?: string; name: string; trustScore?: number; avatarUrl?: string } | null;
+  images?: Array<{ url: string }> | null;
+  createdAt?: string | null;
+}
 
-const DEFAULT_LISTINGS = [
+const DEFAULT_LISTINGS: AdminListingItem[] = [
   {
     id: 'lst-macbook-1',
     title: 'MacBook Pro 14 M1 Pro 16/512GB Space Grey Fullset Box',
@@ -174,7 +188,7 @@ export default function AdminModerationPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('ALL');
   const [isProcessingAction, setIsProcessingAction] = useState(false);
-  const [takedownModalListing, setTakedownModalListing] = useState<any | null>(null);
+  const [takedownModalListing, setTakedownModalListing] = useState<AdminListingItem | null>(null);
   const [takedownReason, setTakedownReason] = useState(
     'Barang Tiruan / Indikasi Pelanggaran Aturan'
   );
@@ -194,9 +208,11 @@ export default function AdminModerationPage() {
     Record<string, { status: 'ACTIVE' | 'ARCHIVED' | 'SOLD' }>
   >({});
 
-  const rawListings =
-    listingsData?.data && listingsData.data.length > 0 ? listingsData.data : DEFAULT_LISTINGS;
-  const listings = rawListings.map((l: any) => {
+  const rawListings: AdminListingItem[] =
+    listingsData?.data && listingsData.data.length > 0
+      ? (listingsData.data as AdminListingItem[])
+      : DEFAULT_LISTINGS;
+  const listings: AdminListingItem[] = rawListings.map((l) => {
     const override = localOverrides[l.id];
     if (override) {
       return { ...l, status: override.status };
@@ -205,12 +221,12 @@ export default function AdminModerationPage() {
   });
 
   // Metrics Count
-  const activeCount = listings.filter((l: any) => l.status === 'ACTIVE').length;
-  const archivedCount = listings.filter((l: any) => l.status === 'ARCHIVED').length;
-  const soldCount = listings.filter((l: any) => l.status === 'SOLD').length;
+  const activeCount = listings.filter((l) => l.status === 'ACTIVE').length;
+  const archivedCount = listings.filter((l) => l.status === 'ARCHIVED').length;
+  const soldCount = listings.filter((l) => l.status === 'SOLD').length;
 
   // Filtered List
-  const displayedListings = listings.filter((l: any) => {
+  const displayedListings = listings.filter((l) => {
     const matchesTab = activeTab === 'ALL' || l.status === activeTab;
 
     const categoryName =
@@ -326,7 +342,7 @@ export default function AdminModerationPage() {
               <span>Moderasi Iklan & Katalog Marketplace</span>
             </h1>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 text-[10px] font-black">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               <span>Katalog Terpantau: 100% Aman</span>
             </span>
           </div>
@@ -585,7 +601,7 @@ export default function AdminModerationPage() {
       ) : viewMode === 'grid' ? (
         /* 3-COLUMN MODULAR CARD GRID */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {displayedListings.map((l: any) => {
+          {displayedListings.map((l) => {
             const cover =
               l.images?.[0]?.url ||
               'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80';
@@ -656,7 +672,7 @@ export default function AdminModerationPage() {
                   {/* 2. Product Title & Condition */}
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between gap-2">
-                      <ConditionBadge condition={l.condition || 'USED_GOOD'} />
+                      <ConditionBadge condition={(l.condition as ItemCondition) || 'USED_GOOD'} />
                       <span className="text-[10px] text-slate-400 font-medium">
                         {formatTimeAgo(l.createdAt || new Date().toISOString())}
                       </span>
@@ -753,7 +769,7 @@ export default function AdminModerationPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
-                {displayedListings.map((l: any) => {
+                {displayedListings.map((l) => {
                   const cover =
                     l.images?.[0]?.url ||
                     'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&auto=format&fit=crop&q=80';
@@ -859,12 +875,20 @@ export default function AdminModerationPage() {
       {/* Takedown Confirmation Modal */}
       {takedownModalListing && (
         <div
+          role="dialog"
+          aria-modal="true"
+          tabIndex={-1}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-in fade-in"
           onClick={() => setTakedownModalListing(null)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setTakedownModalListing(null);
+          }}
         >
           <div
+            role="document"
             className="relative max-w-md w-full bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 p-6 space-y-4 animate-in zoom-in-95"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between border-b border-slate-200 pb-3">
               <div className="flex items-center gap-2">
@@ -900,8 +924,11 @@ export default function AdminModerationPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700">Pilih Alasan Takedown:</label>
+              <label htmlFor="takedownReasonSelect" className="text-xs font-bold text-slate-700">
+                Pilih Alasan Takedown:
+              </label>
               <select
+                id="takedownReasonSelect"
                 value={takedownReason}
                 onChange={(e) => setTakedownReason(e.target.value)}
                 className="w-full p-2.5 bg-white border border-slate-200 rounded-2xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"

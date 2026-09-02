@@ -15,13 +15,12 @@ import {
   X
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import type React from 'react';
 import { useState } from 'react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const { user, openAuthModal, logout, isLoading } = useAuth();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
@@ -68,7 +67,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="h-12 w-12 rounded-2xl bg-brand-600/20 flex items-center justify-center border border-brand-500/30 text-white">
             <PeygoLogoIcon size="sm" />
           </div>
-          <span className="text-xs font-bold text-slate-400 tracking-wide">Memverifikasi Hak Akses Admin...</span>
+          <span className="text-xs font-bold text-slate-400 tracking-wide">
+            Memverifikasi Hak Akses Admin...
+          </span>
         </div>
       </div>
     );
@@ -201,8 +202,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* 2. MOBILE DRAWER SIDEBAR */}
       {isMobileSidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
-          <div
-            className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
+          <button
+            type="button"
+            aria-label="Tutup menu navigasi sidebar"
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity cursor-default"
             onClick={() => setIsMobileSidebarOpen(false)}
           />
           <div className="relative flex w-72 max-w-xs flex-1 flex-col bg-white border-r border-slate-200 pt-5 pb-4 shadow-xl">

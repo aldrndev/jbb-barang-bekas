@@ -425,7 +425,9 @@ function OrderHistoryContent() {
           <div className="space-y-3.5 sm:space-y-4">
             {filteredOrders.map((order) => {
               const primaryImg =
-                order.listing?.images?.find((img: any) => img.isPrimary)?.url ||
+                order.listing?.images?.find(
+                  (img: { url?: string; isPrimary?: boolean }) => img.isPrimary
+                )?.url ||
                 order.listing?.images?.[0]?.url ||
                 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=200&auto=format&fit=crop&q=80';
 
@@ -829,10 +831,14 @@ function OrderHistoryContent() {
 
               <form onSubmit={confirmSubmitDispute} className="space-y-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label
+                    htmlFor="disputeReasonInput"
+                    className="block text-xs font-bold text-slate-700 mb-1"
+                  >
                     Detail Alasan Komplain / Kerusakan / Ketidaksesuaian:
                   </label>
                   <textarea
+                    id="disputeReasonInput"
                     rows={4}
                     required
                     value={disputeReasonInput}

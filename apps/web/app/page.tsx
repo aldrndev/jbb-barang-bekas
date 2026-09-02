@@ -154,29 +154,38 @@ export default function HomePage() {
   const popularKeywords = React.useMemo(() => {
     const list = new Set<string>();
     // Priority: top active listings short title
-    featuredListings.forEach((l) => {
+    for (const l of featuredListings) {
       const shortName = l.title.split(' ').slice(0, 3).join(' ');
       if (shortName && shortName.length <= 22) list.add(shortName);
-    });
-    listings.forEach((l) => {
+    }
+    for (const l of listings) {
       const shortName = l.title.split(' ').slice(0, 3).join(' ');
       if (shortName && shortName.length <= 22) list.add(shortName);
-    });
+    }
     // Fallback to active categories
-    categories.forEach((c) => {
+    for (const c of categories) {
       if (list.size < 5) list.add(c.name);
-    });
+    }
     return Array.from(list).slice(0, 5);
   }, [featuredListings, listings, categories]);
 
   // Dynamically extract active verified sellers & social proof metrics from database listings
   const socialProofMetrics = React.useMemo(() => {
-    const sellersMap = new Map<string, any>();
-    [...featuredListings, ...listings].forEach((item) => {
+    const sellersMap = new Map<
+      string,
+      {
+        id: string;
+        name: string;
+        avatarUrl?: string | null;
+        ratingAverage?: number | null;
+        totalTransactions?: number | null;
+      }
+    >();
+    for (const item of [...featuredListings, ...listings]) {
       if (item.seller && !sellersMap.has(item.seller.id)) {
         sellersMap.set(item.seller.id, item.seller);
       }
-    });
+    }
 
     const uniqueSellers = Array.from(sellersMap.values());
     const topSellers = uniqueSellers.slice(0, 3);
@@ -220,7 +229,7 @@ export default function HomePage() {
               {/* Trust Badge with Live Ping */}
               <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white/90 px-3 py-1 text-[11px] sm:text-xs font-bold text-brand-800 shadow-xs backdrop-blur-md">
                 <span className="flex h-2 w-2 relative">
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500" />
                 </span>
                 <ShieldCheck className="h-3.5 w-3.5 text-brand-600 shrink-0" />
                 <span className="truncate">Marketplace C2C Garansi Rekber 48 Jam</span>
@@ -330,7 +339,7 @@ export default function HomePage() {
                 <div className="flex items-center gap-2">
                   {/* Real Avatars of Active Verified Sellers */}
                   <div className="flex -space-x-2">
-                    {socialProofMetrics.topSellers.map((seller: any, idx: number) =>
+                    {socialProofMetrics.topSellers.map((seller, idx: number) =>
                       seller.avatarUrl ? (
                         <img
                           key={seller.id || idx}

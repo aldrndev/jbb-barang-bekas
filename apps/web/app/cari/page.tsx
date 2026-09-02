@@ -2,14 +2,13 @@
 
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { Filter, Loader2, Search, X } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import React, { useState, Suspense } from 'react';
 import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import { ListingCard } from '../../components/marketplace/listing-card';
 import { api } from '../../lib/api-client';
 
 function CariContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   const queryQ = searchParams.get('q') || '';
@@ -31,7 +30,6 @@ function CariContent() {
   const [sortBy, setSortBy] = useState<'newest' | 'price_asc' | 'price_desc' | 'popular'>(
     querySort
   );
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   const { data: categoriesData } = useQuery({
     queryKey: ['categories'],
@@ -156,6 +154,7 @@ function CariContent() {
             <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             {q && (
               <button
+                type="button"
                 onClick={() => setQ('')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
               >
@@ -194,12 +193,18 @@ function CariContent() {
 
               {/* Sort by */}
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                <label
+                  htmlFor="sortBySelect"
+                  className="text-xs font-bold text-slate-700 block mb-1.5"
+                >
                   Urutkan Berdasarkan
                 </label>
                 <select
+                  id="sortBySelect"
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
+                  onChange={(e) =>
+                    setSortBy(e.target.value as 'newest' | 'price_asc' | 'price_desc' | 'popular')
+                  }
                   className="w-full rounded-xl border border-slate-200 p-2 text-xs bg-white text-slate-800 focus:border-brand-500 focus:outline-none"
                 >
                   <option value="newest">Barang Paling Baru</option>
@@ -211,8 +216,14 @@ function CariContent() {
 
               {/* Category */}
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1.5">Kategori</label>
+                <label
+                  htmlFor="categorySelect"
+                  className="text-xs font-bold text-slate-700 block mb-1.5"
+                >
+                  Kategori
+                </label>
                 <select
+                  id="categorySelect"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   className="w-full rounded-xl border border-slate-200 p-2 text-xs bg-white text-slate-800 focus:border-brand-500 focus:outline-none"
@@ -228,10 +239,14 @@ function CariContent() {
 
               {/* Condition */}
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                <label
+                  htmlFor="conditionSelect"
+                  className="text-xs font-bold text-slate-700 block mb-1.5"
+                >
                   Kondisi Fisik
                 </label>
                 <select
+                  id="conditionSelect"
                   value={condition}
                   onChange={(e) => setCondition(e.target.value)}
                   className="w-full rounded-xl border border-slate-200 p-2 text-xs bg-white text-slate-800 focus:border-brand-500 focus:outline-none"
@@ -247,11 +262,15 @@ function CariContent() {
 
               {/* Price Range */}
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                <label
+                  htmlFor="minPriceInput"
+                  className="text-xs font-bold text-slate-700 block mb-1.5"
+                >
                   Rentang Harga (Rp)
                 </label>
                 <div className="space-y-2">
                   <input
+                    id="minPriceInput"
                     type="number"
                     step="any"
                     placeholder="Harga Minimum"
@@ -262,6 +281,7 @@ function CariContent() {
                     className="w-full rounded-xl border border-slate-200 p-2 text-xs focus:border-brand-500 focus:outline-none"
                   />
                   <input
+                    aria-label="Harga Maksimum"
                     type="number"
                     step="any"
                     placeholder="Harga Maksimum"
@@ -276,10 +296,14 @@ function CariContent() {
 
               {/* Location */}
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                <label
+                  htmlFor="citySelect"
+                  className="text-xs font-bold text-slate-700 block mb-1.5"
+                >
                   Wilayah Kota
                 </label>
                 <select
+                  id="citySelect"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   className="w-full rounded-xl border border-slate-200 p-2 text-xs bg-white text-slate-800 focus:border-brand-500 focus:outline-none"

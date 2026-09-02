@@ -1,6 +1,6 @@
 'use client';
-import { api } from '@/lib/api-client';
 import { useAuth } from '@/context/auth-context';
+import { api } from '@/lib/api-client';
 import { formatIDR, formatTimeAgo } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, ArrowRight, CheckCircle2 } from 'lucide-react';
@@ -140,8 +140,12 @@ export default function AdminDisputesListPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
           {disputes.map((d) => {
             const coverPhoto =
-              (d.listing && 'imageUrl' in d.listing && typeof d.listing.imageUrl === 'string' ? d.listing.imageUrl : undefined) ||
-              (d.listing && 'images' in d.listing && Array.isArray(d.listing.images) ? d.listing.images[0]?.url : undefined) ||
+              (d.listing && 'imageUrl' in d.listing && typeof d.listing.imageUrl === 'string'
+                ? d.listing.imageUrl
+                : undefined) ||
+              (d.listing && 'images' in d.listing && Array.isArray(d.listing.images)
+                ? d.listing.images[0]?.url
+                : undefined) ||
               d.disputeEvidenceUrls?.[0] ||
               'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&auto=format&fit=crop&q=80';
 
@@ -209,9 +213,9 @@ export default function AdminDisputesListPage() {
                 {/* Card Bottom: Evidence Previews + Action Button to Case Detail Route */}
                 <div className="pt-2 border-t border-slate-200 flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1.5 overflow-hidden">
-                    {d.disputeEvidenceUrls?.slice(0, 3).map((imgUrl: string, idx: number) => (
+                    {d.disputeEvidenceUrls?.slice(0, 3).map((imgUrl: string) => (
                       <img
-                        key={idx}
+                        key={imgUrl}
                         src={imgUrl}
                         alt="Bukti"
                         className="h-8 w-8 rounded-lg object-cover border border-slate-200 shrink-0"

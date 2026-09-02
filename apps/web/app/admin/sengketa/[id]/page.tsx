@@ -16,8 +16,9 @@ import {
   X
 } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { use, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useAuth } from '@/context/auth-context';
 
 const DEFAULT_DISPUTES = [
   {
@@ -112,18 +113,19 @@ const DEFAULT_DISPUTES = [
   }
 ];
 
-export default function AdminDisputeDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = use(params);
-  const disputeId = resolvedParams.id;
+export default function AdminDisputeDetailPage() {
+  const params = useParams();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const disputeId = params.id as string;
+  const { user } = useAuth();
 
   const [adminNotes, setAdminNotes] = useState('');
   const [isProcessingAction, setIsProcessingAction] = useState(false);
-  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
   const [confirmModal, setConfirmModal] = useState<'REFUND_BUYER' | 'RELEASE_TO_SELLER' | null>(
     null
   );
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
   const [toast, setToast] = useState<{
     type: 'success' | 'error';
     title: string;
@@ -132,12 +134,13 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
 
   const { data: disputesData } = useQuery({
     queryKey: ['admin-disputes'],
-    queryFn: () => api.getAdminDisputes()
+    queryFn: () => api.getAdminDisputes(),
+    enabled: user?.role === 'ADMIN'
   });
 
   const disputes =
     disputesData?.data && disputesData.data.length > 0 ? disputesData.data : DEFAULT_DISPUTES;
-  const dispute = disputes.find((d: any) => d.id === disputeId) || disputes[0];
+  const dispute = disputes.find((d) => d.id === disputeId) || disputes[0];
 
   const executeResolve = async (action: 'REFUND_BUYER' | 'RELEASE_TO_SELLER') => {
     setIsProcessingAction(true);
@@ -316,10 +319,11 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
                 </span>
                 <div className="flex gap-2.5 flex-wrap">
                   {dispute.disputeEvidenceUrls.map((imgUrl: string, idx: number) => (
-                    <div
-                      key={idx}
+                    <button
+                      type="button"
+                      key={imgUrl}
                       onClick={() => setPreviewImageUrl(imgUrl)}
-                      className="relative group cursor-pointer"
+                      className="relative group cursor-pointer border-0 p-0 bg-transparent rounded-xl overflow-hidden text-left"
                     >
                       <img
                         src={imgUrl}
@@ -329,7 +333,7 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 rounded-xl flex items-center justify-center text-white text-[10px] font-bold transition-opacity">
                         Perbesar
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -526,12 +530,20 @@ export default function AdminDisputeDetailPage({ params }: { params: Promise<{ i
       {/* Image Preview Modal */}
       {previewImageUrl && (
         <div
+          role="dialog"
+          aria-modal="true"
+          tabIndex={-1}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in"
           onClick={() => setPreviewImageUrl(null)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setPreviewImageUrl(null);
+          }}
         >
           <div
+            role="document"
             className="relative max-w-3xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl p-2"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-3 border-b border-slate-200">
               <span className="text-xs font-bold text-slate-800">

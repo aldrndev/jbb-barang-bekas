@@ -20,10 +20,29 @@ import type {
   UpdateProfileInput
 } from '@jbb/validators';
 
-const API_BASE =
-  typeof window !== 'undefined'
-    ? process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787'
-    : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787';
+export function getApiBase(): string {
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    const isLocal =
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname.startsWith('192.168.') ||
+      hostname.endsWith('.local');
+
+    if (!isLocal) {
+      if (
+        process.env.NEXT_PUBLIC_API_URL &&
+        !process.env.NEXT_PUBLIC_API_URL.includes('localhost') &&
+        !process.env.NEXT_PUBLIC_API_URL.includes('127.0.0.1')
+      ) {
+        return process.env.NEXT_PUBLIC_API_URL;
+      }
+      return 'https://bekasin-api.corporate-e78.workers.dev';
+    }
+  }
+
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787';
+}
 
 function getAuthToken(): string | null {
   if (typeof window === 'undefined') return null;
@@ -92,7 +111,9 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   }
 
   try {
-    const res = await fetch(`${API_BASE}${endpoint}`, {
+    const base = getApiBase();
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    const res = await fetch(`${base}${cleanEndpoint}`, {
       ...options,
       headers
     });
@@ -404,7 +425,7 @@ export const api = {
     }
 
     try {
-      const res = await fetch(`${API_BASE}/api/uploads`, {
+      const res = await fetch(`${getApiBase()}/api/uploads`, {
         method: 'POST',
         headers,
         body: formData

@@ -4,11 +4,21 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   AlertCircle,
   ArrowLeft,
+  Building,
   CheckCircle2,
+  ChevronRight,
+  Clock,
+  Copy,
+  CreditCard,
+  ExternalLink,
   HelpCircle,
+  Info,
   Lock,
   MapPin,
+  MessageSquareQuote,
+  Package,
   Phone,
+  QrCode,
   ShieldCheck,
   Tag,
   Truck,
@@ -16,17 +26,26 @@ import {
   Zap
 } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import type React from 'react';
-import { Suspense, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
 import { useAuth } from '../../context/auth-context';
 import { api } from '../../lib/api-client';
 import { cleanWhitespace, formatIDR, toTitleCase } from '../../lib/utils';
 
+interface SuccessOrderItem {
+  id: string;
+  orderNumber: string;
+  totalAmount: number;
+  deliveryMethod?: string | null;
+  paymentUrl?: string | null;
+  vaNumber?: string | null;
+  qrisUrl?: string | null;
+  paymentExpiredAt?: string | null;
+}
+
 function CheckoutContent() {
-  const router = useRouter();
   const queryClient = useQueryClient();
   const { user, openAuthModal } = useAuth();
   const searchParams = useSearchParams();
@@ -42,7 +61,7 @@ function CheckoutContent() {
   const [buyerNotes, setBuyerNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successOrder, setSuccessOrder] = useState<any>(null);
+  const [successOrder, setSuccessOrder] = useState<SuccessOrderItem | null>(null);
 
   // Fetch Listing Details
   const { data: listingData, isLoading: isListingLoading } = useQuery({
@@ -53,10 +72,20 @@ function CheckoutContent() {
 
   // Fetch Sent Offers for current buyer
   const { data: sentOffersData } = useQuery({
-    queryKey: ['offers', 'sent'],
+    queryKey: ['my-sent-offers'],
     queryFn: () => api.getSentOffers(),
     enabled: !!user
   });
+
+  // Auto-fill user profile info
+  useEffect(() => {
+    if (user) {
+      setRecipientName((prev) => prev || user.name);
+      if (user.phone) {
+        setRecipientPhone((prev) => prev || (user.phone as string));
+      }
+    }
+  }, [user]);
 
   const listing = listingData?.data;
   const sentOffers = sentOffersData?.data || [];
@@ -187,6 +216,7 @@ function CheckoutContent() {
 
           <div className="mt-6 flex flex-col gap-2.5">
             <button
+              type="button"
               onClick={openAuthModal}
               className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 px-6 py-3.5 text-xs font-bold text-white shadow-md shadow-brand-600/25 hover:bg-brand-700 transition-all cursor-pointer"
             >
@@ -427,11 +457,12 @@ function CheckoutContent() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5 mb-1.5">
+                  <label htmlFor="checkoutRecipientName" className="text-xs font-bold text-slate-700 flex items-center gap-1.5 mb-1.5">
                     <User className="h-3.5 w-3.5 text-slate-400" />
                     <span>Nama Lengkap Penerima</span>
                   </label>
                   <input
+                    id="checkoutRecipientName"
                     type="text"
                     required
                     placeholder="Nama lengkap"
@@ -447,13 +478,14 @@ function CheckoutContent() {
 
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                    <label htmlFor="checkoutRecipientPhone" className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
                       <Phone className="h-3.5 w-3.5 text-slate-400" />
                       <span>Nomor WhatsApp Aktif</span>
                     </label>
                     <span className="text-[10px] text-slate-400">Contoh: 081234567890</span>
                   </div>
                   <input
+                    id="checkoutRecipientPhone"
                     type="tel"
                     required
                     placeholder="081234567890"
@@ -470,7 +502,7 @@ function CheckoutContent() {
               {/* Address / COD Location Textarea */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                  <label htmlFor="checkoutShippingAddress" className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
                     <MapPin className="h-3.5 w-3.5 text-slate-400" />
                     <span>
                       {deliveryMethod === 'COD_KETEMUAN'
@@ -490,6 +522,7 @@ function CheckoutContent() {
                   </span>
                 </div>
                 <textarea
+                  id="checkoutShippingAddress"
                   rows={3}
                   required
                   placeholder={
@@ -513,10 +546,11 @@ function CheckoutContent() {
 
               {/* Buyer Notes */}
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                <label htmlFor="checkoutBuyerNotes" className="text-xs font-bold text-slate-700 block mb-1.5">
                   Catatan untuk Penjual (Opsional)
                 </label>
                 <input
+                  id="checkoutBuyerNotes"
                   type="text"
                   placeholder="Contoh: Tolong packing bubble wrap tebal ya gan"
                   value={buyerNotes}

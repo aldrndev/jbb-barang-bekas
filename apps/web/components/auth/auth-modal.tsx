@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import { AlertCircle, Shield, Sparkles, X, Zap } from 'lucide-react';
 import Link from 'next/link';
-import { X, Zap, Shield, Sparkles, AlertCircle } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../context/auth-context';
 import { PeygoLogoIcon } from '../common/peygo-logo';
 
@@ -158,7 +158,6 @@ export function AuthModal() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md animate-in fade-in duration-200">
       <div className="relative w-full max-w-110 sm:max-w-130 overflow-hidden rounded-4xl border border-slate-300 bg-white shadow-2xl shadow-slate-950/25 animate-in zoom-in-95 duration-200">
-        
         {/* Close Button */}
         <button
           type="button"
@@ -176,9 +175,7 @@ export function AuthModal() {
               <PeygoLogoIcon size="lg" />
             </div>
 
-            <h3 className="text-2xl font-black text-slate-900 tracking-tight">
-              Masuk ke Peygo
-            </h3>
+            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Masuk ke Peygo</h3>
             <p className="text-xs sm:text-sm text-slate-700 font-semibold mt-1.5 leading-relaxed">
               Jual beli dan nego gadget & barang bekas aman terpercaya.
             </p>
@@ -209,9 +206,7 @@ export function AuthModal() {
                 className="w-full flex items-center justify-center gap-3 rounded-2xl border border-slate-300 bg-white hover:bg-slate-100 hover:border-slate-400 py-3.5 px-5 text-sm font-black text-slate-900 shadow-xs hover:shadow-sm transition-all cursor-pointer disabled:opacity-50 active:scale-98 group"
               >
                 <GoogleIcon className="h-5 w-5 shrink-0 group-hover:scale-105 transition-transform" />
-                <span>
-                  {isGoogleLoading ? 'Menghubungkan...' : 'Lanjutkan dengan Google'}
-                </span>
+                <span>{isGoogleLoading ? 'Menghubungkan...' : 'Lanjutkan dengan Google'}</span>
               </button>
             )}
 
@@ -231,7 +226,9 @@ export function AuthModal() {
                   <Zap className="h-3.5 w-3.5 stroke-2.5" />
                 </div>
                 <span className="text-[11px] font-black text-blue-950 block">1-Klik Masuk</span>
-                <span className="text-[10px] font-bold text-blue-700 block leading-tight">Instan</span>
+                <span className="text-[10px] font-bold text-blue-700 block leading-tight">
+                  Instan
+                </span>
               </div>
 
               {/* Pillar 2: Brand Indigo */}
@@ -240,7 +237,9 @@ export function AuthModal() {
                   <Shield className="h-3.5 w-3.5 stroke-2.5" />
                 </div>
                 <span className="text-[11px] font-black text-indigo-950 block">Garansi 48 Jam</span>
-                <span className="text-[10px] font-bold text-indigo-700 block leading-tight">Cek Fisik</span>
+                <span className="text-[10px] font-bold text-indigo-700 block leading-tight">
+                  Cek Fisik
+                </span>
               </div>
 
               {/* Pillar 3: Warm Amber */}
@@ -249,7 +248,9 @@ export function AuthModal() {
                   <Sparkles className="h-3.5 w-3.5 stroke-2.5" />
                 </div>
                 <span className="text-[11px] font-black text-amber-950 block">Nego Resmi</span>
-                <span className="text-[10px] font-bold text-amber-800 block leading-tight">Ke Penjual</span>
+                <span className="text-[10px] font-bold text-amber-800 block leading-tight">
+                  Ke Penjual
+                </span>
               </div>
             </div>
 

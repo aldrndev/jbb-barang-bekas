@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuth } from '@/context/auth-context';
 import { api } from '@/lib/api-client';
 import { formatIDR } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
@@ -24,7 +25,6 @@ import {
   UserCheck
 } from 'lucide-react';
 import Link from 'next/link';
-import { useAuth } from '@/context/auth-context';
 import { useState } from 'react';
 
 const DEFAULT_KYC_QUEUE = [
@@ -97,9 +97,32 @@ const DEFAULT_DISPUTES = [
   }
 ];
 
+interface DisputeItem {
+  id: string;
+  orderNumber: string;
+  title?: string;
+  amount: number;
+  reason?: string;
+  disputeReason?: string;
+  buyerName?: string;
+  sellerName?: string;
+  escrowStatus?: string;
+  listing?: { title?: string };
+  buyer?: { name?: string };
+}
+
+interface KycItem {
+  id: string;
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+  nik?: string | null;
+  isKycVerified?: boolean;
+  isRejected?: boolean;
+}
+
 export default function AdminOverviewPage() {
   const { user } = useAuth();
-  const [activeChartRange, setActiveChartRange] = useState<'7d' | '30d'>('7d');
 
   const {
     data: statsData,
@@ -134,14 +157,14 @@ export default function AdminOverviewPage() {
     activeListingsCount: 38
   };
 
-  const allDisputes =
+  const allDisputes: DisputeItem[] =
     disputesData?.data && Array.isArray(disputesData.data)
-      ? disputesData.data
+      ? (disputesData.data as DisputeItem[])
       : disputesData?.data === undefined
-        ? DEFAULT_DISPUTES
+        ? (DEFAULT_DISPUTES as DisputeItem[])
         : [];
   const activeDisputes = allDisputes.filter(
-    (d: any) => d.escrowStatus === 'DISPUTED' || !d.escrowStatus
+    (d) => d.escrowStatus === 'DISPUTED' || !d.escrowStatus
   );
   const activeDisputesCount =
     statsData?.data?.activeDisputesCount !== undefined
@@ -149,13 +172,13 @@ export default function AdminOverviewPage() {
       : activeDisputes.length;
   const urgentDisputes = activeDisputes.slice(0, 2);
 
-  const allKyc =
+  const allKyc: KycItem[] =
     kycData?.data && Array.isArray(kycData.data)
-      ? kycData.data
+      ? (kycData.data as KycItem[])
       : kycData?.data === undefined
-        ? DEFAULT_KYC_QUEUE
+        ? (DEFAULT_KYC_QUEUE as KycItem[])
         : [];
-  const pendingKyc = allKyc.filter((u: any) => !u.isKycVerified && !u.isRejected);
+  const pendingKyc = allKyc.filter((u) => !u.isKycVerified && !u.isRejected);
   const pendingKycCount =
     statsData?.data?.pendingKycCount !== undefined
       ? statsData.data.pendingKycCount
@@ -430,9 +453,9 @@ export default function AdminOverviewPage() {
 
           {/* CSS-based Modern Bar Visualizer */}
           <div className="h-56 w-full flex items-end justify-between gap-2 sm:gap-6 pt-6 pb-2 px-2">
-            {chartDays.map((item, idx) => (
+            {chartDays.map((item) => (
               <div
-                key={idx}
+                key={item.day}
                 className="flex-1 flex flex-col items-center gap-2 h-full justify-end group cursor-pointer"
               >
                 <div className="w-full flex items-end justify-center gap-1 sm:gap-1.5 h-full">
@@ -584,7 +607,7 @@ export default function AdminOverviewPage() {
                 </p>
               </div>
             ) : (
-              urgentDisputes.map((d: any) => (
+              urgentDisputes.map((d) => (
                 <div
                   key={d.id}
                   className="rounded-2xl border border-rose-200 bg-white p-4 shadow-2xs space-y-2 hover:border-rose-300 transition-all"
@@ -651,7 +674,7 @@ export default function AdminOverviewPage() {
                 </p>
               </div>
             ) : (
-              pendingKyc.slice(0, 3).map((u: any) => (
+              pendingKyc.slice(0, 3).map((u) => (
                 <div
                   key={u.id}
                   className="rounded-2xl border border-amber-200 bg-white p-4 shadow-2xs flex items-center justify-between gap-3 hover:border-amber-300 transition-all"
