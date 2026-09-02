@@ -74,7 +74,10 @@ export const authRoutes = new Hono<AppEnv>()
         );
       }
 
-      const secret = c.env.JWT_SECRET;
+      const secret =
+        c.env.JWT_SECRET ||
+        (c.env as unknown as Record<string, string>)?.jwt_secret ||
+        (c.env as unknown as Record<string, string>)?.JWT_SECRET;
       if (!secret) {
         console.error('Server Error: JWT_SECRET is not configured in environment variables.');
         return c.json(

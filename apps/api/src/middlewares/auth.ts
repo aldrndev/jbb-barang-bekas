@@ -35,7 +35,10 @@ export const authMiddleware: MiddlewareHandler<AppEnv> = async (c, next) => {
     );
   }
 
-  const secret = c.env.JWT_SECRET;
+  const secret =
+    c.env.JWT_SECRET ||
+    (c.env as unknown as Record<string, string>)?.jwt_secret ||
+    (c.env as unknown as Record<string, string>)?.JWT_SECRET;
   if (!secret) {
     return c.json(
       {
@@ -126,7 +129,10 @@ export const optionalAuthMiddleware: MiddlewareHandler<AppEnv> = async (c, next)
   const authHeader = c.req.header('Authorization');
   if (authHeader?.startsWith('Bearer ')) {
     const token = authHeader.substring(7).trim();
-    const secret = c.env.JWT_SECRET;
+    const secret =
+      c.env.JWT_SECRET ||
+      (c.env as unknown as Record<string, string>)?.jwt_secret ||
+      (c.env as unknown as Record<string, string>)?.JWT_SECRET;
     if (token && secret) {
       const payload = await verifyJwt(token, secret);
       if (payload?.sub) {
