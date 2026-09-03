@@ -308,7 +308,6 @@ class MemoryStore {
           'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=PEYGO-INV-2026-9001',
         paidAt: '2026-08-31T14:30:00Z'
       },
-      notes: 'Layanan mediasi sengketa selesai. Dana telah diamankan dan sertifikat diterbitkan.',
       terms: 'Faktur ini sah dan diterbitkan secara digital oleh sistem proteksi transaksi Peygo.',
       issuedAt: '2026-08-31T10:00:00Z',
       paidAt: '2026-08-31T14:30:00Z',

@@ -16,6 +16,21 @@ interface InvoicePrintableViewProps {
   showBackToDashboard?: boolean;
 }
 
+function formatPaymentMethod(channel?: string | null) {
+  if (!channel) return 'Payment Gateway';
+  const c = channel.toUpperCase();
+  if (c.includes('BCA')) return 'BCA Virtual Account';
+  if (c.includes('BNI')) return 'BNI Virtual Account';
+  if (c.includes('BRI')) return 'BRI Virtual Account';
+  if (c.includes('MANDIRI')) return 'Mandiri Virtual Account';
+  if (c.includes('PERMATA')) return 'Permata Virtual Account';
+  if (c.includes('QRIS')) return 'QRIS';
+  if (c.includes('GOPAY')) return 'GoPay';
+  if (c.includes('OVO')) return 'OVO';
+  if (c.includes('SHOPEEPAY')) return 'ShopeePay';
+  return channel.replace(/_/g, ' ');
+}
+
 export function InvoicePrintableView({
   invoice,
   roleMode = 'BUYER',
@@ -311,76 +326,35 @@ export function InvoicePrintableView({
         </div>
 
         {/* Payment & Financial Summary */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-1 text-xs">
-          {/* Left: Info Pembayaran */}
-          <div className="space-y-2 text-[11px]">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-              Info Pembayaran
-            </span>
-            <div className="space-y-1.5 bg-slate-50/70 border border-slate-100 rounded-xl p-3">
-              <div className="flex justify-between">
-                <span className="text-slate-500">Metode:</span>
-                <span className="font-bold text-slate-800">
-                  {invoice.paymentMeta?.channel || 'Virtual Account'}
-                </span>
-              </div>
-
-              {isUnpaid && invoice.paymentMeta?.vaNumber && (
-                <div className="flex justify-between items-center pt-1 border-t border-slate-200/60">
-                  <span className="text-slate-500">No. VA:</span>
-                  <div className="flex items-center gap-1">
-                    <span className="font-mono font-bold text-slate-900">
-                      {invoice.paymentMeta.vaNumber}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => copyToClipboard(invoice.paymentMeta?.vaNumber || '', 'No VA')}
-                      className="text-slate-400 hover:text-slate-700 p-0.5 cursor-pointer"
-                      title="Salin No VA"
-                    >
-                      <Copy className="h-3 w-3" />
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {isPaid && (
-                <>
-                  <div className="flex justify-between pt-1 border-t border-slate-200/60">
-                    <span className="text-slate-500">Waktu Bayar:</span>
-                    <span className="font-medium text-slate-700">
-                      {invoice.paidAt
-                        ? new Date(invoice.paidAt).toLocaleDateString('id-ID', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })
-                        : 'Terverifikasi'}
-                    </span>
-                  </div>
-                  {invoice.paymentMeta?.gatewayRef && (
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">No. Referensi:</span>
-                      <span className="font-mono text-slate-600">
-                        {invoice.paymentMeta.gatewayRef}
-                      </span>
-                    </div>
-                  )}
-                </>
-              )}
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-4 pt-2 text-xs">
+          {/* Left: Metode Pembayaran */}
+          <div className="text-slate-500 text-[11px] space-y-1">
+            <div className="flex items-center gap-1.5">
+              <span>Metode Pembayaran:</span>
+              <span className="font-semibold text-slate-800">
+                {formatPaymentMethod(invoice.paymentMeta?.channel)}
+              </span>
             </div>
-
-            {invoice.notes && (
-              <div className="text-[11px] text-slate-500 pt-1">
-                <span className="font-bold text-slate-700">Catatan:</span> {invoice.notes}
+            {isUnpaid && invoice.paymentMeta?.vaNumber && (
+              <div className="flex items-center gap-1.5 pt-0.5">
+                <span>No. Virtual Account:</span>
+                <span className="font-mono font-bold text-slate-900">
+                  {invoice.paymentMeta.vaNumber}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard(invoice.paymentMeta?.vaNumber || '', 'No VA')}
+                  className="text-slate-400 hover:text-slate-700 p-0.5 cursor-pointer"
+                  title="Salin No VA"
+                >
+                  <Copy className="h-3 w-3" />
+                </button>
               </div>
             )}
           </div>
 
           {/* Right: Rincian Biaya */}
-          <div className="space-y-1.5 text-xs sm:pl-4">
+          <div className="w-full sm:w-72 space-y-1.5 text-xs">
             <div className="flex justify-between text-slate-500">
               <span>Subtotal Produk</span>
               <span className="font-mono font-medium text-slate-800">
