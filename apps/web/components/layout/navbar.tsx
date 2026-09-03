@@ -16,7 +16,7 @@ import {
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import type React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/auth-context';
 import { useWishlist } from '../../context/wishlist-context';
 import { toTitleCase } from '../../lib/utils';
@@ -29,6 +29,16 @@ export function Navbar() {
   const { wishlistCount } = useWishlist();
   const [searchQuery, setSearchQuery] = useState('');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 8);
+    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   if (pathname.startsWith('/admin')) {
     return null;
@@ -44,7 +54,13 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md shadow-xs">
+    <header
+      className={`sticky top-0 z-40 w-full transition-all duration-300 ${
+        isScrolled
+          ? 'bg-white/75 backdrop-blur-2xl backdrop-saturate-180 border-b border-white/60 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.06),inset_0_-1px_0_rgba(255,255,255,0.7)]'
+          : 'bg-white/60 backdrop-blur-xl backdrop-saturate-150 border-b border-slate-200/50 shadow-xs'
+      }`}
+    >
       {/* 1. Mobile Viewport Single-Row Clean Header */}
       <div className="flex h-14 items-center justify-between gap-1.5 px-3 sm:px-4 md:hidden">
         {/* Compact Logo */}
@@ -61,7 +77,7 @@ export function Navbar() {
             placeholder="Cari iPhone, laptop, kamera..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-9 pl-8.5 pr-3 rounded-full border border-slate-200 bg-slate-50 text-xs text-slate-800 placeholder-slate-400 font-medium focus:bg-white focus:border-brand-500 focus:outline-none transition-all shadow-2xs"
+            className="w-full h-9 pl-8.5 pr-3 rounded-full border border-white/80 bg-white/60 backdrop-blur-md text-xs text-slate-800 placeholder-slate-400 font-medium focus:bg-white/95 focus:border-brand-500 focus:outline-none transition-all shadow-xs ring-1 ring-slate-900/5"
           />
         </form>
 
@@ -69,7 +85,7 @@ export function Navbar() {
         <div className="flex items-center gap-0.5 shrink-0">
           <Link
             href="/wishlist"
-            className="relative flex h-9 w-9 items-center justify-center rounded-full text-slate-600 hover:text-rose-600 hover:bg-rose-50/70 transition-colors"
+            className="relative flex h-9 w-9 items-center justify-center rounded-full text-slate-600 hover:text-rose-600 hover:bg-white/70 hover:backdrop-blur-sm transition-all border border-transparent hover:border-white/60"
             title="Wishlist"
           >
             <Heart
@@ -84,7 +100,7 @@ export function Navbar() {
 
           <Link
             href="/nego"
-            className="relative flex h-9 w-9 items-center justify-center rounded-full text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+            className="relative flex h-9 w-9 items-center justify-center rounded-full text-slate-600 hover:text-slate-900 hover:bg-white/70 hover:backdrop-blur-sm transition-all border border-transparent hover:border-white/60"
             title="Tawaran Nego"
           >
             <MessageSquareText className="h-4.5 w-4.5 text-slate-600" />
@@ -106,12 +122,12 @@ export function Navbar() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari iPhone, MacBook, Sony A6400, PS5..."
-            className="w-full h-10 rounded-full border border-slate-200 bg-slate-50/80 pl-10 pr-16 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:bg-white focus:outline-none transition-all shadow-2xs"
+            className="w-full h-10 rounded-full border border-white/80 bg-white/60 hover:bg-white/75 backdrop-blur-md pl-10 pr-16 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:bg-white/95 focus:outline-none transition-all shadow-xs ring-1 ring-slate-900/5"
           />
           {searchQuery && (
             <button
               type="submit"
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 px-3 py-1 bg-brand-600 text-white rounded-full text-xs font-bold hover:bg-brand-700 transition-colors cursor-pointer"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 px-3.5 py-1 bg-linear-to-r from-brand-600 to-teal-600 text-white rounded-full text-xs font-bold hover:opacity-95 shadow-xs transition-all cursor-pointer"
             >
               Cari
             </button>
@@ -123,7 +139,7 @@ export function Navbar() {
           {/* Wishlist Button */}
           <Link
             href="/wishlist"
-            className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-rose-600 hover:bg-rose-50/60 transition-all relative"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold text-slate-600 hover:text-rose-600 hover:bg-white/70 hover:backdrop-blur-sm transition-all relative border border-transparent hover:border-white/60 hover:shadow-2xs"
             title="Wishlist & Favorit"
           >
             <div className="relative">
@@ -142,7 +158,7 @@ export function Navbar() {
           {/* Nego & Pesanan */}
           <Link
             href="/nego"
-            className="flex items-center gap-2 px-2.5 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 transition-all"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-white/70 hover:backdrop-blur-sm transition-all relative border border-transparent hover:border-white/60 hover:shadow-2xs"
             title="Nego & Tawaran"
           >
             <div className="relative">
@@ -156,7 +172,7 @@ export function Navbar() {
           {user ? (
             <Link
               href="/jual"
-              className="flex items-center gap-1.5 rounded-full bg-brand-600 hover:bg-brand-700 px-4 py-2 text-xs font-bold text-white shadow-sm shadow-brand-600/25 transition-all hover:scale-102 cursor-pointer"
+              className="flex items-center gap-1.5 rounded-full bg-linear-to-r from-brand-600 via-teal-600 to-cyan-600 hover:opacity-95 px-4 py-2 text-xs font-bold text-white shadow-md shadow-brand-600/25 ring-1 ring-white/30 transition-all hover:scale-102 active:scale-95 cursor-pointer"
             >
               <Plus className="h-4 w-4 stroke-3" />
               <span>Jual</span>
@@ -165,7 +181,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={openAuthModal}
-              className="flex items-center gap-1.5 rounded-full bg-brand-600 hover:bg-brand-700 px-4 py-2 text-xs font-bold text-white shadow-sm shadow-brand-600/25 transition-all hover:scale-102 cursor-pointer"
+              className="flex items-center gap-1.5 rounded-full bg-linear-to-r from-brand-600 via-teal-600 to-cyan-600 hover:opacity-95 px-4 py-2 text-xs font-bold text-white shadow-md shadow-brand-600/25 ring-1 ring-white/30 transition-all hover:scale-102 active:scale-95 cursor-pointer"
               title="Masuk untuk Jual Barang"
             >
               <Plus className="h-4 w-4 stroke-3" />
@@ -173,7 +189,7 @@ export function Navbar() {
             </button>
           )}
 
-          <div className="h-5 w-px bg-slate-200 hidden sm:block" />
+          <div className="h-5 w-px bg-slate-200/80 hidden sm:block" />
 
           {/* User Profile / Auth Button */}
           {user ? (
@@ -181,17 +197,17 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                className="flex items-center gap-2 rounded-full p-1 pr-2.5 hover:bg-slate-100/80 transition-colors cursor-pointer"
+                className="flex items-center gap-2 rounded-full p-1 pr-2.5 bg-white/40 hover:bg-white/80 border border-white/60 hover:border-white/90 backdrop-blur-sm transition-all cursor-pointer shadow-2xs"
               >
                 {user.avatarUrl ? (
                   <img
                     src={user.avatarUrl}
                     alt={user.name}
                     referrerPolicy="no-referrer"
-                    className="h-8 w-8 rounded-full object-cover ring-2 ring-slate-100"
+                    className="h-8 w-8 rounded-full object-cover ring-2 ring-white/80 shadow-2xs"
                   />
                 ) : (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700 shadow-2xs">
                     {user.name.charAt(0)}
                   </div>
                 )}
@@ -201,10 +217,10 @@ export function Navbar() {
                 <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
               </button>
 
-              {/* Profile Dropdown Menu */}
+              {/* Profile Dropdown Menu with Liquid Glass */}
               {isProfileMenuOpen && (
-                <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-slate-200/50 z-50 animate-in fade-in">
-                  <div className="border-b border-slate-200 px-3 py-2.5">
+                <div className="absolute right-0 mt-2.5 w-64 rounded-2xl border border-white/80 bg-white/85 backdrop-blur-2xl p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.12)] ring-1 ring-black/5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="border-b border-slate-200/60 px-3 py-2.5">
                     <p className="text-xs font-bold text-slate-900">{toTitleCase(user.name)}</p>
                     <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
                     <div className="mt-1.5 flex items-center gap-1.5">
@@ -230,7 +246,7 @@ export function Navbar() {
                     <Link
                       href="/profile"
                       onClick={() => setIsProfileMenuOpen(false)}
-                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-white/70 hover:backdrop-blur-xs transition-colors"
                     >
                       <User className="h-4 w-4 text-slate-400" />
                       Profil Saya
@@ -238,7 +254,7 @@ export function Navbar() {
                     <Link
                       href="/my-listings"
                       onClick={() => setIsProfileMenuOpen(false)}
-                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-white/70 hover:backdrop-blur-xs transition-colors"
                     >
                       <Package className="h-4 w-4 text-brand-600" />
                       Barang Dijual (Iklan Saya)
@@ -246,7 +262,7 @@ export function Navbar() {
                     <Link
                       href="/orders"
                       onClick={() => setIsProfileMenuOpen(false)}
-                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-white/70 hover:backdrop-blur-xs transition-colors"
                     >
                       <ShoppingBag className="h-4 w-4 text-blue-600" />
                       Riwayat Pembelian & Penjualan
@@ -254,7 +270,7 @@ export function Navbar() {
                     <Link
                       href="/wishlist"
                       onClick={() => setIsProfileMenuOpen(false)}
-                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-white/70 hover:backdrop-blur-xs transition-colors"
                     >
                       <Heart className="h-4 w-4 text-rose-500" />
                       Wishlist Saya ({wishlistCount})
@@ -262,7 +278,7 @@ export function Navbar() {
                     <Link
                       href="/nego"
                       onClick={() => setIsProfileMenuOpen(false)}
-                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-white/70 hover:backdrop-blur-xs transition-colors"
                     >
                       <MessageSquareText className="h-4 w-4 text-amber-500" />
                       Tawaran Nego
@@ -270,7 +286,7 @@ export function Navbar() {
                     <Link
                       href="/jual"
                       onClick={() => setIsProfileMenuOpen(false)}
-                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-white/70 hover:backdrop-blur-xs transition-colors"
                     >
                       <Plus className="h-4 w-4 text-brand-600" />
                       Pasang Iklan Baru
@@ -286,14 +302,14 @@ export function Navbar() {
                       </Link>
                     )}
                   </div>
-                  <div className="border-t border-slate-200 pt-1">
+                  <div className="border-t border-slate-200/60 pt-1">
                     <button
                       type="button"
                       onClick={() => {
                         logout();
                         setIsProfileMenuOpen(false);
                       }}
-                      className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                      className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50/70 transition-colors cursor-pointer"
                     >
                       <LogOut className="h-4 w-4" />
                       Keluar
@@ -306,7 +322,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={openAuthModal}
-              className="flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-brand-600 px-3 py-2 rounded-lg hover:bg-slate-100/70 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-brand-600 px-3.5 py-2 rounded-full bg-white/40 hover:bg-white/80 border border-white/60 hover:border-white/90 backdrop-blur-sm shadow-2xs transition-all cursor-pointer"
             >
               <User className="h-4 w-4" />
               <span>Masuk</span>
