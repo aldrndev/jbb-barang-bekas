@@ -19,7 +19,7 @@ interface BreadcrumbsProps {
 const routeLabelMap: Record<string, string> = {
   cari: 'Katalog Barang',
   listing: 'Detail Barang',
-  checkout: 'Checkout Rekber',
+  checkout: 'Checkout Aman',
   nego: 'Tawaran Nego',
   orders: 'Riwayat Pesanan',
   'my-listings': 'Barang Dijual',

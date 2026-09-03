@@ -19,21 +19,21 @@ export const metadata: Metadata = {
     template: '%s | Peygo'
   },
   description:
-    'Platform jual beli barang bekas modern & aman dengan garansi rekening bersama 100%, inspeksi fisik 48 jam, negosiasi harga resmi, dan verifikasi kondisi transparan.',
+    'Marketplace jual beli barang bekas modern & terpercaya dengan garansi perlindungan pembeli 100%, inspeksi fisik 48 jam, negosiasi harga resmi, dan verifikasi kondisi transparan.',
   keywords: [
     'jual beli barang bekas',
     'peygo',
     'barang bekas murah',
-    'rekber barang bekas',
+    'belanja barang bekas aman',
     'jual hp bekas',
     'laptop bekas terpercaya',
     'marketplace second hand indonesia',
     'cod aman',
-    'garansi rekber 48 jam'
+    'garansi perlindungan pembeli'
   ],
   authors: [{ name: 'Peygo Indonesia', url: siteUrl }],
   creator: 'Peygo Indonesia',
-  publisher: 'PT Peygo Rekber Indonesia',
+  publisher: 'Peygo • Part of Digitesia Edge Digital',
   formatDetection: {
     email: false,
     address: false,

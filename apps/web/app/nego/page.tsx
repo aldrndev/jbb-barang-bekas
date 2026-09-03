@@ -182,7 +182,7 @@ function NegoDashboardContent() {
                 Pusat Tawar & Nego Harga
               </h1>
               <p className="text-[11px] sm:text-xs text-slate-500 font-medium truncate">
-                Kunci harga 24 jam dengan rekber resmi Peygo
+                Kunci harga 24 jam dengan transaksi bergaransi Peygo
               </p>
             </div>
           </div>
@@ -597,7 +597,7 @@ function NegoDashboardContent() {
                             <span>Tawaran Disetujui ({formatIDR(offer.offeredPrice)})</span>
                           </div>
                           <p className="text-[10px] text-emerald-800">
-                            Harga terkunci 24 jam. Segera selesaikan transaksi Rekber.
+                            Harga terkunci 24 jam. Segera selesaikan pembayaran aman.
                           </p>
                         </div>
 

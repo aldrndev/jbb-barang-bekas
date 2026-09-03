@@ -173,8 +173,7 @@ function CheckoutContent() {
       ]);
     } else {
       setErrorMessage(
-        res.error?.message ||
-          'Gagal memproses pesanan Rekber. Silakan periksa kembali formulir Anda.'
+        res.error?.message || 'Gagal memproses pesanan. Silakan periksa kembali formulir Anda.'
       );
     }
     setIsSubmitting(false);
@@ -192,7 +191,7 @@ function CheckoutContent() {
             Masuk untuk Melanjutkan Checkout
           </h1>
           <p className="mt-2 text-xs sm:text-sm text-slate-500 leading-relaxed">
-            Demi keamanan rekening bersama dan perlindungan dana Anda, silakan masuk ke akun pembeli
+            Demi keamanan dan garansi perlindungan transaksi Anda, silakan masuk ke akun pembeli
             terlebih dahulu.
           </p>
 
@@ -256,7 +255,7 @@ function CheckoutContent() {
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 mb-4 shadow-xs border border-brand-200">
             <CheckCircle2 className="h-9 w-9" />
           </div>
-          <h2 className="text-2xl font-black text-slate-900">Pembayaran Rekber Sukses!</h2>
+          <h2 className="text-2xl font-black text-slate-900">Pembayaran Berhasil Diverifikasi!</h2>
           <p className="text-xs text-slate-500 mt-1">
             Nomor Pesanan:{' '}
             <strong className="text-slate-900 font-mono">{successOrder.orderNumber}</strong>
@@ -274,7 +273,7 @@ function CheckoutContent() {
               </span>
             </div>
             <div className="flex justify-between border-t border-slate-200 pt-2 font-bold">
-              <span className="text-slate-700">Total Dana Diamankan:</span>
+              <span className="text-slate-700">Total Dana Terlindungi:</span>
               <span className="text-brand-700 font-black text-sm">
                 {formatIDR(successOrder.totalAmount)}
               </span>
@@ -284,8 +283,8 @@ function CheckoutContent() {
           <div className="mt-4 rounded-2xl bg-brand-50 p-3.5 border border-brand-200 text-[11px] text-brand-900 text-left flex items-start gap-2.5">
             <ShieldCheck className="h-4 w-4 text-brand-600 shrink-0 mt-0.5" />
             <p>
-              Dana Anda telah <strong>terkunci aman di rekening bersama Rekber Bekasin</strong>.
-              Penjual telah kami beri notifikasi untuk menyiapkan pengiriman / jadwal COD.
+              Dana Anda telah <strong>diamankan oleh sistem garansi perlindungan Peygo</strong>.
+              Penjual telah kami beri notifikasi untuk segera menyiapkan pengiriman / jadwal COD.
             </p>
           </div>
 
@@ -294,11 +293,11 @@ function CheckoutContent() {
               href="/orders"
               className="w-full rounded-full bg-brand-600 py-3.5 text-xs font-bold text-white hover:bg-brand-700 transition-colors text-center shadow-md shadow-brand-600/20 cursor-pointer"
             >
-              Pantau Status di Riwayat Pesanan
+              Lihat Status Pesanan
             </Link>
             <Link
               href="/"
-              className="w-full rounded-full border border-slate-200 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors text-center"
+              className="w-full rounded-full bg-slate-100 py-3 text-xs font-bold text-slate-700 hover:bg-slate-200 transition-colors text-center"
             >
               Kembali ke Beranda
             </Link>
@@ -309,25 +308,26 @@ function CheckoutContent() {
   }
 
   const primaryImage =
+    listing.images?.find((img) => img.isPrimary)?.url ||
     listing.images?.[0]?.url ||
-    'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400';
+    'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=500&auto=format&fit=crop&q=80';
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8 pb-24">
-      <div className="mx-auto max-w-6xl">
-        {/* Top Header & Breadcrumb */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200/80">
+    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl space-y-6">
+        {/* Top Header & Breadcrumbs */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <Breadcrumbs
             items={[
               { label: 'Katalog Barang', href: '/cari' },
               { label: listing.title, href: `/listing/${listing.slug || listing.id}` },
-              { label: 'Checkout Rekber' }
+              { label: 'Checkout Aman' }
             ]}
           />
 
           <div className="flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-800 border border-brand-200 shrink-0 self-start sm:self-auto">
             <ShieldCheck className="h-4 w-4 text-brand-600" />
-            <span>Garansi Rekber 100%</span>
+            <span>Garansi Perlindungan 100%</span>
           </div>
         </div>
 
@@ -558,14 +558,14 @@ function CheckoutContent() {
             <div className="rounded-3xl border border-brand-200 bg-brand-50/60 p-5 space-y-3">
               <div className="flex items-center gap-2 text-brand-950 font-black text-sm">
                 <ShieldCheck className="h-5 w-5 text-brand-600" />
-                <span>Jaminan Transaksi Rekber Bekasin Indonesia</span>
+                <span>Jaminan Perlindungan Transaksi Peygo</span>
               </div>
               <ul className="space-y-1.5 text-xs text-brand-900 font-medium">
                 <li className="flex items-start gap-2">
                   <span className="text-brand-600 font-bold">✓</span>
                   <span>
-                    <strong>Uang Ditahan Aman:</strong> Penjual tidak menerima dana sebelum Anda
-                    konfirmasi terima barang.
+                    <strong>Pembayaran Terlindungi:</strong> Penjual tidak menerima dana sebelum
+                    Anda konfirmasi terima barang.
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
@@ -631,9 +631,9 @@ function CheckoutContent() {
 
                 <div className="flex justify-between text-slate-600">
                   <div className="flex items-center gap-1">
-                    <span>Biaya Perlindungan Rekber (1%)</span>
+                    <span>Biaya Layanan & Perlindungan (1%)</span>
                     <span
-                      title="Biaya keamanan penjaminan rekening bersama 48 jam"
+                      title="Biaya keamanan penjaminan transaksi & garansi inspeksi 48 jam"
                       className="cursor-help"
                     >
                       <HelpCircle className="h-3 w-3 text-slate-400" />
@@ -660,7 +660,7 @@ function CheckoutContent() {
                 <span>
                   {isSubmitting
                     ? 'Memproses Transaksi...'
-                    : `Bayar Aman ke Rekber (${formatIDR(totalPayment)})`}
+                    : `Bayar Sekarang (${formatIDR(totalPayment)})`}
                 </span>
               </button>
 
@@ -671,7 +671,7 @@ function CheckoutContent() {
                   target="_blank"
                   className="underline hover:text-slate-600 font-bold"
                 >
-                  Ketentuan Rekening Bersama
+                  Panduan Belanja Aman
                 </Link>{' '}
                 &{' '}
                 <Link

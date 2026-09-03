@@ -159,7 +159,7 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
             <div>
               <h3 className="text-lg font-bold text-slate-900">Masuk untuk Menawar</h3>
               <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-                Ajukan tawaran resmi agar harga terkunci 24 jam dengan perlindungan Rekber Peygo.
+                Ajukan tawaran resmi agar harga terkunci 24 jam dengan Garansi Perlindungan Pembeli.
               </p>
             </div>
             <div className="pt-2">
@@ -263,19 +263,19 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
                 </label>
                 <textarea
                   rows={2}
-                  placeholder="Contoh: Bisa COD Gandaria City besok siang gan? Siap langsung checkout rekber."
+                  placeholder="Contoh: Bisa COD Gandaria City besok siang gan? Siap langsung checkout aman."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:outline-none mt-1"
                 />
               </div>
 
-              {/* Escrow Guarantee Notice */}
+              {/* Protection Guarantee Notice */}
               <div className="rounded-2xl bg-slate-50 p-3 text-[11px] text-slate-600 flex items-start gap-2 border border-slate-200">
                 <ShieldCheck className="h-4 w-4 text-brand-600 shrink-0 mt-0.5" />
                 <p>
                   Jika penjual menyetujui, harga ini akan <strong>terkunci 24 jam</strong> khusus
-                  untuk Anda melakukan checkout via Rekber Peygo.
+                  untuk Anda menyelesaikan pembelian dengan aman.
                 </p>
               </div>
 

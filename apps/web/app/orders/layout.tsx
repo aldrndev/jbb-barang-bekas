@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Pesanan Saya & Status Rekber',
+  title: 'Pesanan Saya & Riwayat Transaksi',
   description:
-    'Pantau alur transaksi, nomor resi pengiriman, masa inspeksi fisik 48 jam, dan riwayat pesanan rekening bersama Anda di Bekasin.',
+    'Pantau status transaksi, nomor resi pengiriman, garansi inspeksi fisik 48 jam, dan riwayat pesanan Anda di Peygo.',
   robots: {
     index: false,
     follow: false

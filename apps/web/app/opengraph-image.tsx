@@ -85,7 +85,7 @@ export default function Image() {
             color: '#34d399'
           }}
         >
-          ✓ Garansi Rekber 48 Jam & Inspeksi Fisik Transparan
+          ✓ Garansi Perlindungan 48 Jam & Inspeksi Fisik Transparan
         </div>
         <h1
           style={{
@@ -116,7 +116,9 @@ export default function Image() {
         }}
       >
         <span style={{ fontSize: '16px', fontWeight: 700, color: '#34d399' }}>peygo.id</span>
-        <span style={{ fontSize: '14px', color: '#64748b' }}>PT Peygo Rekber Indonesia</span>
+        <span style={{ fontSize: '14px', color: '#64748b' }}>
+          Peygo • Part of Digitesia Edge Digital
+        </span>
       </div>
     </div>,
     {

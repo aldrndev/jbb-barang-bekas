@@ -47,7 +47,7 @@ export default function AdminInvoicesPage() {
     buyerEmail: '',
     buyerAddress: '',
     buyerCity: 'Jakarta',
-    sellerName: 'Peygo Rekber Escrow Official',
+    sellerName: 'Peygo Official Store',
     sellerPhone: '081122334455',
     sellerCity: 'Jakarta Pusat',
     items: [
@@ -64,7 +64,7 @@ export default function AdminInvoicesPage() {
     serviceFee: 15000,
     discountAmount: 0,
     paymentChannel: 'BCA_VA',
-    notes: 'Faktur resmi diterbitkan oleh Tim Administrator Rekber Peygo.',
+    notes: 'Faktur resmi diterbitkan oleh Tim Administrator Peygo.',
     status: 'UNPAID'
   });
 
@@ -210,14 +210,14 @@ export default function AdminInvoicesPage() {
             <div className="flex items-center gap-2">
               <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-[11px] font-black text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
                 <Receipt className="h-3.5 w-3.5" />
-                <span>Financial & Escrow Billing</span>
+                <span>Financial & Marketplace Billing</span>
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
               Manajemen Faktur & Tagihan
             </h1>
             <p className="text-xs text-slate-300 max-w-xl leading-relaxed">
-              Pantau seluruh invoice transaksi escrow, cetak faktur resmi A4, dan buat tagihan
+              Pantau seluruh invoice transaksi marketplace, cetak faktur resmi A4, dan buat tagihan
               kustom manual dengan integrasi Payment Gateway.
             </p>
           </div>
@@ -332,7 +332,7 @@ export default function AdminInvoicesPage() {
               <option value="ESCROW_ORDER">Transaksi Marketplace</option>
               <option value="CUSTOM_ADMIN">Tagihan Manual Admin</option>
               <option value="MEDIATION_FEE">Jasa Mediasi Sengketa</option>
-              <option value="VIP_ESCROW">Layanan VIP Rekber</option>
+              <option value="VIP_ESCROW">Layanan VIP Prioritas</option>
             </select>
           </div>
         </div>
@@ -502,7 +502,7 @@ export default function AdminInvoicesPage() {
                     Buat Faktur Tagihan Baru (Custom Invoice)
                   </h3>
                   <p className="text-[10px] text-slate-500">
-                    Diterbitkan resmi oleh Sistem Escrow Peygo Rekber
+                    Diterbitkan resmi oleh Sistem Peygo Cloud
                   </p>
                 </div>
               </div>
@@ -532,7 +532,7 @@ export default function AdminInvoicesPage() {
                   >
                     <option value="CUSTOM_ADMIN">Tagihan Transaksi Manual</option>
                     <option value="MEDIATION_FEE">Biaya Mediasi & Penanganan Sengketa</option>
-                    <option value="VIP_ESCROW">Layanan Escrow VIP Prioritas</option>
+                    <option value="VIP_ESCROW">Layanan VIP Prioritas</option>
                   </select>
                 </div>
 
@@ -761,7 +761,7 @@ export default function AdminInvoicesPage() {
                     htmlFor="custom-inv-service-fee"
                     className="text-[11px] font-bold text-slate-600 block mb-1"
                   >
-                    Biaya Layanan Rekber (Rp)
+                    Biaya Layanan & Perlindungan (Rp)
                   </label>
                   <input
                     id="custom-inv-service-fee"

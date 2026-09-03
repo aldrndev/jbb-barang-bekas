@@ -20,9 +20,9 @@ export function Footer() {
               <ShieldCheck className="h-6 w-6" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-slate-900">Garansi Rekber 100%</h4>
+              <h4 className="text-sm font-bold text-slate-900">Garansi Perlindungan 100%</h4>
               <p className="text-xs text-slate-500 mt-0.5">
-                Dana ditahan aman sampai barang Anda terima dan cek 48 jam.
+                Pembayaran aman sampai barang Anda terima dan cek 48 jam.
               </p>
             </div>
           </div>
@@ -66,16 +66,20 @@ export function Footer() {
 
         {/* Footer Links & Copyright */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 text-xs text-slate-500">
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             <PeygoLogoIcon size="xs" />
             <span className="font-bold text-slate-800">
               Pey
               <span className="bg-linear-to-r from-brand-600 to-emerald-500 bg-clip-text text-transparent">
                 go
               </span>
-              <span className="text-slate-400 font-normal"> &bull; Jual Beli Barang Bekas</span>
             </span>
-            <span>&copy; {new Date().getFullYear()} PT Peygo Rekber Indonesia.</span>
+            <span>&bull;</span>
+            <span className="text-slate-500 font-medium">Part of Digitesia Edge Digital</span>
+            <span className="text-slate-400 hidden sm:inline">&bull;</span>
+            <span className="text-slate-400">
+              &copy; {new Date().getFullYear()} All rights reserved.
+            </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
@@ -86,7 +90,7 @@ export function Footer() {
               Kebijakan Privasi
             </Link>
             <Link href="/panduan-rekber" className="hover:text-emerald-600 transition-colors">
-              Panduan Rekber
+              Panduan Belanja Aman
             </Link>
             <Link href="/pusat-bantuan" className="hover:text-emerald-600 transition-colors">
               Pusat Bantuan

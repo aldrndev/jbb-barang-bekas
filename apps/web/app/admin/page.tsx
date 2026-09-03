@@ -217,7 +217,7 @@ export default function AdminOverviewPage() {
       iconColor: 'bg-brand-50 text-brand-600 border-brand-200',
       badge: 'Dana Masuk Brankas',
       badgeColor: 'bg-brand-100 text-brand-800 border-brand-200',
-      title: 'Pembayaran Rekber Virtual Account Mandiri diterima',
+      title: 'Pembayaran Virtual Account Mandiri diterima',
       orderNumber: 'JBB-2026-7731',
       amount: 11200000,
       subStatus: 'VA Mandiri Terverifikasi',
@@ -262,7 +262,7 @@ export default function AdminOverviewPage() {
             <div className="flex items-center gap-2 flex-wrap">
               <span className="rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-0.5 text-xs font-bold flex items-center gap-1.5 backdrop-blur-xs">
                 <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                <span>Brankas Rekber Multi-Sig Online</span>
+                <span>Sistem Pembayaran 100% Normal</span>
               </span>
               <span className="text-xs text-slate-400 font-medium">
                 Update:{' '}
@@ -276,10 +276,10 @@ export default function AdminOverviewPage() {
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-              Pusat Komando & Brankas Rekber Bekasin
+              Pusat Komando & Operasional Transaksi
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Memantau perputaran dana garansi 48 jam, stabilitas escrow gateway, mitigasi sengketa
+              Memantau perputaran dana transaksi, garansi perlindungan 48 jam, resolusi sengketa
               barang bekas, dan persetujuan identitas KYC.
             </p>
           </div>
@@ -317,12 +317,12 @@ export default function AdminOverviewPage() {
 
       {/* 2. EXECUTIVE FINANCIAL METRIC CARDS (4-Column Elevated FinTech Cards) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-        {/* Card 1: Dana Ditahan Rekber (Escrow Active Vault) */}
+        {/* Card 1: Dana Dalam Perlindungan */}
         <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs hover:shadow-md transition-all space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
               <Lock className="h-3.5 w-3.5 text-brand-600" />
-              <span>Dana Ditahan Rekber</span>
+              <span>Dana Dalam Perlindungan</span>
             </span>
             <span className="text-[10px] font-black text-brand-700 bg-brand-50 border border-brand-200 px-2 py-0.5 rounded-full flex items-center gap-1">
               <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
@@ -340,8 +340,8 @@ export default function AdminOverviewPage() {
           </div>
 
           <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500 font-medium">
-            <span>Keamanan Escrow:</span>
-            <strong className="text-emerald-700 font-bold">100% Pool Enkripsi</strong>
+            <span>Status Perlindungan:</span>
+            <strong className="text-emerald-700 font-bold">100% Terenkripsi</strong>
           </div>
         </div>
 
@@ -436,7 +436,7 @@ export default function AdminOverviewPage() {
                 <span>Arus Transaksi & Pencairan 7 Hari Terakhir</span>
               </h3>
               <p className="text-xs text-slate-500 font-medium mt-0.5">
-                Perbandingan volume dana masuk Rekber vs pencairan berhasil ke rekening penjual.
+                Perbandingan volume pembayaran masuk vs pencairan dana ke rekening penjual.
               </p>
             </div>
 
@@ -503,7 +503,7 @@ export default function AdminOverviewPage() {
               <span>Kategori Terlaris</span>
             </h3>
             <p className="text-xs text-slate-500 font-medium">
-              Distribusi volume transaksi di Rekber.
+              Distribusi volume transaksi marketplace.
             </p>
           </div>
 
@@ -707,7 +707,7 @@ export default function AdminOverviewPage() {
           <div>
             <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
               <Activity className="h-4 w-4 text-emerald-600" />
-              <span>Aktivitas & Log Escrow Terkini</span>
+              <span>Aktivitas & Log Transaksi Terkini</span>
             </h3>
             <p className="text-xs text-slate-500 font-medium mt-0.5">
               Arus transaksi otomatis dan perubahan status pesanan di seluruh marketplace.
@@ -788,7 +788,7 @@ export default function AdminOverviewPage() {
               <span>Status Rekening Penampung & Settlement Perbankan</span>
             </h3>
             <p className="text-xs text-slate-500 font-medium">
-              Alokasi saldo escrow vault pada jaringan mitra perbankan nasional.
+              Alokasi saldo transaksi aman pada jaringan mitra perbankan nasional.
             </p>
           </div>
           <span className="rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 border border-emerald-200 flex items-center gap-1">
@@ -800,7 +800,7 @@ export default function AdminOverviewPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
           <div className="rounded-2xl bg-white p-4 border border-slate-200 shadow-2xs space-y-1.5">
             <div className="flex items-center justify-between">
-              <span className="font-bold text-slate-800">BCA Escrow Pool</span>
+              <span className="font-bold text-slate-800">BCA Settlement Pool</span>
               <span className="text-[10px] text-emerald-700 font-black bg-emerald-50 px-1.5 py-0.2 rounded">
                 Aktif
               </span>

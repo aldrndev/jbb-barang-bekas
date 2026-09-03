@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Checkout & Pembayaran Rekber Aman',
+  title: 'Checkout & Pembayaran Aman',
   description:
-    'Selesaikan pembayaran pesanan barang bekas dengan perlindungan escrow rekening bersama 100% di Bekasin.',
+    'Selesaikan pembayaran pesanan barang bekas dengan garansi perlindungan pembeli 100% di Peygo.',
   robots: {
     index: false,
     follow: false

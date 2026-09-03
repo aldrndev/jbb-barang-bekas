@@ -121,7 +121,7 @@ export const authRoutes = new Hono<AppEnv>()
             ratingCount: 0,
             city: null,
             province: null,
-            bio: isSuperAdmin ? 'Master Administrator Platform Rekber Peygo' : null,
+            bio: isSuperAdmin ? 'Master Administrator Platform Peygo' : null,
             nik: null,
             ktpImageUrl: null,
             selfieImageUrl: null,
@@ -406,7 +406,7 @@ export const authRoutes = new Hono<AppEnv>()
 
     return c.json({
       success: true,
-      message: 'Pengajuan KYC berhasil dikirim! Menunggu persetujuan Admin Mediasi Rekber Peygo.',
+      message: 'Pengajuan KYC berhasil dikirim! Menunggu persetujuan Admin Verifikasi Peygo.',
       data: {
         ...user,
         nik,

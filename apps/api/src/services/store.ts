@@ -42,7 +42,7 @@ class MemoryStore {
       buyerId: 'usr-seller-3',
       sellerId: 'usr-seller-2',
       offeredPrice: 17500000,
-      message: 'Nego 17.5 jt siap rekber kurir instant gan.',
+      message: 'Nego 17.5 jt siap checkout kurir instant gan.',
       status: 'ACCEPTED',
       counterPrice: null,
       expiresAt: new Date(Date.now() + 24 * 3600 * 1000).toISOString(),
@@ -277,7 +277,7 @@ class MemoryStore {
       buyerEmail: 'hendra.gunawan@example.com',
       buyerAddress: 'Jl. Senopati No. 45, Kebayoran Baru',
       buyerCity: 'Jakarta Selatan',
-      sellerName: 'Peygo Rekber Escrow Official',
+      sellerName: 'Peygo Official Store',
       sellerPhone: '081122334455',
       sellerEmail: 'support@peygo.id',
       sellerCity: 'Jakarta Pusat',
@@ -285,8 +285,7 @@ class MemoryStore {
         {
           id: 'item-inv-1',
           title: 'Jasa Mediasi & Pengujian Fisik Gadget Luxury VIP',
-          description:
-            'Inspeksi keaslian, cek sirkuit logic board, dan sertifikat garansi rekber 30 hari',
+          description: 'Inspeksi keaslian, cek sirkuit logic board, dan sertifikat garansi 30 hari',
           quantity: 1,
           price: 350000,
           total: 350000,
@@ -310,8 +309,7 @@ class MemoryStore {
         paidAt: '2026-08-31T14:30:00Z'
       },
       notes: 'Layanan mediasi sengketa selesai. Dana telah diamankan dan sertifikat diterbitkan.',
-      terms:
-        'Faktur ini sah dan diterbitkan secara digital oleh sistem proteksi transaksi Peygo Rekber.',
+      terms: 'Faktur ini sah dan diterbitkan secara digital oleh sistem proteksi transaksi Peygo.',
       issuedAt: '2026-08-31T10:00:00Z',
       paidAt: '2026-08-31T14:30:00Z',
       createdBy: 'ADMIN'
@@ -348,7 +346,7 @@ class MemoryStore {
       type: 'ESCROW_ORDER',
       status,
       buyerId: order.buyerId,
-      buyerName: order.recipientName || order.buyer?.name || 'Pembeli Rekber',
+      buyerName: order.recipientName || order.buyer?.name || 'Pembeli',
       buyerPhone: order.recipientPhone || order.buyer?.phone || '-',
       buyerEmail: order.buyer?.email,
       buyerAddress: order.shippingAddress || 'Alamat Belum Diisi',
@@ -380,10 +378,10 @@ class MemoryStore {
       },
       notes:
         order.deliveryMethod === 'COD_KETEMUAN'
-          ? 'Metode COD Ketemuan Resmi: Dana tetap dijamin escrow sampai konfirmasi serah terima fisik dilakukan di aplikasi.'
-          : 'Pengiriman kurir berasuransi penuh. Dana di rekening bersama sampai inspeksi 48 jam selesai.',
+          ? 'Metode COD Ketemuan Resmi: Pembayaran aman dilindungi garansi sampai konfirmasi serah terima fisik dilakukan di aplikasi.'
+          : 'Pengiriman kurir terlindungi. Pembayaran aman sampai inspeksi fisik 48 jam selesai.',
       terms:
-        'Invoice ini diterbitkan secara otomatis oleh sistem Escrow Peygo Rekber dan dilindungi oleh garansi uang kembali 100%.',
+        'Invoice ini diterbitkan secara otomatis oleh sistem Peygo dan dilindungi oleh garansi uang kembali 100%.',
       issuedAt: order.createdAt,
       paidAt: isPaid ? order.createdAt : null,
       dueDate: new Date(new Date(order.createdAt).getTime() + 24 * 3600 * 1000).toISOString(),
@@ -449,7 +447,7 @@ class MemoryStore {
         paidAt: isPaid ? now : null
       },
       notes:
-        input.notes || 'Invoice manual diterbitkan oleh Customer Support / Administrator Rekber.',
+        input.notes || 'Invoice manual diterbitkan oleh Customer Support / Administrator Peygo.',
       terms:
         'Pembayaran wajib dilakukan ke nomor rekening penampungan resmi sebelum batas waktu berakhir.',
       issuedAt: now,

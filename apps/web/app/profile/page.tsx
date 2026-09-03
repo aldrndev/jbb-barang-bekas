@@ -559,7 +559,7 @@ export default function ProfilePage() {
                   Status Keamanan & KYC
                 </h3>
                 <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
-                  Verifikasi identitas KTP dan nomor rekening pencairan Rekber Bekasin.
+                  Verifikasi identitas KTP dan nomor rekening pencairan hasil penjualan di Peygo.
                 </p>
               </div>
             </div>
@@ -585,8 +585,8 @@ export default function ProfilePage() {
 
                 <p className="text-[11px] text-slate-600 font-medium leading-relaxed">
                   {user.isKycVerified
-                    ? `Identitas KTP Anda (${user.nik ? user.nik.slice(0, 4) + '********' + user.nik.slice(-4) : '3174********0001'}) telah diverifikasi resmi oleh sistem KYC Bekasin. Anda memiliki lencana resmi penjual terpercaya.`
-                    : 'Verifikasi KTP Anda untuk mendapatkan badge Checkmark Biru, menaikkan Trust Score ke 98%, dan membuka akses pencairan saldo Rekber tanpa batas.'}
+                    ? `Identitas KTP Anda (${user.nik ? user.nik.slice(0, 4) + '********' + user.nik.slice(-4) : '3174********0001'}) telah diverifikasi resmi oleh sistem KYC Peygo. Anda memiliki lencana resmi penjual terpercaya.`
+                    : 'Verifikasi KTP Anda untuk mendapatkan badge Checkmark Biru, menaikkan Trust Score ke 98%, dan membuka akses pencairan saldo hasil penjualan tanpa batas.'}
                 </p>
 
                 <div className="pt-1">
@@ -632,7 +632,7 @@ export default function ProfilePage() {
                   {user.phone ? (
                     <>
                       Nomor WhatsApp <strong>{user.phone}</strong> terhubung untuk notifikasi
-                      pencairan dana Rekber & update resi kurir.
+                      pencairan dana hasil penjualan & update resi kurir.
                     </>
                   ) : (
                     'Tambahkan nomor WhatsApp aktif untuk menerima konfirmasi pesanan & notifikasi pencairan dana.'
@@ -654,7 +654,7 @@ export default function ProfilePage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
                   <CreditCard className="h-4 w-4 text-brand-600" />
-                  <span>Rekening Bank Pencairan Rekber (Penjual)</span>
+                  <span>Rekening Bank Pencairan Dana (Penjual)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
@@ -812,7 +812,7 @@ export default function ProfilePage() {
                 Ulasan & Reputasi Transaksi
               </h3>
               <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
-                Riwayat ulasan dari pembeli dan penjual terverifikasi Rekber.
+                Riwayat ulasan dari pembeli dan penjual terverifikasi.
               </p>
             </div>
 
@@ -831,7 +831,7 @@ export default function ProfilePage() {
                 <span className="text-slate-600 text-[11px]">
                   {user.ratingCount > 0
                     ? `Berdasarkan ${user.ratingCount} ulasan pembeli terverifikasi setelah 48 jam garansi inspeksi.`
-                    : 'Riwayat ulasan dan bintang reputasi akan otomatis bertambah setelah Anda berhasil menyelesaikan transaksi jual atau beli via Rekber.'}
+                    : 'Riwayat ulasan dan bintang reputasi akan otomatis bertambah setelah Anda berhasil menyelesaikan transaksi jual atau beli di Peygo.'}
                 </span>
               </div>
             </div>
@@ -853,7 +853,7 @@ export default function ProfilePage() {
                     Verifikasi Identitas Resmi (KYC)
                   </h3>
                   <p className="text-[10px] text-slate-500">
-                    Layanan Rekber Terpercaya Anti-Penipuan
+                    Layanan Marketplace Aman & Terverifikasi
                   </p>
                 </div>
               </div>

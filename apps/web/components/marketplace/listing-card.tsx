@@ -134,7 +134,7 @@ export function ListingCard({ listing, showRemoveFromWishlist = false }: Listing
 
           <div className="flex items-center gap-1 font-semibold text-slate-700">
             <ShieldCheck className="h-3.5 w-3.5 text-brand-600 shrink-0" />
-            <span>Rekber</span>
+            <span>Garansi 48j</span>
           </div>
         </div>
       </Link>

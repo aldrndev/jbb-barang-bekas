@@ -151,7 +151,7 @@ export const orderRoutes = new Hono<AppEnv>()
       return c.json(
         {
           success: true,
-          message: 'Pesanan Rekber berhasil dibuat! Dana Anda aman tersimpan di Rekber Peygo.',
+          message: 'Pesanan berhasil dibuat! Pembayaran Anda aman terlindungi garansi 48 jam.',
           data: createdOrder
         },
         201
@@ -258,7 +258,7 @@ export const orderRoutes = new Hono<AppEnv>()
     return c.json(
       {
         success: true,
-        message: 'Pesanan Rekber berhasil dibuat! Dana Anda aman tersimpan di Rekber Peygo.',
+        message: 'Pesanan berhasil dibuat! Pembayaran Anda aman terlindungi garansi 48 jam.',
         data: newOrder
       },
       201
@@ -675,7 +675,8 @@ export const orderRoutes = new Hono<AppEnv>()
 
       return c.json({
         success: true,
-        message: 'Komplain berhasil diajukan. Dana ditahan sementara oleh tim Rekber.',
+        message:
+          'Komplain berhasil diajukan. Pembayaran ditahan sementara dan sedang ditinjau tim bantuan.',
         data: updated
       });
     }
@@ -719,7 +720,8 @@ export const orderRoutes = new Hono<AppEnv>()
 
     return c.json({
       success: true,
-      message: 'Komplain berhasil diajukan. Dana ditahan sementara oleh tim Rekber.',
+      message:
+        'Komplain berhasil diajukan. Pembayaran ditahan sementara dan sedang ditinjau tim bantuan.',
       data: order
     });
   });

@@ -302,8 +302,8 @@ export default function MyListingsPage() {
                 Belum Ada Iklan di Kategori Ini
               </h2>
               <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
-                Pasang barang bekas Anda yang sudah tidak terpakai dengan proteksi rekber aman dan
-                cepat laku.
+                Pasang barang bekas Anda yang sudah tidak terpakai dengan transaksi aman dan cepat
+                laku.
               </p>
             </div>
             <div className="pt-1">

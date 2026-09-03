@@ -92,7 +92,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="space-y-2">
             <h2 className="text-xl font-black text-white">Akses Terbatas: Administrator Only</h2>
             <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              Panel ini khusus untuk administrator rekber dan petugas mediasi sengketa transaksi.
+              Panel ini khusus untuk administrator marketplace dan petugas resolusi sengketa
+              transaksi.
             </p>
           </div>
           <div className="space-y-3 pt-2">
@@ -133,7 +134,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </span>
               </div>
               <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
-                Pusat Kontrol Rekber
+                Pusat Kontrol Marketplace
               </span>
             </div>
           </Link>
@@ -282,7 +283,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* Right Status Badge */}
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            <span>Escrow Gateway 100% Online</span>
+            <span>Sistem Pembayaran 100% Normal</span>
           </div>
         </header>
 

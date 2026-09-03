@@ -21,16 +21,16 @@ import { formatIDR } from '../../lib/utils';
 const STEPS = [
   {
     step: '01',
-    title: 'Pembeli Melakukan Checkout & Bayar ke Rekber',
-    desc: 'Pembeli memilih barang dan membayar via Virtual Account / QRIS / Transfer Bank. Dana 100% aman ditahan di rekening penampung resmi Peygo, bukan ke rekening penjual.',
+    title: 'Pembeli Melakukan Checkout Aman',
+    desc: 'Pembeli memilih barang dan membayar via Virtual Account / QRIS / Transfer Bank. Pembayaran 100% aman terlindungi oleh sistem garansi Peygo, bukan langsung ke penjual.',
     icon: CreditCard,
     color: 'from-blue-500 to-indigo-600',
-    badge: 'Dana Ditahan Aman'
+    badge: 'Pembayaran Aman'
   },
   {
     step: '02',
     title: 'Penjual Menerima Notifikasi & Mengirimkan Barang',
-    desc: 'Penjual mendapatkan notifikasi instan bahwa dana sudah terjamin. Penjual mengemas barang dengan aman dan menginput nomor resi kurir atau janjian titik temu COD.',
+    desc: 'Penjual mendapatkan notifikasi instan bahwa pembayaran sudah terverifikasi. Penjual mengemas barang dengan aman dan menginput nomor resi kurir atau janjian titik temu COD.',
     icon: PackageCheck,
     color: 'from-amber-500 to-orange-600',
     badge: 'Pasti Dibayar'
@@ -46,7 +46,7 @@ const STEPS = [
   {
     step: '04',
     title: 'Konfirmasi Selesai atau Ajukan Sengketa',
-    desc: 'Jika barang sesuai deskripsi, pembeli klik "Pesanan Selesai". Jika ada kerusakan / barang tidak sesuai, pembeli klik "Ajukan Sengketa" dengan bukti foto & video unboxing.',
+    desc: 'Jika barang sesuai deskripsi, pembeli klik "Pesanan Selesai". Jika ada kerusakan / barang tidak sesuai, pembeli klik "Ajukan Komplain" dengan bukti foto & video unboxing.',
     icon: ShieldCheck,
     color: 'from-emerald-500 to-teal-600',
     badge: 'Hak Perlindungan'
@@ -65,7 +65,7 @@ const COMPARISONS = [
   {
     feature: 'Risiko Pembeli Tertipu / Barang Palsu',
     direct: 'Sangat Tinggi (Uang hilang jika penjual kabur)',
-    rekber: '0% (Dana ditahan sampai barang dicek)',
+    rekber: '0% (Pembayaran aman sampai barang dicek)',
     isGood: true
   },
   {
@@ -77,20 +77,20 @@ const COMPARISONS = [
   {
     feature: 'Jaminan Penjual Terhadap Pembeli PHP',
     direct: 'Rentan di-PHP / pembeli batalkan sepihak',
-    rekber: 'Pasti lunas (Dana sudah masuk ke rekening escrow)',
+    rekber: 'Pasti lunas (Pembayaran sudah terverifikasi di aplikasi)',
     isGood: true
   },
   {
     feature: 'Resolusi Jika Barang Rusak di Ekspedisi',
     direct: 'Saling menyalahkan tanpa penengah',
-    rekber: 'Mediasi resmi & asuransi tim sengketa Peygo',
+    rekber: 'Mediasi resmi & perlindungan tim bantuan Peygo',
     isGood: true
   }
 ];
 
 const FAQS = [
   {
-    q: 'Apakah dana saya aman jika penjual tidak kunjung mengirimkan barang?',
+    q: 'Apakah pembayaran saya aman jika penjual tidak kunjung mengirimkan barang?',
     a: 'Sangat aman. Jika penjual tidak memproses pesanan dan tidak menginput nomor resi dalam 2x24 jam kerja, pesanan akan dibatalkan otomatis dan dana Anda akan dikembalikan 100% ke saldo akun Anda tanpa potongan.'
   },
   {
@@ -98,12 +98,12 @@ const FAQS = [
     a: 'Jika pembeli tidak mengonfirmasi "Pesanan Selesai" dan tidak mengajukan komplain dalam batas waktu Masa Proteksi 48 jam sejak resi dinyatakan delivered, sistem Peygo akan merilis dana secara otomatis ke dompet penjual.'
   },
   {
-    q: 'Berapa biaya layanan rekber di Peygo?',
-    a: 'Biaya proteksi Rekber Peygo sangat terjangkau, yaitu hanya 1.5% dari nominal harga barang (maksimal Rp 50.000). Biaya ini digunakan untuk operasional asuransi escrow dan perlindungan transaksi.'
+    q: 'Berapa biaya layanan & perlindungan di Peygo?',
+    a: 'Biaya layanan & perlindungan pembeli di Peygo sangat terjangkau, yaitu hanya 1.5% dari nominal harga barang (maksimal Rp 50.000). Biaya ini digunakan untuk operasional asuransi dan perlindungan transaksi.'
   },
   {
-    q: 'Apakah COD bisa tetap menggunakan Rekber Peygo?',
-    a: 'Bisa! Anda dapat melakukan pembayaran via Rekber di aplikasi terlebih dahulu, lalu saat bertemu di titik COD dan selesai memeriksa barang di tempat, Anda cukup menekan tombol "Konfirmasi Terima COD" agar dana langsung diteruskan ke penjual.'
+    q: 'Apakah transaksi COD tetap dilindungi garansi Peygo?',
+    a: 'Bisa! Anda dapat melakukan pembayaran di aplikasi terlebih dahulu, lalu saat bertemu di titik COD dan selesai memeriksa barang di tempat, Anda cukup menekan tombol "Konfirmasi Terima COD" agar dana langsung diteruskan ke penjual.'
   }
 ];
 
@@ -117,7 +117,7 @@ export default function PanduanRekberPage() {
   return (
     <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <Breadcrumbs items={[{ label: 'Panduan Rekber' }]} className="mb-6" />
+        <Breadcrumbs items={[{ label: 'Panduan Belanja Aman' }]} className="mb-6" />
 
         {/* Hero Banner */}
         <div className="rounded-3xl bg-linear-to-br from-slate-950 via-slate-900 to-emerald-950 p-6 sm:p-12 text-white shadow-2xl mb-12 relative overflow-hidden">
@@ -125,15 +125,15 @@ export default function PanduanRekberPage() {
           <div className="relative z-10 max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-2xl bg-emerald-500/20 px-3.5 py-1.5 text-xs font-bold text-emerald-400 border border-emerald-500/30 mb-5">
               <ShieldCheck className="h-4 w-4" />
-              <span>Sistem Proteksi Escrow Terstandarisasi</span>
+              <span>Garansi Perlindungan Pembeli Terstandarisasi</span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-4 leading-tight">
-              Beli Barang Bekas Bebas Was-Was dengan Rekber Peygo
+              Beli Barang Bekas Bebas Was-Was dengan Garansi Peygo
             </h1>
             <p className="text-xs sm:text-base text-slate-300 leading-relaxed mb-6">
-              Platform rekening bersama nomor #1 di Indonesia untuk jual beli pre-loved. Dana
-              pembayaran Anda aman 100% di penampungan bergaransi sampai barang Anda pegang dan uji
-              selama 48 jam.
+              Marketplace jual beli barang bekas terverifikasi nomor #1 di Indonesia. Pembayaran
+              Anda aman 100% dengan garansi perlindungan sampai barang Anda pegang dan uji selama 48
+              jam.
             </p>
             <div className="flex flex-wrap items-center gap-3 text-xs font-bold">
               <Link
@@ -161,7 +161,7 @@ export default function PanduanRekberPage() {
               Alur Transaksi
             </span>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">
-              5 Langkah Mudah & Aman Transaksi Rekber
+              5 Langkah Belanja Aman & Terlindungi
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
               Setiap tahapan dirancang untuk melindungi hak pembeli sekaligus menjamin kepastian
@@ -212,11 +212,11 @@ export default function PanduanRekberPage() {
                 Perbandingan Keamanan
               </span>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">
-                Transfer Langsung vs Rekber Peygo
+                Transfer Langsung vs Belanja Aman di Peygo
               </h2>
               <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Jangan ambil risiko transfer uang muka (DP) langsung ke rekening asing tanpa
-                perlindungan pihak ketiga.
+                Jangan ambil risiko transfer uang langsung ke rekening asing tanpa garansi
+                perlindungan pembeli.
               </p>
             </div>
 
@@ -231,7 +231,7 @@ export default function PanduanRekberPage() {
                       Transfer Langsung (Direct TF)
                     </th>
                     <th className="py-3 px-4 font-black text-emerald-700 bg-emerald-50 rounded-tr-2xl">
-                      Rekber Resmi Peygo
+                      Transaksi Bergaransi Peygo
                     </th>
                   </tr>
                 </thead>
@@ -264,7 +264,7 @@ export default function PanduanRekberPage() {
               Kalkulator Transparan
             </span>
             <h2 className="text-xl sm:text-2xl font-black text-slate-900 mt-2 mb-2">
-              Simulasi Biaya Proteksi Escrow
+              Simulasi Biaya Layanan & Perlindungan
             </h2>
             <p className="text-xs text-slate-500 mb-6">
               Hanya 1.5% (maksimal Rp 50.000) untuk jaminan ketenangan belanja barang bekas tanpa
@@ -344,7 +344,9 @@ export default function PanduanRekberPage() {
         {/* FAQ Accordion */}
         <section className="mb-12">
           <div className="text-center max-w-2xl mx-auto mb-8">
-            <h2 className="text-2xl font-black text-slate-900">Pertanyaan Seputar Rekber Peygo</h2>
+            <h2 className="text-2xl font-black text-slate-900">
+              Pertanyaan Seputar Belanja Aman di Peygo
+            </h2>
             <p className="text-xs text-slate-500 mt-1">
               Jawaban lengkap seputar mekanisme transaksi, pencairan dana, dan penanganan sengketa.
             </p>

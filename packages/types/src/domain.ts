@@ -108,18 +108,18 @@ export const EscrowStatusLabel: Record<
   { label: string; badge: string; description: string }
 > = {
   WAITING_PAYMENT: {
-    label: 'Menunggu Pembayaran Rekber',
+    label: 'Menunggu Pembayaran',
     badge: 'Menunggu Bayar',
-    description: 'Pembeli belum menyelesaikan transfer pembayaran ke rekening bersama.'
+    description: 'Pembeli belum menyelesaikan pembayaran pesanan.'
   },
   PAYMENT_CONFIRMED: {
-    label: 'Dana Rekber Terverifikasi',
-    badge: 'Dana Diamankan',
+    label: 'Pembayaran Terverifikasi',
+    badge: 'Pembayaran Aman',
     description:
-      'Dana aman 100% di perantara Rekber Peygo. Penjual diinstruksikan memproses pesanan.'
+      'Pembayaran berhasil dan dilindungi Garansi Perlindungan Pembeli. Penjual siap memproses pesanan.'
   },
   SELLER_PACKING: {
-    label: 'Penjual Sedang Mengemas Paket',
+    label: 'Penjual Sedang Menyiapkan Pesanan',
     badge: 'Sedang Dikemas',
     description: 'Penjual sedang menyiapkan dan mengemas barang untuk diserahkan ke kurir / COD.'
   },
@@ -129,22 +129,22 @@ export const EscrowStatusLabel: Record<
     description: 'Paket dalam perjalanan via kurir dengan nomor resi terdaftar.'
   },
   DELIVERED_INSPECTION: {
-    label: 'Masa Inspeksi Fisik 48 Jam Aktif',
+    label: 'Garansi Inspeksi Fisik 48 Jam Aktif',
     badge: 'Inspeksi 48 Jam',
     description:
-      'Barang telah diterima. Pembeli memiliki waktu 2x24 jam untuk memeriksa kondisi fisik & fungsi.'
+      'Barang telah tiba. Pembeli memiliki waktu 2x24 jam untuk memeriksa kondisi fisik & fungsi sebelum dana diteruskan.'
   },
   COMPLETED: {
     label: 'Transaksi Selesai',
     badge: 'Selesai',
     description:
-      'Pembeli telah mengonfirmasi kesesuaian barang. Dana telah berhasil dicairkan ke saldo penjual.'
+      'Pembeli telah mengonfirmasi kesesuaian barang. Pembayaran telah diteruskan ke penjual.'
   },
   DISPUTED: {
-    label: 'Komplain Garansi 48 Jam Diajukan',
-    badge: 'Komplain / Retur',
+    label: 'Komplain Garansi Perlindungan Diajukan',
+    badge: 'Komplain / Kendala',
     description:
-      'Pembeli mengajukan komplain karena minus barang tidak sesuai deskripsi. Dana ditahan sementara oleh tim CS.'
+      'Pembeli mengajukan komplain karena kondisi barang tidak sesuai deskripsi. Tim Layanan Pelanggan sedang meninjau.'
   },
   CANCELLED: {
     label: 'Pesanan Dibatalkan',

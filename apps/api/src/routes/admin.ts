@@ -583,7 +583,7 @@ export const adminRoutes = new Hono<AppEnv>()
         return c.json({
           success: true,
           message:
-            'Sengketa diselesaikan! Dana Rekber berhasil di-refund penuh ke rekening pembeli.',
+            'Sengketa diselesaikan! Pembayaran berhasil di-refund penuh ke rekening pembeli.',
           data: { orderId, action: 'REFUND_BUYER', status: 'CANCELLED' }
         });
       }
@@ -595,7 +595,7 @@ export const adminRoutes = new Hono<AppEnv>()
       }
       return c.json({
         success: true,
-        message: 'Sengketa diselesaikan! Dana Rekber berhasil di-refund penuh ke rekening pembeli.',
+        message: 'Sengketa diselesaikan! Pembayaran berhasil di-refund penuh ke rekening pembeli.',
         data: { orderId, action: 'REFUND_BUYER', status: 'CANCELLED' }
       });
     }
@@ -620,7 +620,7 @@ export const adminRoutes = new Hono<AppEnv>()
 
       return c.json({
         success: true,
-        message: 'Sengketa ditutup. Dana Rekber berhasil dicairkan ke rekening penjual.',
+        message: 'Sengketa ditutup. Pembayaran berhasil diteruskan ke penjual.',
         data: { orderId, action: 'RELEASE_TO_SELLER', status: 'COMPLETED' }
       });
     }
@@ -632,7 +632,7 @@ export const adminRoutes = new Hono<AppEnv>()
     }
     return c.json({
       success: true,
-      message: 'Sengketa ditutup. Dana Rekber berhasil dicairkan ke rekening penjual.',
+      message: 'Sengketa ditutup. Pembayaran berhasil diteruskan ke penjual.',
       data: { orderId, action: 'RELEASE_TO_SELLER', status: 'COMPLETED' }
     });
   })

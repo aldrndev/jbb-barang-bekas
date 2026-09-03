@@ -102,7 +102,7 @@ function OrderHistoryContent() {
       items: [
         {
           id: `item-${ord.id}`,
-          title: ord.listing?.title || 'Barang Pre-Loved Rekber',
+          title: ord.listing?.title || 'Barang Bekas Terverifikasi',
           description: `Kondisi: ${ord.listing?.condition || 'USED_GOOD'} • Kategori: ${ord.listing?.category?.name || 'Umum'}`,
           quantity: 1,
           price: ord.amount,
@@ -130,8 +130,8 @@ function OrderHistoryContent() {
       },
       notes:
         ord.deliveryMethod === 'COD_KETEMUAN'
-          ? 'Metode COD Ketemuan Resmi: Dana tetap dijamin escrow sampai konfirmasi serah terima fisik dilakukan di aplikasi.'
-          : 'Pengiriman kurir berasuransi penuh. Dana di rekening bersama sampai inspeksi 48 jam selesai.',
+          ? 'Metode COD Ketemuan Resmi: Pembayaran aman dilindungi garansi sampai konfirmasi serah terima fisik dilakukan di aplikasi.'
+          : 'Pengiriman kurir terlindungi. Pembayaran aman sampai masa inspeksi fisik 48 jam selesai.',
       issuedAt: ord.createdAt,
       paidAt: isPaid ? ord.createdAt : null,
       createdBy: 'SYSTEM'
@@ -157,7 +157,7 @@ function OrderHistoryContent() {
               Masuk untuk Melihat Riwayat Pesanan
             </h2>
             <p className="text-xs text-slate-500 max-w-xs mx-auto">
-              Akses status escrow rekening bersama, pantau resi ekspedisi, dan konfirmasi barang.
+              Pantau status pesanan, lacak nomor resi kurir, dan konfirmasi barang.
             </p>
           </div>
           <div className="pt-2">
@@ -247,7 +247,7 @@ function OrderHistoryContent() {
     if (res.success) {
       toast.success(
         'Komplain Terdaftar',
-        'Tim CS Rekber Bekasin akan menahan dana dan memediasi dengan penjual.'
+        'Tim Layanan Pelanggan Peygo akan menahan pembayaran dan membantu memediasi dengan penjual.'
       );
       setDisputeOrderId(null);
       setDisputeReasonInput('');
@@ -458,8 +458,8 @@ function OrderHistoryContent() {
               </h2>
               <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
                 {orderMode === 'buyer'
-                  ? 'Barang bekas berkualitas yang Anda beli lewat Rekber Bekasin akan otomatis terpantau di sini.'
-                  : 'Pesanan barang Anda yang dibayar pembeli lewat Rekber Bekasin akan muncul di sini untuk Anda proses.'}
+                  ? 'Barang bekas berkualitas yang Anda beli di Peygo akan otomatis terpantau di sini.'
+                  : 'Pesanan barang Anda yang dibayar pembeli di Peygo akan muncul di sini untuk Anda proses.'}
               </p>
             </div>
             <div className="pt-1">
@@ -501,7 +501,7 @@ function OrderHistoryContent() {
                   key={order.id}
                   className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs space-y-3.5 hover:border-slate-300 transition-colors"
                 >
-                  {/* Card Header: Order No, Date, Partner & Escrow Badge */}
+                  {/* Card Header: Order No, Date, Partner & Status Badge */}
                   <div className="flex items-start justify-between gap-2 border-b border-slate-100 pb-3">
                     <div className="min-w-0 space-y-0.5">
                       <div className="flex items-center gap-2 flex-wrap text-xs">
@@ -520,7 +520,7 @@ function OrderHistoryContent() {
                       <p className="text-[11px] text-slate-600 font-semibold truncate">
                         {isBuyer
                           ? `Penjual: ${order.seller?.name || 'Penjual Terpercaya'}`
-                          : `Pembeli: ${order.buyer?.name || order.recipientName || 'Pembeli Rekber'}`}
+                          : `Pembeli: ${order.buyer?.name || order.recipientName || 'Pembeli'}`}
                       </p>
                     </div>
 

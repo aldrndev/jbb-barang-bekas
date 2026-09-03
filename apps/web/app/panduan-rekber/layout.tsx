@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Panduan Rekber Escrow & Transaksi Aman',
+  title: 'Panduan Belanja Aman & Garansi Perlindungan Pembeli',
   description:
-    'Cara kerja Rekening Bersama (Rekber) Peygo. Beli barang bekas tanpa takut tertipu dengan garansi proteksi dana 100% dan masa inspeksi 48 jam.',
+    'Cara kerja transaksi aman di Peygo. Beli barang bekas tanpa cemas dengan garansi uang kembali 100% dan masa inspeksi fisik 48 jam.',
   openGraph: {
-    title: 'Panduan Rekber Escrow & Transaksi Aman | Peygo',
+    title: 'Panduan Belanja Aman & Garansi Perlindungan Pembeli | Peygo',
     description:
-      'Cara kerja Rekening Bersama (Rekber) Peygo. Beli barang bekas tanpa takut tertipu dengan garansi proteksi dana 100% dan masa inspeksi 48 jam.'
+      'Cara kerja transaksi aman di Peygo. Beli barang bekas tanpa cemas dengan garansi uang kembali 100% dan masa inspeksi fisik 48 jam.'
   }
 };
 

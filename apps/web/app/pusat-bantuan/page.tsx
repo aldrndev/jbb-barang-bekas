@@ -30,7 +30,7 @@ interface HelpArticle {
 const CATEGORIES = [
   { id: 'all', name: 'Semua Topik', icon: HelpCircle },
   { id: 'akun', name: 'Akun & KYC', icon: UserCheck },
-  { id: 'beli', name: 'Pembelian & Rekber', icon: ShoppingBag },
+  { id: 'beli', name: 'Pembelian & Transaksi', icon: ShoppingBag },
   { id: 'jual', name: 'Penjualan & Saldo', icon: Store },
   { id: 'sengketa', name: 'Sengketa & Refund', icon: Scale },
   { id: 'cod', name: 'COD & Ekspedisi', icon: MapPin }
@@ -60,7 +60,7 @@ const ARTICLES: HelpArticle[] = [
       'Buka menu Profil > Pengaturan Akun > Rekening Bank. Anda dapat menambahkan rekening bank atas nama yang sama dengan nama KTP Anda untuk keamanan.'
   },
 
-  // Pembelian & Rekber
+  // Pembelian & Transaksi
   {
     id: 'b-1',
     category: 'beli',
@@ -71,7 +71,7 @@ const ARTICLES: HelpArticle[] = [
   {
     id: 'b-2',
     category: 'beli',
-    question: 'Metode pembayaran apa saja yang didukung oleh Rekber Peygo?',
+    question: 'Metode pembayaran apa saja yang didukung oleh Peygo?',
     answer:
       'Kami mendukung QRIS (Semua e-Wallet & M-Banking), Virtual Account BCA, Mandiri, BRI, BNI, Permata, serta transfer bank konfirmasi instan 24/7.'
   },
@@ -181,8 +181,8 @@ export default function PusatBantuanPage() {
               Ada yang Bisa Kami Bantu?
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 mb-6">
-              Cari panduan transaksi, verifikasi akun, rekber garansi, atau tips belanja aman di
-              Peygo.
+              Cari panduan transaksi, verifikasi akun, garansi perlindungan, atau tips belanja aman
+              di Peygo.
             </p>
 
             {/* Live Search Bar */}
@@ -190,7 +190,7 @@ export default function PusatBantuanPage() {
               <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
               <input
                 type="text"
-                placeholder="Ketik pertanyaan (misal: rekber, KYC KTP, refund, nego)..."
+                placeholder="Ketik pertanyaan (misal: garansi, KYC KTP, refund, nego)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full rounded-2xl bg-white/95 text-slate-900 pl-12 pr-10 py-3.5 text-xs sm:text-sm shadow-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 placeholder:text-slate-400 font-medium"
@@ -342,7 +342,7 @@ export default function PusatBantuanPage() {
                 <ShieldCheck className="h-4 w-4" />
                 <span>Proteksi Transaksi</span>
               </div>
-              <h4 className="text-sm font-black mb-1">Pelajari Cara Kerja Rekber</h4>
+              <h4 className="text-sm font-black mb-1">Pelajari Garansi Perlindungan Pembeli</h4>
               <p className="text-[11px] text-slate-300 leading-relaxed mb-4">
                 Pahami hak inspeksi 48 jam dan garansi uang kembali 100% untuk pembeli dan penjual.
               </p>
@@ -350,7 +350,7 @@ export default function PusatBantuanPage() {
                 href="/panduan-rekber"
                 className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 hover:text-emerald-300"
               >
-                <span>Baca Panduan Rekber</span>
+                <span>Baca Panduan Belanja Aman</span>
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>

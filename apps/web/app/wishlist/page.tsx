@@ -39,7 +39,7 @@ export default function WishlistPage() {
               Masuk untuk Melihat Wishlist
             </h2>
             <p className="text-xs text-slate-500">
-              Simpan dan pantau barang bekas favorit Anda yang tersimpan di akun Rekber Peygo.
+              Simpan dan pantau barang bekas favorit Anda di Peygo.
             </p>
           </div>
           <div className="pt-2">
@@ -157,11 +157,11 @@ export default function WishlistPage() {
             </div>
             <div className="min-w-0">
               <h3 className="text-xs font-bold text-brand-950">
-                Garansi Rekber & Perlindungan Pembeli Peygo
+                Garansi Perlindungan Pembeli Peygo 100%
               </h3>
               <p className="text-[11px] text-brand-800 font-medium">
                 Setiap transaksi dari wishlist Anda dilindungi garansi inspeksi fisik 48 jam dan
-                dana aman di perantara.
+                pembayaran aman terlindungi.
               </p>
             </div>
           </div>

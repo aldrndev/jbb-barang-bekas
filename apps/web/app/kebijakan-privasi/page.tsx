@@ -79,7 +79,7 @@ export default function KebijakanPrivasiPage() {
                   href="/panduan-rekber"
                   className="flex items-center justify-between text-xs font-bold text-teal-600 hover:text-teal-700"
                 >
-                  <span>Pelajari Keamanan Rekber</span>
+                  <span>Pelajari Belanja Aman</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
@@ -97,8 +97,8 @@ export default function KebijakanPrivasiPage() {
                 Pengantar & Komitmen Privasi
               </h2>
               <p className="text-xs sm:text-sm text-slate-600">
-                PT Peygo Rekber Indonesia ("Peygo", "kami") menghargai dan melindungi hak privasi
-                setiap pengguna. Kebijakan Privasi ini menjelaskan jenis informasi yang kami
+                Peygo part of Digitesia Edge Digital ("Peygo", "kami") menghargai dan melindungi hak
+                privasi setiap pengguna. Kebijakan Privasi ini menjelaskan jenis informasi yang kami
                 kumpulkan, cara kami memprosesnya, langkah pengamanan yang diterapkan, serta hak
                 Anda atas data pribadi sesuai Undang-Undang Perlindungan Data Pribadi (UU PDP No. 27
                 Tahun 2022).
@@ -136,7 +136,7 @@ export default function KebijakanPrivasiPage() {
                   </h4>
                   <p className="text-slate-600">
                     Nama bank, nomor rekening tujuan pencairan, riwayat penawaran (nego), riwayat
-                    pesanan escrow, dan alamat pengiriman.
+                    pesanan, dan alamat pengiriman.
                   </p>
                 </div>
               </div>
@@ -152,8 +152,8 @@ export default function KebijakanPrivasiPage() {
               </h2>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
                 <li>
-                  Memvalidasi keaslian akun dan memproses pembayaran transaksi rekening bersama
-                  (escrow).
+                  Memvalidasi keaslian akun dan memproses pembayaran transaksi bergaransi
+                  perlindungan pembeli.
                 </li>
                 <li>
                   Mencegah aktivitas penipuan, pencucian uang, dan transaksi barang curian di dalam
@@ -267,8 +267,8 @@ export default function KebijakanPrivasiPage() {
                   <strong>Email Tim Privasi:</strong> privasi@peygo.id
                 </p>
                 <p>
-                  <strong>Alamat Kantor:</strong> PT Peygo Rekber Indonesia, SCBD Lot 11, Jakarta
-                  Selatan 12190
+                  <strong>Alamat Kantor:</strong> Peygo • Digitesia Edge Digital, SCBD Lot 11,
+                  Jakarta Selatan 12190
                 </p>
                 <p>
                   <strong>Jam Operasional:</strong> Senin – Jumat (09:00 – 18:00 WIB)

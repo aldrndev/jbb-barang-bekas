@@ -119,8 +119,8 @@ export default function AdminDisputesListPage() {
             <span>Pusat Mediasi Sengketa Transaksi</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
-            Daftar pesanan dengan komplain aktif yang menunggu investigasi dan putusan mediasi
-            Rekber.
+            Daftar pesanan dengan komplain aktif yang menunggu investigasi dan putusan resolusi
+            layanan pelanggan.
           </p>
         </div>
         <span className="rounded-full bg-rose-100 text-rose-800 border border-rose-200 px-3.5 py-1 text-xs font-black w-fit">

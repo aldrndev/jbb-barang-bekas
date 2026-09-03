@@ -11,8 +11,9 @@ export function EscrowTimeline({ status, trackingNumber, courierName }: EscrowTi
   const steps = [
     {
       id: 'PAYMENT_CONFIRMED',
-      label: 'Dana Aman di Rekber',
-      description: 'Pembayaran telah dikonfirmasi dan ditahan aman oleh sistem Rekber Peygo.',
+      label: 'Pembayaran Diverifikasi',
+      description:
+        'Pembayaran telah dikonfirmasi dan dilindungi Garansi Perlindungan Pembeli Peygo.',
       icon: ShieldCheck
     },
     {
@@ -72,11 +73,11 @@ export function EscrowTimeline({ status, trackingNumber, courierName }: EscrowTi
       <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4">
         <div className="flex items-center gap-2 text-rose-800 font-bold text-sm">
           <AlertCircle className="h-5 w-5 text-rose-600" />
-          <span>Status: Komplain / Sengketa Sedang Ditinjau Tim Rekber</span>
+          <span>Status: Komplain Sedang Ditinjau Tim Layanan Pelanggan</span>
         </div>
         <p className="text-xs text-rose-600 mt-1">
-          Dana transaksi saat ini dibekukan sementara hingga bukti unboxing selesai diverifikasi
-          oleh tim penengah.
+          Dana transaksi aman ditahan sementara hingga bukti unboxing selesai ditinjau dan
+          diverifikasi.
         </p>
       </div>
     );

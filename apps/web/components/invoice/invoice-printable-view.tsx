@@ -162,7 +162,7 @@ export function InvoicePrintableView({
           <div className="absolute right-12 top-48 pointer-events-none select-none opacity-8 print:opacity-10 rotate-[-18deg] z-0">
             <div className="border-8 border-emerald-700 rounded-3xl p-6 text-center font-black tracking-widest text-emerald-800 uppercase">
               <div className="text-4xl leading-tight">LUNAS • VERIFIED</div>
-              <div className="text-sm mt-1">ESCROW PROTECTED • PT PEYGO INDONESIA</div>
+              <div className="text-sm mt-1">GARANSI PEMBELI 100% • PEYGO INDONESIA</div>
             </div>
           </div>
         )}
@@ -175,24 +175,24 @@ export function InvoicePrintableView({
               <div>
                 <div className="flex items-center gap-1.5">
                   <span className="text-xl font-black tracking-tight text-slate-900">
-                    PEYGO<span className="text-brand-600">.REKBER</span>
+                    PEYGO<span className="text-brand-600">.ID</span>
                   </span>
                   <span className="rounded-md bg-brand-100 text-brand-800 text-[10px] font-black px-1.5 py-0.5">
                     OFFICIAL
                   </span>
                 </div>
                 <span className="text-[11px] font-semibold text-slate-500 block">
-                  PT Rekber Peygo Indonesia &bull; Escrow Gateway
+                  Peygo &bull; Part of Digitesia Edge Digital
                 </span>
               </div>
             </div>
             <p className="text-[11px] text-slate-500 max-w-sm leading-relaxed">
-              Platform Rekening Bersama & Jual Beli Barang Bekas Terverifikasi Terpercaya #1
-              Indonesia.
+              Marketplace Jual Beli Barang Bekas Terverifikasi dengan Garansi Perlindungan Pembeli
+              #1 Indonesia.
             </p>
           </div>
 
-          <div className="text-left sm:text-right space-y-1.5 sm:min-w-[200px]">
+          <div className="text-left sm:text-right space-y-1.5 sm:min-w-50">
             <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
               FAKTUR TRANSAKSI RESMI
             </span>
@@ -424,7 +424,7 @@ export function InvoicePrintableView({
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-emerald-900 flex items-center gap-1.5">
                     <ShieldCheck className="h-4 w-4 text-emerald-700" />
-                    <span>Pembayaran Escrow Terverifikasi</span>
+                    <span>Pembayaran Aman Terverifikasi</span>
                   </span>
                   <span className="text-[10px] font-black bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded">
                     SETTLED
@@ -446,8 +446,8 @@ export function InvoicePrintableView({
                     </strong>
                   </p>
                   <p className="text-emerald-700 text-[10px] mt-1">
-                    Dana aman berada di penampungan rekening bersama resmi sampai masa pengujian 48
-                    jam selesai.
+                    Pembayaran aman dilindungi Garansi Perlindungan Pembeli sampai barang diterima
+                    dan masa inspeksi fisik 48 jam selesai.
                   </p>
                 </div>
               </div>
@@ -481,7 +481,7 @@ export function InvoicePrintableView({
             </div>
 
             <div className="flex justify-between text-slate-600">
-              <span>Biaya Layanan Proteksi Rekber</span>
+              <span>Biaya Layanan & Perlindungan</span>
               <span className="font-mono font-medium text-slate-900">
                 {formatIDR(invoice.serviceFee)}
               </span>
@@ -528,18 +528,17 @@ export function InvoicePrintableView({
             <span>&bull;</span>
             <span className="flex items-center gap-1.5">
               <Building className="h-4 w-4 text-slate-600" />
-              <span>Mediasi Sengketa Netral</span>
+              <span>Pusat Resolusi Komplain</span>
             </span>
           </div>
 
           <p className="text-[10px] text-slate-400 max-w-xl mx-auto leading-relaxed">
             {invoice.terms ||
-              'Faktur ini merupakan dokumen elektronik resmi yang sah dan mengikat. Harap simpan nomor invoice ini untuk keperluan klaim garansi, pengembalian dana, atau mediasi rekber.'}
+              'Faktur ini merupakan dokumen elektronik resmi yang sah dan mengikat. Harap simpan nomor invoice ini untuk keperluan klaim garansi atau penyelesaian kendala pesanan.'}
           </p>
 
           <div className="text-[9px] text-slate-300 font-mono pt-1">
-            Dicetak otomatis oleh Sistem Peygo Rekber Cloud • ID: {invoice.id} •{' '}
-            {new Date().toISOString()}
+            Dicetak otomatis oleh Sistem Peygo Cloud • ID: {invoice.id} • {new Date().toISOString()}
           </div>
         </div>
       </div>

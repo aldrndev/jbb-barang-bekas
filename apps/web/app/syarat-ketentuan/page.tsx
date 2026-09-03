@@ -10,7 +10,7 @@ const SECTIONS = [
   { id: 'akun', title: '2. Pendaftaran Akun & KYC' },
   { id: 'iklan', title: '3. Aturan Pemasangan Iklan' },
   { id: 'barang-larangan', title: '4. Barang yang Dilarang' },
-  { id: 'rekber', title: '5. Ketentuan Rekber (Escrow)' },
+  { id: 'garansi', title: '5. Ketentuan Garansi Perlindungan Pembeli' },
   { id: 'cod', title: '6. Panduan Transaksi Siap COD' },
   { id: 'sengketa', title: '7. Resolusi Sengketa & Pengembalian' },
   { id: 'biaya', title: '8. Biaya Layanan & Pembayaran' },
@@ -47,7 +47,7 @@ export default function SyaratKetentuanPage() {
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
               Terakhir diperbarui: 1 September 2026. Harap membaca seluruh syarat dan ketentuan
-              berikut dengan teliti sebelum menggunakan platform Rekber Peygo.
+              berikut dengan teliti sebelum menggunakan marketplace Peygo.
             </p>
           </div>
         </div>
@@ -99,10 +99,9 @@ export default function SyaratKetentuanPage() {
                 Definisi & Ruang Lingkup
               </h2>
               <p className="mb-3 text-xs sm:text-sm">
-                Selamat datang di <strong>Peygo</strong> (dioperasikan oleh PT Peygo Rekber
-                Indonesia). Platform ini menyediakan ekosistem jual beli barang bekas (pre-loved /
-                second-hand) dengan proteksi Rekening Bersama (Escrow) terintegrasi di seluruh
-                Indonesia.
+                Selamat datang di <strong>Peygo</strong> (Peygo part of Digitesia Edge Digital).
+                Platform ini menyediakan ekosistem marketplace jual beli barang bekas (pre-loved /
+                second-hand) dengan Garansi Perlindungan Pembeli terintegrasi di seluruh Indonesia.
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
                 <li>
@@ -110,8 +109,8 @@ export default function SyaratKetentuanPage() {
                   terdaftar.
                 </li>
                 <li>
-                  <strong>"Rekber Peygo"</strong> adalah sistem perantara penampungan dana
-                  pembayaran yang aman hingga barang diterima dan disetujui oleh Pembeli.
+                  <strong>"Garansi Perlindungan Peygo"</strong> adalah sistem perlindungan transaksi
+                  yang menjamin pembayaran aman hingga barang diterima dan disetujui oleh Pembeli.
                 </li>
                 <li>
                   <strong>"Masa Proteksi / Inspeksi"</strong> adalah batas waktu 48 jam bagi Pembeli
@@ -203,21 +202,21 @@ export default function SyaratKetentuanPage() {
               </ul>
             </section>
 
-            {/* 5. Rekber */}
-            <section id="rekber" className="scroll-mt-24">
+            {/* 5. Garansi Perlindungan Pembeli */}
+            <section id="garansi" className="scroll-mt-24">
               <h2 className="text-lg font-black text-slate-900 pb-2 border-b border-slate-100 mb-4 flex items-center gap-2">
                 <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black">
                   5
                 </span>
-                Ketentuan Rekening Bersama (Escrow Guarantee)
+                Ketentuan Garansi Perlindungan Pembeli 48 Jam
               </h2>
               <p className="mb-3 text-xs sm:text-sm">
-                Mekanisme pembayaran di Peygo diatur melalui alur escrow bergaransi:
+                Mekanisme pembayaran di Peygo diatur melalui alur perlindungan bergaransi:
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
                 <li>
-                  Dana pembayaran pembeli disimpan aman di rekening penampung resmi Peygo dan tidak
-                  akan diserahkan ke penjual sebelum pembeli mengonfirmasi pesanan.
+                  Pembayaran pembeli diamankan oleh sistem perlindungan Peygo dan tidak akan
+                  diteruskan ke penjual sebelum pembeli mengonfirmasi pesanan.
                 </li>
                 <li>
                   Pembeli memiliki waktu <strong>48 jam (Masa Proteksi)</strong> sejak barang
@@ -280,7 +279,7 @@ export default function SyaratKetentuanPage() {
                 </li>
                 <li>
                   Jika klaim disetujui, pembeli wajib mengirimkan kembali barang ke alamat penjual,
-                  dan dana escrow akan dikembalikan 100% ke pembeli.
+                  dan dana pembayaran akan dikembalikan 100% ke pembeli.
                 </li>
               </ul>
             </section>
@@ -302,8 +301,8 @@ export default function SyaratKetentuanPage() {
                   kuota iklan aktif.
                 </li>
                 <li>
-                  Biaya proteksi garansi Rekber dikenakan sebesar 1.5% - 2.5% per transaksi sukses
-                  untuk mendanai sistem keamanan dan asuransi sengketa.
+                  Biaya layanan & perlindungan pembeli dikenakan sebesar 1.5% - 2.5% per transaksi
+                  sukses untuk mendanai sistem keamanan dan perlindungan transaksi.
                 </li>
                 <li>
                   Penarikan saldo penjualan ke rekening bank nasional diproses otomatis dalam 1x24
@@ -321,10 +320,10 @@ export default function SyaratKetentuanPage() {
                 Batasan Tanggung Jawab
               </h2>
               <p className="text-xs sm:text-sm text-slate-600">
-                Peygo bertindak sebagai platform perantara teknologi dan penyedia proteksi transaksi
-                escrow. Transaksi yang dilakukan di luar rekening penampung resmi Peygo (transaksi
-                direct transfer langsung antar pengguna) berada di luar tanggung jawab proteksi
-                sistem Peygo.
+                Peygo bertindak sebagai penyedia platform marketplace dan sistem pembayaran aman.
+                Transaksi yang dilakukan langsung di luar sistem resmi Peygo (transaksi transfer
+                langsung antar pengguna) berada di luar tanggung jawab dan perlindungan garansi
+                Peygo.
               </p>
             </section>
 

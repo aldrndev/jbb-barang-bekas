@@ -443,7 +443,7 @@ export default function AdminPayoutsPage() {
           </div>
         </div>
 
-        {/* Card 3: Fee Layanan Rekber */}
+        {/* Card 3: Fee Layanan Marketplace */}
         <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">
@@ -701,7 +701,7 @@ export default function AdminPayoutsPage() {
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-[11px] text-slate-500">
-                    <span>Fee Rekber (1.5%):</span>
+                    <span>Biaya Layanan (1.5%):</span>
                     <span className="font-mono text-rose-600 font-semibold">
                       - {formatIDR(fee)}
                     </span>
@@ -756,7 +756,7 @@ export default function AdminPayoutsPage() {
                   <th className="p-4">No. Pesanan & Barang</th>
                   <th className="p-4">Penjual & Rekening Tujuan</th>
                   <th className="p-4">Nominal Bruto</th>
-                  <th className="p-4">Fee Rekber (1.5%)</th>
+                  <th className="p-4">Biaya Layanan (1.5%)</th>
                   <th className="p-4">Bersih Dicairkan</th>
                   <th className="p-4">Waktu Status</th>
                   <th className="p-4 text-right">Aksi</th>
@@ -877,7 +877,7 @@ export default function AdminPayoutsPage() {
                   <div>
                     <h3 className="font-black text-slate-900 text-sm">Bukti Settlement Resmi</h3>
                     <span className="text-[10px] text-slate-400 font-mono">
-                      PT Bekasin Rekber Indonesia
+                      Peygo • Part of Digitesia Edge Digital
                     </span>
                   </div>
                 </div>
@@ -910,7 +910,7 @@ export default function AdminPayoutsPage() {
                 </strong>
               </div>
               <div className="flex justify-between py-1 border-b border-slate-200">
-                <span className="text-slate-400">No. Pesanan Rekber:</span>
+                <span className="text-slate-400">No. Pesanan:</span>
                 <strong className="font-mono text-slate-900">{selectedReceipt.orderNumber}</strong>
               </div>
               <div className="flex justify-between py-1 border-b border-slate-200">
@@ -945,7 +945,7 @@ export default function AdminPayoutsPage() {
                   </span>
                 </div>
                 <div className="flex justify-between text-slate-500 text-[11px]">
-                  <span>Biaya Layanan Rekber (1.5%):</span>
+                  <span>Biaya Layanan & Perlindungan (1.5%):</span>
                   <span className="font-mono text-rose-600">
                     -{' '}
                     {formatIDR(

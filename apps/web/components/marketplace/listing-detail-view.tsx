@@ -163,7 +163,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
         navigator
           .share({
             title: listing.title,
-            text: `Cek barang bekas berkualitas: ${listing.title} seharga ${formatIDR(effectivePrice)} di Rekber Peygo`,
+            text: `Cek barang bekas berkualitas: ${listing.title} seharga ${formatIDR(effectivePrice)} di Peygo`,
             url: window.location.href
           })
           .catch(() => {});
@@ -607,9 +607,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                             : 'Tanpa Nota Toko'}
                     </span>
                     <span className="text-[10px] sm:text-[11px] text-slate-600 font-semibold block truncate">
-                      {listing.hasOriginalReceipt
-                        ? 'Bukti pembelian resmi'
-                        : 'Verifikasi fisik Rekber'}
+                      {listing.hasOriginalReceipt ? 'Bukti pembelian resmi' : 'Garansi Cek Fisik'}
                     </span>
                   </div>
                 </div>
@@ -692,11 +690,11 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                 <ShieldCheck className="h-5 w-5 text-brand-700 shrink-0" />
                 <div>
                   <h4 className="text-xs sm:text-sm font-black text-brand-950">
-                    Alur Transaksi & Garansi Rekber Peygo 100%
+                    Alur Belanja Aman & Garansi Perlindungan 100%
                   </h4>
                   <p className="text-[10px] sm:text-[11px] text-brand-800 font-medium">
-                    Dana Anda ditahan aman di rekening perantara dan baru cair ke penjual setelah 48
-                    jam inspeksi fisik.
+                    Pembayaran Anda aman terlindungi dan baru diteruskan ke penjual setelah 48 jam
+                    inspeksi fisik barang.
                   </p>
                 </div>
               </div>
@@ -709,7 +707,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                     1
                   </div>
                   <p className="text-[10px] sm:text-xs font-bold text-slate-800 leading-tight">
-                    Bayar Rekber
+                    Bayar Aman
                   </p>
                 </div>
 
@@ -773,7 +771,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                   </div>
                   <p className="text-[11px] text-emerald-800 font-medium leading-snug">
                     Harga khusus sebesar <strong>{formatIDR(effectivePrice)}</strong> telah terkunci
-                    selama 24 jam untuk akun Anda melakukan pembayaran Rekber.
+                    selama 24 jam untuk akun Anda menyelesaikan pesanan.
                   </p>
                 </div>
               )}
@@ -867,7 +865,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                       ? `Titik Temu: ${listing.codMeetingPoint}`
                       : listing.isCodAvailable
                         ? 'Mendukung COD di tempat umum & Kirim Kurir'
-                        : 'Pengiriman via Kurir Rekber'}
+                        : 'Pengiriman Kurir Terlindungi'}
                   </p>
                 </div>
               </div>
@@ -881,8 +879,8 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                   <ShoppingBag className="h-4.5 w-4.5" />
                   <span>
                     {acceptedOffer
-                      ? `Beli Sekarang via Rekber (${formatIDR(effectivePrice)})`
-                      : 'Beli Langsung via Rekber'}
+                      ? `Beli Sekarang (${formatIDR(effectivePrice)})`
+                      : 'Beli Sekarang (Checkout Aman)'}
                   </span>
                 </Link>
 
@@ -995,7 +993,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                     Rekomendasi Lainnya
                   </h3>
                   <p className="text-[11px] text-slate-500 font-medium hidden sm:block">
-                    Barang sejenis bergaransi Rekber
+                    Barang sejenis dengan garansi perlindungan pembeli
                   </p>
                 </div>
               </div>
@@ -1067,7 +1065,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
               className="flex items-center gap-1.5 rounded-2xl bg-brand-600 hover:bg-brand-700 px-5 py-2.5 text-xs font-black text-white shadow-md shadow-brand-600/30 transition-all cursor-pointer"
             >
               <ShoppingBag className="h-3.5 w-3.5" />
-              <span>{acceptedOffer ? 'Bayar Deal' : 'Beli Rekber'}</span>
+              <span>{acceptedOffer ? 'Bayar Deal' : 'Beli Sekarang'}</span>
             </Link>
           </div>
         </div>

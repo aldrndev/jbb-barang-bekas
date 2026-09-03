@@ -273,7 +273,7 @@ export default function AdminDisputeDetailPage() {
           </div>
           <div className="text-left sm:text-right">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-              Total Dana Tertahan di Rekber:
+              Total Dana Dalam Perlindungan:
             </span>
             <span className="text-lg sm:text-2xl font-black text-brand-700 block">
               {formatIDR(dispute.totalAmount || dispute.amount || 16560000)}
@@ -375,7 +375,7 @@ export default function AdminDisputeDetailPage() {
             {/* Logistics & Escrow Fee Breakdown */}
             <div className="rounded-xl bg-white p-3 border border-slate-200 space-y-1 shadow-2xs">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                Log Pengiriman & Rekber:
+                Log Pengiriman & Transaksi:
               </span>
               <div className="space-y-1 text-[11px] text-slate-600">
                 <p>
@@ -403,11 +403,11 @@ export default function AdminDisputeDetailPage() {
           <div className="space-y-1">
             <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-brand-600" />
-              <span>Panel Eksekusi Putusan Mediasi Petugas Rekber</span>
+              <span>Panel Eksekusi Putusan Resolusi Transaksi</span>
             </h4>
             <p className="text-[11px] text-slate-500 font-medium">
-              Putusan ini bersifat mengikat dan akan langsung memproses arus dana escrow ke rekening
-              tujuan.
+              Putusan ini bersifat mengikat dan akan langsung memproses pengembalian dana atau
+              penerusan pembayaran ke pihak yang berhak.
             </p>
           </div>
 

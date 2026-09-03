@@ -232,7 +232,7 @@ export default function HomePage() {
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500" />
                 </span>
                 <ShieldCheck className="h-3.5 w-3.5 text-brand-600 shrink-0" />
-                <span className="truncate">Marketplace C2C Garansi Rekber 48 Jam</span>
+                <span className="truncate">Marketplace Barang Bekas Bergaransi 48 Jam</span>
               </div>
 
               {/* Punchy Hero Title */}
@@ -553,13 +553,13 @@ export default function HomePage() {
                             ⭐ {spotlightListing.seller.ratingAverage.toFixed(1)} &bull;{' '}
                             {spotlightListing.seller.isKycVerified
                               ? 'Terverifikasi'
-                              : 'Penjual Rekber'}
+                              : 'Penjual Terpercaya'}
                           </>
                         ) : (
                           <>
                             {isRealSpotlight && spotlightListing?.seller?.isKycVerified
                               ? '🛡️ Terverifikasi'
-                              : '🛡️ Garansi Rekber'}
+                              : '🛡️ Garansi Pembeli'}
                           </>
                         )}
                       </div>
@@ -590,7 +590,7 @@ export default function HomePage() {
                 <div className="mt-3 rounded-xl bg-slate-50 p-2 border border-slate-200 flex items-center gap-1.5 text-[9px] sm:text-[10px] text-slate-600">
                   <ShieldCheck className="h-3.5 w-3.5 text-brand-600 shrink-0" />
                   <span className="truncate">
-                    Garansi Rekber 48 Jam &bull; Dana aman sampai cek fisik
+                    Garansi Pembeli 48 Jam &bull; Uang aman sampai cek fisik
                   </span>
                 </div>
               </div>

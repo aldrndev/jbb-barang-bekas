@@ -273,7 +273,7 @@ export function AuthModal() {
                 >
                   Kebijakan Privasi
                 </Link>{' '}
-                Rekber Peygo.
+                Peygo.
               </p>
             </div>
           </div>
