@@ -5,21 +5,7 @@ import { useToast } from '@/context/toast-context';
 import { api } from '@/lib/api-client';
 import { formatIDR } from '@/lib/utils';
 import type { Invoice } from '@jbb/types';
-import {
-  AlertCircle,
-  Building,
-  CheckCircle2,
-  Clock,
-  Copy,
-  CreditCard,
-  MapPin,
-  Phone,
-  Printer,
-  Share2,
-  ShieldCheck,
-  User,
-  Zap
-} from 'lucide-react';
+import { AlertCircle, CheckCircle2, Clock, Copy, Printer, Share2, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -93,9 +79,9 @@ export function InvoicePrintableView({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* 1. TOP ACTION CONTROLS (Hidden during printing) */}
-      <div className="print:hidden flex flex-wrap items-center justify-between gap-3 bg-white border border-slate-200 p-4 rounded-3xl shadow-xs">
+      <div className="print:hidden flex flex-wrap items-center justify-between gap-3 bg-white border border-slate-200 p-3.5 sm:p-4 rounded-2xl shadow-xs">
         <div className="flex items-center gap-2">
           {showBackToDashboard && (
             <Link
@@ -106,7 +92,7 @@ export function InvoicePrintableView({
             </Link>
           )}
           <span className="text-xs text-slate-500 font-medium">
-            Faktur Transaksi #{invoice.invoiceNumber}
+            Faktur #{invoice.invoiceNumber}
           </span>
         </div>
 
@@ -119,7 +105,7 @@ export function InvoicePrintableView({
               className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 text-xs font-bold shadow-xs transition-all cursor-pointer disabled:opacity-50"
             >
               <Zap className="h-3.5 w-3.5" />
-              <span>{isSimulatingPayment ? 'Memproses...' : '⚡ Simulasi Lunas (Gateway)'}</span>
+              <span>{isSimulatingPayment ? 'Memproses...' : '⚡ Simulasi Lunas'}</span>
             </button>
           )}
 
@@ -144,7 +130,7 @@ export function InvoicePrintableView({
           <button
             type="button"
             onClick={handlePrint}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 text-xs font-bold shadow-md shadow-slate-900/20 transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 text-xs font-bold shadow-xs transition-all cursor-pointer"
           >
             <Printer className="h-3.5 w-3.5" />
             <span>Cetak / Simpan PDF</span>
@@ -152,216 +138,170 @@ export function InvoicePrintableView({
         </div>
       </div>
 
-      {/* 2. PRINTABLE INVOICE CARD (A4 Standard Format) */}
+      {/* 2. PRINTABLE INVOICE CARD (Clean, Professional A4 Format) */}
       <div
         id="invoice-document"
-        className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-lg text-slate-900 space-y-8 print:border-none print:shadow-none print:p-0 print:m-0 print:rounded-none max-w-4xl mx-auto relative overflow-hidden"
+        className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs text-slate-800 space-y-6 print:border-none print:shadow-none print:p-0 print:m-0 print:rounded-none max-w-3xl mx-auto"
       >
-        {/* Background Watermark Stamp for Paid Invoices */}
-        {isPaid && (
-          <div className="absolute right-12 top-48 pointer-events-none select-none opacity-8 print:opacity-10 rotate-[-18deg] z-0">
-            <div className="border-8 border-emerald-700 rounded-3xl p-6 text-center font-black tracking-widest text-emerald-800 uppercase">
-              <div className="text-4xl leading-tight">LUNAS • VERIFIED</div>
-              <div className="text-sm mt-1">GARANSI PEMBELI 100% • PEYGO INDONESIA</div>
-            </div>
-          </div>
-        )}
-
-        {/* Header Section */}
-        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-slate-200">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2.5">
+        {/* Header: Logo (left) + Invoice Title & Key Meta (right) */}
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-5 border-b border-slate-200">
+          <div>
+            <div className="flex items-center gap-2">
               <PeygoLogoIcon size="md" />
               <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xl font-black tracking-tight text-slate-900">
-                    PEYGO<span className="text-brand-600">.ID</span>
-                  </span>
-                  <span className="rounded-md bg-brand-100 text-brand-800 text-[10px] font-black px-1.5 py-0.5">
-                    OFFICIAL
-                  </span>
-                </div>
-                <span className="text-[11px] font-semibold text-slate-500 block">
+                <span className="text-lg font-black tracking-tight text-slate-900 block leading-tight">
+                  PEYGO<span className="text-brand-600">.ID</span>
+                </span>
+                <span className="text-[11px] font-medium text-slate-500 block">
                   Peygo &bull; Part of Digitesia Edge Digital
                 </span>
               </div>
             </div>
-            <p className="text-[11px] text-slate-500 max-w-sm leading-relaxed">
-              Marketplace Jual Beli Barang Bekas Terverifikasi dengan Garansi Perlindungan Pembeli
-              #1 Indonesia.
-            </p>
           </div>
 
-          <div className="text-left sm:text-right space-y-1.5 sm:min-w-50">
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
-              FAKTUR TRANSAKSI RESMI
-            </span>
-            <div className="text-base sm:text-lg font-black font-mono text-slate-900 tracking-tight">
+          <div className="text-left sm:text-right space-y-1">
+            <h1 className="text-lg font-black tracking-wide text-slate-900 uppercase">INVOICE</h1>
+            <div className="text-xs font-mono font-bold text-slate-700">
               {invoice.invoiceNumber}
             </div>
-            <div>
+            <div className="pt-0.5">
               {isPaid && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-black">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>LUNAS (TERVERIFIKASI)</span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold">
+                  <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                  <span>Lunas</span>
                 </span>
               )}
               {isUnpaid && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-200 text-xs font-black animate-pulse">
-                  <Clock className="h-3.5 w-3.5 text-amber-600" />
-                  <span>MENUNGGU PEMBAYARAN</span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200 text-[11px] font-bold">
+                  <Clock className="h-3 w-3 text-amber-600" />
+                  <span>Menunggu Pembayaran</span>
                 </span>
               )}
               {isCancelled && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-800 border border-rose-200 text-xs font-black">
-                  <AlertCircle className="h-3.5 w-3.5 text-rose-600" />
-                  <span>DIBATALKAN</span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200 text-[11px] font-bold">
+                  <AlertCircle className="h-3 w-3 text-rose-600" />
+                  <span>Dibatalkan</span>
                 </span>
               )}
             </div>
           </div>
         </div>
 
-        {/* Invoice Metadata Dates Row */}
-        <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs bg-slate-50 p-4 rounded-2xl border border-slate-100">
-          <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-              Tanggal Terbit:
-            </span>
-            <strong className="text-slate-800 block mt-0.5">
-              {new Date(invoice.issuedAt).toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-              })}
-            </strong>
-          </div>
-          <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-              Batas Waktu:
-            </span>
-            <strong className="text-slate-800 block mt-0.5">
-              {invoice.dueDate
-                ? new Date(invoice.dueDate).toLocaleDateString('id-ID', {
+        {/* Transaction Meta & Parties Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-xs">
+          {/* Left: Penjual & Info Transaksi */}
+          <div className="space-y-3">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                Diterbitkan Atas Nama
+              </span>
+              <div className="font-bold text-slate-900">{invoice.sellerName}</div>
+              {invoice.sellerCity && (
+                <div className="text-slate-500 text-[11px]">Kota Asal: {invoice.sellerCity}</div>
+              )}
+              {invoice.sellerPhone && (
+                <div className="text-slate-500 text-[11px]">Kontak: {invoice.sellerPhone}</div>
+              )}
+            </div>
+
+            <div className="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2 text-[11px]">
+              <div>
+                <span className="text-slate-400 block text-[10px] uppercase font-bold">
+                  Tanggal Transaksi
+                </span>
+                <span className="font-semibold text-slate-700">
+                  {new Date(invoice.issuedAt).toLocaleDateString('id-ID', {
                     day: 'numeric',
-                    month: 'long',
+                    month: 'short',
                     year: 'numeric'
-                  })
-                : '24 Jam sejak terbit'}
-            </strong>
-          </div>
-          <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-              Metode Transaksi:
-            </span>
-            <strong className="text-slate-800 block mt-0.5">
-              {invoice.deliveryMethod === 'COD_KETEMUAN' ? 'COD Ketemuan Resmi' : 'Kurir Kilat'}
-            </strong>
-          </div>
-          <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-              No. Pesanan Ref:
-            </span>
-            <strong className="text-brand-700 font-mono block mt-0.5">
-              {invoice.orderNumber || '-'}
-            </strong>
-          </div>
-        </div>
-
-        {/* Billed To & Provided By Grid */}
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Buyer Info Card */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 space-y-2">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                <User className="h-3.5 w-3.5 text-brand-600" />
-                <span>Ditagihkan Kepada (Pembeli)</span>
-              </span>
-              <span className="text-[10px] font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded-md">
-                Buyer Verified
-              </span>
-            </div>
-            <div>
-              <h4 className="font-bold text-sm text-slate-900">{invoice.buyerName}</h4>
-              <div className="space-y-1 text-xs text-slate-600 mt-1.5">
-                <p className="flex items-center gap-1.5">
-                  <Phone className="h-3 w-3 text-slate-400" />
-                  <span>{invoice.buyerPhone}</span>
-                </p>
-                {invoice.buyerEmail && <p className="text-slate-500">{invoice.buyerEmail}</p>}
-                <p className="flex items-start gap-1.5 text-slate-600 pt-1">
-                  <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0 mt-0.5" />
-                  <span>
-                    {invoice.buyerAddress} {invoice.buyerCity && `• ${invoice.buyerCity}`}
+                  })}
+                </span>
+              </div>
+              {invoice.orderNumber && (
+                <div>
+                  <span className="text-slate-400 block text-[10px] uppercase font-bold">
+                    No. Pesanan
                   </span>
-                </p>
-              </div>
+                  <span className="font-mono font-semibold text-slate-700">
+                    {invoice.orderNumber}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Seller Info Card */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 space-y-2">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                <Building className="h-3.5 w-3.5 text-emerald-600" />
-                <span>Penyedia Barang / Penjual</span>
-              </span>
-              <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md">
-                Seller Verified
-              </span>
-            </div>
+          {/* Right: Tujuan Pengiriman */}
+          <div className="space-y-3">
             <div>
-              <h4 className="font-bold text-sm text-slate-900">{invoice.sellerName}</h4>
-              <div className="space-y-1 text-xs text-slate-600 mt-1.5">
-                {invoice.sellerPhone && (
-                  <p className="flex items-center gap-1.5">
-                    <Phone className="h-3 w-3 text-slate-400" />
-                    <span>{invoice.sellerPhone}</span>
-                  </p>
-                )}
-                {invoice.sellerEmail && <p className="text-slate-500">{invoice.sellerEmail}</p>}
-                <p className="flex items-center gap-1.5 text-slate-600">
-                  <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                  <span>Kota Asal: {invoice.sellerCity || 'Indonesia'}</span>
-                </p>
-                {invoice.trackingNumber && (
-                  <p className="text-[11px] font-bold text-brand-700 pt-1">
-                    No. Resi: <span className="font-mono">{invoice.trackingNumber}</span> (
-                    {invoice.courierName || 'Ekspedisi'})
-                  </p>
-                )}
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                Tujuan Pengiriman
+              </span>
+              <div className="font-bold text-slate-900">{invoice.buyerName}</div>
+              {invoice.buyerPhone && (
+                <div className="text-slate-500 text-[11px]">{invoice.buyerPhone}</div>
+              )}
+              <div className="text-slate-600 text-[11px] leading-relaxed mt-0.5">
+                {invoice.buyerAddress}
+                {invoice.buyerCity && `, ${invoice.buyerCity}`}
               </div>
+            </div>
+
+            <div className="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2 text-[11px]">
+              <div>
+                <span className="text-slate-400 block text-[10px] uppercase font-bold">
+                  Metode Pengiriman
+                </span>
+                <span className="font-semibold text-slate-700">
+                  {invoice.deliveryMethod === 'COD_KETEMUAN'
+                    ? 'COD (Ketemuan Langsung)'
+                    : invoice.courierName || 'Kurir Reguler'}
+                </span>
+              </div>
+              {invoice.trackingNumber && (
+                <div>
+                  <span className="text-slate-400 block text-[10px] uppercase font-bold">
+                    No. Resi
+                  </span>
+                  <span className="font-mono font-bold text-brand-700">
+                    {invoice.trackingNumber}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>
 
         {/* Itemized Table */}
-        <div className="relative z-10 rounded-2xl border border-slate-200 overflow-hidden">
+        <div className="border border-slate-200 rounded-xl overflow-hidden">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 text-[11px] font-black uppercase tracking-wider text-slate-500 border-b border-slate-200">
+            <thead className="bg-slate-50 text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
               <tr>
-                <th className="p-3.5 pl-4 w-10">No</th>
-                <th className="p-3.5">Deskripsi Barang / Jasa</th>
-                <th className="p-3.5 text-center w-16">Qty</th>
-                <th className="p-3.5 text-right w-32">Harga Satuan</th>
-                <th className="p-3.5 pr-4 text-right w-36">Total</th>
+                <th className="py-2.5 px-3 w-8 text-center">No</th>
+                <th className="py-2.5 px-3">Info Produk</th>
+                <th className="py-2.5 px-3 text-center w-14">Qty</th>
+                <th className="py-2.5 px-3 text-right w-28">Harga Satuan</th>
+                <th className="py-2.5 px-3 text-right w-32">Total</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 bg-white">
               {invoice.items.map((item, idx) => (
-                <tr key={item.id || idx} className="hover:bg-slate-50/50">
-                  <td className="p-3.5 pl-4 font-mono font-bold text-slate-400">{idx + 1}</td>
-                  <td className="p-3.5">
-                    <div className="font-bold text-slate-900">{item.title}</div>
+                <tr key={item.id || idx}>
+                  <td className="py-2.5 px-3 text-center font-mono text-slate-400">{idx + 1}</td>
+                  <td className="py-2.5 px-3">
+                    <span className="font-bold text-slate-900 block">{item.title}</span>
                     {item.description && (
-                      <div className="text-[11px] text-slate-500 mt-0.5">{item.description}</div>
+                      <span className="text-[11px] text-slate-500 block mt-0.5">
+                        {item.description}
+                      </span>
                     )}
                   </td>
-                  <td className="p-3.5 text-center font-bold text-slate-800">{item.quantity}</td>
-                  <td className="p-3.5 text-right font-mono font-medium text-slate-700">
+                  <td className="py-2.5 px-3 text-center font-semibold text-slate-700">
+                    {item.quantity}
+                  </td>
+                  <td className="py-2.5 px-3 text-right font-mono text-slate-600">
                     {formatIDR(item.price)}
                   </td>
-                  <td className="p-3.5 pr-4 text-right font-mono font-bold text-slate-900">
+                  <td className="py-2.5 px-3 text-right font-mono font-bold text-slate-900">
                     {formatIDR(item.total)}
                   </td>
                 </tr>
@@ -370,142 +310,116 @@ export function InvoicePrintableView({
           </table>
         </div>
 
-        {/* Financial Summary & Payment Gateway Status */}
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          {/* Left Column: Payment Gateway / Virtual Account / QRIS */}
-          <div className="space-y-3">
-            {isUnpaid ? (
-              <div className="rounded-2xl bg-amber-50/80 border border-amber-200 p-4 space-y-3 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-amber-900 flex items-center gap-1.5">
-                    <CreditCard className="h-4 w-4 text-amber-700" />
-                    <span>Pembayaran Otomatis via Payment Gateway</span>
-                  </span>
-                  <span className="text-[10px] font-extrabold uppercase bg-amber-200/80 text-amber-900 px-2 py-0.5 rounded">
-                    {invoice.paymentMeta?.channel || 'BCA VA'}
-                  </span>
-                </div>
-
-                <div className="space-y-2 pt-1 border-t border-amber-200/70">
-                  <div className="flex items-center justify-between">
-                    <span className="text-amber-800">Nomor Virtual Account:</span>
-                    <div className="flex items-center gap-1">
-                      <strong className="font-mono text-sm text-slate-900">
-                        {invoice.paymentMeta?.vaNumber || '88001928374655'}
-                      </strong>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          copyToClipboard(
-                            invoice.paymentMeta?.vaNumber || '88001928374655',
-                            'No VA'
-                          )
-                        }
-                        className="p-1 text-amber-800 hover:text-slate-900 rounded cursor-pointer"
-                        title="Salin Nomor VA"
-                      >
-                        {copiedField === 'No VA' ? (
-                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
-                        ) : (
-                          <Copy className="h-3.5 w-3.5" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-
-                  <p className="text-[11px] text-amber-900/80 leading-relaxed">
-                    Transfer sesuai nominal tepat hingga digit terakhir. Status pembayaran dan
-                    rekening bersama akan otomatis terverifikasi dalam hitungan detik.
-                  </p>
-                </div>
-              </div>
-            ) : isPaid ? (
-              <div className="rounded-2xl bg-emerald-50/80 border border-emerald-200 p-4 space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-emerald-900 flex items-center gap-1.5">
-                    <ShieldCheck className="h-4 w-4 text-emerald-700" />
-                    <span>Pembayaran Aman Terverifikasi</span>
-                  </span>
-                  <span className="text-[10px] font-black bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded">
-                    SETTLED
-                  </span>
-                </div>
-                <div className="space-y-1 text-[11px] text-emerald-800 pt-1 border-t border-emerald-200/70">
-                  <p>
-                    Ref Gateway:{' '}
-                    <strong className="font-mono text-emerald-950">
-                      {invoice.paymentMeta?.gatewayRef || `PG-REF-${invoice.invoiceNumber}`}
-                    </strong>
-                  </p>
-                  <p>
-                    Waktu Bayar:{' '}
-                    <strong>
-                      {invoice.paidAt
-                        ? new Date(invoice.paidAt).toLocaleString('id-ID')
-                        : 'Terverifikasi'}
-                    </strong>
-                  </p>
-                  <p className="text-emerald-700 text-[10px] mt-1">
-                    Pembayaran aman dilindungi Garansi Perlindungan Pembeli sampai barang diterima
-                    dan masa inspeksi fisik 48 jam selesai.
-                  </p>
-                </div>
-              </div>
-            ) : null}
-
-            {/* Notes Section */}
-            {invoice.notes && (
-              <div className="rounded-2xl bg-slate-50 border border-slate-200 p-3.5 text-xs text-slate-700 space-y-1">
-                <span className="font-bold text-slate-900 block text-[11px]">
-                  Catatan Transaksi:
+        {/* Payment & Financial Summary */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-1 text-xs">
+          {/* Left: Info Pembayaran */}
+          <div className="space-y-2 text-[11px]">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+              Info Pembayaran
+            </span>
+            <div className="space-y-1.5 bg-slate-50/70 border border-slate-100 rounded-xl p-3">
+              <div className="flex justify-between">
+                <span className="text-slate-500">Metode:</span>
+                <span className="font-bold text-slate-800">
+                  {invoice.paymentMeta?.channel || 'Virtual Account'}
                 </span>
-                <p className="text-slate-600 text-[11px] leading-relaxed">{invoice.notes}</p>
+              </div>
+
+              {isUnpaid && invoice.paymentMeta?.vaNumber && (
+                <div className="flex justify-between items-center pt-1 border-t border-slate-200/60">
+                  <span className="text-slate-500">No. VA:</span>
+                  <div className="flex items-center gap-1">
+                    <span className="font-mono font-bold text-slate-900">
+                      {invoice.paymentMeta.vaNumber}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => copyToClipboard(invoice.paymentMeta?.vaNumber || '', 'No VA')}
+                      className="text-slate-400 hover:text-slate-700 p-0.5 cursor-pointer"
+                      title="Salin No VA"
+                    >
+                      <Copy className="h-3 w-3" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {isPaid && (
+                <>
+                  <div className="flex justify-between pt-1 border-t border-slate-200/60">
+                    <span className="text-slate-500">Waktu Bayar:</span>
+                    <span className="font-medium text-slate-700">
+                      {invoice.paidAt
+                        ? new Date(invoice.paidAt).toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })
+                        : 'Terverifikasi'}
+                    </span>
+                  </div>
+                  {invoice.paymentMeta?.gatewayRef && (
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">No. Referensi:</span>
+                      <span className="font-mono text-slate-600">
+                        {invoice.paymentMeta.gatewayRef}
+                      </span>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            {invoice.notes && (
+              <div className="text-[11px] text-slate-500 pt-1">
+                <span className="font-bold text-slate-700">Catatan:</span> {invoice.notes}
               </div>
             )}
           </div>
 
-          {/* Right Column: Financial Calculation Box */}
-          <div className="rounded-2xl bg-slate-50 border border-slate-200 p-4 sm:p-5 space-y-2.5 text-xs">
-            <div className="flex justify-between text-slate-600">
-              <span>Subtotal Barang / Jasa</span>
-              <span className="font-mono font-bold text-slate-900">
+          {/* Right: Rincian Biaya */}
+          <div className="space-y-1.5 text-xs sm:pl-4">
+            <div className="flex justify-between text-slate-500">
+              <span>Subtotal Produk</span>
+              <span className="font-mono font-medium text-slate-800">
                 {formatIDR(invoice.amount)}
               </span>
             </div>
 
-            <div className="flex justify-between text-slate-600">
-              <span>Ongkos Kirim & Asuransi</span>
-              <span className="font-mono font-medium text-slate-900">
-                {invoice.shippingFee > 0 ? formatIDR(invoice.shippingFee) : 'Rp 0 (COD)'}
+            <div className="flex justify-between text-slate-500">
+              <span>Total Ongkos Kirim</span>
+              <span className="font-mono font-medium text-slate-800">
+                {invoice.shippingFee > 0 ? formatIDR(invoice.shippingFee) : 'Rp 0'}
               </span>
             </div>
 
-            <div className="flex justify-between text-slate-600">
+            <div className="flex justify-between text-slate-500">
               <span>Biaya Layanan & Perlindungan</span>
-              <span className="font-mono font-medium text-slate-900">
+              <span className="font-mono font-medium text-slate-800">
                 {formatIDR(invoice.serviceFee)}
               </span>
             </div>
 
             {Boolean(invoice.discountAmount && invoice.discountAmount > 0) && (
-              <div className="flex justify-between text-emerald-600 font-bold">
-                <span>Diskon / Potongan Promo</span>
+              <div className="flex justify-between text-emerald-600 font-medium">
+                <span>Diskon Promo</span>
                 <span className="font-mono">-{formatIDR(invoice.discountAmount || 0)}</span>
               </div>
             )}
 
-            <div className="border-t border-slate-200 pt-3 flex justify-between items-center text-sm">
-              <span className="font-black text-slate-900">Total Pembayaran</span>
-              <span className="font-black font-mono text-base sm:text-lg text-brand-700">
+            <div className="pt-2 border-t border-slate-200 flex justify-between items-center">
+              <span className="font-bold text-slate-900 text-sm">Total Tagihan</span>
+              <span className="font-black font-mono text-base text-brand-700">
                 {formatIDR(invoice.totalAmount)}
               </span>
             </div>
 
-            {/* Seller & Admin Specific Settlement View */}
             {(roleMode === 'SELLER' || roleMode === 'ADMIN') && (
-              <div className="mt-3 pt-2.5 border-t border-dashed border-slate-300 text-[11px] text-slate-500 flex justify-between items-center bg-white/70 p-2.5 rounded-xl">
-                <span>Estimasi Pencairan Bersih Penjual:</span>
-                <span className="font-black font-mono text-emerald-700 text-xs">
+              <div className="mt-2 pt-2 border-t border-dashed border-slate-200 text-[11px] text-slate-500 flex justify-between">
+                <span>Pencairan Bersih Penjual:</span>
+                <span className="font-bold font-mono text-emerald-700">
                   {formatIDR(invoice.netSellerAmount || invoice.amount)}
                 </span>
               </div>
@@ -513,33 +427,16 @@ export function InvoicePrintableView({
           </div>
         </div>
 
-        {/* Footer Guarantee & Terms */}
-        <div className="relative z-10 pt-6 border-t border-slate-200 text-center space-y-2">
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-bold text-slate-500">
-            <span className="flex items-center gap-1.5">
-              <ShieldCheck className="h-4 w-4 text-brand-600" />
-              <span>Garansi Fisik 48 Jam</span>
-            </span>
-            <span>&bull;</span>
-            <span className="flex items-center gap-1.5">
-              <CreditCard className="h-4 w-4 text-emerald-600" />
-              <span>Payment Gateway Terenkripsi 256-Bit</span>
-            </span>
-            <span>&bull;</span>
-            <span className="flex items-center gap-1.5">
-              <Building className="h-4 w-4 text-slate-600" />
-              <span>Pusat Resolusi Komplain</span>
-            </span>
-          </div>
-
-          <p className="text-[10px] text-slate-400 max-w-xl mx-auto leading-relaxed">
+        {/* Footer */}
+        <div className="pt-4 border-t border-slate-200 text-center text-[10px] text-slate-400 space-y-1">
+          <p>
             {invoice.terms ||
-              'Faktur ini merupakan dokumen elektronik resmi yang sah dan mengikat. Harap simpan nomor invoice ini untuk keperluan klaim garansi atau penyelesaian kendala pesanan.'}
+              'Faktur ini merupakan bukti transaksi yang sah dan diproses secara otomatis oleh sistem komputer Peygo.'}
           </p>
-
-          <div className="text-[9px] text-slate-300 font-mono pt-1">
-            Dicetak otomatis oleh Sistem Peygo Cloud • ID: {invoice.id} • {new Date().toISOString()}
-          </div>
+          <p>
+            Butuh bantuan? Kunjungi Pusat Bantuan di{' '}
+            <span className="text-slate-600 font-medium">peygo.id/pusat-bantuan</span>
+          </p>
         </div>
       </div>
     </div>
