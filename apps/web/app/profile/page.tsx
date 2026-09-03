@@ -933,25 +933,18 @@ export default function ProfilePage() {
                 <span className="font-bold text-slate-800 block mb-1">
                   1. Foto Fisik E-KTP Asli <span className="text-rose-500">*</span>
                 </span>
-                <div
-                  role="button"
-                  tabIndex={0}
+                <input
+                  ref={ktpFileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleKtpUpload(e.target.files)}
+                  className="hidden"
+                />
+                <button
+                  type="button"
                   onClick={() => ktpFileInputRef.current?.click()}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      ktpFileInputRef.current?.click();
-                    }
-                  }}
-                  className="relative rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 hover:bg-slate-100 p-3 text-center cursor-pointer transition-colors"
+                  className="w-full relative rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 hover:bg-slate-100 p-3 text-center cursor-pointer transition-colors"
                 >
-                  <input
-                    ref={ktpFileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleKtpUpload(e.target.files)}
-                    className="hidden"
-                  />
                   {ktpImageUrl ? (
                     <div className="flex items-center gap-3">
                       <img
@@ -972,7 +965,7 @@ export default function ProfilePage() {
                       <span className="font-bold text-slate-800 block">Pilih / Ambil Foto KTP</span>
                     </div>
                   )}
-                </div>
+                </button>
               </div>
 
               {/* Upload Selfie + KTP */}
@@ -980,25 +973,18 @@ export default function ProfilePage() {
                 <span className="font-bold text-slate-800 block mb-1">
                   2. Foto Selfie Bersama E-KTP <span className="text-rose-500">*</span>
                 </span>
-                <div
-                  role="button"
-                  tabIndex={0}
+                <input
+                  ref={selfieFileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleSelfieUpload(e.target.files)}
+                  className="hidden"
+                />
+                <button
+                  type="button"
                   onClick={() => selfieFileInputRef.current?.click()}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      selfieFileInputRef.current?.click();
-                    }
-                  }}
-                  className="relative rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 hover:bg-slate-100 p-3 text-center cursor-pointer transition-colors"
+                  className="w-full relative rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 hover:bg-slate-100 p-3 text-center cursor-pointer transition-colors"
                 >
-                  <input
-                    ref={selfieFileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleSelfieUpload(e.target.files)}
-                    className="hidden"
-                  />
                   {selfieImageUrl ? (
                     <div className="flex items-center gap-3">
                       <img
@@ -1021,7 +1007,7 @@ export default function ProfilePage() {
                       </span>
                     </div>
                   )}
-                </div>
+                </button>
               </div>
 
               <div className="rounded-xl bg-slate-50 p-2.5 border border-slate-200 text-[10px] text-slate-500 leading-relaxed">

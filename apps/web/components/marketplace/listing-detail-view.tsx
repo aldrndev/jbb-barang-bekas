@@ -335,24 +335,17 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                 </div>
 
                 {/* Main Stage Image Frame */}
-                <div
-                  role="button"
-                  tabIndex={0}
-                  className="relative aspect-4/3 sm:aspect-16/11 w-full overflow-hidden rounded-2xl flex items-center justify-center p-2 cursor-pointer bg-slate-50/60"
+                <button
+                  type="button"
+                  className="relative aspect-4/3 sm:aspect-16/11 w-full overflow-hidden rounded-2xl flex items-center justify-center p-2 cursor-pointer bg-slate-50/60 focus:outline-none"
                   onClick={() => setIsLightboxOpen(true)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      setIsLightboxOpen(true);
-                    }
-                  }}
                 >
                   <img
                     src={primaryImageUrl}
                     alt={listing.title}
                     className="max-h-full max-w-full object-contain select-none"
                   />
-                </div>
+                </button>
               </div>
 
               {/* Bottom Section: Docked Thumbnail Tray */}

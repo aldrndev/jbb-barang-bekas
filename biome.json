@@ -16,7 +16,8 @@
       "**/.open-next/**",
       "**/.vinext/**",
       "**/pnpm-lock.yaml",
-      "**/tsconfig.tsbuildinfo"
+      "**/tsconfig.tsbuildinfo",
+      "**/next-env.d.ts"
     ]
   },
   "formatter": {
@@ -65,6 +66,10 @@
         "noUselessElse": "off",
         "useSelfClosingElements": "warn",
         "useTemplate": "warn"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off",
+        "useSemanticElements": "off"
       }
     }
   }

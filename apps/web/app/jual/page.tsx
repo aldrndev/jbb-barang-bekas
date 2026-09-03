@@ -538,34 +538,27 @@ function JualBarangContent() {
               </div>
 
               {/* Cloudflare Direct Drag & Drop Upload Zone */}
-              <div
-                role="button"
-                tabIndex={0}
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept="image/jpeg,image/png,image/webp"
+                onChange={(e) => handleFileUpload(e.target.files)}
+                className="hidden"
+              />
+
+              <button
+                type="button"
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    fileInputRef.current?.click();
-                  }
-                }}
-                className={`relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-4 sm:p-6 text-center cursor-pointer transition-all ${
+                className={`relative w-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-4 sm:p-6 text-center cursor-pointer transition-all ${
                   isDragging
                     ? 'border-brand-500 bg-brand-50/60 scale-101'
                     : 'border-slate-300 bg-slate-50/70 hover:border-brand-400 hover:bg-slate-50'
                 }`}
               >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  accept="image/jpeg,image/png,image/webp"
-                  onChange={(e) => handleFileUpload(e.target.files)}
-                  className="hidden"
-                />
-
                 <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-white shadow-xs text-brand-600 border border-slate-200 mb-2">
                   {isUploadingImage ? (
                     <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin text-brand-600" />
@@ -584,7 +577,7 @@ function JualBarangContent() {
                     Mendukung JPG, PNG, WEBP (Maks 5 MB per foto)
                   </p>
                 </div>
-              </div>
+              </button>
 
               {/* Image Previews Grid */}
               {imageUrls.length > 0 && (
