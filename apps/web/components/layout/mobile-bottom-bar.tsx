@@ -99,7 +99,7 @@ export function MobileBottomBar() {
                     }`}
                   />
                   {isActive && (
-                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-brand-600"></span>
+                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-brand-600" />
                   )}
                 </div>
                 <span className="text-[10px] font-semibold mt-0.5">{item.label}</span>
@@ -120,7 +120,7 @@ export function MobileBottomBar() {
                   className={`h-5 w-5 ${isActive ? 'stroke-2.5 text-brand-600' : 'stroke-2'}`}
                 />
                 {item.href === '/nego' && (
-                  <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2 rounded-full bg-brand-500 ring-1.5 ring-white"></span>
+                  <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2 rounded-full bg-brand-500 ring-1.5 ring-white" />
                 )}
               </div>
               <span
@@ -129,7 +129,7 @@ export function MobileBottomBar() {
                 {item.label}
               </span>
               {isActive && (
-                <span className="h-0.5 w-4 rounded-full bg-brand-600 mt-0.5 animate-in fade-in zoom-in-50"></span>
+                <span className="h-0.5 w-4 rounded-full bg-brand-600 mt-0.5 animate-in fade-in zoom-in-50" />
               )}
             </Link>
           );

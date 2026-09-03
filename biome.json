@@ -65,10 +65,6 @@
         "noUselessElse": "off",
         "useSelfClosingElements": "warn",
         "useTemplate": "warn"
-      },
-      "a11y": {
-        "noSvgWithoutTitle": "off",
-        "useSemanticElements": "off"
       }
     }
   }
