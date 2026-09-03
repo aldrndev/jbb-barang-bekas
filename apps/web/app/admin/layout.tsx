@@ -9,6 +9,7 @@ import {
   LogOut,
   Menu,
   Package,
+  Receipt,
   ShieldAlert,
   Store,
   UserCheck,
@@ -33,6 +34,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       href: '/admin',
       icon: LayoutDashboard,
       isActive: pathname === '/admin'
+    },
+    {
+      label: 'Faktur & Invoice',
+      href: '/admin/invoices',
+      icon: Receipt,
+      isActive: pathname.startsWith('/admin/invoices')
     },
     {
       label: 'Sengketa',

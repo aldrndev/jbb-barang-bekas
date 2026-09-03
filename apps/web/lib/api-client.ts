@@ -1,6 +1,8 @@
 import type {
   ApiResponse,
   Category,
+  CreateCustomInvoiceInput,
+  Invoice,
   Listing,
   ListingFilterParams,
   Offer,
@@ -473,5 +475,33 @@ export const api = {
   clearWishlist: () =>
     request<{ success: boolean }>('/api/wishlist', {
       method: 'DELETE'
-    })
+    }),
+
+  // Invoice & Payment Gateway Endpoints
+  getInvoice: (id: string) => request<Invoice>(`/api/invoices/${id}`),
+  getAdminInvoices: (params: { status?: string; type?: string } = {}) => {
+    const sp = new URLSearchParams();
+    if (params.status) sp.set('status', params.status);
+    if (params.type) sp.set('type', params.type);
+    const qs = sp.toString() ? `?${sp.toString()}` : '';
+    return request<Invoice[]>(`/api/admin/invoices${qs}`);
+  },
+  createAdminInvoice: (data: CreateCustomInvoiceInput) =>
+    request<Invoice>('/api/admin/invoices', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+  updateAdminInvoiceStatus: (id: string, status: string, notes?: string) =>
+    request<Invoice>(`/api/admin/invoices/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status, notes })
+    }),
+  simulatePaymentSuccess: (invoiceId: string, channel?: string) =>
+    request<{ invoiceId?: string; orderId?: string; status?: string; paidAt?: string }>(
+      '/api/webhooks/payment',
+      {
+        method: 'POST',
+        body: JSON.stringify({ invoiceId, channel })
+      }
+    )
 };

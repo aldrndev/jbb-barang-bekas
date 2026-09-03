@@ -330,3 +330,111 @@ export interface WishlistItem {
   createdAt: string;
   listing?: Listing;
 }
+
+export type InvoiceType = 'ESCROW_ORDER' | 'CUSTOM_ADMIN' | 'MEDIATION_FEE' | 'VIP_ESCROW';
+export type InvoiceStatus = 'PAID' | 'UNPAID' | 'CANCELLED' | 'REFUNDED';
+
+export interface InvoiceItem {
+  id: string;
+  title: string;
+  description?: string | null;
+  quantity: number;
+  price: number;
+  total: number;
+  condition?: string | null;
+}
+
+export interface PaymentGatewayMeta {
+  provider?: 'MIDTRANS' | 'XENDIT' | 'TRIPAY' | 'MANUAL_REKBER' | string | null;
+  gatewayRef?: string | null;
+  channel?:
+    | 'QRIS'
+    | 'BCA_VA'
+    | 'MANDIRI_VA'
+    | 'BRI_VA'
+    | 'BNI_VA'
+    | 'EWALLET'
+    | 'COD_CASH'
+    | string
+    | null;
+  vaNumber?: string | null;
+  qrisUrl?: string | null;
+  paymentUrl?: string | null;
+  expiredAt?: string | null;
+  paidAt?: string | null;
+}
+
+export interface Invoice {
+  id: string;
+  invoiceNumber: string;
+  orderId?: string | null;
+  orderNumber?: string | null;
+  type: InvoiceType;
+  status: InvoiceStatus;
+
+  // Buyer Info
+  buyerId?: string | null;
+  buyerName: string;
+  buyerPhone: string;
+  buyerEmail?: string | null;
+  buyerAddress: string;
+  buyerCity?: string | null;
+
+  // Seller Info
+  sellerId?: string | null;
+  sellerName: string;
+  sellerPhone?: string | null;
+  sellerEmail?: string | null;
+  sellerCity?: string | null;
+
+  items: InvoiceItem[];
+
+  // Finances
+  amount: number;
+  shippingFee: number;
+  serviceFee: number;
+  discountAmount?: number;
+  totalAmount: number;
+  netSellerAmount?: number;
+
+  // Delivery & Logistics
+  deliveryMethod?: DeliveryMethod | string | null;
+  courierName?: string | null;
+  trackingNumber?: string | null;
+
+  // Payment Gateway Meta
+  paymentMeta?: PaymentGatewayMeta | null;
+
+  notes?: string | null;
+  terms?: string | null;
+  issuedAt: string;
+  paidAt?: string | null;
+  dueDate?: string | null;
+  createdBy?: string;
+}
+
+export interface CreateCustomInvoiceInput {
+  type?: InvoiceType;
+  buyerName: string;
+  buyerPhone: string;
+  buyerEmail?: string | null;
+  buyerAddress: string;
+  buyerCity?: string | null;
+  sellerName: string;
+  sellerPhone?: string | null;
+  sellerCity?: string | null;
+  items: Array<{
+    title: string;
+    description?: string | null;
+    quantity: number;
+    price: number;
+    condition?: string | null;
+  }>;
+  shippingFee?: number;
+  serviceFee?: number;
+  discountAmount?: number;
+  paymentChannel?: string;
+  notes?: string | null;
+  terms?: string | null;
+  status?: InvoiceStatus;
+}

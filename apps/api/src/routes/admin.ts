@@ -2,7 +2,9 @@ import { zValidator } from '@hono/zod-validator';
 import type { UserProfile } from '@jbb/types';
 import {
   batchDisbursePayoutSchema,
+  createCustomInvoiceSchema,
   resolveDisputeSchema,
+  updateInvoiceStatusSchema,
   updateListingStatusAdminSchema
 } from '@jbb/validators';
 import { desc, eq } from 'drizzle-orm';
@@ -744,5 +746,63 @@ export const adminRoutes = new Hono<AppEnv>()
       success: true,
       message: `Status iklan berhasil diubah menjadi ${status}`,
       data: { listingId, status }
+    });
+  })
+
+  // 6. Admin Invoices Management
+  .get('/invoices', async (c) => {
+    const status = c.req.query('status');
+    const type = c.req.query('type');
+    let invoices = memoryStore.getAllInvoices();
+
+    if (status && status !== 'all') {
+      invoices = invoices.filter((inv) => inv.status.toLowerCase() === status.toLowerCase());
+    }
+
+    if (type && type !== 'all') {
+      invoices = invoices.filter((inv) => inv.type.toLowerCase() === type.toLowerCase());
+    }
+
+    return c.json({
+      success: true,
+      data: invoices
+    });
+  })
+
+  // Create Custom Manual Invoice (Admin)
+  .post('/invoices', zValidator('json', createCustomInvoiceSchema), async (c) => {
+    const input = c.req.valid('json');
+    const newInvoice = memoryStore.addCustomInvoice(input, 'ADMIN');
+
+    return c.json(
+      {
+        success: true,
+        message: `Faktur tagihan ${newInvoice.invoiceNumber} berhasil dibuat!`,
+        data: newInvoice
+      },
+      201
+    );
+  })
+
+  // Update Invoice Status (Admin)
+  .put('/invoices/:id/status', zValidator('json', updateInvoiceStatusSchema), async (c) => {
+    const id = c.req.param('id');
+    const { status, notes } = c.req.valid('json');
+
+    const updated = memoryStore.updateInvoiceStatus(id, status, notes);
+    if (!updated) {
+      return c.json(
+        {
+          success: false,
+          error: { code: 'NOT_FOUND', message: 'Faktur tagihan tidak ditemukan' }
+        },
+        404
+      );
+    }
+
+    return c.json({
+      success: true,
+      message: `Status faktur berhasil diperbarui menjadi ${status}`,
+      data: updated
     });
   });

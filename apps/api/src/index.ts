@@ -6,11 +6,13 @@ import { errorHandler } from './middlewares/error';
 import { adminRoutes } from './routes/admin';
 import { authRoutes } from './routes/auth';
 import { categoryRoutes } from './routes/categories';
+import { invoiceRoutes } from './routes/invoices';
 import { listingRoutes } from './routes/listings';
 import { offerRoutes } from './routes/offers';
 import { orderRoutes } from './routes/orders';
 import { reviewRoutes } from './routes/reviews';
 import { uploadRoutes } from './routes/uploads';
+import { webhookRoutes } from './routes/webhooks';
 import { wishlistRoutes } from './routes/wishlists';
 import type { AppEnv } from './types/env';
 
@@ -75,6 +77,8 @@ const routes = app
   .route('/api/listings', listingRoutes)
   .route('/api/offers', offerRoutes)
   .route('/api/orders', orderRoutes)
+  .route('/api/invoices', invoiceRoutes)
+  .route('/api/webhooks', webhookRoutes)
   .route('/api/reviews', reviewRoutes)
   .route('/api/uploads', uploadRoutes)
   .route('/api/admin', adminRoutes)

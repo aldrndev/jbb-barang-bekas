@@ -1,6 +1,6 @@
 'use client';
 
-import type { Order } from '@jbb/types';
+import type { Invoice, Order } from '@jbb/types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Check,
@@ -9,8 +9,8 @@ import {
   ChevronUp,
   Copy,
   ExternalLink,
-  FileText,
   Lock,
+  Receipt,
   Search,
   ShieldCheck,
   ShoppingBag,
@@ -22,6 +22,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import type React from 'react';
 import { Suspense, useEffect, useState } from 'react';
+import { InvoicePrintableView } from '../../components/invoice/invoice-printable-view';
 import { Breadcrumbs } from '../../components/layout/breadcrumbs';
 import { ConditionBadge } from '../../components/marketplace/condition-badge';
 import { EscrowStatusBadge } from '../../components/marketplace/escrow-status-badge';
@@ -76,6 +77,66 @@ function OrderHistoryContent() {
     },
     enabled: !!user
   });
+
+  const convertOrderToInvoice = (ord: Order): Invoice => {
+    const isPaid = ord.escrowStatus !== 'WAITING_PAYMENT' && ord.escrowStatus !== 'CANCELLED';
+    const status = ord.escrowStatus === 'CANCELLED' ? 'CANCELLED' : isPaid ? 'PAID' : 'UNPAID';
+    return {
+      id: ord.id,
+      invoiceNumber: `INV-${ord.orderNumber.replace(/^(JBB-|PEYGO-)/, 'PEYGO-')}`,
+      orderId: ord.id,
+      orderNumber: ord.orderNumber,
+      type: 'ESCROW_ORDER',
+      status,
+      buyerId: ord.buyerId,
+      buyerName: ord.recipientName || ord.buyer?.name || user?.name || 'Pembeli',
+      buyerPhone: ord.recipientPhone || ord.buyer?.phone || '-',
+      buyerEmail: ord.buyer?.email || user?.email,
+      buyerAddress: ord.shippingAddress || 'Alamat Belum Diisi',
+      buyerCity: ord.buyer?.city || ord.listing?.city,
+      sellerId: ord.sellerId,
+      sellerName: ord.seller?.name || ord.listing?.seller?.name || 'Penjual Terverifikasi',
+      sellerPhone: ord.seller?.phone || ord.listing?.seller?.phone,
+      sellerEmail: ord.seller?.email || ord.listing?.seller?.email,
+      sellerCity: ord.seller?.city || ord.listing?.city,
+      items: [
+        {
+          id: `item-${ord.id}`,
+          title: ord.listing?.title || 'Barang Pre-Loved Rekber',
+          description: `Kondisi: ${ord.listing?.condition || 'USED_GOOD'} • Kategori: ${ord.listing?.category?.name || 'Umum'}`,
+          quantity: 1,
+          price: ord.amount,
+          total: ord.amount,
+          condition: ord.listing?.condition || 'USED_GOOD'
+        }
+      ],
+      amount: ord.amount,
+      shippingFee: ord.shippingFee,
+      serviceFee: ord.serviceFee,
+      discountAmount: 0,
+      totalAmount: ord.totalAmount,
+      netSellerAmount: ord.amount,
+      deliveryMethod: ord.deliveryMethod,
+      courierName: ord.courierName,
+      trackingNumber: ord.trackingNumber,
+      paymentMeta: {
+        provider: 'MIDTRANS',
+        gatewayRef: `PG-PAY-${ord.orderNumber}`,
+        channel: ord.deliveryMethod === 'COD_KETEMUAN' ? 'COD_CASH' : 'BCA_VA',
+        vaNumber: `8800${ord.id.replace(/\D/g, '').slice(-6).padStart(6, '0')}`,
+        qrisUrl: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=PEYGO-${ord.orderNumber}`,
+        paymentUrl: `https://peygo.id/pay/${ord.orderNumber}`,
+        paidAt: isPaid ? ord.createdAt : null
+      },
+      notes:
+        ord.deliveryMethod === 'COD_KETEMUAN'
+          ? 'Metode COD Ketemuan Resmi: Dana tetap dijamin escrow sampai konfirmasi serah terima fisik dilakukan di aplikasi.'
+          : 'Pengiriman kurir berasuransi penuh. Dana di rekening bersama sampai inspeksi 48 jam selesai.',
+      issuedAt: ord.createdAt,
+      paidAt: isPaid ? ord.createdAt : null,
+      createdBy: 'SYSTEM'
+    };
+  };
 
   // Automatically sync role mode only when queryRole explicitly changes
   useEffect(() => {
@@ -604,10 +665,10 @@ function OrderHistoryContent() {
                       <button
                         type="button"
                         onClick={() => setSelectedInvoiceOrder(order)}
-                        className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-2.5 sm:px-3 py-1.5 text-xs font-bold text-slate-700 transition-colors cursor-pointer shadow-2xs"
+                        className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-2.5 sm:px-3 py-1.5 text-xs font-bold text-slate-700 transition-colors cursor-pointer shadow-2xs"
                       >
-                        <FileText className="h-3.5 w-3.5 text-slate-500" />
-                        <span>Bukti Rekber</span>
+                        <Receipt className="h-3.5 w-3.5 text-brand-600" />
+                        <span>Lihat Invoice</span>
                       </button>
 
                       <button
@@ -679,89 +740,55 @@ function OrderHistoryContent() {
           </div>
         )}
 
-        {/* E-Invoice / Bukti Rekber Modal */}
+        {/* E-Invoice / Bukti Transaksi Resmi Modal */}
         {selectedInvoiceOrder && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-in fade-in">
-            <div className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
-                <div className="flex items-center gap-2.5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-brand-600 text-white">
-                    <ShieldCheck className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black text-slate-900">
-                      Bukti Transaksi Rekber Bekasin
-                    </h3>
-                    <p className="text-[10px] text-slate-400">
-                      Nomor Transaksi Resmi Terverifikasi
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSelectedInvoiceOrder(null)}
-                  className="rounded-full bg-slate-100 p-1.5 text-slate-500 hover:bg-slate-200 cursor-pointer"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-
-              <div className="space-y-2.5 text-xs">
-                <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                  <span className="text-slate-500">Nomor Pesanan:</span>
-                  <span className="font-mono font-bold text-slate-900">
-                    {selectedInvoiceOrder.orderNumber}
+          <div
+            role="dialog"
+            aria-modal="true"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 p-4 backdrop-blur-xs animate-in fade-in overflow-y-auto"
+            onClick={() => setSelectedInvoiceOrder(null)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setSelectedInvoiceOrder(null);
+            }}
+          >
+            <div
+              role="document"
+              className="relative max-w-4xl w-full rounded-3xl bg-slate-50 p-4 sm:p-6 shadow-2xl max-h-[92vh] overflow-y-auto my-auto border border-slate-200"
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200">
+                <div className="flex items-center gap-2">
+                  <Receipt className="h-4 w-4 text-brand-600" />
+                  <span className="text-xs font-black text-slate-800">
+                    Faktur Transaksi Resmi #{selectedInvoiceOrder.orderNumber}
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                  <span className="text-slate-500">Status Rekber:</span>
-                  <EscrowStatusBadge status={selectedInvoiceOrder.escrowStatus} size="sm" />
-                </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                  <span className="text-slate-500">Nama Pembeli:</span>
-                  <span className="font-bold text-slate-900">
-                    {selectedInvoiceOrder.recipientName || user.name}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                  <span className="text-slate-500">Nama Penjual:</span>
-                  <span className="font-bold text-slate-900">
-                    {selectedInvoiceOrder.seller?.name || 'Penjual'}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                  <span className="text-slate-500">Harga Barang:</span>
-                  <span className="font-bold text-slate-900">
-                    {formatIDR(selectedInvoiceOrder.amount)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                  <span className="text-slate-500">Biaya Proteksi Rekber (1%):</span>
-                  <span className="font-bold text-slate-900">
-                    {formatIDR(selectedInvoiceOrder.serviceFee)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1 pt-2 border-t border-slate-200 text-sm font-black text-slate-900">
-                  <span>Total Dana Ditahan:</span>
-                  <span className="text-brand-700">
-                    {formatIDR(selectedInvoiceOrder.totalAmount)}
-                  </span>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/invoice/${selectedInvoiceOrder.id}?role=${orderMode === 'seller' ? 'SELLER' : 'BUYER'}`}
+                    target="_blank"
+                    className="inline-flex items-center gap-1 rounded-xl bg-white border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 shadow-2xs"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5" />
+                    <span>Buka Standalone</span>
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedInvoiceOrder(null)}
+                    className="rounded-full bg-white p-1.5 text-slate-500 hover:bg-slate-200 cursor-pointer shadow-2xs"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-brand-50/80 p-3.5 border border-brand-200 text-[11px] text-brand-900 leading-relaxed font-medium">
-                🛡️ <strong>Jaminan Rekber:</strong> Dana transaksi berada dalam rekening perantara
-                resmi Bekasin dan baru akan dicairkan ke penjual setelah barang diterima dan
-                melewati masa inspeksi fisik 48 jam.
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setSelectedInvoiceOrder(null)}
-                className="w-full rounded-full bg-slate-900 hover:bg-slate-800 py-2.5 text-xs font-bold text-white transition-colors cursor-pointer"
-              >
-                Tutup Bukti Transaksi
-              </button>
+              <InvoicePrintableView
+                invoice={convertOrderToInvoice(selectedInvoiceOrder)}
+                roleMode={orderMode === 'seller' ? 'SELLER' : 'BUYER'}
+                showBackToDashboard={false}
+                onStatusUpdated={() => refetch()}
+              />
             </div>
           </div>
         )}
