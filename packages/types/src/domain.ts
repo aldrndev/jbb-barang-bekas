@@ -424,6 +424,7 @@ export interface CreateCustomInvoiceInput {
   sellerPhone?: string | null;
   sellerCity?: string | null;
   items: Array<{
+    keyId?: string;
     title: string;
     description?: string | null;
     quantity: number;

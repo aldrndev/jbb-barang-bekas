@@ -36,7 +36,11 @@ export default function AdminInvoicesPage() {
   // Create Invoice Modal State
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<CreateCustomInvoiceInput>({
+  const [formData, setFormData] = useState<
+    CreateCustomInvoiceInput & {
+      items: Array<CreateCustomInvoiceInput['items'][number] & { keyId?: string }>;
+    }
+  >({
     type: 'CUSTOM_ADMIN',
     buyerName: '',
     buyerPhone: '',
@@ -48,6 +52,7 @@ export default function AdminInvoicesPage() {
     sellerCity: 'Jakarta Pusat',
     items: [
       {
+        keyId: 'item-1',
         title: '',
         description: '',
         quantity: 1,
@@ -115,6 +120,7 @@ export default function AdminInvoicesPage() {
       items: [
         ...prev.items,
         {
+          keyId: `item-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
           title: '',
           description: '',
           quantity: 1,
@@ -513,10 +519,11 @@ export default function AdminInvoicesPage() {
               {/* Jenis Tagihan & Channel */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">
+                  <label htmlFor="custom-inv-type" className="font-bold text-slate-700 block mb-1">
                     Jenis Layanan / Faktur:
                   </label>
                   <select
+                    id="custom-inv-type"
                     value={formData.type}
                     onChange={(e) =>
                       setFormData({ ...formData, type: e.target.value as InvoiceType })
@@ -530,10 +537,14 @@ export default function AdminInvoicesPage() {
                 </div>
 
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">
+                  <label
+                    htmlFor="custom-inv-channel"
+                    className="font-bold text-slate-700 block mb-1"
+                  >
                     Metode / Saluran Pembayaran:
                   </label>
                   <select
+                    id="custom-inv-channel"
                     value={formData.paymentChannel}
                     onChange={(e) => setFormData({ ...formData, paymentChannel: e.target.value })}
                     className="w-full rounded-xl border border-slate-300 p-2.5 bg-slate-50 font-bold text-slate-800 focus:bg-white"
@@ -555,10 +566,14 @@ export default function AdminInvoicesPage() {
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div>
-                    <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                    <label
+                      htmlFor="custom-inv-buyer-name"
+                      className="text-[11px] font-bold text-slate-600 block mb-1"
+                    >
                       Nama Lengkap Pembeli *
                     </label>
                     <input
+                      id="custom-inv-buyer-name"
                       type="text"
                       required
                       placeholder="Contoh: Budi Santoso"
@@ -568,10 +583,14 @@ export default function AdminInvoicesPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                    <label
+                      htmlFor="custom-inv-buyer-phone"
+                      className="text-[11px] font-bold text-slate-600 block mb-1"
+                    >
                       Nomor WhatsApp / HP *
                     </label>
                     <input
+                      id="custom-inv-buyer-phone"
                       type="text"
                       required
                       placeholder="08123456789"
@@ -583,10 +602,14 @@ export default function AdminInvoicesPage() {
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                  <label
+                    htmlFor="custom-inv-buyer-address"
+                    className="text-[11px] font-bold text-slate-600 block mb-1"
+                  >
                     Alamat Lengkap Pembeli *
                   </label>
                   <input
+                    id="custom-inv-buyer-address"
                     type="text"
                     required
                     placeholder="Jl. Thamrin No. 10, RT 01/RW 02"
@@ -604,10 +627,14 @@ export default function AdminInvoicesPage() {
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div>
-                    <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                    <label
+                      htmlFor="custom-inv-seller-name"
+                      className="text-[11px] font-bold text-slate-600 block mb-1"
+                    >
                       Nama Penjual / Toko *
                     </label>
                     <input
+                      id="custom-inv-seller-name"
                       type="text"
                       required
                       value={formData.sellerName}
@@ -616,10 +643,14 @@ export default function AdminInvoicesPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                    <label
+                      htmlFor="custom-inv-seller-city"
+                      className="text-[11px] font-bold text-slate-600 block mb-1"
+                    >
                       Kota Penjual
                     </label>
                     <input
+                      id="custom-inv-seller-city"
                       type="text"
                       value={formData.sellerCity || ''}
                       onChange={(e) => setFormData({ ...formData, sellerCity: e.target.value })}
@@ -648,13 +679,14 @@ export default function AdminInvoicesPage() {
                 <div className="space-y-2 pt-1">
                   {formData.items.map((item, idx) => (
                     <div
-                      key={idx}
+                      key={item.keyId || `row-${idx}`}
                       className="grid grid-cols-12 gap-2 items-center bg-white p-2 rounded-xl border border-slate-200"
                     >
                       <div className="col-span-6">
                         <input
                           type="text"
                           required
+                          aria-label="Nama barang atau jasa tagihan"
                           placeholder="Nama Barang / Layanan"
                           value={item.title}
                           onChange={(e) => handleItemChange(idx, 'title', e.target.value)}
@@ -666,6 +698,7 @@ export default function AdminInvoicesPage() {
                           type="number"
                           min={1}
                           required
+                          aria-label="Jumlah kuantitas item"
                           value={item.quantity}
                           onChange={(e) =>
                             handleItemChange(idx, 'quantity', Number(e.target.value))
@@ -679,6 +712,7 @@ export default function AdminInvoicesPage() {
                           min={1000}
                           step={1000}
                           required
+                          aria-label="Harga satuan barang atau jasa"
                           placeholder="Harga (Rp)"
                           value={item.price || ''}
                           onChange={(e) => handleItemChange(idx, 'price', Number(e.target.value))}
@@ -690,6 +724,7 @@ export default function AdminInvoicesPage() {
                           <button
                             type="button"
                             onClick={() => handleRemoveItemRow(idx)}
+                            aria-label="Hapus baris item ini"
                             className="p-1 text-rose-500 hover:bg-rose-50 rounded"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -704,10 +739,14 @@ export default function AdminInvoicesPage() {
               {/* Summary Fees & Status */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 <div>
-                  <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                  <label
+                    htmlFor="custom-inv-shipping-fee"
+                    className="text-[11px] font-bold text-slate-600 block mb-1"
+                  >
                     Ongkos Kirim (Rp)
                   </label>
                   <input
+                    id="custom-inv-shipping-fee"
                     type="number"
                     min={0}
                     value={formData.shippingFee}
@@ -718,10 +757,14 @@ export default function AdminInvoicesPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                  <label
+                    htmlFor="custom-inv-service-fee"
+                    className="text-[11px] font-bold text-slate-600 block mb-1"
+                  >
                     Biaya Layanan Rekber (Rp)
                   </label>
                   <input
+                    id="custom-inv-service-fee"
                     type="number"
                     min={0}
                     value={formData.serviceFee}
@@ -732,10 +775,14 @@ export default function AdminInvoicesPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                  <label
+                    htmlFor="custom-inv-initial-status"
+                    className="text-[11px] font-bold text-slate-600 block mb-1"
+                  >
                     Status Awal Faktur
                   </label>
                   <select
+                    id="custom-inv-initial-status"
                     value={formData.status}
                     onChange={(e) =>
                       setFormData({ ...formData, status: e.target.value as InvoiceStatus })
