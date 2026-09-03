@@ -37,7 +37,7 @@ export function Breadcrumbs({ items, className = '' }: BreadcrumbsProps) {
   if (!items) {
     const segments = pathname.split('/').filter(Boolean);
     breadcrumbItems = segments.map((segment, idx) => {
-      const href = '/' + segments.slice(0, idx + 1).join('/');
+      const href = `/${segments.slice(0, idx + 1).join('/')}`;
       const label = routeLabelMap[segment] || decodeURIComponent(segment.replace(/-/g, ' '));
       const isLast = idx === segments.length - 1;
 
@@ -75,7 +75,10 @@ export function Breadcrumbs({ items, className = '' }: BreadcrumbsProps) {
           const isLast = index === breadcrumbItems.length - 1;
 
           return (
-            <li key={index} className="inline-flex items-center gap-1.5 min-w-0 shrink-0">
+            <li
+              key={`${item.label}-${item.href || index}`}
+              className="inline-flex items-center gap-1.5 min-w-0 shrink-0"
+            >
               <ChevronRight className="h-3 w-3 text-slate-300 shrink-0" />
               {item.href && !isLast ? (
                 <Link

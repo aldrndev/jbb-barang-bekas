@@ -381,6 +381,7 @@ function JualBarangContent() {
 
           <div className="pt-2">
             <button
+              type="button"
               onClick={openAuthModal}
               className="w-full flex items-center justify-center gap-2 rounded-full bg-brand-600 px-6 py-3 text-xs font-bold text-white shadow-md shadow-brand-600/25 hover:bg-brand-700 transition-all cursor-pointer"
             >
@@ -538,10 +539,18 @@ function JualBarangContent() {
 
               {/* Cloudflare Direct Drag & Drop Upload Zone */}
               <div
+                role="button"
+                tabIndex={0}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    fileInputRef.current?.click();
+                  }
+                }}
                 className={`relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-4 sm:p-6 text-center cursor-pointer transition-all ${
                   isDragging
                     ? 'border-brand-500 bg-brand-50/60 scale-101'
@@ -582,7 +591,7 @@ function JualBarangContent() {
                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-1">
                   {imageUrls.map((url, idx) => (
                     <div
-                      key={idx}
+                      key={url}
                       className="group relative aspect-square rounded-xl overflow-hidden border border-slate-200 bg-slate-100 shadow-2xs"
                     >
                       <img
@@ -621,8 +630,11 @@ function JualBarangContent() {
               <div className="space-y-3">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   <div>
-                    <label className="text-xs font-bold text-slate-800">Kategori Barang</label>
+                    <label htmlFor="jual-category" className="text-xs font-bold text-slate-800">
+                      Kategori Barang
+                    </label>
                     <select
+                      id="jual-category"
                       value={categoryId}
                       onChange={(e) => setCategoryId(e.target.value)}
                       className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs sm:text-sm text-slate-800 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none cursor-pointer"
@@ -636,8 +648,11 @@ function JualBarangContent() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-800">Kondisi Fisik Unit</label>
+                    <label htmlFor="jual-condition" className="text-xs font-bold text-slate-800">
+                      Kondisi Fisik Unit
+                    </label>
                     <select
+                      id="jual-condition"
                       value={condition}
                       onChange={(e) => setCondition(e.target.value as ItemCondition)}
                       className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs sm:text-sm text-slate-800 font-bold mt-1 focus:border-brand-500 focus:bg-white focus:outline-none cursor-pointer"
@@ -652,10 +667,11 @@ function JualBarangContent() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-800">
+                  <label htmlFor="jual-title" className="text-xs font-bold text-slate-800">
                     Judul Iklan <span className="text-rose-500">*</span>
                   </label>
                   <input
+                    id="jual-title"
                     type="text"
                     required
                     placeholder={categoryConfig.defaultTitlePlaceholder}
@@ -668,9 +684,9 @@ function JualBarangContent() {
 
                 {/* Completeness Section (Dynamic per category) */}
                 <div>
-                  <label className="text-xs font-bold text-slate-800">
+                  <span className="block text-xs font-bold text-slate-800">
                     Kelengkapan Paket Unit ({categoryConfig.name})
-                  </label>
+                  </span>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-1.5">
                     {categoryConfig.completenessOptions.map((comp) => {
                       const isChecked = completeness.includes(comp.id as Completeness);
@@ -710,10 +726,14 @@ function JualBarangContent() {
                     className={`grid grid-cols-1 ${categoryConfig.showWarrantyField ? 'sm:grid-cols-2' : ''} gap-2.5`}
                   >
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                      <label
+                        htmlFor="jual-year"
+                        className="text-[11px] font-bold text-slate-700 block mb-1"
+                      >
                         {categoryConfig.yearLabel}
                       </label>
                       <select
+                        id="jual-year"
                         value={purchaseYear}
                         onChange={(e) => setPurchaseYear(Number(e.target.value))}
                         className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 focus:border-brand-500 focus:outline-none cursor-pointer"
@@ -730,10 +750,14 @@ function JualBarangContent() {
 
                     {categoryConfig.showWarrantyField && (
                       <div>
-                        <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                        <label
+                          htmlFor="jual-warranty"
+                          className="text-[11px] font-bold text-slate-700 block mb-1"
+                        >
                           {categoryConfig.warrantyLabel}
                         </label>
                         <input
+                          id="jual-warranty"
                           type="text"
                           placeholder={categoryConfig.warrantyPlaceholder}
                           value={warrantyUntil}
@@ -790,9 +814,9 @@ function JualBarangContent() {
                     <span className="text-[10px] font-bold text-slate-400">
                       Preset Spek {categoryConfig.name}:
                     </span>
-                    {categoryConfig.suggestedSpecs.map((s, idx) => (
+                    {categoryConfig.suggestedSpecs.map((s) => (
                       <button
-                        key={idx}
+                        key={s}
                         type="button"
                         onClick={() => handleAddSpecRow(s)}
                         className="rounded-lg border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-bold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer shadow-2xs"
@@ -806,7 +830,7 @@ function JualBarangContent() {
                   {specsList.length > 0 && (
                     <div className="space-y-2 pt-1">
                       {specsList.map((spec, idx) => (
-                        <div key={idx} className="flex items-center gap-2">
+                        <div key={`spec-${idx}-${spec.key}`} className="flex items-center gap-2">
                           <input
                             type="text"
                             placeholder="Nama Spek (ex: Ukuran)"
@@ -837,7 +861,7 @@ function JualBarangContent() {
 
                 <div>
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-slate-800">
+                    <label htmlFor="jual-description" className="text-xs font-bold text-slate-800">
                       Deskripsi & Kejujuran Fisik <span className="text-rose-500">*</span>
                     </label>
                     <span
@@ -847,6 +871,7 @@ function JualBarangContent() {
                     </span>
                   </div>
                   <textarea
+                    id="jual-description"
                     rows={4}
                     required
                     placeholder={categoryConfig.defaultDescriptionPlaceholder}
@@ -868,10 +893,11 @@ function JualBarangContent() {
               <div className="space-y-3">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   <div>
-                    <label className="text-xs font-bold text-slate-800">
+                    <label htmlFor="jual-price" className="text-xs font-bold text-slate-800">
                       Harga Jual (Rp) <span className="text-rose-500">*</span>
                     </label>
                     <input
+                      id="jual-price"
                       type="number"
                       required
                       min={1000}
@@ -883,10 +909,14 @@ function JualBarangContent() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-800">
+                    <label
+                      htmlFor="jual-original-price"
+                      className="text-xs font-bold text-slate-800"
+                    >
                       Harga Beli Baru (Opsional)
                     </label>
                     <input
+                      id="jual-original-price"
                       type="number"
                       placeholder="Contoh: 21000000"
                       value={originalPrice || ''}
@@ -931,10 +961,14 @@ function JualBarangContent() {
 
                   {isNegotiable && (
                     <div className="pt-2 border-t border-slate-200 space-y-1 animate-in fade-in">
-                      <label className="text-[10px] font-bold text-slate-700 block">
+                      <label
+                        htmlFor="jual-min-offer"
+                        className="text-[10px] font-bold text-slate-700 block"
+                      >
                         Batas Harga Nego Minimal (Opsional)
                       </label>
                       <input
+                        id="jual-min-offer"
                         type="number"
                         placeholder="Tawaran di bawah harga ini akan ditolak otomatis..."
                         value={minOfferPrice || ''}
@@ -958,10 +992,14 @@ function JualBarangContent() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 <div>
-                  <label className="text-[10px] font-bold text-slate-700 block mb-0.5">
+                  <label
+                    htmlFor="jual-province"
+                    className="text-[10px] font-bold text-slate-700 block mb-0.5"
+                  >
                     Provinsi <span className="text-rose-500">*</span>
                   </label>
                   <select
+                    id="jual-province"
                     required
                     value={province}
                     onChange={(e) => handleProvinceChange(e.target.value)}
@@ -979,10 +1017,14 @@ function JualBarangContent() {
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-slate-700 block mb-0.5">
+                  <label
+                    htmlFor="jual-city"
+                    className="text-[10px] font-bold text-slate-700 block mb-0.5"
+                  >
                     Kota / Kabupaten <span className="text-rose-500">*</span>
                   </label>
                   <select
+                    id="jual-city"
                     required
                     disabled={!province}
                     value={city}
@@ -1001,11 +1043,15 @@ function JualBarangContent() {
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-slate-700 block mb-0.5">
+                  <label
+                    htmlFor="jual-district"
+                    className="text-[10px] font-bold text-slate-700 block mb-0.5"
+                  >
                     Kecamatan <span className="text-rose-500">*</span>
                   </label>
                   {availableDistricts.length > 0 ? (
                     <select
+                      id="jual-district"
                       required
                       disabled={!city}
                       value={district}
@@ -1023,6 +1069,7 @@ function JualBarangContent() {
                     </select>
                   ) : (
                     <input
+                      id="jual-district"
                       type="text"
                       required
                       placeholder="Nama Kecamatan..."
@@ -1050,10 +1097,14 @@ function JualBarangContent() {
 
                 {isCodAvailable && (
                   <div className="pt-2 border-t border-slate-200 space-y-1 animate-in fade-in">
-                    <label className="text-[10px] font-bold text-slate-700 block">
+                    <label
+                      htmlFor="jual-cod-point"
+                      className="text-[10px] font-bold text-slate-700 block"
+                    >
                       Titik Temu COD:
                     </label>
                     <input
+                      id="jual-cod-point"
                       type="text"
                       placeholder="Contoh: Gandaria City / Starbucks Blok M Plaza"
                       value={codMeetingPoint}

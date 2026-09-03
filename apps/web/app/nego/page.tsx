@@ -362,10 +362,14 @@ function NegoDashboardContent() {
                         <div className="space-y-2">
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             <div>
-                              <label className="text-[10px] font-bold text-slate-500 block mb-0.5">
+                              <label
+                                htmlFor="counterPriceInput"
+                                className="text-[10px] font-bold text-slate-500 block mb-0.5"
+                              >
                                 Nominal Counter (Rp):
                               </label>
                               <input
+                                id="counterPriceInput"
                                 type="number"
                                 value={counterPriceInput}
                                 onChange={(e) => setCounterPriceInput(Number(e.target.value))}
@@ -373,10 +377,14 @@ function NegoDashboardContent() {
                               />
                             </div>
                             <div>
-                              <label className="text-[10px] font-bold text-slate-500 block mb-0.5">
+                              <label
+                                htmlFor="counterMessageInput"
+                                className="text-[10px] font-bold text-slate-500 block mb-0.5"
+                              >
                                 Pesan (Opsional):
                               </label>
                               <input
+                                id="counterMessageInput"
                                 type="text"
                                 value={counterMessageInput}
                                 onChange={(e) => setCounterMessageInput(e.target.value)}

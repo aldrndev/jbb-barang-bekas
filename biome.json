@@ -68,11 +68,7 @@
       },
       "a11y": {
         "noSvgWithoutTitle": "off",
-        "useSemanticElements": "off",
-        "noLabelWithoutControl": "warn",
-        "useKeyWithClickEvents": "warn",
-        "useKeyWithMouseEvents": "warn",
-        "useButtonType": "warn"
+        "useSemanticElements": "off"
       }
     }
   }

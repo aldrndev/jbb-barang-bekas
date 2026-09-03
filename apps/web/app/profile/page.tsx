@@ -94,7 +94,7 @@ export default function ProfilePage() {
       setKtpImageUrl(user.ktpImageUrl || '');
       setSelfieImageUrl(user.selfieImageUrl || '');
     }
-  }, [user?.id]);
+  }, [user]);
 
   if (!user) {
     return (
@@ -340,6 +340,7 @@ export default function ProfilePage() {
                     </button>
                   ) : (
                     <button
+                      type="button"
                       onClick={() => setIsKycModalOpen(true)}
                       className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-extrabold text-amber-900 border border-amber-300 hover:bg-amber-100 transition-colors cursor-pointer"
                     >
@@ -471,10 +472,14 @@ export default function ProfilePage() {
             <form onSubmit={handleSaveProfile} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label
+                    htmlFor="profile-name"
+                    className="block text-xs font-bold text-slate-700 mb-1"
+                  >
                     Nama Lengkap
                   </label>
                   <input
+                    id="profile-name"
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -485,10 +490,14 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label
+                    htmlFor="profile-email"
+                    className="block text-xs font-bold text-slate-700 mb-1"
+                  >
                     Email Terdaftar
                   </label>
                   <input
+                    id="profile-email"
                     type="email"
                     value={user.email}
                     disabled
@@ -497,10 +506,14 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label
+                    htmlFor="profile-phone"
+                    className="block text-xs font-bold text-slate-700 mb-1"
+                  >
                     Nomor WhatsApp Aktif
                   </label>
                   <input
+                    id="profile-phone"
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
@@ -511,10 +524,14 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label
+                    htmlFor="profile-city"
+                    className="block text-xs font-bold text-slate-700 mb-1"
+                  >
                     Kota / Domisili
                   </label>
                   <input
+                    id="profile-city"
                     type="text"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
@@ -526,8 +543,14 @@ export default function ProfilePage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Bio Singkat</label>
+                <label
+                  htmlFor="profile-bio"
+                  className="block text-xs font-bold text-slate-700 mb-1"
+                >
+                  Bio Singkat
+                </label>
                 <textarea
+                  id="profile-bio"
                   rows={3}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
@@ -585,13 +608,14 @@ export default function ProfilePage() {
 
                 <p className="text-[11px] text-slate-600 font-medium leading-relaxed">
                   {user.isKycVerified
-                    ? `Identitas KTP Anda (${user.nik ? user.nik.slice(0, 4) + '********' + user.nik.slice(-4) : '3174********0001'}) telah diverifikasi resmi oleh sistem KYC Peygo. Anda memiliki lencana resmi penjual terpercaya.`
+                    ? `Identitas KTP Anda (${user.nik ? `${user.nik.slice(0, 4)}********${user.nik.slice(-4)}` : '3174********0001'}) telah diverifikasi resmi oleh sistem KYC Peygo. Anda memiliki lencana resmi penjual terpercaya.`
                     : 'Verifikasi KTP Anda untuk mendapatkan badge Checkmark Biru, menaikkan Trust Score ke 98%, dan membuka akses pencairan saldo hasil penjualan tanpa batas.'}
                 </p>
 
                 <div className="pt-1">
                   {user.isKycVerified ? (
                     <button
+                      type="button"
                       onClick={() => setIsKycModalOpen(true)}
                       className="text-xs font-bold text-brand-700 hover:text-brand-800 underline cursor-pointer"
                     >
@@ -599,6 +623,7 @@ export default function ProfilePage() {
                     </button>
                   ) : (
                     <button
+                      type="button"
                       onClick={() => setIsKycModalOpen(true)}
                       className="flex items-center gap-1.5 rounded-full bg-brand-600 hover:bg-brand-700 px-4 py-2 text-xs font-bold text-white shadow-xs transition-colors cursor-pointer"
                     >
@@ -640,6 +665,7 @@ export default function ProfilePage() {
                 </p>
                 <div className="pt-1">
                   <button
+                    type="button"
                     onClick={() => setActiveTab('biodata')}
                     className="text-xs font-bold text-brand-700 hover:text-brand-800 underline cursor-pointer"
                   >
@@ -695,10 +721,14 @@ export default function ProfilePage() {
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                      <label
+                        htmlFor="profile-bank-name"
+                        className="text-[11px] font-bold text-slate-700 block mb-1"
+                      >
                         Nama Bank / Wallet
                       </label>
                       <select
+                        id="profile-bank-name"
                         value={bankName}
                         onChange={(e) => setBankName(e.target.value)}
                         className="w-full rounded-xl border border-slate-300 bg-slate-50/50 p-2 text-xs font-bold text-slate-900 focus:border-brand-500 focus:bg-white focus:outline-none cursor-pointer"
@@ -711,10 +741,14 @@ export default function ProfilePage() {
                       </select>
                     </div>
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                      <label
+                        htmlFor="profile-bank-account"
+                        className="text-[11px] font-bold text-slate-700 block mb-1"
+                      >
                         Nomor Rekening / No HP Wallet
                       </label>
                       <input
+                        id="profile-bank-account"
                         type="text"
                         required
                         placeholder="Contoh: 8271029384"
@@ -724,10 +758,14 @@ export default function ProfilePage() {
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                      <label
+                        htmlFor="profile-bank-holder"
+                        className="text-[11px] font-bold text-slate-700 block mb-1"
+                      >
                         Atas Nama Rekening
                       </label>
                       <input
+                        id="profile-bank-holder"
                         type="text"
                         required
                         placeholder="Contoh: Budi Santoso"
@@ -875,10 +913,11 @@ export default function ProfilePage() {
 
             <form onSubmit={handleSubmitKyc} className="space-y-4 text-xs">
               <div>
-                <label className="font-bold text-slate-800 block mb-1">
+                <label htmlFor="profile-nik" className="font-bold text-slate-800 block mb-1">
                   Nomor Induk Kependudukan (NIK 16 Digit) <span className="text-rose-500">*</span>
                 </label>
                 <input
+                  id="profile-nik"
                   type="text"
                   maxLength={16}
                   required
@@ -891,11 +930,19 @@ export default function ProfilePage() {
 
               {/* Upload Foto KTP */}
               <div>
-                <label className="font-bold text-slate-800 block mb-1">
+                <span className="font-bold text-slate-800 block mb-1">
                   1. Foto Fisik E-KTP Asli <span className="text-rose-500">*</span>
-                </label>
+                </span>
                 <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => ktpFileInputRef.current?.click()}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      ktpFileInputRef.current?.click();
+                    }
+                  }}
                   className="relative rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 hover:bg-slate-100 p-3 text-center cursor-pointer transition-colors"
                 >
                   <input
@@ -930,11 +977,19 @@ export default function ProfilePage() {
 
               {/* Upload Selfie + KTP */}
               <div>
-                <label className="font-bold text-slate-800 block mb-1">
+                <span className="font-bold text-slate-800 block mb-1">
                   2. Foto Selfie Bersama E-KTP <span className="text-rose-500">*</span>
-                </label>
+                </span>
                 <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => selfieFileInputRef.current?.click()}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      selfieFileInputRef.current?.click();
+                    }
+                  }}
                   className="relative rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 hover:bg-slate-100 p-3 text-center cursor-pointer transition-colors"
                 >
                   <input

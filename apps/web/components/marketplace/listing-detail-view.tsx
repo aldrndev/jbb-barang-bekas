@@ -227,6 +227,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
 
           <div className="hidden sm:flex items-center gap-2 shrink-0">
             <button
+              type="button"
               onClick={handleShare}
               className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-xs"
             >
@@ -234,6 +235,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
               <span>Bagikan</span>
             </button>
             <button
+              type="button"
               onClick={handleToggleWishlist}
               className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-xs ${
                 wishlisted
@@ -333,8 +335,16 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
 
                 {/* Main Stage Image Frame */}
                 <div
+                  role="button"
+                  tabIndex={0}
                   className="relative aspect-4/3 sm:aspect-16/11 w-full overflow-hidden rounded-2xl flex items-center justify-center p-2 cursor-pointer bg-slate-50/60"
                   onClick={() => setIsLightboxOpen(true)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setIsLightboxOpen(true);
+                    }
+                  }}
                 >
                   <img
                     src={primaryImageUrl}
@@ -1127,6 +1137,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
             <div className="absolute bottom-6 flex items-center gap-2.5 z-10 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
               {images.map((img, idx) => (
                 <button
+                  type="button"
                   key={img.id}
                   onClick={() => setActiveImageIdx(idx)}
                   className={`h-2.5 rounded-full transition-all cursor-pointer ${

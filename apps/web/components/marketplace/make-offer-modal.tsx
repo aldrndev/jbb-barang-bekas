@@ -91,6 +91,7 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
       <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xl animate-in zoom-in-95 duration-200 my-auto">
         {/* Close Button */}
         <button
+          type="button"
           onClick={onClose}
           className="absolute right-4 top-4 rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
         >
@@ -200,9 +201,9 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
 
             {/* Quick Discount Percent Chips */}
             <div className="mt-4">
-              <label className="text-[11px] font-bold text-slate-600">
+              <span className="block text-[11px] font-bold text-slate-600">
                 Pilih Cepat Persentase Nego:
-              </label>
+              </span>
               <div className="grid grid-cols-4 gap-2 mt-1.5">
                 {[5, 10, 15, 20].map((percent) => (
                   <button
@@ -231,7 +232,7 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
             {/* Form */}
             <form onSubmit={handleSubmit} className="mt-4 space-y-3.5">
               <div>
-                <label className="text-[11px] font-bold text-slate-700">
+                <label htmlFor="offerAmount" className="text-[11px] font-bold text-slate-700">
                   Harga Tawaran Anda (Rp)
                 </label>
                 <div className="relative mt-1">
@@ -239,6 +240,7 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
                     Rp
                   </span>
                   <input
+                    id="offerAmount"
                     type="number"
                     min="1000"
                     step="any"
@@ -258,10 +260,11 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
               </div>
 
               <div>
-                <label className="text-[11px] font-bold text-slate-700">
+                <label htmlFor="offerMessage" className="text-[11px] font-bold text-slate-700">
                   Catatan untuk Penjual (Opsional)
                 </label>
                 <textarea
+                  id="offerMessage"
                   rows={2}
                   placeholder="Contoh: Bisa COD Gandaria City besok siang gan? Siap langsung checkout aman."
                   value={message}

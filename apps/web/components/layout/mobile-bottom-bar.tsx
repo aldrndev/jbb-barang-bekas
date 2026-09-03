@@ -53,6 +53,7 @@ export function MobileBottomBar() {
               </Link>
             ) : (
               <button
+                type="button"
                 key={item.label}
                 onClick={openAuthModal}
                 className="flex flex-col items-center justify-center -mt-6 group cursor-pointer"
@@ -68,6 +69,7 @@ export function MobileBottomBar() {
           if (item.onClick) {
             return (
               <button
+                type="button"
                 key={item.label}
                 onClick={item.onClick}
                 className="flex flex-1 flex-col items-center justify-center py-1 text-slate-500 hover:text-brand-600 active:scale-95 transition-all cursor-pointer relative"
