@@ -424,8 +424,8 @@ export default function HomePage() {
                         ? (typeof spotlightListing.images?.[0] === 'string'
                             ? spotlightListing.images[0]
                             : spotlightListing.images?.[0]?.url) ||
-                          'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80'
-                        : 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80'
+                          'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15-pro-max.jpg'
+                        : 'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15-pro-max.jpg'
                     }
                     alt={
                       isRealSpotlight && spotlightListing
@@ -435,7 +435,7 @@ export default function HomePage() {
                     onError={(e) => {
                       e.currentTarget.onerror = null;
                       e.currentTarget.src =
-                        'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80';
+                        'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15-pro-max.jpg';
                     }}
                     className="h-full w-full object-cover group-hover:scale-103 transition-transform duration-500"
                   />

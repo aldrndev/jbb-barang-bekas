@@ -331,21 +331,21 @@ export const seedListings = [
       {
         id: 'img-1-1',
         listingId: 'item-1',
-        url: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80',
+        url: 'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-13-pro.jpg',
         isPrimary: true,
         sortOrder: 1
       },
       {
         id: 'img-1-2',
         listingId: 'item-1',
-        url: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80',
+        url: 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-13-pro-01.jpg',
         isPrimary: false,
         sortOrder: 2
       },
       {
         id: 'img-1-3',
         listingId: 'item-1',
-        url: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80',
+        url: 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-13-pro-2.jpg',
         isPrimary: false,
         sortOrder: 3
       }
@@ -391,14 +391,14 @@ export const seedListings = [
       {
         id: 'img-2-1',
         listingId: 'item-2',
-        url: 'https://images.unsplash.com/photo-1663499482523-1c0c1bae4ce1?w=800&auto=format&fit=crop&q=80',
+        url: 'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-14-pro.jpg',
         isPrimary: true,
         sortOrder: 1
       },
       {
         id: 'img-2-2',
         listingId: 'item-2',
-        url: 'https://images.unsplash.com/photo-1663499482512-c5101031d277?w=800&auto=format&fit=crop&q=80',
+        url: 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-14-pro-3.jpg',
         isPrimary: false,
         sortOrder: 2
       }
@@ -444,14 +444,14 @@ export const seedListings = [
       {
         id: 'img-3-1',
         listingId: 'item-3',
-        url: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop&q=80',
+        url: 'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s23-ultra-5g.jpg',
         isPrimary: true,
         sortOrder: 1
       },
       {
         id: 'img-3-2',
         listingId: 'item-3',
-        url: 'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80',
+        url: 'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s23-ultra-5g-1.jpg',
         isPrimary: false,
         sortOrder: 2
       }

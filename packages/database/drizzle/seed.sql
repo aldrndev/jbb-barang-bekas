@@ -135,27 +135,27 @@ INSERT OR REPLACE INTO listings (id, seller_id, category_id, title, slug, descri
 -- 4. 165+ Real Listing Images (2-4 images per product)
 INSERT OR REPLACE INTO listing_images (id, listing_id, url, is_primary, sort_order, created_at) VALUES
 -- Item 1 (iPhone 13 Pro)
-('img-1-1', 'item-1', 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-08-30T14:30:00Z'),
-('img-1-2', 'item-1', 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-08-30T14:30:00Z'),
-('img-1-3', 'item-1', 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80', 0, 3, '2026-08-30T14:30:00Z'),
+('img-1-1', 'item-1', 'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-13-pro.jpg', 1, 1, '2026-08-30T14:30:00Z'),
+('img-1-2', 'item-1', 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-13-pro-01.jpg', 0, 2, '2026-08-30T14:30:00Z'),
+('img-1-3', 'item-1', 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-13-pro-2.jpg', 0, 3, '2026-08-30T14:30:00Z'),
 
 -- Item 2 (iPhone 14 Pro Deep Purple)
-('img-2-1', 'item-2', 'https://images.unsplash.com/photo-1663499482523-1c0c1bae4ce1?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-08-29T11:00:00Z'),
-('img-2-2', 'item-2', 'https://images.unsplash.com/photo-1663499482512-c5101031d277?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-08-29T11:00:00Z'),
-('img-2-3', 'item-2', 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80', 0, 3, '2026-08-29T11:00:00Z'),
+('img-2-1', 'item-2', 'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-14-pro.jpg', 1, 1, '2026-08-29T11:00:00Z'),
+('img-2-2', 'item-2', 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-14-pro-3.jpg', 0, 2, '2026-08-29T11:00:00Z'),
+('img-2-3', 'item-2', 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-14-pro-4.jpg', 0, 3, '2026-08-29T11:00:00Z'),
 
 -- Item 3 (Samsung Galaxy S23 Ultra)
-('img-3-1', 'item-3', 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-08-28T16:00:00Z'),
-('img-3-2', 'item-3', 'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-08-28T16:00:00Z'),
-('img-3-3', 'item-3', 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=800&auto=format&fit=crop&q=80', 0, 3, '2026-08-28T16:00:00Z'),
+('img-3-1', 'item-3', 'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s23-ultra-5g.jpg', 1, 1, '2026-08-28T16:00:00Z'),
+('img-3-2', 'item-3', 'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s23-ultra-5g-1.jpg', 0, 2, '2026-08-28T16:00:00Z'),
+('img-3-3', 'item-3', 'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s23-ultra-5g-2.jpg', 0, 3, '2026-08-28T16:00:00Z'),
 
 -- Item 4 (iPad Pro M2 11")
-('img-4-1', 'item-4', 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-08-27T10:00:00Z'),
-('img-4-2', 'item-4', 'https://images.unsplash.com/photo-1561154464-82e9adf32764?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-08-27T10:00:00Z'),
+('img-4-1', 'item-4', 'https://fdn2.gsmarena.com/vv/bigpic/apple-ipad-pro-11-2022.jpg', 1, 1, '2026-08-27T10:00:00Z'),
+('img-4-2', 'item-4', 'https://fdn2.gsmarena.com/vv/pics/apple/apple-ipad-pro-11-2022-1.jpg', 0, 2, '2026-08-27T10:00:00Z'),
 
 -- Item 5 (Google Pixel 8 Pro)
-('img-5-1', 'item-5', 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-08-26T13:30:00Z'),
-('img-5-2', 'item-5', 'https://images.unsplash.com/photo-1512499617640-c74ae3a79d37?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-08-26T13:30:00Z'),
+('img-5-1', 'item-5', 'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-8-pro.jpg', 1, 1, '2026-08-26T13:30:00Z'),
+('img-5-2', 'item-5', 'https://fdn2.gsmarena.com/vv/pics/google/google-pixel-8-pro-1.jpg', 0, 2, '2026-08-26T13:30:00Z'),
 
 -- Item 6 (MacBook Pro 14" M1 Pro)
 ('img-6-1', 'item-6', 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-08-29T10:00:00Z'),
@@ -305,12 +305,12 @@ INSERT OR REPLACE INTO listing_images (id, listing_id, url, is_primary, sort_ord
 ('img-48-2', 'item-48', 'https://images.unsplash.com/photo-1563183222-ff776d1076e1?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-01T12:00:00Z'),
 ('img-49-1', 'item-49', 'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-01T12:00:00Z'),
 ('img-49-2', 'item-49', 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-01T12:00:00Z'),
-('img-50-1', 'item-50', 'https://images.unsplash.com/photo-1721864428881-dbabb9ea0017?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-01T12:00:00Z'),
-('img-50-2', 'item-50', 'https://images.unsplash.com/photo-1721864428852-2de2f06d1988?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-01T12:00:00Z'),
-('img-51-1', 'item-51', 'https://images.unsplash.com/photo-1568171284620-57dc85d9f210?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-01T12:00:00Z'),
-('img-51-2', 'item-51', 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-01T12:00:00Z'),
-('img-52-1', 'item-52', 'https://images.unsplash.com/photo-1585790051609-09928c362a42?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-01T12:00:00Z'),
-('img-52-2', 'item-52', 'https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-01T12:00:00Z'),
+('img-50-1', 'item-50', 'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-flip5-5g.jpg', 1, 1, '2026-09-01T12:00:00Z'),
+('img-50-2', 'item-50', 'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-z-flip5-5g-r1.jpg', 0, 2, '2026-09-01T12:00:00Z'),
+('img-51-1', 'item-51', 'https://fdn2.gsmarena.com/vv/bigpic/xiaomi-13t.jpg', 1, 1, '2026-09-01T12:00:00Z'),
+('img-51-2', 'item-51', 'https://fdn2.gsmarena.com/vv/pics/xiaomi/xiaomi-13t-1.jpg', 0, 2, '2026-09-01T12:00:00Z'),
+('img-52-1', 'item-52', 'https://fdn2.gsmarena.com/vv/bigpic/apple-ipad-air-2022-new.jpg', 1, 1, '2026-09-01T12:00:00Z'),
+('img-52-2', 'item-52', 'https://fdn2.gsmarena.com/vv/pics/apple/apple-ipad-air-2022-1.jpg', 0, 2, '2026-09-01T12:00:00Z'),
 ('img-53-1', 'item-53', 'https://images.unsplash.com/photo-1687078426457-89ce2b562eaf?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-01T12:00:00Z'),
 ('img-53-2', 'item-53', 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-01T12:00:00Z'),
 ('img-54-1', 'item-54', 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-01T12:00:00Z'),
@@ -335,26 +335,26 @@ INSERT OR REPLACE INTO listing_images (id, listing_id, url, is_primary, sort_ord
 ('img-63-2', 'item-63', 'https://images.unsplash.com/photo-1536353284924-9220c464e262?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-01T12:00:00Z'),
 ('img-64-1', 'item-64', 'https://images.unsplash.com/photo-1730299789489-b55bf96b22bf?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-01T12:00:00Z'),
 ('img-64-2', 'item-64', 'https://images.unsplash.com/photo-1632928274371-878938e4d825?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-01T12:00:00Z'),
-('img-65-1', 'item-65', 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-02T08:00:00Z'),
-('img-65-2', 'item-65', 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-02T08:00:00Z'),
-('img-66-1', 'item-66', 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-02T09:15:00Z'),
-('img-66-2', 'item-66', 'https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-02T09:15:00Z'),
-('img-67-1', 'item-67', 'https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-02T10:30:00Z'),
-('img-67-2', 'item-67', 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-02T10:30:00Z'),
-('img-68-1', 'item-68', 'https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-02T11:45:00Z'),
-('img-68-2', 'item-68', 'https://images.unsplash.com/photo-1605236453806-6ff36851218e?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-02T11:45:00Z'),
-('img-69-1', 'item-69', 'https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-02T13:00:00Z'),
-('img-69-2', 'item-69', 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-02T13:00:00Z'),
-('img-70-1', 'item-70', 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-02T14:15:00Z'),
-('img-70-2', 'item-70', 'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-02T14:15:00Z'),
-('img-71-1', 'item-71', 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-02T15:30:00Z'),
-('img-71-2', 'item-71', 'https://images.unsplash.com/photo-1585790051609-09928c362a42?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-02T15:30:00Z'),
-('img-72-1', 'item-72', 'https://images.unsplash.com/photo-1585790051609-09928c362a42?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-02T16:45:00Z'),
-('img-72-2', 'item-72', 'https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-02T16:45:00Z'),
-('img-73-1', 'item-73', 'https://images.unsplash.com/photo-1609692814858-f7cd2f0afa4f?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-02T17:30:00Z'),
-('img-73-2', 'item-73', 'https://images.unsplash.com/photo-1567581935884-3349723552ca?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-02T17:30:00Z'),
-('img-74-1', 'item-74', 'https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=800&auto=format&fit=crop&q=80', 1, 1, '2026-09-02T18:45:00Z'),
-('img-74-2', 'item-74', 'https://images.unsplash.com/photo-1530319067432-f2a729c03db5?w=800&auto=format&fit=crop&q=80', 0, 2, '2026-09-02T18:45:00Z');
+('img-65-1', 'item-65', 'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15-pro-max.jpg', 1, 1, '2026-09-02T08:00:00Z'),
+('img-65-2', 'item-65', 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-15-pro-max-1.jpg', 0, 2, '2026-09-02T08:00:00Z'),
+('img-66-1', 'item-66', 'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15.jpg', 1, 1, '2026-09-02T09:15:00Z'),
+('img-66-2', 'item-66', 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-15-1.jpg', 0, 2, '2026-09-02T09:15:00Z'),
+('img-67-1', 'item-67', 'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-13.jpg', 1, 1, '2026-09-02T10:30:00Z'),
+('img-67-2', 'item-67', 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-13-01.jpg', 0, 2, '2026-09-02T10:30:00Z'),
+('img-68-1', 'item-68', 'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-14-plus.jpg', 1, 1, '2026-09-02T11:45:00Z'),
+('img-68-2', 'item-68', 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-14-plus-1.jpg', 0, 2, '2026-09-02T11:45:00Z'),
+('img-69-1', 'item-69', 'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-12-pro.jpg', 1, 1, '2026-09-02T13:00:00Z'),
+('img-69-2', 'item-69', 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-12-pro-r1.jpg', 0, 2, '2026-09-02T13:00:00Z'),
+('img-70-1', 'item-70', 'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-ultra-5g-sm-s928.jpg', 1, 1, '2026-09-02T14:15:00Z'),
+('img-70-2', 'item-70', 'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s24-ultra-5g-sm-s928-0.jpg', 0, 2, '2026-09-02T14:15:00Z'),
+('img-71-1', 'item-71', 'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-plus-5g-sm-s926.jpg', 1, 1, '2026-09-02T15:30:00Z'),
+('img-71-2', 'item-71', 'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s24-plus-5g-sm-s926-1.jpg', 0, 2, '2026-09-02T15:30:00Z'),
+('img-72-1', 'item-72', 'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-fold5-5g.jpg', 1, 1, '2026-09-02T16:45:00Z'),
+('img-72-2', 'item-72', 'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-z-fold5-5g-r0.jpg', 0, 2, '2026-09-02T16:45:00Z'),
+('img-73-1', 'item-73', 'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-a55.jpg', 1, 1, '2026-09-02T17:30:00Z'),
+('img-73-2', 'item-73', 'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-a55-1.jpg', 0, 2, '2026-09-02T17:30:00Z'),
+('img-74-1', 'item-74', 'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s23-fe.jpg', 1, 1, '2026-09-02T18:45:00Z'),
+('img-74-2', 'item-74', 'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s23-fe-1.jpg', 0, 2, '2026-09-02T18:45:00Z');
 
 -- 5. Offers
 INSERT OR REPLACE INTO offers (id, listing_id, buyer_id, seller_id, offered_price, message, status, counter_price, counter_message, expires_at, created_at, updated_at) VALUES
