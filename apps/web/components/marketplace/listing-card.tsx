@@ -45,7 +45,7 @@ export function ListingCard({ listing, showRemoveFromWishlist = false }: Listing
         {/* Bottom Overlay Badges (COD on left, Nego on right) */}
         <div className="absolute bottom-2 inset-x-2 z-10 flex items-center justify-between pointer-events-none">
           {listing.isCodAvailable ? (
-            <div className="rounded-full bg-amber-50/95 px-2.5 py-0.5 text-[9px] font-bold text-amber-950 border border-amber-300 backdrop-blur-md shadow-2xs flex items-center gap-1">
+            <div className="rounded-full bg-amber-50/85 px-2.5 py-0.5 text-[9px] font-bold text-amber-950 border border-amber-300/80 backdrop-blur-md backdrop-saturate-150 shadow-xs flex items-center gap-1 ring-1 ring-black/5">
               <Zap className="h-2.5 w-2.5 text-amber-600 fill-amber-400" />
               <span>Siap COD</span>
             </div>
@@ -54,7 +54,7 @@ export function ListingCard({ listing, showRemoveFromWishlist = false }: Listing
           )}
 
           {listing.isNegotiable && (
-            <div className="rounded-full bg-amber-50/95 px-2.5 py-0.5 text-[9px] font-bold text-amber-950 border border-amber-300 backdrop-blur-md shadow-2xs flex items-center gap-1">
+            <div className="rounded-full bg-amber-50/85 px-2.5 py-0.5 text-[9px] font-bold text-amber-950 border border-amber-300/80 backdrop-blur-md backdrop-saturate-150 shadow-xs flex items-center gap-1 ring-1 ring-black/5">
               <MessageSquareQuote className="h-2.5 w-2.5 text-amber-600" />
               <span>Nego</span>
             </div>
@@ -71,7 +71,7 @@ export function ListingCard({ listing, showRemoveFromWishlist = false }: Listing
             e.stopPropagation();
             toggleWishlist(listing);
           }}
-          className="absolute top-2.5 right-2.5 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-white/95 text-rose-600 hover:bg-rose-500 hover:text-white border border-rose-200 backdrop-blur-md transition-all cursor-pointer shadow-xs"
+          className="absolute top-2.5 right-2.5 z-20 flex h-7 w-7 items-center justify-center rounded-full liquid-glass-pill text-rose-600 hover:bg-rose-500 hover:text-white border border-rose-200 transition-all cursor-pointer shadow-xs"
           title="Hapus dari Wishlist"
         >
           <Trash2 className="h-3.5 w-3.5" />
@@ -84,10 +84,10 @@ export function ListingCard({ listing, showRemoveFromWishlist = false }: Listing
             e.stopPropagation();
             toggleWishlist(listing);
           }}
-          className={`absolute top-2.5 right-2.5 z-20 flex h-7 w-7 items-center justify-center rounded-full backdrop-blur-md transition-all cursor-pointer shadow-xs ${
+          className={`absolute top-2.5 right-2.5 z-20 flex h-7 w-7 items-center justify-center rounded-full transition-all cursor-pointer shadow-xs ${
             wishlisted
-              ? 'bg-rose-500 text-white shadow-rose-500/30 scale-105'
-              : 'bg-white/90 text-slate-500 hover:bg-white hover:text-rose-500 border border-slate-200/80'
+              ? 'bg-rose-500 text-white shadow-rose-500/30 scale-105 ring-2 ring-white/90'
+              : 'liquid-glass-pill text-slate-500 hover:bg-white hover:text-rose-500'
           }`}
           title={wishlisted ? 'Hapus dari Wishlist' : 'Simpan ke Wishlist'}
         >

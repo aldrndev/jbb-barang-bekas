@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://peygo.id';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://belanjanya.id';
   const currentDate = new Date().toISOString();
 
   // Static Public Routes

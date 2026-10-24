@@ -1,12 +1,12 @@
 <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="peygoGrad1" x1="40" y1="30" x2="160" y2="170" gradientUnits="userSpaceOnUse">
+    <linearGradient id="belanjanyaGrad1" x1="40" y1="30" x2="160" y2="170" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#10B981" />
       <stop offset="50%" stop-color="#06B6D4" />
       <stop offset="100%" stop-color="#0EA5E9" />
     </linearGradient>
 
-    <linearGradient id="peygoBgGrad" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+    <linearGradient id="belanjanyaBgGrad" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#0F172A" />
       <stop offset="50%" stop-color="#022C22" />
       <stop offset="100%" stop-color="#021A14" />
@@ -14,7 +14,7 @@
   </defs>
 
   <!-- 1. Sleek Squircle Container -->
-  <rect width="200" height="200" rx="54" fill="url(#peygoBgGrad)" />
+  <rect width="200" height="200" rx="54" fill="url(#belanjanyaBgGrad)" />
   <rect
     x="5"
     y="5"
@@ -26,12 +26,21 @@
     stroke-width="2.5"
   />
 
-  <!-- 2. Dynamic 'P' Monogram Ribbon -->
+  <!-- 2. Dynamic 'B' Monogram Ribbon -->
   <!-- Top Loop -->
   <path
-    d="M64 44 H110 C130 44 146 60 146 80 C146 100 130 116 110 116 H64"
-    stroke="url(#peygoGrad1)"
-    stroke-width="22"
+    d="M64 48 H104 C120 48 134 58 134 74 C134 90 120 100 104 100 H64"
+    stroke="url(#belanjanyaGrad1)"
+    stroke-width="20"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- Bottom Loop -->
+  <path
+    d="M64 100 H108 C126 100 140 112 140 128 C140 144 126 154 108 154 H64"
+    stroke="url(#belanjanyaGrad1)"
+    stroke-width="20"
     stroke-linecap="round"
     stroke-linejoin="round"
   />
@@ -39,12 +48,13 @@
   <!-- Left Spine -->
   <path
     d="M64 44 V156"
-    stroke="url(#peygoGrad1)"
-    stroke-width="22"
+    stroke="url(#belanjanyaGrad1)"
+    stroke-width="20"
     stroke-linecap="round"
   />
 
-  <!-- Center Sparkle Accent -->
-  <circle cx="64" cy="80" r="7" fill="#06B6D4" />
-  <circle cx="110" cy="80" r="4" fill="#34D399" opacity="0.9" />
+  <!-- Center Sparkle Accents -->
+  <circle cx="64" cy="74" r="6" fill="#06B6D4" />
+  <circle cx="104" cy="74" r="4" fill="#34D399" opacity="0.9" />
+  <circle cx="108" cy="128" r="4" fill="#34D399" opacity="0.9" />
 </svg>

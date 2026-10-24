@@ -31,7 +31,7 @@ export function MobileBottomBar() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 block border-t border-white/70 bg-white/75 px-3 pt-1 pb-2 sm:pb-2.5 backdrop-blur-2xl backdrop-saturate-180 md:hidden shadow-[0_-10px_30px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.8)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 block bg-white border-t border-slate-200 px-3 pt-1.5 pb-2 sm:pb-2.5 md:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
       <div className="flex items-center justify-around max-w-md mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;

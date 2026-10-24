@@ -39,7 +39,7 @@ export default function WishlistPage() {
               Masuk untuk Melihat Wishlist
             </h2>
             <p className="text-xs text-slate-500">
-              Simpan dan pantau barang bekas favorit Anda di Peygo.
+              Simpan dan pantau barang bekas favorit Anda di Belanjanya.
             </p>
           </div>
           <div className="pt-2">
@@ -157,7 +157,7 @@ export default function WishlistPage() {
             </div>
             <div className="min-w-0">
               <h3 className="text-xs font-bold text-brand-950">
-                Garansi Perlindungan Pembeli Peygo 100%
+                Garansi Perlindungan Pembeli Belanjanya 100%
               </h3>
               <p className="text-[11px] text-brand-800 font-medium">
                 Setiap transaksi dari wishlist Anda dilindungi garansi inspeksi fisik 48 jam dan
@@ -177,8 +177,8 @@ export default function WishlistPage() {
 
         {/* Custom Confirmation Modal for Clearing Wishlist */}
         {isConfirmClearOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-in fade-in">
-            <div className="w-full max-w-sm rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl space-y-4 animate-in zoom-in-95">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xl backdrop-saturate-150 animate-in fade-in">
+            <div className="w-full max-w-sm rounded-4xl border border-white/80 bg-white/95 backdrop-blur-2xl p-6 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,1)] space-y-4 animate-in zoom-in-95">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 mx-auto">
                 <Trash2 className="h-6 w-6" />
               </div>

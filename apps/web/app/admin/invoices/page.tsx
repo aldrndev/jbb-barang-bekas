@@ -47,7 +47,7 @@ export default function AdminInvoicesPage() {
     buyerEmail: '',
     buyerAddress: '',
     buyerCity: 'Jakarta',
-    sellerName: 'Peygo Official Store',
+    sellerName: 'Belanjanya Official Store',
     sellerPhone: '081122334455',
     sellerCity: 'Jakarta Pusat',
     items: [
@@ -64,7 +64,7 @@ export default function AdminInvoicesPage() {
     serviceFee: 15000,
     discountAmount: 0,
     paymentChannel: 'BCA_VA',
-    notes: 'Faktur resmi diterbitkan oleh Tim Administrator Peygo.',
+    notes: 'Faktur resmi diterbitkan oleh Tim Administrator Belanjanya.',
     status: 'UNPAID'
   });
 
@@ -502,7 +502,7 @@ export default function AdminInvoicesPage() {
                     Buat Faktur Tagihan Baru (Custom Invoice)
                   </h3>
                   <p className="text-[10px] text-slate-500">
-                    Diterbitkan resmi oleh Sistem Peygo Cloud
+                    Diterbitkan resmi oleh Sistem Belanjanya Cloud
                   </p>
                 </div>
               </div>

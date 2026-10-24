@@ -41,11 +41,11 @@ export default function KebijakanPrivasiPage() {
               <span>Kepatuhan UU Perlindungan Data Pribadi (UU PDP No. 27/2022)</span>
             </div>
             <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white mb-3">
-              Kebijakan Privasi Peygo
+              Kebijakan Privasi Belanjanya
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
               Privasi dan keamanan identitas Anda adalah prioritas mutlak kami. Pelajari bagaimana
-              kami menjaga dan mengamankan informasi pribadi Anda saat bertransaksi di Peygo.
+              kami menjaga dan mengamankan informasi pribadi Anda saat bertransaksi di Belanjanya.
             </p>
           </div>
         </div>
@@ -97,11 +97,11 @@ export default function KebijakanPrivasiPage() {
                 Pengantar & Komitmen Privasi
               </h2>
               <p className="text-xs sm:text-sm text-slate-600">
-                Peygo part of Digitesia Edge Digital ("Peygo", "kami") menghargai dan melindungi hak
-                privasi setiap pengguna. Kebijakan Privasi ini menjelaskan jenis informasi yang kami
-                kumpulkan, cara kami memprosesnya, langkah pengamanan yang diterapkan, serta hak
-                Anda atas data pribadi sesuai Undang-Undang Perlindungan Data Pribadi (UU PDP No. 27
-                Tahun 2022).
+                Belanjanya part of Digitesia Edge Digital ("Belanjanya", "kami") menghargai dan
+                melindungi hak privasi setiap pengguna. Kebijakan Privasi ini menjelaskan jenis
+                informasi yang kami kumpulkan, cara kami memprosesnya, langkah pengamanan yang
+                diterapkan, serta hak Anda atas data pribadi sesuai Undang-Undang Perlindungan Data
+                Pribadi (UU PDP No. 27 Tahun 2022).
               </p>
             </section>
 
@@ -245,9 +245,9 @@ export default function KebijakanPrivasiPage() {
                 Penggunaan Cookie & Teknologi Serupa
               </h2>
               <p className="text-xs sm:text-sm text-slate-600">
-                Peygo menggunakan cookie sesi esensial untuk menjaga status login Anda, menyimpan
-                preferensi tampilan tema (dark/light), dan mengamankan token autentikasi sesi
-                browsing Anda.
+                Belanjanya menggunakan cookie sesi esensial untuk menjaga status login Anda,
+                menyimpan preferensi tampilan tema (dark/light), dan mengamankan token autentikasi
+                sesi browsing Anda.
               </p>
             </section>
 
@@ -264,10 +264,10 @@ export default function KebijakanPrivasiPage() {
               </p>
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1">
                 <p>
-                  <strong>Email Tim Privasi:</strong> privasi@peygo.id
+                  <strong>Email Tim Privasi:</strong> privasi@belanjanya.id
                 </p>
                 <p>
-                  <strong>Alamat Kantor:</strong> Peygo • Digitesia Edge Digital, SCBD Lot 11,
+                  <strong>Alamat Kantor:</strong> Belanjanya • Digitesia Edge Digital, SCBD Lot 11,
                   Jakarta Selatan 12190
                 </p>
                 <p>

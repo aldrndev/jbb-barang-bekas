@@ -2,7 +2,7 @@
 import { Lock, RefreshCw, ShieldCheck, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { PeygoLogoIcon } from '../common/peygo-logo';
+import { BelanjanyaLogoIcon } from '../common/belanjanya-logo';
 
 export function Footer() {
   const pathname = usePathname();
@@ -67,11 +67,11 @@ export function Footer() {
         {/* Footer Links & Copyright */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 text-xs text-slate-500">
           <div className="flex flex-wrap items-center gap-2">
-            <PeygoLogoIcon size="xs" />
+            <BelanjanyaLogoIcon size="xs" />
             <span className="font-bold text-slate-800">
-              Pey
+              Belanja
               <span className="bg-linear-to-r from-brand-600 to-emerald-500 bg-clip-text text-transparent">
-                go
+                nya
               </span>
             </span>
             <span>&bull;</span>

@@ -3,17 +3,17 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Pusat Tawar & Nego Harga Resmi',
   description:
-    'Ajukan penawaran harga resmi langsung ke penjual dengan garansi kunci harga 24 jam dan jaminan transaksi aman di Peygo.',
+    'Ajukan penawaran harga resmi langsung ke penjual dengan garansi kunci harga 24 jam dan jaminan transaksi aman di Belanjanya.',
   openGraph: {
-    title: 'Pusat Tawar & Nego Harga Resmi | Peygo',
+    title: 'Pusat Tawar & Nego Harga Resmi | Belanjanya',
     description:
-      'Tawar menawar barang bekas lebih transparan dan terlindungi. Kunci harga deal terbaik Anda dalam 24 jam di Peygo.',
-    url: 'https://peygo.id/nego'
+      'Tawar menawar barang bekas lebih transparan dan terlindungi. Kunci harga deal terbaik Anda dalam 24 jam di Belanjanya.',
+    url: 'https://belanjanya.id/nego'
   },
   twitter: {
-    title: 'Pusat Tawar & Nego Harga Resmi | Peygo',
+    title: 'Pusat Tawar & Nego Harga Resmi | Belanjanya',
     description:
-      'Tawar menawar barang bekas lebih transparan dan terlindungi. Kunci harga deal terbaik Anda dalam 24 jam di Peygo.'
+      'Tawar menawar barang bekas lebih transparan dan terlindungi. Kunci harga deal terbaik Anda dalam 24 jam di Belanjanya.'
   }
 };
 

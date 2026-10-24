@@ -3,7 +3,7 @@ import { ListingDetailView } from '../../../components/marketplace/listing-detai
 import { api } from '../../../lib/api-client';
 import { formatIDR } from '../../../lib/utils';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://peygo.id';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://belanjanya.id';
 
 export async function generateMetadata({
   params
@@ -18,7 +18,7 @@ export async function generateMetadata({
       const listing = res.data;
       const formattedPrice = formatIDR(listing.price);
       const title = `${listing.title} - ${formattedPrice} (${listing.city})`;
-      const description = `Beli ${listing.title} kondisi ${listing.condition}. Dijual seharga ${formattedPrice} di ${listing.city}. Transaksi aman dengan garansi rekening bersama 100% dan inspeksi 48 jam di Peygo.`;
+      const description = `Beli ${listing.title} kondisi ${listing.condition}. Dijual seharga ${formattedPrice} di ${listing.city}. Transaksi aman dengan garansi rekening bersama 100% dan inspeksi 48 jam di Belanjanya.`;
       const firstImg =
         Array.isArray(listing.images) && listing.images.length > 0 ? listing.images[0] : null;
       const primaryImageUrl =
@@ -34,8 +34,8 @@ export async function generateMetadata({
           type: 'article',
           locale: 'id_ID',
           url: `${siteUrl}/listing/${listing.slug || listing.id}`,
-          siteName: 'Peygo',
-          title: `${title} | Peygo`,
+          siteName: 'Belanjanya',
+          title: `${title} | Belanjanya`,
           description,
           images: [
             {
@@ -48,7 +48,7 @@ export async function generateMetadata({
         },
         twitter: {
           card: 'summary_large_image',
-          title: `${title} | Peygo`,
+          title: `${title} | Belanjanya`,
           description,
           images: [primaryImageUrl]
         }
@@ -61,7 +61,7 @@ export async function generateMetadata({
   return {
     title: 'Detail Barang Bekas',
     description:
-      'Beli barang bekas berkualitas dengan garansi rekening bersama 100% dan inspeksi fisik 48 jam di Peygo.'
+      'Beli barang bekas berkualitas dengan garansi rekening bersama 100% dan inspeksi fisik 48 jam di Belanjanya.'
   };
 }
 

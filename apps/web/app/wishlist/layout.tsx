@@ -3,12 +3,12 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Wishlist Barang Bekas Pilihan Anda',
   description:
-    'Simpan dan pantau barang bekas incaran Anda. Dapatkan update harga dan penawaran terbaik bergaransi rekening bersama di Peygo.',
+    'Simpan dan pantau barang bekas incaran Anda. Dapatkan update harga dan penawaran terbaik bergaransi rekening bersama di Belanjanya.',
   openGraph: {
-    title: 'Wishlist Barang Bekas Pilihan Anda | Peygo',
+    title: 'Wishlist Barang Bekas Pilihan Anda | Belanjanya',
     description:
-      'Koleksi barang bekas favorit Anda tersimpan aman dengan pantauan status unit aktif di Peygo.',
-    url: 'https://peygo.id/wishlist'
+      'Koleksi barang bekas favorit Anda tersimpan aman dengan pantauan status unit aktif di Belanjanya.',
+    url: 'https://belanjanya.id/wishlist'
   }
 };
 

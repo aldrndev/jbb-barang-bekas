@@ -227,7 +227,7 @@ export default function HomePage() {
             {/* Left Column: Value Prop, Heading, Search Engine & Trust */}
             <div className="lg:col-span-7 space-y-4 sm:space-y-6">
               {/* Trust Badge with Live Ping */}
-              <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white/90 px-3 py-1 text-[11px] sm:text-xs font-bold text-brand-800 shadow-xs backdrop-blur-md">
+              <div className="inline-flex items-center gap-2 rounded-full border border-brand-200/80 liquid-glass-pill px-3 py-1 text-[11px] sm:text-xs font-bold text-brand-800 shadow-xs">
                 <span className="flex h-2 w-2 relative">
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500" />
                 </span>
@@ -249,7 +249,7 @@ export default function HomePage() {
               </p>
 
               {/* Seamless Hero Search Engine Widget */}
-              <div className="rounded-2xl border border-slate-200/90 bg-white/95 p-2 sm:p-2.5 backdrop-blur-xl shadow-xl shadow-slate-200/50">
+              <div className="rounded-3xl liquid-glass-elevated p-2 sm:p-2.5">
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -270,7 +270,7 @@ export default function HomePage() {
                     <select
                       name="heroCat"
                       aria-label="Pilih Kategori"
-                      className="w-full rounded-xl bg-slate-50/90 px-3 py-2 text-xs font-semibold text-slate-700 border border-slate-200 hover:border-slate-300 focus:outline-none focus:bg-white focus:border-brand-500 transition-colors"
+                      className="w-full rounded-2xl liquid-glass-input px-3 py-2 text-xs font-semibold text-slate-700 hover:border-slate-300 focus:outline-none focus:bg-white focus:border-brand-500 transition-colors"
                     >
                       <option value="all">Semua Kategori</option>
                       {categories.map((c) => (
@@ -287,7 +287,7 @@ export default function HomePage() {
                       name="heroQ"
                       type="text"
                       placeholder="Cari iPhone, MacBook, Sony, PS5..."
-                      className="w-full rounded-xl bg-slate-50/90 px-3 py-2 pl-8.5 text-xs text-slate-800 placeholder-slate-400 border border-slate-200 hover:border-slate-300 focus:outline-none focus:bg-white focus:border-brand-500 transition-colors"
+                      className="w-full rounded-2xl liquid-glass-input px-3 py-2 pl-8.5 text-xs text-slate-800 placeholder-slate-400 hover:border-slate-300 focus:outline-none focus:bg-white focus:border-brand-500 transition-colors"
                     />
                     <Search className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                   </div>
@@ -297,7 +297,7 @@ export default function HomePage() {
                     <select
                       name="heroCity"
                       aria-label="Pilih Kota"
-                      className="w-full rounded-xl bg-slate-50/90 px-3 py-2 text-xs font-semibold text-slate-700 border border-slate-200 hover:border-slate-300 focus:outline-none focus:bg-white focus:border-brand-500 transition-colors"
+                      className="w-full rounded-2xl liquid-glass-input px-3 py-2 text-xs font-semibold text-slate-700 hover:border-slate-300 focus:outline-none focus:bg-white focus:border-brand-500 transition-colors"
                     >
                       <option value="all">Semua Wilayah</option>
                       <option value="Jakarta Selatan">Jakarta Selatan</option>
@@ -310,7 +310,7 @@ export default function HomePage() {
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-2 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/25 transition-all cursor-pointer shrink-0"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-2xl bg-brand-600 px-5 py-2 text-xs font-bold text-white hover:bg-brand-700 shadow-md shadow-brand-600/25 transition-all cursor-pointer shrink-0"
                   >
                     <span>Cari</span>
                     <ArrowRight className="h-4 w-4" />
@@ -325,7 +325,7 @@ export default function HomePage() {
                       <Link
                         key={tag}
                         href={`/cari?q=${encodeURIComponent(tag)}`}
-                        className="rounded-lg bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-700 transition-colors"
+                        className="rounded-lg bg-white/70 border border-slate-200/60 px-2 py-0.5 text-[10px] font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-700 transition-colors"
                       >
                         {tag}
                       </Link>
@@ -389,7 +389,7 @@ export default function HomePage() {
             {/* Right Column: Balanced Premium Showcase */}
             <div className="lg:col-span-5 w-full">
               {/* Main Featured Showcase Card */}
-              <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 shadow-lg shadow-slate-200/50 hover:shadow-xl transition-all">
+              <div className="rounded-4xl liquid-glass-elevated p-4 sm:p-5 hover:shadow-2xl transition-all">
                 {/* Header Tag Bar */}
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-1.5">
@@ -398,7 +398,7 @@ export default function HomePage() {
                       Spotlight Barang Pilihan
                     </span>
                   </div>
-                  <span className="rounded-md bg-brand-50 border border-brand-200 px-2 py-0.5 text-[10px] font-bold text-brand-700">
+                  <span className="rounded-full bg-brand-50/90 border border-brand-200/80 px-2.5 py-0.5 text-[10px] font-bold text-brand-800 backdrop-blur-md shadow-2xs">
                     {isRealSpotlight && spotlightListing
                       ? spotlightListing.condition === 'NEW'
                         ? 'Baru Segel 100%'
@@ -431,7 +431,7 @@ export default function HomePage() {
                     }
                     className="h-full w-full object-cover group-hover:scale-103 transition-transform duration-500"
                   />
-                  <div className="absolute bottom-2 left-2 rounded-lg bg-slate-900/80 backdrop-blur-md px-2 py-0.5 text-[10px] text-white font-medium flex items-center gap-1">
+                  <div className="absolute bottom-2 left-2 rounded-full bg-slate-900/80 border border-white/15 backdrop-blur-md backdrop-saturate-150 px-2.5 py-0.5 text-[10px] text-white font-medium flex items-center gap-1 shadow-xs">
                     <MapPin className="h-3 w-3 text-brand-400" />
                     <span>
                       {isRealSpotlight && spotlightListing
@@ -442,8 +442,9 @@ export default function HomePage() {
                     </span>
                   </div>
                   {(isRealSpotlight ? spotlightListing?.isNegotiable : true) && (
-                    <div className="absolute top-2 right-2 rounded-lg bg-deal-50/95 border border-deal-200 px-2 py-0.5 text-[10px] text-deal-800 font-bold shadow-xs">
-                      Bisa Di-Nego
+                    <div className="absolute top-2 right-2 rounded-full bg-amber-50/90 border border-amber-300/80 px-2.5 py-0.5 text-[10px] text-amber-950 font-bold backdrop-blur-md backdrop-saturate-150 shadow-xs flex items-center gap-1 ring-1 ring-black/5">
+                      <Zap className="h-2.5 w-2.5 text-amber-600 fill-amber-400" />
+                      <span>Bisa Nego</span>
                     </div>
                   )}
                 </div>
@@ -638,17 +639,6 @@ export default function HomePage() {
                 gradientShadow: 'shadow-emerald-500/20'
               };
 
-              // Compute actual live count of active products
-              const liveCount = listings.filter(
-                (l) =>
-                  (l.categoryId === cat.id ||
-                    l.category?.slug === cat.slug ||
-                    l.category?.id === cat.id) &&
-                  l.status === 'ACTIVE'
-              ).length;
-              const displayCount =
-                typeof cat.itemCount === 'number' && cat.itemCount >= 0 ? cat.itemCount : liveCount;
-
               return (
                 <Link
                   key={cat.id}
@@ -663,14 +653,11 @@ export default function HomePage() {
                       {renderCategoryLucideIcon(cat.slug, 'h-5 w-5 sm:h-6 sm:w-6')}
                     </div>
 
-                    {/* Title & Product Count */}
+                    {/* Title */}
                     <div className="min-w-0 flex-1 w-full sm:w-auto">
                       <h3 className="text-[10px] sm:text-sm font-black text-slate-900 leading-tight truncate group-hover:text-brand-600 transition-colors">
                         {cat.name}
                       </h3>
-                      <p className="text-[9px] sm:text-[11px] font-semibold text-slate-500 mt-0.5 hidden sm:flex items-center gap-1">
-                        <span>{displayCount} produk aktif</span>
-                      </p>
                     </div>
                   </div>
 

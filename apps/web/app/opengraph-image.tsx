@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'Bekasin - Jual Beli Barang Bekas Terpercaya Indonesia';
+export const alt = 'Belanjanya - Jual Beli Barang Bekas Terpercaya Indonesia';
 export const size = {
   width: 1200,
   height: 630
@@ -41,19 +41,29 @@ export default function Image() {
         >
           <svg viewBox="0 0 200 200" style={{ width: '80%', height: '80%' }} fill="none">
             <path
-              d="M62 46 H112 C132 46 148 62 148 82 C148 102 132 118 112 118 H62 Z"
+              d="M62 48 H104 C120 48 134 58 134 74 C134 90 120 100 104 100 H62 Z"
               stroke="#10b981"
-              strokeWidth="22"
+              strokeWidth="20"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-            <path d="M62 46 V158" stroke="#10b981" strokeWidth="22" strokeLinecap="round" />
-            <circle cx="62" cy="82" r="9" fill="#06B6D4" />
-            <circle cx="112" cy="82" r="5" fill="#34D399" opacity="0.8" />
+            <path
+              d="M62 100 H108 C126 100 140 112 140 128 C140 144 126 154 108 154 H62 Z"
+              stroke="#10b981"
+              strokeWidth="20"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path d="M62 44 V158" stroke="#10b981" strokeWidth="20" strokeLinecap="round" />
+            <circle cx="62" cy="74" r="7" fill="#06B6D4" />
+            <circle cx="104" cy="74" r="4" fill="#34D399" opacity="0.8" />
+            <circle cx="108" cy="128" r="4" fill="#34D399" opacity="0.8" />
           </svg>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '32px', fontWeight: 900, letterSpacing: '-0.02em' }}>Peygo</span>
+          <span style={{ fontSize: '32px', fontWeight: 900, letterSpacing: '-0.02em' }}>
+            Belanjanya
+          </span>
           <span
             style={{
               fontSize: '14px',
@@ -115,9 +125,9 @@ export default function Image() {
           paddingTop: '24px'
         }}
       >
-        <span style={{ fontSize: '16px', fontWeight: 700, color: '#34d399' }}>peygo.id</span>
+        <span style={{ fontSize: '16px', fontWeight: 700, color: '#34d399' }}>belanjanya.id</span>
         <span style={{ fontSize: '14px', color: '#64748b' }}>
-          Peygo • Part of Digitesia Edge Digital
+          Belanjanya • Part of Digitesia Edge Digital
         </span>
       </div>
     </div>,

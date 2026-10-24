@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Checkout & Pembayaran Aman',
   description:
-    'Selesaikan pembayaran pesanan barang bekas dengan garansi perlindungan pembeli 100% di Peygo.',
+    'Selesaikan pembayaran pesanan barang bekas dengan garansi perlindungan pembeli 100% di Belanjanya.',
   robots: {
     index: false,
     follow: false

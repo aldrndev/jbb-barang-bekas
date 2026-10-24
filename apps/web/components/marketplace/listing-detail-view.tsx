@@ -163,7 +163,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
         navigator
           .share({
             title: listing.title,
-            text: `Cek barang bekas berkualitas: ${listing.title} seharga ${formatIDR(effectivePrice)} di Peygo`,
+            text: `Cek barang bekas berkualitas: ${listing.title} seharga ${formatIDR(effectivePrice)} di Belanjanya`,
             url: window.location.href
           })
           .catch(() => {});
@@ -193,7 +193,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
               : 'https://schema.org/OutOfStock',
           seller: {
             '@type': 'Person',
-            name: listing.seller?.name || 'Penjual Peygo'
+            name: listing.seller?.name || 'Penjual Belanjanya'
           }
         }
       }
@@ -1021,7 +1021,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
       </div>
 
       {/* Floating Bottom Sticky Action Bar (Mobile & Tablet View) */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white px-4 py-3 lg:hidden shadow-xl">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 px-4 py-3 lg:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
         <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">
           {/* Price Preview & Chat Button */}
           <div className="flex items-center gap-2.5 min-w-0">
@@ -1034,7 +1034,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                   setIsNegoModalOpen(true);
                 }
               }}
-              className="flex flex-col items-center justify-center h-10 w-10 rounded-2xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 shrink-0 cursor-pointer shadow-2xs"
+              className="flex flex-col items-center justify-center h-10 w-10 rounded-2xl bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 shrink-0 cursor-pointer shadow-2xs transition-colors"
               title="Chat Penjual"
             >
               <MessageCircle className="h-4.5 w-4.5 text-brand-600" />
@@ -1057,7 +1057,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
               <button
                 type="button"
                 onClick={() => setIsNegoModalOpen(true)}
-                className="flex items-center gap-1 rounded-2xl border border-amber-300 bg-amber-50 hover:bg-amber-100 px-3.5 py-2.5 text-xs font-extrabold text-amber-900 cursor-pointer shadow-2xs transition-colors"
+                className="flex items-center gap-1 rounded-2xl border border-amber-300/80 bg-amber-50/90 hover:bg-amber-100 backdrop-blur-md px-3.5 py-2.5 text-xs font-extrabold text-amber-900 cursor-pointer shadow-2xs transition-colors"
               >
                 <MessageSquareQuote className="h-3.5 w-3.5 text-amber-700" />
                 <span>Nego</span>
@@ -1077,16 +1077,16 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
 
       {/* Lightbox / Fullscreen Image Viewer Modal */}
       {isLightboxOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-md animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-xl animate-in fade-in duration-200">
           {/* Top Bar */}
           <div className="absolute top-5 left-5 right-5 flex items-center justify-between z-10">
-            <div className="rounded-full bg-white/15 backdrop-blur-md px-3.5 py-1 text-xs font-bold text-white border border-white/10">
+            <div className="rounded-full liquid-glass-dark px-3.5 py-1 text-xs font-bold text-white shadow-md">
               Foto {activeImageIdx + 1} dari {images.length || 1}
             </div>
             <button
               type="button"
               onClick={() => setIsLightboxOpen(false)}
-              className="rounded-full bg-white/20 p-2 text-white hover:bg-white/30 transition-colors cursor-pointer"
+              className="rounded-full liquid-glass-dark p-2 text-white hover:bg-white/20 transition-colors cursor-pointer"
               title="Tutup Layar Penuh"
             >
               <X className="h-6 w-6" />
@@ -1098,7 +1098,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
             <button
               type="button"
               onClick={() => setActiveImageIdx((prev) => (prev > 0 ? prev - 1 : images.length - 1))}
-              className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-10 rounded-full bg-white/20 hover:bg-white/35 p-3 text-white backdrop-blur-md transition-all cursor-pointer shadow-lg hover:scale-105"
+              className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-10 rounded-full liquid-glass-dark hover:bg-white/20 p-3 text-white transition-all cursor-pointer shadow-lg hover:scale-105"
               title="Foto Sebelumnya"
             >
               <ChevronLeft className="h-6 w-6" />
@@ -1110,7 +1110,7 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
             <button
               type="button"
               onClick={() => setActiveImageIdx((prev) => (prev < images.length - 1 ? prev + 1 : 0))}
-              className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-10 rounded-full bg-white/20 hover:bg-white/35 p-3 text-white backdrop-blur-md transition-all cursor-pointer shadow-lg hover:scale-105"
+              className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-10 rounded-full liquid-glass-dark hover:bg-white/20 p-3 text-white transition-all cursor-pointer shadow-lg hover:scale-105"
               title="Foto Berikutnya"
             >
               <ChevronRight className="h-6 w-6" />
@@ -1122,13 +1122,13 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
             <img
               src={primaryImageUrl}
               alt={listing.title}
-              className="w-full h-full object-contain max-h-[78vh] rounded-2xl select-none"
+              className="w-full h-full object-contain max-h-[78vh] rounded-2xl select-none shadow-2xl"
             />
           </div>
 
           {/* Bottom Thumbnails Strip in Lightbox */}
           {images.length > 1 && (
-            <div className="absolute bottom-6 flex items-center gap-2.5 z-10 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+            <div className="absolute bottom-6 flex items-center gap-2.5 z-10 liquid-glass-dark px-3.5 py-2 rounded-full">
               {images.map((img, idx) => (
                 <button
                   type="button"

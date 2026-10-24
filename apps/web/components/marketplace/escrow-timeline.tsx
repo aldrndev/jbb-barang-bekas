@@ -13,7 +13,7 @@ export function EscrowTimeline({ status, trackingNumber, courierName }: EscrowTi
       id: 'PAYMENT_CONFIRMED',
       label: 'Pembayaran Diverifikasi',
       description:
-        'Pembayaran telah dikonfirmasi dan dilindungi Garansi Perlindungan Pembeli Peygo.',
+        'Pembayaran telah dikonfirmasi dan dilindungi Garansi Perlindungan Pembeli Belanjanya.',
       icon: ShieldCheck
     },
     {

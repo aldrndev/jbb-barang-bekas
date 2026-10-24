@@ -22,7 +22,7 @@ const STEPS = [
   {
     step: '01',
     title: 'Pembeli Melakukan Checkout Aman',
-    desc: 'Pembeli memilih barang dan membayar via Virtual Account / QRIS / Transfer Bank. Pembayaran 100% aman terlindungi oleh sistem garansi Peygo, bukan langsung ke penjual.',
+    desc: 'Pembeli memilih barang dan membayar via Virtual Account / QRIS / Transfer Bank. Pembayaran 100% aman terlindungi oleh sistem garansi Belanjanya, bukan langsung ke penjual.',
     icon: CreditCard,
     color: 'from-blue-500 to-indigo-600',
     badge: 'Pembayaran Aman'
@@ -83,7 +83,7 @@ const COMPARISONS = [
   {
     feature: 'Resolusi Jika Barang Rusak di Ekspedisi',
     direct: 'Saling menyalahkan tanpa penengah',
-    rekber: 'Mediasi resmi & perlindungan tim bantuan Peygo',
+    rekber: 'Mediasi resmi & perlindungan tim bantuan Belanjanya',
     isGood: true
   }
 ];
@@ -95,14 +95,14 @@ const FAQS = [
   },
   {
     q: 'Bagaimana jika pembeli lupa mengonfirmasi setelah barang tiba?',
-    a: 'Jika pembeli tidak mengonfirmasi "Pesanan Selesai" dan tidak mengajukan komplain dalam batas waktu Masa Proteksi 48 jam sejak resi dinyatakan delivered, sistem Peygo akan merilis dana secara otomatis ke dompet penjual.'
+    a: 'Jika pembeli tidak mengonfirmasi "Pesanan Selesai" dan tidak mengajukan komplain dalam batas waktu Masa Proteksi 48 jam sejak resi dinyatakan delivered, sistem Belanjanya akan merilis dana secara otomatis ke dompet penjual.'
   },
   {
-    q: 'Berapa biaya layanan & perlindungan di Peygo?',
-    a: 'Biaya layanan & perlindungan pembeli di Peygo sangat terjangkau, yaitu hanya 1.5% dari nominal harga barang (maksimal Rp 50.000). Biaya ini digunakan untuk operasional asuransi dan perlindungan transaksi.'
+    q: 'Berapa biaya layanan & perlindungan di Belanjanya?',
+    a: 'Biaya layanan & perlindungan pembeli di Belanjanya sangat terjangkau, yaitu hanya 1.5% dari nominal harga barang (maksimal Rp 50.000). Biaya ini digunakan untuk operasional asuransi dan perlindungan transaksi.'
   },
   {
-    q: 'Apakah transaksi COD tetap dilindungi garansi Peygo?',
+    q: 'Apakah transaksi COD tetap dilindungi garansi Belanjanya?',
     a: 'Bisa! Anda dapat melakukan pembayaran di aplikasi terlebih dahulu, lalu saat bertemu di titik COD dan selesai memeriksa barang di tempat, Anda cukup menekan tombol "Konfirmasi Terima COD" agar dana langsung diteruskan ke penjual.'
   }
 ];
@@ -128,7 +128,7 @@ export default function PanduanRekberPage() {
               <span>Garansi Perlindungan Pembeli Terstandarisasi</span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-4 leading-tight">
-              Beli Barang Bekas Bebas Was-Was dengan Garansi Peygo
+              Beli Barang Bekas Bebas Was-Was dengan Garansi Belanjanya
             </h1>
             <p className="text-xs sm:text-base text-slate-300 leading-relaxed mb-6">
               Marketplace jual beli barang bekas terverifikasi nomor #1 di Indonesia. Pembayaran
@@ -204,7 +204,7 @@ export default function PanduanRekberPage() {
           </div>
         </section>
 
-        {/* Comparison: Direct Transfer vs Peygo Rekber */}
+        {/* Comparison: Direct Transfer vs Belanjanya Rekber */}
         <section className="mb-14">
           <div className="rounded-3xl bg-white p-6 sm:p-10 border border-slate-200 shadow-xs">
             <div className="max-w-2xl mb-8">
@@ -212,7 +212,7 @@ export default function PanduanRekberPage() {
                 Perbandingan Keamanan
               </span>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">
-                Transfer Langsung vs Belanja Aman di Peygo
+                Transfer Langsung vs Belanja Aman di Belanjanya
               </h2>
               <p className="text-xs sm:text-sm text-slate-500 mt-1">
                 Jangan ambil risiko transfer uang langsung ke rekening asing tanpa garansi
@@ -231,7 +231,7 @@ export default function PanduanRekberPage() {
                       Transfer Langsung (Direct TF)
                     </th>
                     <th className="py-3 px-4 font-black text-emerald-700 bg-emerald-50 rounded-tr-2xl">
-                      Transaksi Bergaransi Peygo
+                      Transaksi Bergaransi Belanjanya
                     </th>
                   </tr>
                 </thead>
@@ -345,7 +345,7 @@ export default function PanduanRekberPage() {
         <section className="mb-12">
           <div className="text-center max-w-2xl mx-auto mb-8">
             <h2 className="text-2xl font-black text-slate-900">
-              Pertanyaan Seputar Belanja Aman di Peygo
+              Pertanyaan Seputar Belanja Aman di Belanjanya
             </h2>
             <p className="text-xs text-slate-500 mt-1">
               Jawaban lengkap seputar mekanisme transaksi, pencairan dana, dan penanganan sengketa.

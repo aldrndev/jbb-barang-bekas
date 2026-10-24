@@ -4,7 +4,7 @@ import { AlertCircle, Shield, Sparkles, X, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../context/auth-context';
-import { PeygoLogoIcon } from '../common/peygo-logo';
+import { BelanjanyaLogoIcon } from '../common/belanjanya-logo';
 
 declare global {
   interface Window {
@@ -156,13 +156,13 @@ export function AuthModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-110 sm:max-w-130 overflow-hidden rounded-4xl border border-slate-300 bg-white shadow-2xl shadow-slate-950/25 animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xl backdrop-saturate-150 animate-in fade-in duration-200">
+      <div className="relative w-full max-w-110 sm:max-w-130 overflow-hidden rounded-4xl border border-white/80 bg-white/95 backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,1)] animate-in zoom-in-95 duration-200">
         {/* Close Button */}
         <button
           type="button"
           onClick={closeAuthModal}
-          className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-950 transition-colors cursor-pointer"
+          className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-full liquid-glass-pill text-slate-600 hover:bg-slate-100 hover:text-slate-950 transition-colors cursor-pointer"
           title="Tutup"
         >
           <X className="h-4 w-4" />
@@ -172,10 +172,12 @@ export function AuthModal() {
           {/* Brand & Identity Header */}
           <div className="text-center pb-6">
             <div className="inline-flex items-center justify-center mb-3.5">
-              <PeygoLogoIcon size="lg" />
+              <BelanjanyaLogoIcon size="lg" />
             </div>
 
-            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Masuk ke Peygo</h3>
+            <h3 className="text-2xl font-black text-slate-900 tracking-tight">
+              Masuk ke Belanjanya
+            </h3>
             <p className="text-xs sm:text-sm text-slate-700 font-semibold mt-1.5 leading-relaxed">
               Jual beli dan nego gadget & barang bekas aman terpercaya.
             </p>
@@ -273,7 +275,7 @@ export function AuthModal() {
                 >
                   Kebijakan Privasi
                 </Link>{' '}
-                Peygo.
+                Belanjanya.
               </p>
             </div>
           </div>

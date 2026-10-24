@@ -1,3 +1,7 @@
+import { new30Listings } from './new_listings';
+
+export { new30Listings };
+
 export const seedCategories = [
   {
     id: 'cat-gadget',
@@ -874,5 +878,6 @@ export const seedListings = [
     ],
     createdAt: '2026-08-28T15:30:00Z',
     updatedAt: '2026-08-28T15:30:00Z'
-  }
+  },
+  ...new30Listings
 ];

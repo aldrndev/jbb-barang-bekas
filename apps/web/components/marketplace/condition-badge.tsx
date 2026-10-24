@@ -19,7 +19,7 @@ export function ConditionBadge({ condition, size = 'md', className = '' }: Condi
 
   return (
     <span
-      className={`inline-flex items-center rounded-full font-bold tracking-tight shadow-2xs backdrop-blur-md transition-all ${meta.badgeClasses} ${sizeClasses} ${className}`}
+      className={`inline-flex items-center rounded-full font-bold tracking-tight shadow-xs backdrop-blur-md backdrop-saturate-180 ring-1 ring-black/5 transition-all ${meta.badgeClasses} ${sizeClasses} ${className}`}
     >
       <span className={`h-1.5 w-1.5 rounded-full ${meta.dotColor}`} />
       <span>{meta.displayLabel}</span>

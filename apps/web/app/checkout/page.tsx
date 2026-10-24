@@ -283,8 +283,8 @@ function CheckoutContent() {
           <div className="mt-4 rounded-2xl bg-brand-50 p-3.5 border border-brand-200 text-[11px] text-brand-900 text-left flex items-start gap-2.5">
             <ShieldCheck className="h-4 w-4 text-brand-600 shrink-0 mt-0.5" />
             <p>
-              Dana Anda telah <strong>diamankan oleh sistem garansi perlindungan Peygo</strong>.
-              Penjual telah kami beri notifikasi untuk segera menyiapkan pengiriman / jadwal COD.
+              Dana Anda telah <strong>diamankan oleh sistem garansi perlindungan Belanjanya</strong>
+              . Penjual telah kami beri notifikasi untuk segera menyiapkan pengiriman / jadwal COD.
             </p>
           </div>
 
@@ -558,7 +558,7 @@ function CheckoutContent() {
             <div className="rounded-3xl border border-brand-200 bg-brand-50/60 p-5 space-y-3">
               <div className="flex items-center gap-2 text-brand-950 font-black text-sm">
                 <ShieldCheck className="h-5 w-5 text-brand-600" />
-                <span>Jaminan Perlindungan Transaksi Peygo</span>
+                <span>Jaminan Perlindungan Transaksi Belanjanya</span>
               </div>
               <ul className="space-y-1.5 text-xs text-brand-900 font-medium">
                 <li className="flex items-start gap-2">
@@ -679,7 +679,7 @@ function CheckoutContent() {
                   target="_blank"
                   className="underline hover:text-slate-600 font-bold"
                 >
-                  Jaminan Perlindungan Pembeli Peygo
+                  Jaminan Perlindungan Pembeli Belanjanya
                 </Link>
                 .
               </p>

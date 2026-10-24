@@ -293,8 +293,8 @@ export default function ProfilePage() {
         </div>
 
         {/* 1. Profile Hero Card (Mobile-Optimized) */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-7 shadow-xs relative overflow-hidden space-y-4">
-          <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-brand-50 blur-3xl pointer-events-none" />
+        <div className="rounded-4xl border border-slate-200/90 bg-white/95 backdrop-blur-xl shadow-xs relative overflow-hidden space-y-4 p-4 sm:p-7">
+          <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-brand-50/80 blur-3xl pointer-events-none" />
 
           {/* User Header Row */}
           <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -305,7 +305,7 @@ export default function ProfilePage() {
                     src={user.avatarUrl}
                     alt={user.name}
                     referrerPolicy="no-referrer"
-                    className="h-16 w-16 sm:h-20 sm:w-20 rounded-3xl object-cover ring-4 ring-slate-100 shadow-xs"
+                    className="h-16 w-16 sm:h-20 sm:w-20 rounded-3xl object-cover ring-4 ring-white/90 shadow-xs"
                   />
                 ) : (
                   <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-3xl bg-brand-600 text-xl sm:text-2xl font-black text-white shadow-md shadow-brand-600/20">
@@ -325,15 +325,15 @@ export default function ProfilePage() {
                     {toTitleCase(user.name)}
                   </h1>
                   {user.isKycVerified ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-brand-50 px-2.5 py-0.5 text-[10px] font-extrabold text-brand-900 border border-brand-200">
-                      <ShieldCheck className="h-3 w-3 text-brand-600" />
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-extrabold text-emerald-900 border border-emerald-200 shadow-2xs">
+                      <ShieldCheck className="h-3 w-3 text-emerald-600" />
                       <span>Terverifikasi</span>
                     </span>
                   ) : user.nik ? (
                     <button
                       type="button"
                       onClick={() => setIsKycModalOpen(true)}
-                      className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-extrabold text-amber-900 border border-amber-300 hover:bg-amber-100 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-extrabold text-amber-900 border border-amber-300 hover:bg-amber-100 transition-colors cursor-pointer shadow-2xs"
                     >
                       <Clock className="h-3 w-3 text-amber-600" />
                       <span>⏳ Menunggu Verifikasi Admin</span>
@@ -342,7 +342,7 @@ export default function ProfilePage() {
                     <button
                       type="button"
                       onClick={() => setIsKycModalOpen(true)}
-                      className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-extrabold text-amber-900 border border-amber-300 hover:bg-amber-100 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-extrabold text-amber-900 border border-amber-300 hover:bg-amber-100 transition-colors cursor-pointer shadow-2xs"
                     >
                       <AlertCircle className="h-3 w-3 text-amber-600" />
                       <span>Belum KYC (Verifikasi KTP)</span>
@@ -373,7 +373,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={logout}
-                className="flex items-center gap-1.5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-600 px-3.5 py-2 text-xs font-bold text-slate-600 transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-600 px-3.5 py-2 text-xs font-bold text-slate-600 transition-colors cursor-pointer shadow-2xs"
               >
                 <LogOut className="h-3.5 w-3.5" />
                 <span>Keluar Akun</span>
@@ -382,8 +382,8 @@ export default function ProfilePage() {
           </div>
 
           {/* Quick Metrics Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-slate-100 text-xs">
-            <div className="rounded-2xl bg-slate-50 p-3 border border-slate-200/80">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-slate-200/60 text-xs">
+            <div className="rounded-2xl bg-slate-50/90 p-3 border border-slate-200/80 shadow-2xs">
               <span className="text-[10px] font-bold text-slate-400 block">Status Akun</span>
               {user.isKycVerified ? (
                 <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-black text-emerald-700 mt-0.5">
@@ -397,13 +397,13 @@ export default function ProfilePage() {
                 </span>
               )}
             </div>
-            <div className="rounded-2xl bg-slate-50 p-3 border border-slate-200/80">
+            <div className="rounded-2xl bg-slate-50/90 p-3 border border-slate-200/80 shadow-2xs">
               <span className="text-[10px] font-bold text-slate-400 block">Total Transaksi</span>
               <span className="text-sm sm:text-base font-black text-slate-900">
                 {user.totalTransactions || 0} Selesai
               </span>
             </div>
-            <div className="rounded-2xl bg-slate-50 p-3 border border-slate-200/80">
+            <div className="rounded-2xl bg-slate-50/90 p-3 border border-slate-200/80 shadow-2xs">
               <span className="text-[10px] font-bold text-slate-400 block">Wishlist Disimpan</span>
               <span className="text-sm sm:text-base font-black text-slate-900">
                 {wishlistCount} Item
@@ -417,10 +417,10 @@ export default function ProfilePage() {
           <button
             type="button"
             onClick={() => setActiveTab('biodata')}
-            className={`flex items-center gap-1.5 rounded-2xl px-3.5 py-2 text-xs font-bold transition-all shrink-0 cursor-pointer ${
+            className={`flex items-center gap-1.5 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all shrink-0 cursor-pointer ${
               activeTab === 'biodata'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                ? 'bg-slate-900 text-white shadow-md shadow-slate-900/15'
+                : 'bg-white text-slate-700 border border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 shadow-2xs'
             }`}
           >
             <User className="h-3.5 w-3.5 text-brand-500" />
@@ -429,10 +429,10 @@ export default function ProfilePage() {
           <button
             type="button"
             onClick={() => setActiveTab('security')}
-            className={`flex items-center gap-1.5 rounded-2xl px-3.5 py-2 text-xs font-bold transition-all shrink-0 cursor-pointer ${
+            className={`flex items-center gap-1.5 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all shrink-0 cursor-pointer ${
               activeTab === 'security'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                ? 'bg-slate-900 text-white shadow-md shadow-slate-900/15'
+                : 'bg-white text-slate-700 border border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 shadow-2xs'
             }`}
           >
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
@@ -441,10 +441,10 @@ export default function ProfilePage() {
           <button
             type="button"
             onClick={() => setActiveTab('reputation')}
-            className={`flex items-center gap-1.5 rounded-2xl px-3.5 py-2 text-xs font-bold transition-all shrink-0 cursor-pointer ${
+            className={`flex items-center gap-1.5 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all shrink-0 cursor-pointer ${
               activeTab === 'reputation'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                ? 'bg-slate-900 text-white shadow-md shadow-slate-900/15'
+                : 'bg-white text-slate-700 border border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 shadow-2xs'
             }`}
           >
             <Star className="h-3.5 w-3.5 text-amber-500" />
@@ -582,7 +582,8 @@ export default function ProfilePage() {
                   Status Keamanan & KYC
                 </h3>
                 <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
-                  Verifikasi identitas KTP dan nomor rekening pencairan hasil penjualan di Peygo.
+                  Verifikasi identitas KTP dan nomor rekening pencairan hasil penjualan di
+                  Belanjanya.
                 </p>
               </div>
             </div>
@@ -608,7 +609,7 @@ export default function ProfilePage() {
 
                 <p className="text-[11px] text-slate-600 font-medium leading-relaxed">
                   {user.isKycVerified
-                    ? `Identitas KTP Anda (${user.nik ? `${user.nik.slice(0, 4)}********${user.nik.slice(-4)}` : '3174********0001'}) telah diverifikasi resmi oleh sistem KYC Peygo. Anda memiliki lencana resmi penjual terpercaya.`
+                    ? `Identitas KTP Anda (${user.nik ? `${user.nik.slice(0, 4)}********${user.nik.slice(-4)}` : '3174********0001'}) telah diverifikasi resmi oleh sistem KYC Belanjanya. Anda memiliki lencana resmi penjual terpercaya.`
                     : 'Verifikasi KTP Anda untuk mendapatkan badge Checkmark Biru, menaikkan Trust Score ke 98%, dan membuka akses pencairan saldo hasil penjualan tanpa batas.'}
                 </p>
 
@@ -869,7 +870,7 @@ export default function ProfilePage() {
                 <span className="text-slate-600 text-[11px]">
                   {user.ratingCount > 0
                     ? `Berdasarkan ${user.ratingCount} ulasan pembeli terverifikasi setelah 48 jam garansi inspeksi.`
-                    : 'Riwayat ulasan dan bintang reputasi akan otomatis bertambah setelah Anda berhasil menyelesaikan transaksi jual atau beli di Peygo.'}
+                    : 'Riwayat ulasan dan bintang reputasi akan otomatis bertambah setelah Anda berhasil menyelesaikan transaksi jual atau beli di Belanjanya.'}
                 </span>
               </div>
             </div>
@@ -879,8 +880,8 @@ export default function ProfilePage() {
 
       {/* KYC Verification Modal */}
       {isKycModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-in fade-in">
-          <div className="relative max-w-lg w-full rounded-3xl bg-white p-5 sm:p-7 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xl backdrop-saturate-150 animate-in fade-in">
+          <div className="relative max-w-lg w-full rounded-4xl border border-white/80 bg-white/95 backdrop-blur-2xl p-5 sm:p-7 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,1)] space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50 text-brand-600 border border-brand-100">
@@ -898,7 +899,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={() => setIsKycModalOpen(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors cursor-pointer"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors cursor-pointer shadow-2xs"
               >
                 <X className="h-4 w-4" />
               </button>

@@ -37,7 +37,7 @@ export function getConditionMeta(condition: ItemCondition) {
         label: 'Baru Segel',
         displayLabel: 'Baru Segel 100%',
         score: '100%',
-        badgeClasses: 'bg-emerald-50 text-emerald-900 border border-emerald-300 shadow-xs',
+        badgeClasses: 'bg-emerald-50/90 text-emerald-950 border border-emerald-300/80',
         dotColor: 'bg-emerald-600'
       };
     case 'LIKE_NEW':
@@ -45,7 +45,7 @@ export function getConditionMeta(condition: ItemCondition) {
         label: 'Like New',
         displayLabel: 'Like New (96% Mulus)',
         score: '96%',
-        badgeClasses: 'bg-emerald-50 text-emerald-900 border border-emerald-300 shadow-xs',
+        badgeClasses: 'bg-emerald-50/90 text-emerald-950 border border-emerald-300/80',
         dotColor: 'bg-emerald-600'
       };
     case 'USED_EXCELLENT':
@@ -53,7 +53,7 @@ export function getConditionMeta(condition: ItemCondition) {
         label: 'Sangat Mulus',
         displayLabel: 'Sangat Mulus (90%)',
         score: '90%',
-        badgeClasses: 'bg-teal-50 text-teal-900 border border-teal-300 shadow-xs',
+        badgeClasses: 'bg-teal-50/90 text-teal-950 border border-teal-300/80',
         dotColor: 'bg-teal-600'
       };
     case 'USED_GOOD':
@@ -61,7 +61,7 @@ export function getConditionMeta(condition: ItemCondition) {
         label: 'Normal Terawat',
         displayLabel: 'Normal Terawat (75%)',
         score: '75%',
-        badgeClasses: 'bg-blue-50 text-blue-900 border border-blue-300 shadow-xs',
+        badgeClasses: 'bg-blue-50/90 text-blue-950 border border-blue-300/80',
         dotColor: 'bg-blue-600'
       };
     case 'USED_FAIR':
@@ -69,7 +69,7 @@ export function getConditionMeta(condition: ItemCondition) {
         label: 'Minus Fisik',
         displayLabel: 'Minus Fisik (60%)',
         score: '60%',
-        badgeClasses: 'bg-amber-50 text-amber-950 border border-amber-300 shadow-xs',
+        badgeClasses: 'bg-amber-50/90 text-amber-950 border border-amber-300/80',
         dotColor: 'bg-amber-600'
       };
     case 'PARTS_ONLY':
@@ -77,16 +77,16 @@ export function getConditionMeta(condition: ItemCondition) {
         label: 'Sparepart',
         displayLabel: 'Sparepart / Mati',
         score: 'Mati',
-        badgeClasses: 'bg-rose-50 text-rose-950 border border-rose-300 shadow-xs',
+        badgeClasses: 'bg-rose-50/90 text-rose-950 border border-rose-300/80',
         dotColor: 'bg-rose-600'
       };
     default:
       return {
         label: 'Bekas',
-        displayLabel: 'Kondisi Bekas (80%)',
-        score: '80%',
-        badgeClasses: 'bg-slate-100 text-slate-900 border border-slate-300 shadow-xs',
-        dotColor: 'bg-slate-600'
+        displayLabel: 'Kondisi Bekas',
+        score: 'Bekas',
+        badgeClasses: 'bg-slate-50/90 text-slate-900 border border-slate-300/80',
+        dotColor: 'bg-slate-500'
       };
   }
 }

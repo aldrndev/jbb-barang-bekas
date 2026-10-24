@@ -43,14 +43,14 @@ const ARTICLES: HelpArticle[] = [
     category: 'akun',
     question: 'Mengapa saya perlu melakukan verifikasi identitas (KYC)?',
     answer:
-      'Verifikasi identitas bertujuan menjaga rasa aman di ekosistem Peygo. Akun terverifikasi mendapatkan lencana "Terverifikasi" yang meningkatkan kepercayaan calon pembeli hingga 3x lipat serta membuka limit penarikan saldo tanpa batas.'
+      'Verifikasi identitas bertujuan menjaga rasa aman di ekosistem Belanjanya. Akun terverifikasi mendapatkan lencana "Terverifikasi" yang meningkatkan kepercayaan calon pembeli hingga 3x lipat serta membuka limit penarikan saldo tanpa batas.'
   },
   {
     id: 'k-2',
     category: 'akun',
     question: 'Berapa lama proses persetujuan verifikasi KYC?',
     answer:
-      'Tim Moderasi Peygo memverifikasi dokumen identitas maksimal dalam 1x24 jam kerja. Pastikan foto KTP terbaca jelas tanpa pantulan cahaya dan selfie wajah sesuai dengan identitas KTP.'
+      'Tim Moderasi Belanjanya memverifikasi dokumen identitas maksimal dalam 1x24 jam kerja. Pastikan foto KTP terbaca jelas tanpa pantulan cahaya dan selfie wajah sesuai dengan identitas KTP.'
   },
   {
     id: 'k-3',
@@ -71,7 +71,7 @@ const ARTICLES: HelpArticle[] = [
   {
     id: 'b-2',
     category: 'beli',
-    question: 'Metode pembayaran apa saja yang didukung oleh Peygo?',
+    question: 'Metode pembayaran apa saja yang didukung oleh Belanjanya?',
     answer:
       'Kami mendukung QRIS (Semua e-Wallet & M-Banking), Virtual Account BCA, Mandiri, BRI, BNI, Permata, serta transfer bank konfirmasi instan 24/7.'
   },
@@ -89,7 +89,7 @@ const ARTICLES: HelpArticle[] = [
     category: 'jual',
     question: 'Berapa lama dana penjualan masuk ke saldo setelah pesanan selesai?',
     answer:
-      'Dana langsung masuk secara realtime detik itu juga ke Saldo Dompet Peygo Anda begitu pembeli mengonfirmasi penerimaan barang.'
+      'Dana langsung masuk secara realtime detik itu juga ke Saldo Dompet Belanjanya Anda begitu pembeli mengonfirmasi penerimaan barang.'
   },
   {
     id: 'j-2',
@@ -117,9 +117,9 @@ const ARTICLES: HelpArticle[] = [
   {
     id: 's-2',
     category: 'sengketa',
-    question: 'Berapa lama proses mediasi sengketa oleh tim Peygo?',
+    question: 'Berapa lama proses mediasi sengketa oleh tim Belanjanya?',
     answer:
-      'Tim Investigasi Sengketa Peygo akan menengahi dan memutuskan perkara dalam waktu 2x24 jam kerja berdasarkan bukti fisik, kesesuaian deskripsi iklan, dan histori chat.'
+      'Tim Investigasi Sengketa Belanjanya akan menengahi dan memutuskan perkara dalam waktu 2x24 jam kerja berdasarkan bukti fisik, kesesuaian deskripsi iklan, dan histori chat.'
   },
   {
     id: 's-3',
@@ -182,7 +182,7 @@ export default function PusatBantuanPage() {
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 mb-6">
               Cari panduan transaksi, verifikasi akun, garansi perlindungan, atau tips belanja aman
-              di Peygo.
+              di Belanjanya.
             </p>
 
             {/* Live Search Bar */}
@@ -297,12 +297,12 @@ export default function PusatBantuanPage() {
             <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs">
               <h3 className="text-sm font-black text-slate-900 mb-1">Butuh Bantuan Langsung?</h3>
               <p className="text-xs text-slate-500 mb-5">
-                Tim Support Peygo siap mendampingi proses transaksi Anda setiap hari.
+                Tim Support Belanjanya siap mendampingi proses transaksi Anda setiap hari.
               </p>
 
               <div className="space-y-3">
                 <a
-                  href="https://wa.me/6281234567890?text=Halo%20Admin%20Peygo%2C%20saya%20butuh%20bantuan%20transaksi"
+                  href="https://wa.me/6281234567890?text=Halo%20Admin%20Belanjanya%2C%20saya%20butuh%20bantuan%20transaksi"
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center gap-3 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100 transition-colors"
@@ -317,7 +317,7 @@ export default function PusatBantuanPage() {
                 </a>
 
                 <a
-                  href="mailto:support@peygo.id"
+                  href="mailto:support@belanjanya.id"
                   className="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 hover:bg-slate-100 transition-colors"
                 >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-white">
@@ -325,7 +325,7 @@ export default function PusatBantuanPage() {
                   </div>
                   <div>
                     <h4 className="text-xs font-bold">Email Helpdesk</h4>
-                    <p className="text-[11px] text-slate-500 mt-0.5">support@peygo.id</p>
+                    <p className="text-[11px] text-slate-500 mt-0.5">support@belanjanya.id</p>
                   </div>
                 </a>
               </div>

@@ -83,7 +83,7 @@ function OrderHistoryContent() {
     const status = ord.escrowStatus === 'CANCELLED' ? 'CANCELLED' : isPaid ? 'PAID' : 'UNPAID';
     return {
       id: ord.id,
-      invoiceNumber: `INV-${ord.orderNumber.replace(/^(JBB-|PEYGO-)/, 'PEYGO-')}`,
+      invoiceNumber: `INV-${ord.orderNumber.replace(/^(JBB-|PEYGO-|BELANJANYA-)/, 'BELANJANYA-')}`,
       orderId: ord.id,
       orderNumber: ord.orderNumber,
       type: 'ESCROW_ORDER',
@@ -124,8 +124,8 @@ function OrderHistoryContent() {
         gatewayRef: `PG-PAY-${ord.orderNumber}`,
         channel: ord.deliveryMethod === 'COD_KETEMUAN' ? 'COD_CASH' : 'BCA_VA',
         vaNumber: `8800${ord.id.replace(/\D/g, '').slice(-6).padStart(6, '0')}`,
-        qrisUrl: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=PEYGO-${ord.orderNumber}`,
-        paymentUrl: `https://peygo.id/pay/${ord.orderNumber}`,
+        qrisUrl: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=BELANJANYA-${ord.orderNumber}`,
+        paymentUrl: `https://belanjanya.id/pay/${ord.orderNumber}`,
         paidAt: isPaid ? ord.createdAt : null
       },
       notes:
@@ -247,7 +247,7 @@ function OrderHistoryContent() {
     if (res.success) {
       toast.success(
         'Komplain Terdaftar',
-        'Tim Layanan Pelanggan Peygo akan menahan pembayaran dan membantu memediasi dengan penjual.'
+        'Tim Layanan Pelanggan Belanjanya akan menahan pembayaran dan membantu memediasi dengan penjual.'
       );
       setDisputeOrderId(null);
       setDisputeReasonInput('');
@@ -306,7 +306,7 @@ function OrderHistoryContent() {
 
         {/* 1. Mode Segmented Switcher Bar (Mobile-Friendly 2-Tabs) */}
         <div className="rounded-3xl border border-slate-200 bg-white p-3.5 sm:p-5 shadow-xs space-y-3.5">
-          <div className="grid grid-cols-2 gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
+          <div className="grid grid-cols-2 gap-2 bg-slate-200/70 p-1.5 rounded-2xl border border-slate-200/90 shadow-2xs">
             <button
               type="button"
               onClick={() => {
@@ -315,8 +315,8 @@ function OrderHistoryContent() {
               }}
               className={`flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold transition-all cursor-pointer ${
                 orderMode === 'buyer'
-                  ? 'bg-white text-slate-900 shadow-xs scale-101'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-slate-900 shadow-sm font-black'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
               }`}
             >
               <ShoppingBag className="h-4 w-4 text-brand-600" />
@@ -336,8 +336,8 @@ function OrderHistoryContent() {
               }}
               className={`flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold transition-all cursor-pointer ${
                 orderMode === 'seller'
-                  ? 'bg-white text-slate-900 shadow-xs scale-101'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-slate-900 shadow-sm font-black'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
               }`}
             >
               <Tag className="h-4 w-4 text-amber-600" />
@@ -458,8 +458,8 @@ function OrderHistoryContent() {
               </h2>
               <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
                 {orderMode === 'buyer'
-                  ? 'Barang bekas berkualitas yang Anda beli di Peygo akan otomatis terpantau di sini.'
-                  : 'Pesanan barang Anda yang dibayar pembeli di Peygo akan muncul di sini untuk Anda proses.'}
+                  ? 'Barang bekas berkualitas yang Anda beli di Belanjanya akan otomatis terpantau di sini.'
+                  : 'Pesanan barang Anda yang dibayar pembeli di Belanjanya akan muncul di sini untuk Anda proses.'}
               </p>
             </div>
             <div className="pt-1">
@@ -745,7 +745,7 @@ function OrderHistoryContent() {
           <div
             role="dialog"
             aria-modal="true"
-            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 p-4 backdrop-blur-xs animate-in fade-in overflow-y-auto"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xl backdrop-saturate-150 animate-in fade-in overflow-y-auto"
             onClick={() => setSelectedInvoiceOrder(null)}
             onKeyDown={(e) => {
               if (e.key === 'Escape') setSelectedInvoiceOrder(null);
@@ -753,7 +753,7 @@ function OrderHistoryContent() {
           >
             <div
               role="document"
-              className="relative max-w-4xl w-full rounded-3xl bg-slate-50 p-4 sm:p-6 shadow-2xl max-h-[92vh] overflow-y-auto my-auto border border-slate-200"
+              className="relative max-w-4xl w-full rounded-4xl bg-slate-50 p-4 sm:p-6 shadow-2xl max-h-[92vh] overflow-y-auto my-auto border border-white/80"
               onClick={(e) => e.stopPropagation()}
               onKeyDown={(e) => e.stopPropagation()}
             >
@@ -795,8 +795,8 @@ function OrderHistoryContent() {
 
         {/* Custom Confirmation Modal for Releasing Funds to Seller */}
         {releaseOrderId && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-in fade-in">
-            <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl space-y-4 animate-in zoom-in-95">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xl backdrop-saturate-150 animate-in fade-in">
+            <div className="w-full max-w-md rounded-4xl border border-white/80 bg-white/95 backdrop-blur-2xl p-6 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,1)] space-y-4 animate-in zoom-in-95">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 mx-auto">
                 <CheckCircle2 className="h-6 w-6" />
               </div>
@@ -831,8 +831,8 @@ function OrderHistoryContent() {
 
         {/* Custom Dispute / Komplain Modal Dialog */}
         {disputeOrderId && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-in fade-in">
-            <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl space-y-4 animate-in zoom-in-95">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xl backdrop-saturate-150 animate-in fade-in">
+            <div className="w-full max-w-md rounded-4xl border border-white/80 bg-white/95 backdrop-blur-2xl p-6 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,1)] space-y-4 animate-in zoom-in-95">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                 <div className="flex items-center gap-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-100">

@@ -10,19 +10,19 @@ import { ToastProvider } from '../context/toast-context';
 import { WishlistProvider } from '../context/wishlist-context';
 import { QueryProvider } from '../providers/query-provider';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://peygo.id';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://belanjanya.id';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Peygo - Jual Beli Barang Bekas Terpercaya Indonesia',
-    template: '%s | Peygo'
+    default: 'Belanjanya - Jual Beli Barang Bekas Terpercaya Indonesia',
+    template: '%s | Belanjanya'
   },
   description:
     'Marketplace jual beli barang bekas modern & terpercaya dengan garansi perlindungan pembeli 100%, inspeksi fisik 48 jam, negosiasi harga resmi, dan verifikasi kondisi transparan.',
   keywords: [
     'jual beli barang bekas',
-    'peygo',
+    'belanjanya',
     'barang bekas murah',
     'belanja barang bekas aman',
     'jual hp bekas',
@@ -31,9 +31,9 @@ export const metadata: Metadata = {
     'cod aman',
     'garansi perlindungan pembeli'
   ],
-  authors: [{ name: 'Peygo Indonesia', url: siteUrl }],
-  creator: 'Peygo Indonesia',
-  publisher: 'Peygo • Part of Digitesia Edge Digital',
+  authors: [{ name: 'Belanjanya Indonesia', url: siteUrl }],
+  creator: 'Belanjanya Indonesia',
+  publisher: 'Belanjanya • Part of Digitesia Edge Digital',
   formatDetection: {
     email: false,
     address: false,
@@ -50,8 +50,8 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'id_ID',
     url: siteUrl,
-    siteName: 'Peygo',
-    title: 'Peygo - Jual Beli Barang Bekas Terpercaya Indonesia',
+    siteName: 'Belanjanya',
+    title: 'Belanjanya - Jual Beli Barang Bekas Terpercaya Indonesia',
     description:
       'Pasar jual beli barang bekas terpercaya dengan proteksi rekening bersama 100% dan garansi inspeksi fisik 48 jam.',
     images: [
@@ -59,16 +59,16 @@ export const metadata: Metadata = {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Peygo - Jual Beli Barang Bekas Terpercaya'
+        alt: 'Belanjanya - Jual Beli Barang Bekas Terpercaya'
       }
     ]
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Peygo - Jual Beli Barang Bekas Terpercaya Indonesia',
+    title: 'Belanjanya - Jual Beli Barang Bekas Terpercaya Indonesia',
     description:
       'Pasar jual beli barang bekas terpercaya dengan proteksi rekening bersama 100% dan garansi inspeksi fisik 48 jam.',
-    creator: '@peygo_id',
+    creator: '@belanjanya_id',
     images: ['/og-image.jpg']
   },
   robots: {
@@ -91,22 +91,22 @@ const jsonLd = {
     {
       '@type': 'Organization',
       '@id': `${siteUrl}/#organization`,
-      name: 'Peygo',
+      name: 'Belanjanya',
       url: siteUrl,
       logo: `${siteUrl}/favicon.svg`,
       description:
         'Platform jual beli barang bekas aman dan terpercaya dengan rekening bersama di Indonesia.',
       sameAs: [
-        'https://instagram.com/peygo.id',
-        'https://twitter.com/peygo_id',
-        'https://facebook.com/peygo.id'
+        'https://instagram.com/belanjanya.id',
+        'https://twitter.com/belanjanya_id',
+        'https://facebook.com/belanjanya.id'
       ]
     },
     {
       '@type': 'WebSite',
       '@id': `${siteUrl}/#website`,
       url: siteUrl,
-      name: 'Peygo',
+      name: 'Belanjanya',
       description: 'Jual Beli Barang Bekas Terpercaya Indonesia',
       publisher: {
         '@id': `${siteUrl}/#organization`

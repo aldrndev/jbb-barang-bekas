@@ -182,20 +182,20 @@ function NegoDashboardContent() {
                 Pusat Tawar & Nego Harga
               </h1>
               <p className="text-[11px] sm:text-xs text-slate-500 font-medium truncate">
-                Kunci harga 24 jam dengan transaksi bergaransi Peygo
+                Kunci harga 24 jam dengan transaksi bergaransi Belanjanya
               </p>
             </div>
           </div>
 
           {/* 2 Tabs: Tawaran Masuk vs Tawaran Keluar (Segmented Controller) */}
-          <div className="flex rounded-2xl bg-slate-100 p-1 text-xs font-bold border border-slate-200">
+          <div className="flex rounded-2xl bg-slate-200/70 p-1 text-xs font-bold border border-slate-200/90 shadow-2xs">
             <button
               type="button"
               onClick={() => setActiveTab('received')}
               className={`flex-1 flex items-center justify-center gap-1.5 rounded-xl py-2 sm:py-2.5 text-xs transition-all cursor-pointer ${
                 activeTab === 'received'
-                  ? 'bg-white text-slate-900 shadow-xs font-black'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-slate-900 shadow-sm font-black'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
               }`}
             >
               <Inbox className="h-3.5 w-3.5 text-amber-600 shrink-0" />
@@ -212,8 +212,8 @@ function NegoDashboardContent() {
               onClick={() => setActiveTab('sent')}
               className={`flex-1 flex items-center justify-center gap-1.5 rounded-xl py-2 sm:py-2.5 text-xs transition-all cursor-pointer ${
                 activeTab === 'sent'
-                  ? 'bg-white text-slate-900 shadow-xs font-black'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-slate-900 shadow-sm font-black'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
               }`}
             >
               <Send className="h-3.5 w-3.5 text-brand-600 shrink-0" />

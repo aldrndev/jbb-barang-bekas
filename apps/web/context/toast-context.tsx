@@ -98,22 +98,22 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         {toasts.map((toast) => {
           const typeStyles = {
             success: {
-              border: 'border-emerald-200/80 bg-white/95 text-emerald-950 shadow-emerald-500/10',
+              border: 'border-emerald-200/80 bg-white/80 text-emerald-950 shadow-emerald-500/10',
               iconBg: 'bg-emerald-50 text-emerald-600 border-emerald-200',
               Icon: CheckCircle2
             },
             error: {
-              border: 'border-rose-200/80 bg-white/95 text-rose-950 shadow-rose-500/10',
+              border: 'border-rose-200/80 bg-white/80 text-rose-950 shadow-rose-500/10',
               iconBg: 'bg-rose-50 text-rose-600 border-rose-200',
               Icon: AlertCircle
             },
             warning: {
-              border: 'border-amber-200/80 bg-white/95 text-amber-950 shadow-amber-500/10',
+              border: 'border-amber-200/80 bg-white/80 text-amber-950 shadow-amber-500/10',
               iconBg: 'bg-amber-50 text-amber-600 border-amber-200',
               Icon: AlertTriangle
             },
             info: {
-              border: 'border-cyan-200/80 bg-white/95 text-cyan-950 shadow-cyan-500/10',
+              border: 'border-cyan-200/80 bg-white/80 text-cyan-950 shadow-cyan-500/10',
               iconBg: 'bg-cyan-50 text-cyan-600 border-cyan-200',
               Icon: Info
             }
@@ -124,7 +124,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           return (
             <div
               key={toast.id}
-              className={`pointer-events-auto flex items-start gap-3 rounded-2xl border ${typeStyles.border} p-3.5 sm:p-4 shadow-xl backdrop-blur-md transition-all animate-in slide-in-from-top-4 duration-300`}
+              className={`pointer-events-auto flex items-start gap-3 rounded-2xl border ${typeStyles.border} p-3.5 sm:p-4 backdrop-blur-2xl backdrop-saturate-180 shadow-[0_16px_36px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.95)] transition-all animate-in slide-in-from-top-4 duration-300`}
             >
               <div
                 className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border ${typeStyles.iconBg}`}

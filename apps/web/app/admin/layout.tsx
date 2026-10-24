@@ -1,6 +1,6 @@
 'use client';
 
-import { PeygoLogoIcon } from '@/components/common/peygo-logo';
+import { BelanjanyaLogoIcon } from '@/components/common/belanjanya-logo';
 import { useAuth } from '@/context/auth-context';
 import {
   AlertTriangle,
@@ -72,7 +72,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4">
         <div className="flex flex-col items-center gap-3 animate-pulse">
           <div className="h-12 w-12 rounded-2xl bg-brand-600/20 flex items-center justify-center border border-brand-500/30 text-white">
-            <PeygoLogoIcon size="sm" />
+            <BelanjanyaLogoIcon size="sm" />
           </div>
           <span className="text-xs font-bold text-slate-400 tracking-wide">
             Memverifikasi Hak Akses Admin...
@@ -123,11 +123,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Brand Header */}
         <div className="p-5 border-b border-slate-200 flex items-center justify-between">
           <Link href="/admin" className="flex items-center gap-2.5 group">
-            <PeygoLogoIcon size="sm" className="group-hover:scale-105 transition-transform" />
+            <BelanjanyaLogoIcon size="sm" className="group-hover:scale-105 transition-transform" />
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="text-base font-black text-slate-900 tracking-tight">
-                  PEYGO.ADMIN
+                  BELANJANYA.ADMIN
                 </span>
                 <span className="rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-black px-1.5 py-0.2 border border-emerald-200">
                   PRO
@@ -219,8 +219,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="relative flex w-72 max-w-xs flex-1 flex-col bg-white border-r border-slate-200 pt-5 pb-4 shadow-xl">
             <div className="flex items-center justify-between px-5 pb-4 border-b border-slate-200">
               <div className="flex items-center gap-2">
-                <PeygoLogoIcon size="sm" />
-                <span className="text-base font-black text-slate-900">PEYGO.ADMIN</span>
+                <BelanjanyaLogoIcon size="sm" />
+                <span className="text-base font-black text-slate-900">BELANJANYA.ADMIN</span>
               </div>
               <button
                 type="button"

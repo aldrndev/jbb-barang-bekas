@@ -1,6 +1,6 @@
 'use client';
 
-import { PeygoLogoIcon } from '@/components/common/peygo-logo';
+import { BelanjanyaLogoIcon } from '@/components/common/belanjanya-logo';
 import { useToast } from '@/context/toast-context';
 import { api } from '@/lib/api-client';
 import { formatIDR } from '@/lib/utils';
@@ -162,13 +162,13 @@ export function InvoicePrintableView({
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-5 border-b border-slate-200">
           <div>
             <div className="flex items-center gap-2">
-              <PeygoLogoIcon size="md" />
+              <BelanjanyaLogoIcon size="md" />
               <div>
                 <span className="text-lg font-black tracking-tight text-slate-900 block leading-tight">
-                  PEYGO<span className="text-brand-600">.ID</span>
+                  BELANJANYA<span className="text-brand-600">.ID</span>
                 </span>
                 <span className="text-[11px] font-medium text-slate-500 block">
-                  Peygo &bull; Part of Digitesia Edge Digital
+                  Belanjanya &bull; Part of Digitesia Edge Digital
                 </span>
               </div>
             </div>
@@ -405,11 +405,11 @@ export function InvoicePrintableView({
         <div className="pt-4 border-t border-slate-200 text-center text-[10px] text-slate-400 space-y-1">
           <p>
             {invoice.terms ||
-              'Faktur ini merupakan bukti transaksi yang sah dan diproses secara otomatis oleh sistem komputer Peygo.'}
+              'Faktur ini merupakan bukti transaksi yang sah dan diproses secara otomatis oleh sistem komputer Belanjanya.'}
           </p>
           <p>
             Butuh bantuan? Kunjungi Pusat Bantuan di{' '}
-            <span className="text-slate-600 font-medium">peygo.id/pusat-bantuan</span>
+            <span className="text-slate-600 font-medium">belanjanya.id/pusat-bantuan</span>
           </p>
         </div>
       </div>

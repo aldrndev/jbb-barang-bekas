@@ -87,13 +87,13 @@ export function MakeOfferModal({ listing, isOpen, onClose, onOfferSuccess }: Mak
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-3 sm:p-4 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto">
-      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xl animate-in zoom-in-95 duration-200 my-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-3 sm:p-4 backdrop-blur-xl backdrop-saturate-150 animate-in fade-in duration-200 overflow-y-auto">
+      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-4xl border border-white/80 bg-white/95 backdrop-blur-2xl p-5 sm:p-6 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,1)] animate-in zoom-in-95 duration-200 my-auto">
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+          className="absolute right-4 top-4 rounded-full p-2 liquid-glass-pill text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
         >
           <X className="h-5 w-5" />
         </button>

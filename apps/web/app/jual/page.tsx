@@ -375,7 +375,7 @@ function JualBarangContent() {
             {isEditMode ? 'Masuk untuk Mengedit Iklan' : 'Masuk untuk Jual Barang'}
           </h1>
           <p className="text-xs text-slate-500 leading-relaxed font-medium">
-            Demi keamanan bersama dan perlindungan transaksi di Peygo, Anda harus masuk sebagai
+            Demi keamanan bersama dan perlindungan transaksi di Belanjanya, Anda harus masuk sebagai
             penjual terdaftar.
           </p>
 
@@ -446,7 +446,7 @@ function JualBarangContent() {
 
             <div className="flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-[11px] sm:text-xs font-bold text-brand-800 border border-brand-200 shrink-0">
               <ShieldCheck className="h-3.5 w-3.5 text-brand-600" />
-              <span>Garansi Perlindungan Peygo</span>
+              <span>Garansi Perlindungan Belanjanya</span>
             </div>
           </div>
         </div>
@@ -1174,7 +1174,7 @@ function JualBarangContent() {
                     <ConditionBadge condition={condition} size="sm" />
                   </div>
                   {isCodAvailable && (
-                    <div className="absolute bottom-2 left-2 z-10 rounded-full bg-amber-50/95 px-2.5 py-0.5 text-[9px] font-bold text-amber-950 border border-amber-300 backdrop-blur-md shadow-2xs flex items-center gap-1">
+                    <div className="absolute bottom-2 left-2 z-10 rounded-full bg-amber-50/85 px-2.5 py-0.5 text-[9px] font-bold text-amber-950 border border-amber-300/80 backdrop-blur-md backdrop-saturate-150 shadow-xs flex items-center gap-1 ring-1 ring-black/5">
                       <Zap className="h-2.5 w-2.5 text-amber-600 fill-amber-400" />
                       <span>Siap COD</span>
                     </div>
@@ -1224,7 +1224,7 @@ function JualBarangContent() {
             <div className="rounded-3xl border border-brand-200/80 bg-brand-50/50 p-4 sm:p-5 space-y-2.5 text-xs">
               <h4 className="font-black text-brand-950 flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-brand-700" />
-                <span>Tips Cepat Laku di Peygo</span>
+                <span>Tips Cepat Laku di Belanjanya</span>
               </h4>
               <ul className="space-y-1.5 text-brand-900 leading-relaxed text-[11px]">
                 <li className="flex items-start gap-1.5">

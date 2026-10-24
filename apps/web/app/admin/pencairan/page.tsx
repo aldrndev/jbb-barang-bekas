@@ -877,7 +877,7 @@ export default function AdminPayoutsPage() {
                   <div>
                     <h3 className="font-black text-slate-900 text-sm">Bukti Settlement Resmi</h3>
                     <span className="text-[10px] text-slate-400 font-mono">
-                      Peygo • Part of Digitesia Edge Digital
+                      Belanjanya • Part of Digitesia Edge Digital
                     </span>
                   </div>
                 </div>

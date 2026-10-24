@@ -43,11 +43,11 @@ export default function SyaratKetentuanPage() {
               <span>Dokumen Resmi & Ketentuan Hukum</span>
             </div>
             <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white mb-3">
-              Syarat & Ketentuan Layanan Peygo
+              Syarat & Ketentuan Layanan Belanjanya
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
               Terakhir diperbarui: 1 September 2026. Harap membaca seluruh syarat dan ketentuan
-              berikut dengan teliti sebelum menggunakan marketplace Peygo.
+              berikut dengan teliti sebelum menggunakan marketplace Belanjanya.
             </p>
           </div>
         </div>
@@ -99,9 +99,10 @@ export default function SyaratKetentuanPage() {
                 Definisi & Ruang Lingkup
               </h2>
               <p className="mb-3 text-xs sm:text-sm">
-                Selamat datang di <strong>Peygo</strong> (Peygo part of Digitesia Edge Digital).
-                Platform ini menyediakan ekosistem marketplace jual beli barang bekas (pre-loved /
-                second-hand) dengan Garansi Perlindungan Pembeli terintegrasi di seluruh Indonesia.
+                Selamat datang di <strong>Belanjanya</strong> (Belanjanya part of Digitesia Edge
+                Digital). Platform ini menyediakan ekosistem marketplace jual beli barang bekas
+                (pre-loved / second-hand) dengan Garansi Perlindungan Pembeli terintegrasi di
+                seluruh Indonesia.
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
                 <li>
@@ -109,8 +110,9 @@ export default function SyaratKetentuanPage() {
                   terdaftar.
                 </li>
                 <li>
-                  <strong>"Garansi Perlindungan Peygo"</strong> adalah sistem perlindungan transaksi
-                  yang menjamin pembayaran aman hingga barang diterima dan disetujui oleh Pembeli.
+                  <strong>"Garansi Perlindungan Belanjanya"</strong> adalah sistem perlindungan
+                  transaksi yang menjamin pembayaran aman hingga barang diterima dan disetujui oleh
+                  Pembeli.
                 </li>
                 <li>
                   <strong>"Masa Proteksi / Inspeksi"</strong> adalah batas waktu 48 jam bagi Pembeli
@@ -157,7 +159,7 @@ export default function SyaratKetentuanPage() {
                 Aturan Pemasangan Iklan & Kejujuran Kondisi
               </h2>
               <p className="mb-3 text-xs sm:text-sm">
-                Nilai utama Peygo adalah transparansi kondisi barang bekas:
+                Nilai utama Belanjanya adalah transparansi kondisi barang bekas:
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
                 <li>
@@ -184,8 +186,8 @@ export default function SyaratKetentuanPage() {
                 Barang yang Dilarang Diperjualbelikan
               </h2>
               <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 mb-3 text-xs text-rose-800">
-                <strong>Perhatian:</strong> Peygo melarang keras penjualan barang-barang ilegal dan
-                melanggar hukum hukum Republik Indonesia.
+                <strong>Perhatian:</strong> Belanjanya melarang keras penjualan barang-barang ilegal
+                dan melanggar hukum hukum Republik Indonesia.
               </div>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
                 <li>
@@ -211,11 +213,11 @@ export default function SyaratKetentuanPage() {
                 Ketentuan Garansi Perlindungan Pembeli 48 Jam
               </h2>
               <p className="mb-3 text-xs sm:text-sm">
-                Mekanisme pembayaran di Peygo diatur melalui alur perlindungan bergaransi:
+                Mekanisme pembayaran di Belanjanya diatur melalui alur perlindungan bergaransi:
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
                 <li>
-                  Pembayaran pembeli diamankan oleh sistem perlindungan Peygo dan tidak akan
+                  Pembayaran pembeli diamankan oleh sistem perlindungan Belanjanya dan tidak akan
                   diteruskan ke penjual sebelum pembeli mengonfirmasi pesanan.
                 </li>
                 <li>
@@ -238,7 +240,7 @@ export default function SyaratKetentuanPage() {
                 Panduan Transaksi Siap COD (Cash On Delivery)
               </h2>
               <p className="mb-3 text-xs sm:text-sm">
-                Peygo memfasilitasi janji temu COD yang aman:
+                Belanjanya memfasilitasi janji temu COD yang aman:
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
                 <li>
@@ -274,8 +276,8 @@ export default function SyaratKetentuanPage() {
                   saat mengajukan tombol <strong>"Ajukan Komplain / Sengketa"</strong>.
                 </li>
                 <li>
-                  Tim Moderasi & Sengketa Peygo akan meninjau bukti kedua belah pihak dalam waktu
-                  maksimal 2x24 jam kerja secara netral dan adil.
+                  Tim Moderasi & Sengketa Belanjanya akan meninjau bukti kedua belah pihak dalam
+                  waktu maksimal 2x24 jam kerja secara netral dan adil.
                 </li>
                 <li>
                   Jika klaim disetujui, pembeli wajib mengirimkan kembali barang ke alamat penjual,
@@ -293,7 +295,7 @@ export default function SyaratKetentuanPage() {
                 Biaya Layanan & Penarikan Dana (Withdrawal)
               </h2>
               <p className="mb-3 text-xs sm:text-sm">
-                Peygo menerapkan transparansi biaya tanpa potongan tersembunyi:
+                Belanjanya menerapkan transparansi biaya tanpa potongan tersembunyi:
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600">
                 <li>
@@ -320,10 +322,10 @@ export default function SyaratKetentuanPage() {
                 Batasan Tanggung Jawab
               </h2>
               <p className="text-xs sm:text-sm text-slate-600">
-                Peygo bertindak sebagai penyedia platform marketplace dan sistem pembayaran aman.
-                Transaksi yang dilakukan langsung di luar sistem resmi Peygo (transaksi transfer
-                langsung antar pengguna) berada di luar tanggung jawab dan perlindungan garansi
-                Peygo.
+                Belanjanya bertindak sebagai penyedia platform marketplace dan sistem pembayaran
+                aman. Transaksi yang dilakukan langsung di luar sistem resmi Belanjanya (transaksi
+                transfer langsung antar pengguna) berada di luar tanggung jawab dan perlindungan
+                garansi Belanjanya.
               </p>
             </section>
 
@@ -336,7 +338,7 @@ export default function SyaratKetentuanPage() {
                 Perubahan Syarat & Ketentuan
               </h2>
               <p className="text-xs sm:text-sm text-slate-600">
-                Peygo berhak memperbarui dokumen syarat dan ketentuan ini sewaktu-waktu guna
+                Belanjanya berhak memperbarui dokumen syarat dan ketentuan ini sewaktu-waktu guna
                 mematuhi regulasi perundang-undangan Republik Indonesia dan meningkatkan keamanan
                 layanan. Pengguna akan mendapatkan notifikasi berkala apabila terdapat perubahan
                 signifikan.
