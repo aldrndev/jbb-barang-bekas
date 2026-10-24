@@ -12,7 +12,9 @@
     "clean": "turbo clean",
     "db:generate": "pnpm --filter @jbb/database generate",
     "db:migrate:local": "pnpm --filter @jbb/api db:migrate:local",
-    "db:seed:local": "pnpm --filter @jbb/api db:seed:local"
+    "db:seed:local": "pnpm --filter @jbb/api db:seed:local",
+    "db:migrate:remote": "pnpm --filter @jbb/api db:migrate:remote",
+    "db:seed:remote": "pnpm --filter @jbb/api db:seed:remote"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

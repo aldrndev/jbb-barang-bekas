@@ -7,6 +7,8 @@
     "deploy": "wrangler deploy src/index.ts",
     "db:migrate:local": "wrangler d1 execute bekasin-prod-db --local --file=../../packages/database/drizzle/migrations/0000_chief_nitro.sql",
     "db:seed:local": "wrangler d1 execute bekasin-prod-db --local --file=../../packages/database/drizzle/seed.sql",
+    "db:migrate:remote": "wrangler d1 execute bekasin-prod-db --remote --file=../../packages/database/drizzle/migrations/0000_chief_nitro.sql",
+    "db:seed:remote": "wrangler d1 execute bekasin-prod-db --remote --file=../../packages/database/drizzle/seed.sql",
     "typecheck": "tsc --noEmit",
     "build": "tsc --noEmit"
   },
