@@ -35,6 +35,11 @@ export function ListingCard({ listing, showRemoveFromWishlist = false }: Listing
           src={primaryImage}
           alt={listing.title}
           className="h-full w-full object-cover select-none"
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src =
+              'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80';
+          }}
         />
 
         {/* Top Badges */}

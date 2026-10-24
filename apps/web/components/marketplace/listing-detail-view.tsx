@@ -343,6 +343,11 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                   <img
                     src={primaryImageUrl}
                     alt={listing.title}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src =
+                        'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80';
+                    }}
                     className="max-h-full max-w-full object-contain select-none"
                   />
                 </button>
@@ -368,6 +373,11 @@ function ListingDetailContent({ idOrSlug }: { idOrSlug: string }) {
                           <img
                             src={img.url}
                             alt={`Thumbnail ${idx + 1}`}
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src =
+                                'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80';
+                            }}
                             className="h-full w-full object-cover rounded-[13px]"
                           />
                         </button>

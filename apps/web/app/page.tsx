@@ -141,9 +141,12 @@ export default function HomePage() {
   const listings = listingsData?.data?.items || [];
   const featuredListings = featuredData?.data || [];
 
-  // Dynamically pick from featured listings or first available listing from database
+  // Spotlight: Priority to newly added iPhone 15 Pro Max (item-65)
   const spotlightListing =
-    featuredListings.length > 0 ? featuredListings[0] : listings.length > 0 ? listings[0] : null;
+    listings.find((l) => l.id === 'item-65') ||
+    featuredListings.find((l) => l.id === 'item-65') ||
+    listings.find((l) => l.title.toLowerCase().includes('iphone 15 pro max')) ||
+    (featuredListings.length > 0 ? featuredListings[0] : listings.length > 0 ? listings[0] : null);
   const isRealSpotlight = Boolean(spotlightListing);
 
   const hotDeals = listings.filter((l) => l.isNegotiable && l.offerCount > 0);
@@ -421,14 +424,19 @@ export default function HomePage() {
                         ? (typeof spotlightListing.images?.[0] === 'string'
                             ? spotlightListing.images[0]
                             : spotlightListing.images?.[0]?.url) ||
-                          'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80'
-                        : 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80'
+                          'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80'
+                        : 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80'
                     }
                     alt={
                       isRealSpotlight && spotlightListing
                         ? spotlightListing.title
-                        : 'iPhone 13 Pro Showcase'
+                        : 'iPhone 15 Pro Max Showcase'
                     }
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src =
+                        'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80';
+                    }}
                     className="h-full w-full object-cover group-hover:scale-103 transition-transform duration-500"
                   />
                   <div className="absolute bottom-2 left-2 rounded-full bg-slate-900/80 border border-white/15 backdrop-blur-md backdrop-saturate-150 px-2.5 py-0.5 text-[10px] text-white font-medium flex items-center gap-1 shadow-xs">
