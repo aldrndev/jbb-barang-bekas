@@ -1527,14 +1527,14 @@ export const new30Listings = [
       {
         id: 'img-63-1',
         listingId: 'item-63',
-        url: 'https://images.unsplash.com/photo-1588854337115-1c67d9247e4d?w=800&auto=format&fit=crop&q=80',
+        url: 'https://images.samsung.com/is/image/samsung/p6pim/id/rt47cg6422b1se/gallery/id-top-mount-freezer-optimal-fresh-and-space-max-rt47cg6422b1se-thumb-536314380',
         isPrimary: true,
         sortOrder: 1
       },
       {
         id: 'img-63-2',
         listingId: 'item-63',
-        url: 'https://images.unsplash.com/photo-1536353284924-9220c464e262?w=800&auto=format&fit=crop&q=80',
+        url: 'https://images.samsung.com/is/image/samsung/p6pim/id/rs40h53xntse/gallery/id-rs40hm36-rs40h53x2fut-rs40h53xntse-thumb-554580914',
         isPrimary: false,
         sortOrder: 2
       }
@@ -2139,5 +2139,1076 @@ export const new30Listings = [
     ],
     createdAt: '2026-09-02T18:45:00Z',
     updatedAt: '2026-09-02T18:45:00Z'
+  },
+  // 75. iPhone 18 Pro Max
+  {
+    id: 'item-75',
+    sellerId: 'usr-seller-1',
+    categoryId: 'cat-gadget',
+    title: 'iPhone 18 Pro Max 512GB Desert Titanium Resmi iBox Like New',
+    slug: 'iphone-18-pro-max-512gb-desert-titanium-resmi-ibox',
+    description:
+      'Dijual flagship terbaru Apple iPhone 18 Pro Max kapasitas 512GB warna Desert Titanium garansi resmi iBox Indonesia. Kondisi fisik 99.9% seperti baru buka segel, siklus baterai baru 8 kali cas (Battery Health 100%). Ditenagai chip Apple A20 Pro 2nm super kencang, layar Super Retina XDR 6.9 inci 120Hz ProMotion dengan bezel tertipis, dan sistem triple kamera 48MP Pro Fusion. Fullset original dus, kabel braided USB-C, dan faktur resmi iBox.',
+    price: 25900000,
+    originalPrice: 30999000,
+    isNegotiable: true,
+    minOfferPrice: 24500000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'WITH_RECEIPT']),
+    purchaseYear: 2026,
+    warrantyUntil: '2027-10-01T00:00:00Z',
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 940,
+    offerCount: 18,
+    favoriteCount: 132,
+    province: 'DKI Jakarta',
+    city: 'Jakarta Selatan',
+    district: 'Kebayoran Baru',
+    postalCode: '12130',
+    isCodAvailable: true,
+    codMeetingPoint: 'Pacific Place SCBD / Senayan City',
+    specs: JSON.stringify({
+      storage: '512 GB NVMe',
+      color: 'Desert Titanium',
+      batteryHealth: '100% (Cycle Count 8)',
+      chipset: 'Apple A20 Pro (2nm)',
+      screen: '6.9" LTPO Super Retina XDR OLED 120Hz'
+    }),
+    images: [
+      {
+        id: 'img-75-1',
+        listingId: 'item-75',
+        url: 'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-18-pro-max-r1.jpg',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-75-2',
+        listingId: 'item-75',
+        url: 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-17-pro-max-1.jpg',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T08:00:00Z',
+    updatedAt: '2026-09-03T08:00:00Z'
+  },
+  // 76. iPhone 17 Pro Max
+  {
+    id: 'item-76',
+    sellerId: 'usr-seller-9',
+    categoryId: 'cat-gadget',
+    title: 'iPhone 17 Pro Max 256GB Cosmic Titanium Garansi Resmi iBox Fullset',
+    slug: 'iphone-17-pro-max-256gb-cosmic-titanium-resmi-ibox',
+    description:
+      'iPhone 17 Pro Max 256GB warna Cosmic Titanium garansi resmi iBox Indonesia masih aktif. Bodi titanium grade 5 mulus 99% tanpa baret, layar sudah terpasang anti gores Sapphire Spigen. Kamera 48MP Telephoto Tetraprism zoom optik tajam untuk konser dan potret. Battery Health 98% awet seharian. Lengkap dus original dan kabel USB-C bawaan.',
+    price: 21500000,
+    originalPrice: 26999000,
+    isNegotiable: true,
+    minOfferPrice: 20200000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'WITH_RECEIPT']),
+    purchaseYear: 2025,
+    warrantyUntil: '2026-12-15T00:00:00Z',
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 780,
+    offerCount: 14,
+    favoriteCount: 98,
+    province: 'Sumatera Utara',
+    city: 'Medan',
+    district: 'Medan Barat',
+    postalCode: '20111',
+    isCodAvailable: true,
+    codMeetingPoint: 'Sun Plaza Medan / Delipark Mall',
+    specs: JSON.stringify({
+      storage: '256 GB',
+      color: 'Cosmic Titanium',
+      batteryHealth: '98%',
+      chipset: 'Apple A19 Pro (3nm)',
+      screen: '6.9" Super Retina XDR OLED 120Hz'
+    }),
+    images: [
+      {
+        id: 'img-76-1',
+        listingId: 'item-76',
+        url: 'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-17-pro-max.jpg',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-76-2',
+        listingId: 'item-76',
+        url: 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-17-pro-max-2.jpg',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T08:30:00Z',
+    updatedAt: '2026-09-03T08:30:00Z'
+  },
+  // 77. iPhone 16 Pro Max
+  {
+    id: 'item-77',
+    sellerId: 'usr-seller-1',
+    categoryId: 'cat-gadget',
+    title: 'iPhone 16 Pro Max 256GB Desert Titanium Resmi iBox Mulus 99%',
+    slug: 'iphone-16-pro-max-256gb-desert-titanium-resmi-ibox',
+    description:
+      'iPhone 16 Pro Max 256GB warna favorit Desert Titanium garansi resmi iBox (PA/A). Dilengkapi tombol Camera Control kapasitif untuk akses cepat foto dan perekaman video 4K 120fps Dolby Vision. Kondisi fisik 99% istimewa terawat, Battery Health 95% original. Fullset dus original dan kabel USB-C.',
+    price: 18900000,
+    originalPrice: 25999000,
+    isNegotiable: true,
+    minOfferPrice: 17900000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'BOX_UNIT']),
+    purchaseYear: 2025,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 690,
+    offerCount: 13,
+    favoriteCount: 89,
+    province: 'DKI Jakarta',
+    city: 'Jakarta Selatan',
+    district: 'Cilandak',
+    postalCode: '12430',
+    isCodAvailable: true,
+    codMeetingPoint: 'Pondok Indah Mall (PIM 2) / Cilandak Town Square',
+    specs: JSON.stringify({
+      storage: '256 GB',
+      color: 'Desert Titanium',
+      batteryHealth: '95%',
+      chipset: 'Apple A18 Pro (3nm)',
+      camera: '48MP Fusion + 48MP Ultra Wide + 5x Telephoto'
+    }),
+    images: [
+      {
+        id: 'img-77-1',
+        listingId: 'item-77',
+        url: 'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-16-pro-max.jpg',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-77-2',
+        listingId: 'item-77',
+        url: 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-16-pro-max-1.jpg',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T09:00:00Z',
+    updatedAt: '2026-09-03T09:00:00Z'
+  },
+  // 78. Samsung Galaxy S25 Ultra 5G
+  {
+    id: 'item-78',
+    sellerId: 'usr-seller-10',
+    categoryId: 'cat-gadget',
+    title: 'Samsung Galaxy S25 Ultra 5G 12GB / 512GB Titanium Silverblue SEIN Resmi',
+    slug: 'samsung-galaxy-s25-ultra-5g-12gb-512gb-titanium-silverblue-sein',
+    description:
+      'Flagship Android kasta tertinggi Samsung Galaxy S25 Ultra 5G 12GB/512GB warna Titanium Silverblue garansi resmi SEIN Indonesia. Desain sudut membulat ergonomis dengan bingkai titanium dan Gorilla Armor 2 anti silau. Ditenagai Snapdragon 8 Elite for Galaxy super dingin dan kamera 200MP + 50MP Ultra Wide + Dual Telephoto. Fullset dus original dan S-Pen.',
+    price: 19400000,
+    originalPrice: 24999000,
+    isNegotiable: true,
+    minOfferPrice: 18400000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'WITH_RECEIPT']),
+    purchaseYear: 2025,
+    warrantyUntil: '2026-12-20T00:00:00Z',
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 810,
+    offerCount: 15,
+    favoriteCount: 112,
+    province: 'Sulawesi Selatan',
+    city: 'Makassar',
+    district: 'Panakkukang',
+    postalCode: '90231',
+    isCodAvailable: true,
+    codMeetingPoint: 'Mall Panakkukang / Trans Studio Mall Makassar',
+    specs: JSON.stringify({
+      ram: '12 GB LPDDR5X',
+      storage: '512 GB UFS 4.0',
+      chipset: 'Snapdragon 8 Elite for Galaxy (3nm)',
+      display: '6.9" QHD+ Dynamic LTPO AMOLED 2X 120Hz',
+      color: 'Titanium Silverblue'
+    }),
+    images: [
+      {
+        id: 'img-78-1',
+        listingId: 'item-78',
+        url: 'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s25-ultra-sm-s938.jpg',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-78-2',
+        listingId: 'item-78',
+        url: 'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s25-ultra-sm-s938-1.jpg',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T09:30:00Z',
+    updatedAt: '2026-09-03T09:30:00Z'
+  },
+  // 79. Samsung Galaxy Z Fold 6 5G
+  {
+    id: 'item-79',
+    sellerId: 'usr-seller-2',
+    categoryId: 'cat-gadget',
+    title: 'Samsung Galaxy Z Fold 6 5G 12GB / 512GB Silver Shadow SEIN Garansi Aktif',
+    slug: 'samsung-galaxy-z-fold-6-5g-12gb-512gb-silver-shadow-sein',
+    description:
+      'Smartphone lipat produktivitas terbaik Samsung Galaxy Z Fold 6 5G 12GB/512GB warna Silver Shadow garansi resmi SEIN Indonesia. Bodi lebih tipis dan ringan dibanding generasi sebelumnya dengan sertifikasi IP48 tahan air dan debu. Layar utama 7.6 inci 2600 nits mulus tanpa kerutan parah, fitur Galaxy AI Note Assist dan Interpreter sangat membantu kerja. Fullset original.',
+    price: 19800000,
+    originalPrice: 28499000,
+    isNegotiable: true,
+    minOfferPrice: 18500000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'WITH_RECEIPT']),
+    purchaseYear: 2025,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 640,
+    offerCount: 11,
+    favoriteCount: 84,
+    province: 'Jawa Barat',
+    city: 'Bandung',
+    district: 'Coblong',
+    postalCode: '40132',
+    isCodAvailable: true,
+    codMeetingPoint: 'Paris Van Java / Paskal 23 Bandung',
+    specs: JSON.stringify({
+      ram: '12 GB',
+      storage: '512 GB',
+      chipset: 'Snapdragon 8 Gen 3 for Galaxy',
+      display: '7.6" Foldable Dynamic LTPO AMOLED 2X 120Hz',
+      color: 'Silver Shadow'
+    }),
+    images: [
+      {
+        id: 'img-79-1',
+        listingId: 'item-79',
+        url: 'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-fold6.jpg',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-79-2',
+        listingId: 'item-79',
+        url: 'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-z-fold6-1.jpg',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T10:00:00Z',
+    updatedAt: '2026-09-03T10:00:00Z'
+  },
+  // 80. Samsung Galaxy Z Flip 6 5G
+  {
+    id: 'item-80',
+    sellerId: 'usr-seller-9',
+    categoryId: 'cat-gadget',
+    title: 'Samsung Galaxy Z Flip 6 5G 12GB / 256GB Blue SEIN Resmi Like New',
+    slug: 'samsung-galaxy-z-flip-6-5g-12gb-256gb-blue-sein',
+    description:
+      'HP lipat stylish Samsung Galaxy Z Flip 6 5G RAM 12GB internal 256GB warna Blue garansi resmi SEIN. Upgrade besar kamera utama 50MP setara S24 dan baterai 4000mAh lengkap dengan Vapor Chamber pendingin. Layar cover FlexWindow 3.4 inci interaktif. Pemakaian apik 99% like new. Fullset box dan kabel type-c original.',
+    price: 11800000,
+    originalPrice: 17499000,
+    isNegotiable: true,
+    minOfferPrice: 11000000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'BOX_UNIT']),
+    purchaseYear: 2025,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 540,
+    offerCount: 10,
+    favoriteCount: 73,
+    province: 'Sumatera Utara',
+    city: 'Medan',
+    district: 'Medan Baru',
+    postalCode: '20153',
+    isCodAvailable: true,
+    codMeetingPoint: 'Sun Plaza Medan / Centre Point',
+    specs: JSON.stringify({
+      ram: '12 GB',
+      storage: '256 GB',
+      chipset: 'Snapdragon 8 Gen 3 for Galaxy',
+      camera: '50MP OIS Wide + 12MP Ultra Wide',
+      color: 'Blue'
+    }),
+    images: [
+      {
+        id: 'img-80-1',
+        listingId: 'item-80',
+        url: 'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-flip6.jpg',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-80-2',
+        listingId: 'item-80',
+        url: 'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-z-flip6-1.jpg',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T10:30:00Z',
+    updatedAt: '2026-09-03T10:30:00Z'
+  },
+  // 81. Xiaomi 14T Pro 5G
+  {
+    id: 'item-81',
+    sellerId: 'usr-seller-3',
+    categoryId: 'cat-gadget',
+    title: 'Xiaomi 14T Pro 5G 12GB / 512GB Titan Gray Leica Summilux Resmi TAM',
+    slug: 'xiaomi-14t-pro-5g-12gb-512gb-titan-gray-leica-resmi',
+    description:
+      'Flagship killer fotografi Xiaomi 14T Pro 5G varian tertinggi 12GB/512GB warna Titan Gray garansi resmi Xiaomi Indonesia. Lensa optik Leica Summilux f/1.6 dengan sensor Light Fusion 900 menghasilkan foto malam dan potret setara kamera profesional. Chipset Dimensity 9300+ rata kanan semua game, layar 144Hz AI AMOLED, dan HyperCharge 120W penuh dalam 19 menit. Fullset original.',
+    price: 7850000,
+    originalPrice: 9999000,
+    isNegotiable: true,
+    minOfferPrice: 7300000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'WITH_RECEIPT']),
+    purchaseYear: 2025,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 610,
+    offerCount: 12,
+    favoriteCount: 79,
+    province: 'Jawa Timur',
+    city: 'Surabaya',
+    district: 'Gubeng',
+    postalCode: '60281',
+    isCodAvailable: true,
+    codMeetingPoint: 'Tunjungan Plaza / Galaxy Mall Surabaya',
+    specs: JSON.stringify({
+      ram: '12 GB LPDDR5X',
+      storage: '512 GB UFS 4.0',
+      chipset: 'MediaTek Dimensity 9300+ (4nm)',
+      camera: '50MP Leica Summilux Light Fusion 900 + 50MP Telephoto',
+      charging: '120W HyperCharge + 50W Wireless Charging'
+    }),
+    images: [
+      {
+        id: 'img-81-1',
+        listingId: 'item-81',
+        url: 'https://fdn2.gsmarena.com/vv/bigpic/xiaomi-14t-pro.jpg',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-81-2',
+        listingId: 'item-81',
+        url: 'https://fdn2.gsmarena.com/vv/pics/xiaomi/xiaomi-14t-pro-1.jpg',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T11:00:00Z',
+    updatedAt: '2026-09-03T11:00:00Z'
+  },
+  // 82. Vivo X200 Pro 5G
+  {
+    id: 'item-82',
+    sellerId: 'usr-seller-3',
+    categoryId: 'cat-gadget',
+    title: 'Vivo X200 Pro 5G 16GB / 512GB Titanium Gray Zeiss 200MP APO Telephoto Resmi',
+    slug: 'vivo-x200-pro-5g-16gb-512gb-titanium-gray-zeiss-resmi',
+    description:
+      'Raja kamera konser Vivo X200 Pro 5G 16GB/512GB warna Titanium Gray garansi resmi Vivo Indonesia. Kamera periskop 200MP ZEISS APO Telephoto dengan chip pencitraan V3+ sanggup merekam panggung konser dari jarak jauh dengan sangat jernih dan stabil. Baterai BlueVolt 6000mAh Silicon-Anode super awet. Kondisi 99% like new fullset charger FlashCharge 90W.',
+    price: 13900000,
+    originalPrice: 17999000,
+    isNegotiable: true,
+    minOfferPrice: 13100000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'WITH_RECEIPT']),
+    purchaseYear: 2025,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 590,
+    offerCount: 11,
+    favoriteCount: 82,
+    province: 'Jawa Timur',
+    city: 'Surabaya',
+    district: 'Rungkut',
+    postalCode: '60293',
+    isCodAvailable: true,
+    codMeetingPoint: 'Pakuwon Mall Surabaya / Galaxy Mall',
+    specs: JSON.stringify({
+      ram: '16 GB LPDDR5X',
+      storage: '512 GB UFS 4.0',
+      chipset: 'MediaTek Dimensity 9400 (3nm)',
+      camera: '200MP ZEISS APO Telephoto + 50MP Sony LYT-818 Main',
+      battery: '6000 mAh Semi-Solid BlueVolt Battery'
+    }),
+    images: [
+      {
+        id: 'img-82-1',
+        listingId: 'item-82',
+        url: 'https://fdn2.gsmarena.com/vv/bigpic/vivo-x200-pro.jpg',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-82-2',
+        listingId: 'item-82',
+        url: 'https://fdn2.gsmarena.com/vv/pics/vivo/vivo-x200-pro-1.jpg',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T11:30:00Z',
+    updatedAt: '2026-09-03T11:30:00Z'
+  },
+  // 83. OPPO Find N3 5G
+  {
+    id: 'item-83',
+    sellerId: 'usr-seller-1',
+    categoryId: 'cat-gadget',
+    title: 'OPPO Find N3 5G Foldable 16GB / 512GB Classic Black Hasselblad Resmi',
+    slug: 'oppo-find-n3-5g-foldable-16gb-512gb-classic-black-resmi',
+    description:
+      'Smartphone lipat kelas eksekutif OPPO Find N3 5G 16GB/512GB warna Classic Black vegan leather garansi resmi OPPO Indonesia. Layar lipat Golden Ratio hampir tanpa bekas lipatan (invisible crease) dan sistem tiga kamera Hasselblad kelas flagship (48MP + 64MP Periscope + 48MP Ultra Wide). Fitur Boundless View multitasking 3 aplikasi sangat intuitif. Fullset charger SuperVOOC 67W.',
+    price: 15800000,
+    originalPrice: 26999000,
+    isNegotiable: true,
+    minOfferPrice: 14800000,
+    condition: 'USED_EXCELLENT' as const,
+    completeness: JSON.stringify(['FULLSET', 'BOX_UNIT']),
+    purchaseYear: 2024,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 510,
+    offerCount: 9,
+    favoriteCount: 68,
+    province: 'DKI Jakarta',
+    city: 'Jakarta Selatan',
+    district: 'Setiabudi',
+    postalCode: '12920',
+    isCodAvailable: true,
+    codMeetingPoint: 'Kota Kasablanka / Grand Indonesia',
+    specs: JSON.stringify({
+      ram: '16 GB LPDDR5X',
+      storage: '512 GB UFS 4.0',
+      chipset: 'Snapdragon 8 Gen 2',
+      camera: 'Hasselblad Triple Camera (48MP + 64MP 3x Periscope + 48MP)',
+      display: '7.82" LTPO3 OLED 2800 nits Foldable'
+    }),
+    images: [
+      {
+        id: 'img-83-1',
+        listingId: 'item-83',
+        url: 'https://fdn2.gsmarena.com/vv/bigpic/oppo-find-n3.jpg',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-83-2',
+        listingId: 'item-83',
+        url: 'https://fdn2.gsmarena.com/vv/pics/oppo/oppo-find-n3-1.jpg',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T12:00:00Z',
+    updatedAt: '2026-09-03T12:00:00Z'
+  },
+  // 84. ASUS ROG Phone 8 Pro 5G
+  {
+    id: 'item-84',
+    sellerId: 'usr-seller-5',
+    categoryId: 'cat-gadget',
+    title: 'ASUS ROG Phone 8 Pro 5G 16GB / 512GB Phantom Black AniMe Vision Gaming',
+    slug: 'asus-rog-phone-8-pro-5g-16gb-512gb-phantom-black',
+    description:
+      'Smartphone gaming tertinggi ASUS ROG Phone 8 Pro 5G 16GB/512GB warna Phantom Black garansi resmi ASUS Indonesia. Dilengkapi layar Mini-LED AniMe Vision programmable di bodi belakang, tombol bahu ultrasonik AirTrigger presisi, dan sertifikasi IP68 tahan air. Layar LTPO AMOLED 165Hz 2500 nits super responsif. Kondisi 98% mulus fullset charger HyperCharge 65W.',
+    price: 12900000,
+    originalPrice: 16999000,
+    isNegotiable: true,
+    minOfferPrice: 12000000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'BOX_UNIT']),
+    purchaseYear: 2024,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 570,
+    offerCount: 12,
+    favoriteCount: 77,
+    province: 'Banten',
+    city: 'Tangerang Selatan',
+    district: 'Serpong',
+    postalCode: '15310',
+    isCodAvailable: true,
+    codMeetingPoint: 'AEON Mall BSD / Summarecon Mall Serpong',
+    specs: JSON.stringify({
+      ram: '16 GB LPDDR5X',
+      storage: '512 GB UFS 4.0',
+      chipset: 'Snapdragon 8 Gen 3 (4nm)',
+      display: '6.78" LTPO AMOLED 165Hz + AniMe Vision 341 Mini-LED',
+      features: 'AirTrigger Ultrasonic Buttons & Dual USB-C Ports'
+    }),
+    images: [
+      {
+        id: 'img-84-1',
+        listingId: 'item-84',
+        url: 'https://fdn2.gsmarena.com/vv/bigpic/asus-rog-phone-8-pro.jpg',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-84-2',
+        listingId: 'item-84',
+        url: 'https://fdn2.gsmarena.com/vv/pics/asus/asus-rog-phone-8-pro-1.jpg',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T12:30:00Z',
+    updatedAt: '2026-09-03T12:30:00Z'
+  },
+  // 85. Samsung Galaxy Watch Ultra 47mm
+  {
+    id: 'item-85',
+    sellerId: 'usr-seller-10',
+    categoryId: 'cat-gadget',
+    title: 'Samsung Galaxy Watch Ultra 47mm Titanium Gray LTE Sapphire Crystal SEIN',
+    slug: 'samsung-galaxy-watch-ultra-47mm-titanium-gray-lte-sein',
+    description:
+      'Smartwatch outdoor paling tangguh Samsung Galaxy Watch Ultra 47mm warna Titanium Gray garansi resmi SEIN. Casing Titanium Grade 4 dengan kaca Sapphire Crystal tahan gores dan ketahanan air 10 ATM (100 meter) serta sertifikasi militer MIL-STD-810H. GPS Dual-Frequency L1+L5 akurat untuk lari marathon, cycling, dan diving. Fullset dus original dan Marine Band.',
+    price: 6850000,
+    originalPrice: 8999000,
+    isNegotiable: true,
+    minOfferPrice: 6300000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'WITH_RECEIPT']),
+    purchaseYear: 2025,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 460,
+    offerCount: 8,
+    favoriteCount: 64,
+    province: 'Sulawesi Selatan',
+    city: 'Makassar',
+    district: 'Ujung Pandang',
+    postalCode: '90111',
+    isCodAvailable: true,
+    codMeetingPoint: 'Trans Studio Mall Makassar / Phinisi Point',
+    specs: JSON.stringify({
+      caseMaterial: '47mm Titanium Grade 4 Cushion Design',
+      display: '1.5" Super AMOLED Sapphire Crystal 3000 Nits',
+      chipset: 'Exynos W1000 (3nm Penta-Core)',
+      durability: '10 ATM Water Resistant + IP68 + MIL-STD-810H'
+    }),
+    images: [
+      {
+        id: 'img-85-1',
+        listingId: 'item-85',
+        url: 'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-watch-ultra.jpg',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-85-2',
+        listingId: 'item-85',
+        url: 'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-watch-ultra-1.jpg',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T13:00:00Z',
+    updatedAt: '2026-09-03T13:00:00Z'
+  },
+  // 86. Kulkas Side by Side Samsung RS70
+  {
+    id: 'item-86',
+    sellerId: 'usr-seller-6',
+    categoryId: 'cat-elektronik',
+    title: 'Kulkas Side by Side Samsung RS70 Bespoke AI SpaceMax 655L Matte Metal',
+    slug: 'kulkas-side-by-side-samsung-rs70-bespoke-ai-spacemax-655l',
+    description:
+      'Kulkas besar 2 pintu Side-by-Side Samsung RS70 kapasitas 655 Liter warna Gentle Black Matte Metal elegan. Teknologi SpaceMax™ membuat ruang penyimpanan dalam sangat luas tanpa memperbesar ukuran luar. Dilengkapi AI Energy Mode via aplikasi SmartThings yang menghemat tagihan listrik hingga 15% dan All-Around Cooling pendinginan merata. Kondisi 98% mulus seperti baru.',
+    price: 10900000,
+    originalPrice: 16499000,
+    isNegotiable: true,
+    minOfferPrice: 9900000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'WITH_RECEIPT']),
+    purchaseYear: 2025,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 530,
+    offerCount: 9,
+    favoriteCount: 71,
+    province: 'Jawa Tengah',
+    city: 'Semarang',
+    district: 'Semarang Tengah',
+    postalCode: '50132',
+    isCodAvailable: true,
+    codMeetingPoint: 'Paragon Mall Semarang / Cek Langsung di Rumah Penjual',
+    specs: JSON.stringify({
+      capacity: '655 Liters Net SpaceMax Technology',
+      compressor: 'Digital Inverter Compressor with AI Energy Mode',
+      cooling: 'All-Around Cooling + Power Cool & Power Freeze',
+      finish: 'Matt DOI Metal Flat Door Design'
+    }),
+    images: [
+      {
+        id: 'img-86-1',
+        listingId: 'item-86',
+        url: 'https://images.samsung.com/is/image/samsung/p6pim/id/rs70f65qntse/gallery/id-rs70-side-by-side-with-large-capacity-matt-doi-metal-rs70f65qntse-thumb-545143075',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-86-2',
+        listingId: 'item-86',
+        url: 'https://images.samsung.com/is/image/samsung/p6pim/id/rs90f65anfse/gallery/id-rs90f-family-hub-rs90f65anfse-thumb-545566771',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T13:30:00Z',
+    updatedAt: '2026-09-03T13:30:00Z'
+  },
+  // 87. Samsung The Frame 55 Inch QLED 4K TV
+  {
+    id: 'item-87',
+    sellerId: 'usr-seller-10',
+    categoryId: 'cat-elektronik',
+    title: 'Samsung The Frame 55 Inch QLED 4K Smart TV Matte Display Art Mode Resmi',
+    slug: 'samsung-the-frame-55-inch-qled-4k-smart-tv-matte-display',
+    description:
+      'Smart TV estetik Samsung The Frame 55 Inch QLED 4K (QA55LS03). Saat dimatikan berubah menjadi lukisan galeri seni dengan panel Matte Display anti pantulan cahaya lampu atau jendela. Mendukung 100% Color Volume dengan Quantum Dot, refresh rate 120Hz, dan One Connect Box kabel transparan rapi. Termasuk Slim Fit Wall Mount dan Bezel kayu magnetik.',
+    price: 11500000,
+    originalPrice: 18999000,
+    isNegotiable: true,
+    minOfferPrice: 10500000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'BOX_UNIT']),
+    purchaseYear: 2024,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 580,
+    offerCount: 10,
+    favoriteCount: 85,
+    province: 'Sulawesi Selatan',
+    city: 'Makassar',
+    district: 'Rappocini',
+    postalCode: '90222',
+    isCodAvailable: true,
+    codMeetingPoint: 'Mall Panakkukang / Cek Unit di Rumah',
+    specs: JSON.stringify({
+      display: '55" 4K QLED with Anti-Reflection Matte Display',
+      refreshRate: '120Hz Motion Xcelerator with HDMI 2.1',
+      feature: 'Art Mode with Pantone ArtfulColor Certified',
+      audio: 'Dolby Atmos & Object Tracking Sound (OTS)'
+    }),
+    images: [
+      {
+        id: 'img-87-1',
+        listingId: 'item-87',
+        url: 'https://images.samsung.com/is/image/samsung/p6pim/id/qa55ls03hekxxd/gallery/id-the-frame-qa55ls03hekxxd-black-thumb-552556536',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-87-2',
+        listingId: 'item-87',
+        url: 'https://images.samsung.com/is/image/samsung/p6pim/id/qa77s95hxexxd/gallery/id-oled-tv-qa77s95hxexxd-silver-thumb-552759999',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T14:00:00Z',
+    updatedAt: '2026-09-03T14:00:00Z'
+  },
+  // 88. Mesin Cuci Front Loading Samsung 10.5kg AI EcoBubble
+  {
+    id: 'item-88',
+    sellerId: 'usr-seller-6',
+    categoryId: 'cat-elektronik',
+    title: 'Mesin Cuci Front Loading Samsung 10.5kg AI EcoBubble SmartThings Black',
+    slug: 'mesin-cuci-front-loading-samsung-10-5kg-ai-ecobubble-black',
+    description:
+      'Mesin cuci bukaan depan Samsung Bespoke AI 10.5 kg (WW10DG6U34LBSE) warna Black Caviar. Teknologi AI EcoBubble™ mengubah deterjen menjadi busa mikro yang meresap 40x lebih cepat ke serat kain bahkan dengan air dingin. Dilengkapi Hygiene Steam pembasmi 99.9% bakteri dan kontrol pintar via aplikasi SmartThings. Kondisi 97% sangat mulus.',
+    price: 5600000,
+    originalPrice: 8999000,
+    isNegotiable: true,
+    minOfferPrice: 5100000,
+    condition: 'USED_EXCELLENT' as const,
+    completeness: JSON.stringify(['FULLSET', 'WITH_RECEIPT']),
+    purchaseYear: 2025,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 420,
+    offerCount: 7,
+    favoriteCount: 54,
+    province: 'Jawa Tengah',
+    city: 'Semarang',
+    district: 'Banyumanik',
+    postalCode: '50269',
+    isCodAvailable: true,
+    codMeetingPoint: 'Transmart Setiabudi Semarang / Ambil di Rumah',
+    specs: JSON.stringify({
+      capacity: '10.5 Kg Wash Front Load',
+      technology: 'AI EcoBubble + AI Control + Hygiene Steam',
+      spinSpeed: '1400 RPM Digital Inverter Motor',
+      connectivity: 'Wi-Fi SmartThings App Integration'
+    }),
+    images: [
+      {
+        id: 'img-88-1',
+        listingId: 'item-88',
+        url: 'https://images.samsung.com/is/image/samsung/p6pim/id/ww10dg6u34lbse/gallery/id-ww6000d-ww10dg6u34lbse-thumb-547147565',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-88-2',
+        listingId: 'item-88',
+        url: 'https://images.samsung.com/is/image/samsung/p6pim/id/wd12dg5b15bbse/gallery/id-wd5000d-wd12dg5b15bbse-thumb-542268304',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T14:30:00Z',
+    updatedAt: '2026-09-03T14:30:00Z'
+  },
+  // 89. AC Samsung WindFree Ultra 1 PK Inverter
+  {
+    id: 'item-89',
+    sellerId: 'usr-seller-6',
+    categoryId: 'cat-elektronik',
+    title: 'AC Samsung WindFree Ultra 1 PK Inverter Fast Cooling AI Auto Cooling Mulus',
+    slug: 'ac-samsung-windfree-ultra-1-pk-inverter-fast-cooling',
+    description:
+      'AC pintar hemat listrik Samsung WindFree™ Ultra 1 PK Inverter lengkap indoor dan outdoor unit. Teknologi 23.000 lubang mikro menyebarkan udara sejuk merata tanpa hembusan angin dingin langsung yang membuat masuk angin. Dilengkapi filter PM1.0 elektrostatik penyaring debu ultra-halus dan kontrol Wi-Fi SmartThings. Freon R32 penuh dingin menggigil.',
+    price: 4100000,
+    originalPrice: 6899000,
+    isNegotiable: true,
+    minOfferPrice: 3700000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'BOX_UNIT']),
+    purchaseYear: 2025,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 380,
+    offerCount: 6,
+    favoriteCount: 47,
+    province: 'Jawa Tengah',
+    city: 'Semarang',
+    district: 'Candisari',
+    postalCode: '50257',
+    isCodAvailable: true,
+    codMeetingPoint: 'Java Supermall Semarang / Lokasi Rumah Penjual',
+    specs: JSON.stringify({
+      capacity: '1 PK (9.000 BTU/h) Digital Inverter Boost',
+      cooling: 'WindFree Cooling (23,000 Micro Air Holes) + AI Auto Cooling',
+      filtration: 'PM1.0 Air Purification Filter + Freeze Wash',
+      refrigerant: 'Eco-Friendly R32 Refrigerant'
+    }),
+    images: [
+      {
+        id: 'img-89-1',
+        listingId: 'item-89',
+        url: 'https://images.samsung.com/is/image/samsung/p6pim/id/ar80h13dadwnse/gallery/id-ar80h-ar70h09caawneu-ar80h13dadwnse-thumb-554188074',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-89-2',
+        listingId: 'item-89',
+        url: 'https://images.samsung.com/is/image/samsung/p6pim/id/ar60h18d1lwnse/gallery/id-ar60h-ar60h12d1dwnst-ar60h18d1lwnse-thumb-554184432',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T15:00:00Z',
+    updatedAt: '2026-09-03T15:00:00Z'
+  },
+  // 90. Apple iMac 24 Inch M3
+  {
+    id: 'item-90',
+    sellerId: 'usr-seller-2',
+    categoryId: 'cat-laptop',
+    title: 'Apple iMac 24 Inch M3 8-Core CPU 16GB / 512GB 4.5K Retina Display Resmi iBox',
+    slug: 'apple-imac-24-inch-m3-16gb-512gb-4-5k-retina-ibox',
+    description:
+      'Desktop All-in-One super tipis Apple iMac 24 Inci dengan chip Apple M3, RAM Unified 16GB, dan SSD 512GB garansi resmi iBox Indonesia. Layar Retina 4.5K (4480x2520) 500 nits dengan warna P3 Wide Color 1 miliar warna sangat tajam untuk editing video dan desain. Kamera FaceTime HD 1080p dan 6 speaker Spatial Audio Dolby Atmos. Lengkap Magic Keyboard with Touch ID, Magic Mouse, dan dus asli.',
+    price: 19500000,
+    originalPrice: 27999000,
+    isNegotiable: true,
+    minOfferPrice: 18200000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'WITH_RECEIPT']),
+    purchaseYear: 2024,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 520,
+    offerCount: 9,
+    favoriteCount: 74,
+    province: 'Jawa Barat',
+    city: 'Bandung',
+    district: 'Coblong',
+    postalCode: '40132',
+    isCodAvailable: true,
+    codMeetingPoint: 'Dago Bandung / Paris Van Java',
+    specs: JSON.stringify({
+      processor: 'Apple M3 Chip (8-Core CPU, 10-Core GPU)',
+      ram: '16 GB Unified Memory',
+      storage: '512 GB NVMe SSD',
+      display: '24" 4.5K Retina Display (4480 x 2520) 500 Nits P3',
+      accessories: 'Magic Keyboard with Touch ID + Magic Mouse'
+    }),
+    images: [
+      {
+        id: 'img-90-1',
+        listingId: 'item-90',
+        url: 'https://www.apple.com/v/imac/x/images/meta/imac__kaqcgp2n4duu_og.png',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-90-2',
+        listingId: 'item-90',
+        url: 'https://www.apple.com/v/studio-display/f/images/meta/studio-display_overview__cc7vair07fjm_og.png',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T15:30:00Z',
+    updatedAt: '2026-09-03T15:30:00Z'
+  },
+  // 91. Monitor Gaming Samsung Odyssey OLED G5 27"
+  {
+    id: 'item-91',
+    sellerId: 'usr-seller-5',
+    categoryId: 'cat-laptop',
+    title: 'Monitor Gaming Samsung Odyssey OLED G5 27" QHD 180Hz 0.03ms G-Sync Mulus',
+    slug: 'monitor-gaming-samsung-odyssey-oled-g5-27-qhd-180hz',
+    description:
+      'Monitor gaming kelas turnamen Samsung Odyssey OLED G5 27 inci resolusi QHD (2560x1440). Panel OLED Glare-Free menghadirkan warna hitam pekat sempurna, waktu respons 0.03ms (GtG) instan, dan refresh rate 180Hz yang kompatibel dengan NVIDIA G-Sync serta AMD FreeSync. Layar 100% aman bebas burn-in maupun dead pixel. Fullset dus buku kabel DisplayPort.',
+    price: 6900000,
+    originalPrice: 10499000,
+    isNegotiable: true,
+    minOfferPrice: 6400000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'BOX_UNIT']),
+    purchaseYear: 2025,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 490,
+    offerCount: 10,
+    favoriteCount: 66,
+    province: 'Banten',
+    city: 'Tangerang Selatan',
+    district: 'Serpong',
+    postalCode: '15310',
+    isCodAvailable: true,
+    codMeetingPoint: 'The Breeze BSD / AEON Mall BSD',
+    specs: JSON.stringify({
+      panel: '27 Inch QHD (2560 x 1440) OLED Glare-Free',
+      refreshRate: '180Hz with 0.03ms (GtG) Response Time',
+      sync: 'NVIDIA G-Sync Compatible & AMD FreeSync',
+      hdr: 'HDR10 with 99% DCI-P3 Color Gamut'
+    }),
+    images: [
+      {
+        id: 'img-91-1',
+        listingId: 'item-91',
+        url: 'https://images.samsung.com/is/image/samsung/p6pim/id/ls27fg502sexxd/gallery/id-odyssey-oled-g5-27g50sf-ls27fg502sexxd-thumb-549336542',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-91-2',
+        listingId: 'item-91',
+        url: 'https://images.samsung.com/is/image/samsung/p6pim/id/ls32hg802sexxd/gallery/id-gaming-ls32hg802sexxd-silver-thumb-552048910',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T16:00:00Z',
+    updatedAt: '2026-09-03T16:00:00Z'
+  },
+  // 92. Apple AirPods Max
+  {
+    id: 'item-92',
+    sellerId: 'usr-seller-8',
+    categoryId: 'cat-audio',
+    title: 'Apple AirPods Max Wireless Over-Ear Headphones Active Noise Cancelling iBox',
+    slug: 'apple-airpods-max-wireless-over-ear-headphones-anc-ibox',
+    description:
+      'Headphone flagship Apple AirPods Max garansi resmi iBox Indonesia. Cangkang aluminium anodized mewah dengan headband jaring breathable dan ear cushion memory foam akustik yang sangat nyaman. Kualitas suara high-fidelity luar biasa dengan Active Noise Cancellation kelas pro dan Spatial Audio Dynamic Head Tracking. Lengkap Smart Case original dan dus.',
+    price: 5950000,
+    originalPrice: 9499000,
+    isNegotiable: true,
+    minOfferPrice: 5500000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'BOX_UNIT']),
+    purchaseYear: 2024,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 620,
+    offerCount: 13,
+    favoriteCount: 91,
+    province: 'Bali',
+    city: 'Denpasar',
+    district: 'Denpasar Barat',
+    postalCode: '80119',
+    isCodAvailable: true,
+    codMeetingPoint: 'Beachwalk Kuta / Level 21 Mall Denpasar',
+    specs: JSON.stringify({
+      driver: 'Apple-Designed 40mm Dynamic Driver',
+      chipset: 'Dual Apple H1 Headphone Chips (9 Microphones)',
+      features: 'Pro-Level Active Noise Cancellation, Transparency Mode, Spatial Audio',
+      batteryLife: 'Up to 20 Hours with ANC & Spatial Audio Enabled'
+    }),
+    images: [
+      {
+        id: 'img-92-1',
+        listingId: 'item-92',
+        url: 'https://www.apple.com/v/airpods-max/l/images/meta/airpods-max_overview__c2mz40a3bugm_og.png',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-92-2',
+        listingId: 'item-92',
+        url: 'https://www.apple.com/v/airpods/af/images/meta/airpods__dh7xkbort402_og.png',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T16:30:00Z',
+    updatedAt: '2026-09-03T16:30:00Z'
+  },
+  // 93. Samsung Q-Series Soundbar HW-Q930F
+  {
+    id: 'item-93',
+    sellerId: 'usr-seller-8',
+    categoryId: 'cat-audio',
+    title: 'Samsung Q-Series Soundbar HW-Q930F 9.1.4ch Wireless Dolby Atmos Subwoofer',
+    slug: 'samsung-q-series-soundbar-hw-q930f-9-1-4ch-dolby-atmos',
+    description:
+      'Paket home theater premium Samsung Q-Series Soundbar HW-Q930F konfigurasi sejati 9.1.4 Channel lengkap dengan Wireless Subwoofer 8 inci dan sepasang Rear Speaker nirkabel up-firing. Menghadirkan suara bioskop 3D Wireless Dolby Atmos dan DTS:X dengan fitur Q-Symphony serta SpaceFit Sound Pro kalibrasi akustik ruangan otomatis. Kondisi 98% mulus fullset.',
+    price: 7900000,
+    originalPrice: 13999000,
+    isNegotiable: true,
+    minOfferPrice: 7300000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'WITH_RECEIPT']),
+    purchaseYear: 2025,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 440,
+    offerCount: 8,
+    favoriteCount: 59,
+    province: 'Bali',
+    city: 'Denpasar',
+    district: 'Denpasar Timur',
+    postalCode: '80237',
+    isCodAvailable: true,
+    codMeetingPoint: 'Living World Denpasar / Sanur',
+    specs: JSON.stringify({
+      channels: '9.1.4 Channel True Surround (17 Speakers)',
+      audioFormat: 'Wireless Dolby Atmos, DTS:X, Hi-Res Audio 24-bit/192kHz',
+      components: 'Main Soundbar + Wireless Subwoofer + 2x Wireless Rear Speakers',
+      connectivity: 'HDMI eARC, Optical, Wi-Fi AirPlay 2, Chromecast, Bluetooth'
+    }),
+    images: [
+      {
+        id: 'img-93-1',
+        listingId: 'item-93',
+        url: 'https://images.samsung.com/is/image/samsung/p6pim/id/hw-q930f-xd/gallery/id-q-series-soundbar-hw-q930f-hw-q930f-xd-thumb-546688339',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-93-2',
+        listingId: 'item-93',
+        url: 'https://images.samsung.com/is/image/samsung/p6pim/id/hw-q600f-xd/gallery/id-q-series-soundbar-hw-q600f-hw-q600f-xd-thumb-546689362',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T17:00:00Z',
+    updatedAt: '2026-09-03T17:00:00Z'
+  },
+  // 94. Honda Stylo 160 ABS
+  {
+    id: 'item-94',
+    sellerId: 'usr-seller-7',
+    categoryId: 'cat-otomotif',
+    title: 'Honda Stylo 160 ABS 2025 Royal Violet Smart Key Km Rendah 1.400 Mulus',
+    slug: 'honda-stylo-160-abs-2025-royal-violet-smart-key-mulus',
+    description:
+      'Skutik fashionable klasik modern Honda Stylo 160 tipe tertinggi ABS (rem cakram depan-belakang) warna spesial Royal Violet tahun 2025. Mesin 160cc 4-katup eSP+ sangat responsif dan irit. Odometer baru berjalan 1.400 km asli pemakaian komplek perumahan. Dilengkapi Honda Smart Key (Keyless), USB charger di glove box, dan lampu full LED ikonik. Surat lengkap STNK, BPKB, Faktur tangan pertama.',
+    price: 25800000,
+    originalPrice: 31450000,
+    isNegotiable: true,
+    minOfferPrice: 24500000,
+    condition: 'LIKE_NEW' as const,
+    completeness: JSON.stringify(['FULLSET', 'WITH_RECEIPT']),
+    purchaseYear: 2025,
+    warrantyUntil: null,
+    hasOriginalReceipt: true,
+    status: 'ACTIVE' as const,
+    viewCount: 680,
+    offerCount: 14,
+    favoriteCount: 93,
+    province: 'Jawa Timur',
+    city: 'Malang',
+    district: 'Lowokwaru',
+    postalCode: '65141',
+    isCodAvailable: true,
+    codMeetingPoint: 'Mall Olympic Garden (MOG) / Matos Malang',
+    specs: JSON.stringify({
+      engine: '156.9cc 4-Katup eSP+ Berpendingin Cairan',
+      brakes: 'Anti-Lock Braking System (ABS) Double Disc Brake',
+      keySystem: 'Honda Smart Key System with Alarm & Answer Back',
+      odometer: '1.400 km'
+    }),
+    images: [
+      {
+        id: 'img-94-1',
+        listingId: 'item-94',
+        url: 'https://imagewebsite.astra-honda.com/uploads/product-draft/meta/stylo-royal-violet-400x300pxl-23092026-024514.png',
+        isPrimary: true,
+        sortOrder: 1
+      },
+      {
+        id: 'img-94-2',
+        listingId: 'item-94',
+        url: 'https://imagewebsite.astra-honda.com/uploads/product-draft/meta/product-thumbnail-400x300px-08092025-030701.png',
+        isPrimary: false,
+        sortOrder: 2
+      }
+    ],
+    createdAt: '2026-09-03T17:30:00Z',
+    updatedAt: '2026-09-03T17:30:00Z'
   }
 ];
